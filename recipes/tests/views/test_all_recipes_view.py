@@ -84,7 +84,7 @@ class AllRecipesViewTestCase(TestCase):
             author=self.user,
             title="Old Recipe",
             adjectives="old",
-            publication_date=timezone.now().date() - timezone.timedelta(days=10)
+            publication_date = timezone.now().date() - timedelta(days=10)
         )
         new_recipe = Recipe.objects.create(
             author=self.user,

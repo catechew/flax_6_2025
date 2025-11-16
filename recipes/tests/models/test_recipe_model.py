@@ -25,6 +25,6 @@ class RecipeModelTestCase(TestCase):
         expected = (
             f"@testuser "
             f"({self.recipe.publication_date.year}) "
-            f"\"Korean Noodles\" Adjectives: quick easy"
+            f"\"Korean Noodles\" Adjectives: quick easy."
         )
         self.assertEqual(str(self.recipe), expected)
