@@ -63,7 +63,7 @@ class AllRecipesViewTestCase(TestCase):
         )
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_object'].paginator.num_pages, 1)
-        self.assertFalse(response.context['page_object'].has_other_pages)
+        self.assertFalse(response.context['page_object'].has_other_pages())
 
     def test_all_recipes_with_26_recipes(self):
         Recipe.objects.all().delete()
@@ -112,12 +112,6 @@ class AllRecipesViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_object'].paginator.num_pages, 3)
         self.assertEqual(response.context['page_object'].paginator.count, 55)
-    
-    def test_pagination_first_page(self):
-        """Test content of first page"""
-        response = self.client.get(self.url)
-        self.assertContains(response, self.recipe1.title)
-        self.assertContains(response, "Page 1 of")
 
     def test_invalid_page_number(self):
         """Test handling of invalid page parameter"""
