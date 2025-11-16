@@ -18,11 +18,11 @@
       </ul>
 
       <!-- Search bar -->
-      <form class="d-flex mx-auto col-lg-4">
+      <form class="d-flex mx-auto col-lg-4" method="GET" action="{% url 'all_recipes' %}">
+        <input class="form-control me-2" type="search" name="q" placeholder="Search for recipes..." aria-label="Search" value="{{ request.GET.q }}">
         <button class="btn btn-primary" type="submit">
           <span class="bi-search"></span>
         </button>
-        <input class="form-control me-2" type="search" placeholder="Search for recipes..." aria-label="Search">
       </form>
 
       {% if user.is_authenticated %}
