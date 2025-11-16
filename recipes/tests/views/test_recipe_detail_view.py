@@ -20,7 +20,6 @@ class RecipeDetailViewTestCase(TestCase):
             adjectives="quick easy",
             publication_date=timezone.now().date()
         )
-
         self.url = reverse('recipe_detail', kwargs={'recipe_id': self.recipe.id})
 
     def test_recipe_detail_url(self):
@@ -41,20 +40,17 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
     
     def test_recipe_detail_with_negative_id(self):
-        url = reverse('recipe_detail', kwargs={'recipe_id': -1})
-        response = self.client.get(url)
+        response = self.client.get("/recipe/-1")
         self.assertEqual(response.status_code, 404)
 
     def test_recipe_detail_with_zero_id(self):
-        url = reverse('recipe_detail', kwargs={'recipe_id': 0})
-        response = self.client.get(url)
+        response = self.client.get("/recipe/0")
         self.assertEqual(response.status_code, 404)
-    
+
     def test_recipe_detail_with_very_large_id(self):
-        url = reverse('recipe_detail', kwargs={'recipe_id': 999999999})
-        response = self.client.get(url)
+        response = self.client.get("/recipe/999999999")
         self.assertEqual(response.status_code, 404)
-    
+
     def test_recipe_detail_displays_title(self):
         """Test that recipe title is displayed on the page"""
         response = self.client.get(self.url)
@@ -130,5 +126,5 @@ class RecipeDetailViewTestCase(TestCase):
         url = reverse('recipe_detail', kwargs={'recipe_id': other_recipe.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Jane's Recipe")
+        self.assertContains(response, "Jane&#x27;s Recipe")
         self.assertContains(response, other_user.username)
