@@ -6,7 +6,7 @@ from recipes.forms.recipe_form import RecipeForm
 from recipes.models.recipe import Recipe
 
 
-def update_recipe(request, recipe_id):
+def recipe_update(request, recipe_id):
 	try:
 		recipe = Recipe.objects.get(id=recipe_id)
 	except Recipe.DoesNotExist:
@@ -21,7 +21,7 @@ def update_recipe(request, recipe_id):
 				form.add_error(None, "It was not possible to save this recipe to the database.  Check the ISBN number.")
 			else:
 				messages.info(request, f"Updated recipe record to: {recipe}")
-				path = reverse('list_recipes')
+				path = reverse('all_recipes')
 				return HttpResponseRedirect(path)
 	else:
 		form = RecipeForm(instance=recipe)
