@@ -11,5 +11,6 @@ Recipes | Recipe #{{recipe.id}}
 <p>
 <a href="{% url 'home' %}" class="btn btn-lg btn-secondary">Go back home</a>
 <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Update this recipe</a>
+<a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Delete this recipe</a>
 </p>
 {% endblock %}

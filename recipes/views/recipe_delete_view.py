@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from recipes.models.recipe import Recipe
 
-def delete_recipe(request, recipe_id):
+def recipe_delete(request, recipe_id):
 	try:
 		recipe = Recipe.objects.get(id=recipe_id)
 	except Recipe.DoesNotExist:
@@ -11,7 +11,7 @@ def delete_recipe(request, recipe_id):
 
 	if request.method == "POST":
 		recipe.delete()
-		path = reverse('list_recipes')
+		path = reverse('all_recipes')
 		return HttpResponseRedirect(path)
 	else:
 		return render(request, 'delete_recipe.html', {'recipe': recipe})
