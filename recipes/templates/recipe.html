@@ -7,6 +7,7 @@ Recipes | Recipe #{{recipe.id}}
 {% block content %}
 <h1>Recipe: {{recipe.title}}</h1>
 <p><b>Adjectives</b>: {{recipe.adjectives}}</p>
+<p><b>Author:</b> {{ recipe.author.username }}</p>
 <p>
 <a href="{% url 'home' %}" class="btn btn-lg btn-secondary">Go back home</a>
 </p>
