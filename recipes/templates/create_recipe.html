@@ -1,143 +1,61 @@
 {% extends 'base_content.html' %}
+
 {% block content %}
 <div class="container mt-4">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow">
-          <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
-              <i class="bi bi-plus-circle"></i> Create New Recipe
-            </h3>
-          </div>
-          <div class="card-body">
-            <p class="text-muted mb-4">
-              Fill in the details below to add a new recipe to the collection.
-            </p>
-
-            <form method="POST" novalidate>
-              {% csrf_token %}
-
-              {# Display non-field errors (general form errors) #}
-              {% if form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">
-                  {{ form.non_field_errors }}
-                </div>
-              {% endif %}
-
-              {# Author Field #}
-              <div class="mb-3">
-                <label for="{{ form.author.id_for_label }}" class="form-label">
-                  Author <span class="text-danger">*</span>
-                </label>
-                {{ form.author }}
-                {% if form.author.errors %}
-                  <div class="invalid-feedback d-block">
-                    {{ form.author.errors }}
-                  </div>
-                {% endif %}
-                {% if form.author.help_text %}
-                  <small class="form-text text-muted">{{ form.author.help_text }}</small>
-                {% endif %}
-              </div>
-
-              {# Title Field #}
-              <div class="mb-3">
-                <label for="{{ form.title.id_for_label }}" class="form-label">
-                  Recipe Title <span class="text-danger">*</span>
-                </label>
-                <input 
-                  type="text" 
-                  name="{{ form.title.name }}" 
-                  class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
-                  id="{{ form.title.id_for_label }}"
-                  value="{{ form.title.value|default:'' }}"
-                  placeholder="e.g., Spaghetti Carbonara"
-                  maxlength="255"
-                  required
-                >
-                {% if form.title.errors %}
-                  <div class="invalid-feedback">
-                    {{ form.title.errors }}
-                  </div>
-                {% endif %}
-                <small class="form-text text-muted">Minimum 4 characters</small>
-              </div>
-
-              {# Adjectives Field #}
-              <div class="mb-3">
-                <label for="{{ form.adjectives.id_for_label }}" class="form-label">
-                  Adjectives / Tags <span class="text-danger">*</span>
-                </label>
-                <input 
-                  type="text" 
-                  name="{{ form.adjectives.name }}" 
-                  class="form-control {% if form.adjectives.errors %}is-invalid{% endif %}" 
-                  id="{{ form.adjectives.id_for_label }}"
-                  value="{{ form.adjectives.value|default:'' }}"
-                  placeholder="e.g., quick, easy, vegetarian"
-                  maxlength="255"
-                  required
-                >
-                {% if form.adjectives.errors %}
-                  <div class="invalid-feedback">
-                    {{ form.adjectives.errors }}
-                  </div>
-                {% endif %}
-                {% if form.adjectives.help_text %}
-                  <small class="form-text text-muted">{{ form.adjectives.help_text }}</small>
-                {% else %}
-                  <small class="form-text text-muted">Describe the recipe with keywords (minimum 4 characters)</small>
-                {% endif %}
-              </div>
-
-              {# Publication Date Field #}
-              <div class="mb-4">
-                <label for="{{ form.publication_date.id_for_label }}" class="form-label">
-                  Publication Date <span class="text-danger">*</span>
-                </label>
-                <input 
-                  type="date" 
-                  name="{{ form.publication_date.name }}" 
-                  class="form-control {% if form.publication_date.errors %}is-invalid{% endif %}" 
-                  id="{{ form.publication_date.id_for_label }}"
-                  value="{{ form.publication_date.value|default:'' }}"
-                  required
-                >
-                {% if form.publication_date.errors %}
-                  <div class="invalid-feedback">
-                    {{ form.publication_date.errors }}
-                  </div>
-                {% endif %}
-                <small class="form-text text-muted">Select the date you want to publish this recipe</small>
-              </div>
-
-              {# Form Buttons #}
-              <div class="d-flex justify-content-between align-items-center">
-                <a href="{% url 'all_recipes' %}" class="btn btn-secondary btn-lg">
-                  <i class="bi bi-x-circle"></i> Cancel
-                </a>
-                <button type="submit" class="btn btn-primary btn-lg">
-                  <i class="bi bi-check-circle"></i> Create Recipe
-                </button>
-              </div>
-            </form>
-          </div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">
+            <i class="bi bi-plus-circle"></i> Create New Recipe
+          </h3>
         </div>
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            Fill in the details below to add a new recipe to the collection.
+          </p>
 
-        {# Help Section #}
-        <div class="card mt-4 border-info">
-          <div class="card-body">
-            <h5 class="card-title text-info">
-              <i class="bi bi-info-circle"></i> Tips for Creating Recipes
-            </h5>
-            <ul class="mb-0">
-              <li>Use a descriptive and appetizing title for your recipe</li>
-              <li>Add relevant adjectives/tags to help others find your recipe (e.g., "quick", "budget-friendly", "vegetarian")</li>
-              <li>All fields marked with <span class="text-danger">*</span>are required</li>
-            </ul>
-          </div>
+          <form method="POST">
+            {% csrf_token %}
+
+            {# Display non-field errors #}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            {# Include the form fields with Bootstrap styling #}
+            {% include 'partials/bootstrap_form.html' %}
+
+            {# Form Buttons #}
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <a href="{% url 'all_recipes' %}" class="btn btn-secondary btn-lg">
+                <i class="bi bi-x-circle"></i> Cancel
+              </a>
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-check-circle"></i> Create Recipe
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {# Help Section #}
+      <div class="card mt-4 border-info">
+        <div class="card-body">
+          <h5 class="card-title text-info">
+            <i class="bi bi-info-circle"></i> Tips for Creating Recipes
+          </h5>
+          <ul class="mb-0">
+            <li>Use a descriptive and appetizing title for your recipe</li>
+            <li>In "Adjectives/Tags", add keywords like "quick", "budget-friendly", "vegetarian"</li>
+            <li>Select the author from the dropdown</li>
+            <li>Choose today's date or a future publication date</li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
