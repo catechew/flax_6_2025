@@ -3,7 +3,7 @@
 <div class="container mt-4">
   {% if search_query %}
     <h2> Search results for "{{ search_query }}"</h2>
-    <p class="text-muted">Found {{ recipes.count }} recipe(s)</p>
+    <p class="text-muted">Found {{ total_count }} recipe(s)</p>
   {% else %}
     <h2> All Recipes </h2>
   {% endif %}
@@ -15,29 +15,69 @@
             <div class="card h-100">
               <div class="card-body">
                 <h5 class="card-title">{{ recipe.title }}</h5>
-                  <p class="card-text">
-                    <small class="text-muted">{{ recipe.adjectives }}</small>
+                {% if recipe.adjectives %}
+                  <p class="card-text mb-1">
+                    <small class="text-muted">{{ recipe.adjectives
+}}</small>
                   </p>
-                  <p class="card-text">
+                {% endif %}
+                  <p class="card-text mb-1">
                     <small class="text-muted">
-                      By {{ recipe.author.first_name }} {{ recipe.author.last_name }}
+                      By {{ recipe.author.first_name }} {{
+recipe.author.last_name }}
                     </small>
                     </p>
-                      <p class="card-text">
-                    <small class="text-muted">{{ recipe.publication_date }}</small>
-                      </p>
-                    <a href="{% url 'get_recipe' recipe.id %}" class="btn btn-primary">
+                    <p class="card-text mb-3">
+                      <small class="text-muted">{{ recipe.publication_date
+  }}</small>
+                    </p>
+                    <div class="mt-auto">
+                      <a href="{% url 'get_recipe' recipe.id %}" 
+class="btn btn-primary">
                       View Recipe
                     </a>
+                </div>
               </div>
             </div>
           </div>
         {% endfor %}
     </div>
-    {% else %}
+
+    {# Pagination: only render if recipes is a Page object with a 
+paginator #}
+    {% if recipes.paginator %}
+      <nav aria-label="Recipe results pages">
+        <ul class="pagination justify-content-center mt-4">
+          {% if recipes.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?q={{ search_query }}&page={{
+recipes.previous_page_number }}" aria-label="Previous">Previous</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span 
+class="page-link">Previous</span></li>
+          {% endif %}
+
+          <li class="page-item disabled"><span class="page-link">Page {{
+recipes.number }} of {{ recipes.paginator.num_pages }}</span></li>
+
+          {% if recipes.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?q={{ search_query }}&page={{
+recipes.next_page_number }}" aria-label="Next">Next</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span 
+class="page-link">Next</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
     <div class="alert alert-info mt-4" role="alert">
         {% if search_query %}
-          No recipes found matching "{{ search_query }}". Try a different search term.
+          No recipes found matching "{{ search_query }}". Try a different
+search term.
         {% else %}
           No recipes available.
         {% endif %}

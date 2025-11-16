@@ -37,10 +37,13 @@ def all_recipes(request):
             Q(adjectives__icontains=search_query)
         )
     
+    total_count = recipes.count()
+    
     context = {
         'user': current_user,
         'recipes': recipes,
         'search_query': search_query,
+        'total_count' : total_count,
     }
 
     return render(request, 'all_recipes.html', context)
