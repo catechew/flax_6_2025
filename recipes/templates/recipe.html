@@ -7,7 +7,10 @@ Recipes | Recipe #{{recipe.id}}
 {% block content %}
 <h1>Recipe: {{recipe.title}}</h1>
 <p><b>Adjectives</b>: {{recipe.adjectives}}</p>
+<p><b>Author:</b> {{ recipe.author.username }}</p>
 <p>
 <a href="{% url 'home' %}" class="btn btn-lg btn-secondary">Go back home</a>
+<a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Update this recipe</a>
+<a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Delete this recipe</a>
 </p>
 {% endblock %}
