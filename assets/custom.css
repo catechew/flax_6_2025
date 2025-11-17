@@ -1,0 +1,155 @@
+/*
+* General consistent styling
+*/
+
+:root {
+    --primary-colour: #1E4297; 
+    --primary-colour-darker: #163273; 
+}
+
+body {
+  background-color: #FFF8F0;
+}
+
+
+/*
+ * Alerts
+ */
+
+.alert {
+  border-radius: 0px;
+}
+
+
+/*
+ * Cover page
+ */
+
+.content {
+  padding-top: 10px;
+}
+
+.h-100 {
+  min-height: 100vh;
+  height: 100vh;
+}
+
+.vcenter-item{
+    display: flex;
+    align-items: center;
+}
+
+/*
+ * Cover page for home.html (welcome page)
+ */
+h1.cover-heading {
+  color: #1E4297;
+  font-weight: bold;
+  font-size: 4rem;
+}
+
+p.cover-text {
+  font-size: 1.4rem;
+}
+
+.cover-card {
+  background-color: transparent;
+  border: none;
+  max-width: 30rem;
+  padding-top: 30px;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 30px;
+  border-radius: 15%;
+}
+.cover-card-block {
+  opacity: 1
+}
+
+/*
+ * forms
+ */
+.nolabel label {
+  display: none;
+}
+
+ul.errorlist {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/*
+ * Typefaces
+ */
+
+.low-key {
+  color: #777777;
+  font-weight: 300;
+}
+
+.list-title {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+/*
+ * Profile
+ */
+.profile-image {
+  width: 120px;
+  clear:both;
+  float:left;
+}
+
+.profile-text {
+  overflow:hidden;
+  padding-left:20px
+}
+
+h3.profile-title {
+  margin-bottom: 0px;
+}
+
+.profile-username {
+  color: #777777;
+  font-weight: 300;
+  font-style: italic;
+}
+
+
+/*
+ * Hyperlinks
+ */
+.content a {
+  text-decoration: none;
+  color: #0d6efd;
+}
+.content a:hover {
+  text-decoration: underline;
+  color: #0d6efd;
+}
+
+/*
+ * Buttons
+ */
+ .btn-secondary,
+ .btn-primary {
+    background-color: var(--primary-colour);
+    border-color: var(--primary-colour);
+    color: white; 
+}
+
+.btn-secondary:hover,
+.btn-primary:hover {
+    background-color: var(--primary-colour-darker);
+    border-color: var(--primary-colour-darker);
+}
+
+/*
+ * Navbars
+ */
+
+ .main-navbar {
+    background-color: var(--primary-colour);
+}

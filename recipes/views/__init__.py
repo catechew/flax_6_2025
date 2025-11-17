@@ -10,3 +10,4 @@ from .recipe_create_view import *
 from .recipe_delete_view import *
 from .recipe_detail_view import *
 from .recipe_update_view import *
+from .my_recipes_view import *
