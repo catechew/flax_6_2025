@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from recipes.models.recipe import Recipe
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 ITEMS_PER_PAGE = 25
 
@@ -16,10 +18,33 @@ def all_recipes(request):
 
     page_number = request.GET.get("page")
     page_object = paginator.get_page(page_number)
+    context = {'page_object': page_object}
+    return render(request, 'home.html', context) # context
 
+# get all recipes
+def all_recipes(request):
+    current_user = request.user
+
+    # get search query from navbar
+    search_query = request.GET.get('q', '').strip()
+
+    # start with all recipes
+    recipes = Recipe.objects.all()
+
+    # if there's a search query, filter recipes
+    if search_query:
+        recipes = recipes.filter(
+            Q(title__icontains=search_query) |
+            Q(adjectives__icontains=search_query)
+        )
+    
+    total_count = recipes.count()
+    
     context = {
-        "page_object": page_object,
-        "recipes": page_object.object_list
+        'user': current_user,
+        'recipes': recipes,
+        'search_query': search_query,
+        'total_count' : total_count,
     }
 
-    return render(request, 'all_recipes.html', context) # context
+    return render(request, 'all_recipes.html', context)
