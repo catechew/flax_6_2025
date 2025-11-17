@@ -30,9 +30,10 @@ urlpatterns = [
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('all_recipes/', views.all_recipes, name='all_recipes'),
-    path('recipe/<int:recipe_id>', views.recipe_detail, name='get_recipe'),
+    path('recipe/<int:recipe_id>', views.recipe_detail, name='recipe_detail'),
     path('create_recipe/', views.CreateRecipeView.as_view(), name='create_recipe'),
     path('update_recipe/<int:recipe_id>', views.recipe_update, name='update_recipe'),
     path('delete_recipe/<int:recipe_id>', views.recipe_delete, name='delete_recipe'),
+    path('my_recipes/', views.my_recipes, name='my_recipes'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -33,6 +33,13 @@ class AllRecipesViewTestCase(TestCase):
             publication_date=timezone.now().date()
         )
 
+        self.recipe3 = Recipe.objects.create(
+            author=self.user,
+            title="Spaghetti Carbonara",
+            adjectives="Italian quick",
+            publication_date=timezone.now().date()
+        )
+
     def test_all_recipes_url(self):
         self.assertEqual(self.url, '/all_recipes/')
 
@@ -122,3 +129,104 @@ class AllRecipesViewTestCase(TestCase):
         """Test handling of non-numeric page parameter"""
         response = self.client.get(self.url + '?page=abc')
         self.assertEqual(response.status_code, 200)  # Should show first page
+
+    # Test search functionality
+    # Test searching recipes by title
+    def test_search_by_title(self):
+        response = self.client.get(self.url, {'q': 'Oats'})
+        self.assertEqual(response.status_code, 200)
+        recipes = list(response.context['recipes'])
+        self.assertIn(self.recipe1, recipes)
+        self.assertNotIn(self.recipe2, recipes)
+        self.assertNotIn(self.recipe3, recipes)
+        self.assertEqual(response.context['total_count'], 1)
+    
+    # Test that search is case insensitive
+    def test_search_case_insensitive(self):
+        response = self.client.get(self.url, {'q': 'oAtS'})
+        recipes = list(response.context['recipes'])
+        self.assertIn(self.recipe1, recipes)
+
+        response = self.client.get(self.url, {'q': 'OATS'})
+        recipes = list(response.context['recipes'])
+        self.assertIn(self.recipe1, recipes)
+
+        response = self.client.get(self.url, {'q': 'oats'})
+        recipes = list(response.context['recipes'])
+        self.assertIn(self.recipe1, recipes)
+
+    # Test searching recipes by adjectives
+    def test_search_by_adjectives(self):
+        response = self.client.get(self.url, {'q': 'Italian'})
+        self.assertEqual(response.status_code, 200)
+        recipes = list(response.context['recipes'])
+        self.assertIn(self.recipe3, recipes)
+        self.assertNotIn(self.recipe1, recipes)
+        self.assertNotIn(self.recipe2, recipes)
+
+    # Test partial match search
+    def test_search_partial_match(self):
+        response = self.client.get(self.url, {'q': 'Chick'})
+        recipes = list(response.context['recipes'])
+        self.assertIn(self.recipe2, recipes) # Matches "Chicken"
+
+    # Test search with no results
+    def test_search_no_results(self):
+        response = self.client.get(self.url, {'q': 'NonExistent'})
+        self.assertEqual(response.status_code, 200)
+        recipes = list(response.context['recipes'])
+        self.assertEqual(len(recipes), 0)
+        self.assertEqual(response.context['total_count'], 0)
+
+    # Test empty search query (returns all recipes)
+    def test_empty_search_query(self):
+        response = self.client.get(self.url, {'q': ''})
+        recipes = list(response.context['recipes'])
+        self.assertEqual(len(recipes), 3)
+        self.assertIn(self.recipe1, recipes)
+        self.assertIn(self.recipe2, recipes)
+        self.assertIn(self.recipe3, recipes)
+
+    # Test search whitespace only query (returns all recipes)
+    def test_whitespace_search_query(self):
+        response = self.client.get(self.url, {'q': '   '})
+        recipes = list(response.context['recipes'])
+        self.assertEqual(len(recipes), 3)
+        self.assertIn(self.recipe1, recipes)
+        self.assertIn(self.recipe2, recipes)
+        self.assertIn(self.recipe3, recipes)
+    
+    # Test search query is passed to template context
+    def test_search_query_in_context(self):
+        response = self.client.get(self.url, {'q': 'Oats'})
+        self.assertEqual(response.context['search_query'], 'Oats')  
+
+    # Test search query appears in rendered template   
+    def test_search_query_in_rendered_template(self):
+        response = self.client.get(self.url, {'q': 'Oats'})
+        self.assertContains(response, 'Oats')
+        self.assertContains(response, 'Search results for ')
+
+    # Test search that matches multiple recipes
+    def test_search_multiple_matches(self):
+        response = self.client.get(self.url, {'q': 'healthy'})
+        recipes = list(response.context['recipes'])
+        self.assertEqual(len(recipes), 2)
+        self.assertIn(self.recipe1, recipes)
+        self.assertIn(self.recipe2, recipes)
+        self.assertNotIn(self.recipe3, recipes)
+
+    # Test that accessing URL without search parameter shows all recipes
+    def test_all_recipes_without_search_parameter(self):
+        response = self.client.get(self.url)
+        recipes = list(response.context['recipes'])
+        self.assertEqual(len(recipes), 3)
+        self.assertEqual(response.context['search_query'], '')
+
+    # Test that all necessary context variables are present during search
+    def test_search_context_variables(self):
+        response = self.client.get(self.url, {'q': 'Oats'})
+        self.assertIn('recipes', response.context)
+        self.assertIn('search_query', response.context)
+        self.assertIn('total_count', response.context)
+        self.assertIn('user', response.context)
