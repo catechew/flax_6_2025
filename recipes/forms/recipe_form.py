@@ -12,3 +12,9 @@ class RecipeForm(forms.ModelForm):
 	class Meta:
 		model = Recipe
 		fields = ['author', 'title', 'adjectives', 'publication_date']
+		widgets = {
+              'publication_date': forms.DateInput(attrs={
+                  'type': 'date',
+                  'class': 'form-control'
+              })
+          }
