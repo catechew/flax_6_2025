@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
+from datetime import timedelta
 
 class RecipeCreateViewTestCase(TestCase):
     """ Tests for the create recipe view """
@@ -234,4 +235,89 @@ class RecipeCreateViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertContains(response, 'Tips')
 
-    
+    # Test that creating a recipe with future publication date fails
+    def test_create_recipe_with_future_date_fails(self):
+        future_date = timezone.now().date() + timedelta(days=1)
+        self.form_data['publication_date'] = future_date
+        initial_recipe_count = Recipe.objects.count()
+
+        response = self.client.post(self.url, self.form_data)
+
+        # Recipe should not be created
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
+        self.assertEqual(response.status_code, 200)
+        # Inspect form errors directly (assertFormError may not work with TemplateResponse)
+        form = response.context.get('form') if getattr(response, 'context', None) else None
+        self.assertIsNotNone(form)
+        self.assertIn('publication_date', form.errors)
+        self.assertTrue(any('Publication date cannot be in the future' in e for e in form.errors['publication_date']))
+
+    # Test that tomorrow's date is rejected
+    def test_create_recipe_with_tomorrow_fails(self):
+        tomorrow = timezone.now().date() + timedelta(days=1)
+        self.form_data['publication_date'] = tomorrow
+        initial_recipe_count = Recipe.objects.count()
+
+        response = self.client.post(self.url, self.form_data)
+
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
+        form = response.context.get('form') if getattr(response, 'context', None) else None
+        self.assertIsNotNone(form)
+        self.assertIn('publication_date', form.errors)
+        self.assertTrue(any('Publication date cannot be in the future' in e for e in form.errors['publication_date']))
+
+    # Test that dates far in the future are rejected
+    def test_create_recipe_with_far_future_date_fails(self):
+        far_future = timezone.now().date() + timedelta(days=365)
+        self.form_data['publication_date'] = far_future
+        initial_recipe_count = Recipe.objects.count()
+
+        response = self.client.post(self.url, self.form_data)
+
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
+        self.assertEqual(response.status_code, 200)
+
+    # Test that today's date is accepted
+    def test_create_recipe_with_today_succeeds(self):
+        self.form_data['publication_date'] = timezone.now().date()
+        initial_recipe_count = Recipe.objects.count()
+
+        response = self.client.post(self.url, self.form_data, follow=True)
+
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
+        new_recipe = Recipe.objects.latest('id')
+        self.assertEqual(new_recipe.publication_date, timezone.now().date())
+
+    # Test that yesterday's date is accepted
+    def test_create_recipe_with_yesterday_succeeds(self):
+        yesterday = timezone.now().date() - timedelta(days=1)
+        self.form_data['publication_date'] = yesterday
+        initial_recipe_count = Recipe.objects.count()
+
+        response = self.client.post(self.url, self.form_data, follow=True)
+
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
+        new_recipe = Recipe.objects.latest('id')
+        self.assertEqual(new_recipe.publication_date, yesterday)
+
+    # Test that past dates are accepted
+    def test_create_recipe_with_past_date_succeeds(self):
+        past_date = timezone.now().date() - timedelta(days=30)
+        self.form_data['publication_date'] = past_date
+        initial_recipe_count = Recipe.objects.count()
+
+        response = self.client.post(self.url, self.form_data, follow=True)
+
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
+        new_recipe = Recipe.objects.latest('id')
+        self.assertEqual(new_recipe.publication_date, past_date)
+
+    # Test that date widget has max attribute set to today
+    def test_create_recipe_date_widget_has_max_attribute(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the form contains a date input with max attribute
+        form_html = str(response.content)
+        self.assertIn('type="date"', form_html)
+        self.assertIn('max=', form_html)
