@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User
+from recipes.models import User, Recipe
 
 class Command(BaseCommand):
     """
