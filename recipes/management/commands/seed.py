@@ -157,6 +157,20 @@ class Command(BaseCommand):
             recipe_count = Recipe.objects.count()
         print("Recipe seeding complete. ")
 
+    def generate_recipe(self, users):
+        """Generate a random recipe."""
+        title = self.generate_recipe_title()
+        adjectives = self.generate_adjectives()
+        author = choice(users)
+        publication_date = self.generate_random_date()
+
+        self.try_create_recipe({
+            'title': title,
+            'adjectives': adjectives,
+            'author': author,
+            'publication_date': publication_date
+        })
+
 def create_username(first_name, last_name):
     """
     Construct a simple username from first and last names.
