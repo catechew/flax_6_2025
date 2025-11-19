@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-4">
   <div class="row justify-content-center">
-    <div class="col-md-10">
+    <div class="col-md-8">
       <div class="card shadow">
         <div class="card-header bg-primary text-white">
           <h3 class="mb-0">
@@ -15,7 +15,7 @@
             Fill in the details below to add a new recipe to the collection.
           </p>
 
-          <form method="POST" enctype="multipart/form-data" id="recipe-form">
+          <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
             {# Display non-field errors #}
@@ -25,137 +25,24 @@
               </div>
             {% endif %}
 
-            {% include 'partials/bootstrap_form.html' %}
-
-            {# Ingredients Section #}
-            <div class="card mt-4">
-              <div class="card-header bg-light">
-                <h5 class="mb-0">
-                  <i class="bi bi-basket"></i> Ingredients
-                </h5>
-              </div>
-              <div class="card-body">
-                {{ ingredient_formset.management_form }}
-                {% if ingredient_formset.non_form_errors %}
-                  <div class="alert alert-danger">
-                    {{ ingredient_formset.non_form_errors }}
+            {# Basic Recipe Fields #}
+            {% for field in form %}
+              <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                  {{ field.label }}
+                  {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                  <small class="form-text text-muted d-block mt-1">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                  <div class="text-danger mt-1">
+                    {{ field.errors }}
                   </div>
                 {% endif %}
-
-                <div class="table-responsive">
-                  <table class="table table-bordered">
-                    <thead class="table-light">
-                      <tr>
-                        <th style="width: 25%;">Ingredient Name</th>
-                        <th style="width: 15%;">Quantity</th>
-                        <th style="width: 20%;">Store</th>
-                        <th style="width: 15%;">Custom Store</th>
-                        <th style="width: 15%;">Price (£)</th>
-                        <th style="width: 10%;">Order</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for form in ingredient_formset %}
-                        <tr>
-                          <td>
-                            {{ form.name }}
-                            {% if form.name.errors %}
-                              <div class="text-danger smal">
-                                {{ form.name.errors }}
-                              </div>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {{ form.quantity }}
-                            {% if form.quantity.errors %}
-                              <div class="text-danger small">
-                                {{ form.quantity.errors }}
-                              </div>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {{ form.store }}
-                            {% if form.store.errors %}
-                              <div class="text-danger small">
-                                {{ form.store.errors }}
-                              </div>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {{ form.custom_store }}
-                            {% if form.custom_store.errors %}
-                              <div class="text-danger small">
-                                {{ form.custom_store.errors }}
-                              </div>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {{ form.price }}
-                            {% if form.price.errors %}
-                              <div class="text-danger small">
-                                {{ form.price.errors }}
-                              </div>
-                            {% endif %}
-                          </td>
-                          <td>
-                            {{ form.order }}
-                            <span class="badge bg-secondary">{{ forloop.counter }}</span>
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-                <div class="alert alert-info mt-3">
-                  <i class="bi bi-info-circle"></i>
-                  <strong>Tip:</strong> If you've used an ingredient before with the same store, the price should automatically appear when you edit the recipe later.
-                </div>
               </div>
-            </div>
-
-            {# Steps Section #}
-            <div class="card mt-4 border-info">
-              <div class="card-header bg-info text-white">
-                <h5 class="mb-0">
-                  <i class="bi bi-list-ol"></i> Instructions
-                </h5>
-                <small>Fill in as many steps as you need (leave empty rows blank)</small>
-              </div>
-              <div class="card-body">
-                {{ step_formset.management_form }}
-
-                {% if step_formset.non_form_errors %}
-                  <div class="alert alert-danger">
-                    {{ step_formset.non_form_errors }}
-                  </div>
-                {% endif %}
-
-                {% for form in step_formset %}
-                  <div class="mb-3 border-bottom pb-3">
-                    <input type="hidden" 
-                            id="{{ form.step_number.id_for_label }}" 
-                            name="{{ form.step_number.html_name }}" 
-                            value="{{ forloop.counter }}">
-
-                    {% if form.instance.pk %}
-                      {{ form.id }}
-                    {% endif %}
-
-                    <label class="form-label fw-bold">
-                      <i class="bi bi-{{ forloop.counter }}-circle"></i>
-                      Step {{ forloop.counter }}
-                    </label>
-                    {{ form.instruction }}
-                    {% if form.instruction.errors %}
-                      <div class="text-danger">{{ form.instruction.errors }}</div>
-                    {% endif %}
-                    {% if form.step_number.errors %}
-                      <div class="text-danger">{{ form.step_number.errors }}</div>
-                    {% endif %}
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
+            {% endfor %}
 
             {# Form Buttons #}
             <div class="d-flex justify-content-between align-items-center mt-4">
@@ -171,28 +58,21 @@
       </div>
 
       {# Help Section #}
-      <div class="card mt-4 border-info">
+      <div class="card mt-4 border-warning">
         <div class="card-body">
-          <h5 class="card-title text-info">
-            <i class="bi bi-info-circle"></i> Tips for Creating Recipes
+          <h5 class="card-title text-warning">
+            <i class="bi bi-lightbulb"></i> Tips for Creating Recipes
           </h5>
           <ul class="mb-0">
             <li>Use a descriptive and appetizing title for your recipe</li>
             <li>In "Adjectives/Tags", add keywords like "quick", "budget-friendly", "vegetarian"</li>
-            <li>Fill in only the ingredient and step rows you need - empty rows will be ignored</li>
-              <li>For stores, select "Other" and fill in the custom store name if your store isn't listed</li>
-              <li>The system will remember ingredient prices for faster entry next time</li>
+            <li>Enter each ingredient on a new line with quantities in parentheses</li>
+            <li>Enter each cooking step on a new line</li>
+            <li>Specify how many servings the recipe makes</li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<style>
-  /* Show custom store field only when needed */
-  select[name*='store'] {
-    margin-bottom: 0.5rem;
-  }
-</style>
 {% endblock %}

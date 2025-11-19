@@ -1,8 +1,6 @@
 from django import forms
 from django.utils import timezone
-from django.forms import inlineformset_factory
-
-from recipes.models import Recipe, RecipeIngredient, RecipeStep, Store, IngredientPrice
+from recipes.models import Recipe
 
 class RecipeForm(forms.ModelForm):
     """
@@ -34,9 +32,44 @@ class RecipeForm(forms.ModelForm):
         help_text='Upload an image of the dish (optional).'
     )
 
+    servings = forms.IntegerField(
+        min_value=1,
+        initial=4,
+        widget=forms.NumberInput(
+            attrs={
+                'class': 'form-control',
+                'min': '1',
+            }
+        ),
+        help_text='How many servings does this recipe make?'
+    )
+
+    ingredients = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'rows': 10,
+                'placeholder': 'Enter each ingredient on a new line, e.g.:\nGarlic (5 cloves)\nSoy sauce (4 tablespoons)\nChicken breast (500g)'
+            }
+        ),
+        help_text='List each ingredient on a new line with quantities in parentheses'
+    )
+
+    steps = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'rows': 10,
+                'placeholder': 'Enter each step on a new line, e.g.:\nHeat oil in a large pan\nAdd garlic and cook for 1 minute\nAdd chicken and cook until golden'
+            }
+        ),
+        help_text='List each step on a new line'
+    )
+
+
     class Meta:
         model = Recipe
-        fields = ['author', 'title', 'adjectives', 'publication_date', 'image']
+        fields = ['author', 'title', 'adjectives', 'publication_date', 'servings', 'ingredients', 'steps', 'image']
         widgets = {
             'author': forms.Select(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -49,70 +82,3 @@ class RecipeForm(forms.ModelForm):
             raise forms.ValidationError("Publication date cannot be in the future.")
         return publication_date
 
-
-class RecipeIngredientForm(forms.ModelForm):
-    class Meta:
-        model = RecipeIngredient
-        fields = ['name', 'quantity', 'store', 'custom_store', 'price', 'order']
-        widgets = {
-            'name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'e.g., Flour'
-            }),
-            'quantity': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'e.g., 2 cups'
-            }),
-            'store': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'custom_store': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter store name (only if Other selected)'
-            }),
-            'price': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'step': '0.01',
-                'min': '0',
-                'placeholder': '0.00'
-            }),
-            'order': forms.HiddenInput(),
-        }
-
-
-class RecipeStepForm(forms.ModelForm):
-    class Meta:
-        model = RecipeStep
-        fields = ['step_number', 'instruction']
-        widgets = {
-            'step_number': forms.HiddenInput(),
-            'instruction': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Describe this step...'
-            }),
-        }
-
-
-# Formsets - make all fields optional so empty rows don't cause validation errors
-RecipeIngredientFormSet = inlineformset_factory(
-    Recipe,
-    RecipeIngredient,
-    form=RecipeIngredientForm,
-    extra=10,
-    can_delete=False,
-    # Don't validate empty forms
-    validate_min=False,
-    min_num=0,
-)
-
-RecipeStepFormSet = inlineformset_factory(
-    Recipe,
-    RecipeStep,
-    form=RecipeStepForm,
-    extra=10,
-    can_delete=False,
-    # Don't validate empty forms
-    validate_min=False,
-    min_num=0,
-)

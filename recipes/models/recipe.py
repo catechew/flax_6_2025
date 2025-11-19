@@ -1,4 +1,4 @@
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
 
@@ -32,8 +32,31 @@ class Recipe(models.Model):
         help_text="Upload an image of the dish (optional)."
     )
 
+    servings = models.PositiveIntegerField(
+        default=4,
+        validators=[MinValueValidator(1)],
+        help_text="Number of servings this recipe makes"
+    )
+
+    ingredients = models.TextField(
+        help_text="List ingredients, one per line (e.g., 'Garlic (5 cloves)')"
+    )
+
+    steps = models.TextField(
+        help_text="List cooking steps, one per line"
+    )
+
+
     class Meta: 
         ordering = ['-publication_date']  # Newest first
         
     def __str__(self):
         return f"{self.author.username} ({self.publication_date.year}) \"{self.title}\" Adjectives: {self.adjectives}."
+    
+    # Returns the ingredients as a list of lines
+    def get_ingredient_list(self):
+        return [line.strip() for line in self.ingredients.split('\n') if line.strip()]
+    
+    # Returns the steps as a list of lines
+    def get_step_list(self):
+        return [line.strip() for line in self.steps.split('\n') if line.strip()]
