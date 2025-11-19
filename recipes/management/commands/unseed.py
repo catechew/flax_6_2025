@@ -14,21 +14,19 @@ class Command(BaseCommand):
             `python manage.py help unseed`.
     """
     
-    help = 'Removes all non-admin seeded users from the database'
+    help = 'Removes all non-admin seeded users from the database.'
 
     def handle(self, *args, **options):
-        """
-        Execute the unseeding process.
+        """Start the unseeding process"""
+        
+        # Delete all recipes.
+        recipe_count = Recipe.objects.count()
+        Recipe.objects.all().delete()
+        print(f"Deleted {recipe_count} recipes")
 
-        Deletes all `User` records where `is_staff` is False, preserving
-        administrative accounts. Prints a confirmation message upon completion.
-
-        Args:
-            *args: Positional arguments passed by Django (not used here).
-            **options: Keyword arguments passed by Django (not used here).
-
-        Returns:
-            None
-        """
-
+        # Delete all non-staff users preserving admin accounts.
+        user_count = User.objects.filter(is_staff=False).count()
         User.objects.filter(is_staff=False).delete()
+        print(f"Deleted {user_count} users")
+        print("Unseeding complete")
+
