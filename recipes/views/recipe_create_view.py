@@ -10,5 +10,10 @@ class CreateRecipeView(CreateView):
     form_class = RecipeForm
     template_name = 'create_recipe.html'
 
+    def form_valid(self, form):
+        # Set author to current user
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
     def get_success_url(self):
         return reverse('all_recipes')

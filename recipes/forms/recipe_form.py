@@ -1,6 +1,8 @@
 from django import forms
 from django.utils import timezone
 from recipes.models import Recipe
+from django.core.exceptions import ValidationError
+import re
 
 class RecipeForm(forms.ModelForm):
     """
@@ -69,7 +71,7 @@ class RecipeForm(forms.ModelForm):
 
     class Meta:
         model = Recipe
-        fields = ['author', 'title', 'adjectives', 'publication_date', 'servings', 'ingredients', 'steps', 'image']
+        fields = ['title', 'adjectives', 'publication_date', 'servings', 'ingredients', 'steps', 'image']
         widgets = {
             'author': forms.Select(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -82,3 +84,37 @@ class RecipeForm(forms.ModelForm):
             raise forms.ValidationError("Publication date cannot be in the future.")
         return publication_date
 
+    def clean_ingredients(self):
+        """Validate that each ingredient follows the format: Name (quantity)"""
+        ingredients = self.cleaned_data.get('ingredients')
+        if not ingredients:
+            return ingredients
+
+        lines = [line.strip() for line in ingredients.split('\n') if line.strip()]
+        errors = []
+
+        # Pattern: ingredient name followed by quantity in parentheses
+        # Must have exactly one set of parentheses at the end
+        pattern = r'^[^()]+\([^()]+\)$'
+
+        for i, line in enumerate(lines, 1):
+            # Check if line matches the pattern
+            if not re.match(pattern, line):
+                # Check for common errors to give helpful messages
+                if '(' not in line and ')' not in line:
+                    errors.append(f"Line {i}: '{line}' - Missing quantity in parentheses")
+                elif line.count('(') > 1 or line.count(')') > 1:
+                    errors.append(f"Line {i}: '{line}' - Should have exactly one set of parentheses")
+                elif not line.endswith(')'):
+                    errors.append(f"Line {i}: '{line}' - Parentheses should be at the end")
+                elif '(' not in line or ')' not in line:
+                    errors.append(f"Line {i}: '{line}' - Invalid format")
+                else:
+                    errors.append(f"Line {i}: '{line}' - Should be: Ingredient name (quantity)")
+
+        if errors:
+            error_msg = "Please fix the following ingredient formatting errors:\n" + "\n".join(errors)
+            error_msg += "\n\nCorrect format: Ingredient name (quantity)\nExample: Avocado (1)"
+            raise ValidationError(error_msg)
+
+        return ingredients
