@@ -7,13 +7,12 @@ are left untouched—if a create fails (e.g., due to duplicates), the error
 is swallowed and generation continues.
 """
 
-
-
 from faker import Faker
-from random import randint, random
+from random import randint, random, choice
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User
-
+from recipes.models import User, Recipe
+from django.utils import timezone
+from datetime import timedelta
 
 user_fixtures = [
     {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
@@ -32,12 +31,14 @@ class Command(BaseCommand):
 
     Attributes:
         USER_COUNT (int): Target total number of users in the database.
+        RECIPE_COUNT (int): Target total numbers of recipes in the database. 
         DEFAULT_PASSWORD (str): Default password assigned to all created users.
         help (str): Short description shown in ``manage.py help``.
         faker (Faker): Locale-specific Faker instance used for random data.
     """
 
     USER_COUNT = 200
+    RECIPE_COUNT = 500
     DEFAULT_PASSWORD = 'Password123'
     help = 'Seeds the database with sample data'
 
@@ -55,6 +56,7 @@ class Command(BaseCommand):
         """
         self.create_users()
         self.users = User.objects.all()
+        self.create_recipes()
 
     def create_users(self):
         """
@@ -69,7 +71,22 @@ class Command(BaseCommand):
     def generate_user_fixtures(self):
         """Attempt to create each predefined fixture user."""
         for data in user_fixtures:
-            self.try_create_user(data)
+            # Make @johndoe an admin user 
+            if data["username"] == "@johndoe":
+                try:
+                    user = User.objects.create_superuser(
+                        username=data["username"],
+                        email=data["email"],
+                        password=Command.DEFAULT_PASSWORD,
+                        first_name=data["first_name"],
+                        last_name=data["last_name"],
+                    )
+                    user.is_staff = True
+                    user.save()
+                except Exception: 
+                    pass
+            else:
+                self.try_create_user(data)        
 
     def generate_random_users(self):
         """
@@ -124,6 +141,114 @@ class Command(BaseCommand):
             first_name=data['first_name'],
             last_name=data['last_name'],
         )
+
+    def create_recipes(self):
+        """Generate random recipes up to the recipe count."""
+        recipe_count = Recipe.objects.count()
+        users = list(User.objects.all())
+
+        if not users:
+            print("No users found. Cannot create recipes.")
+            return 
+
+        while recipe_count < self.RECIPE_COUNT:
+            print(f"Seeding recipe {recipe_count}/{self.RECIPE_COUNT}", end='\r')
+            self.generate_recipe(users)
+            recipe_count = Recipe.objects.count()
+        print("Recipe seeding complete. ")
+
+    def generate_recipe(self, users):
+        """Generate a random recipe."""
+        title = self.generate_recipe_title()
+        adjectives = self.generate_adjectives()
+        author = choice(users)
+        publication_date = self.generate_random_date()
+
+        self.try_create_recipe({
+            'title': title,
+            'adjectives': adjectives,
+            'author': author,
+            'publication_date': publication_date
+        })
+
+    def generate_recipe_title(self):
+        """Generate a recipe title for university students."""
+        dishes = [
+            "Pesto pasta", "Buldak Ramen", "Stir-fry", "Fried Rice", 
+            "Vegan Katsu Curry", "Tanghulu", "Salmon Rice Bowl", "Quesadilla", 
+            "Vegan Sausage Wrap", "Ceaser salad", "Tomato soup", "Tofu Thai Curry", "Omelette", 
+            "Egg Benedicts", "Beans on Toast", "Jacket Potato", "Trending Acai Bowl",
+            "Microwave Mug Cake", "Overnight Oats", "Smoothie Bowl",
+            "Grilled Cheese", "Tuna Pasta", "Pizza Toast", "Chocolate Chip Muffins", 
+            "Butter Chicken", "Aloo Gobi", "Pho", "Spaghetti Bolognese", "Chili Con Carne", 
+            "Tarka Dal", "Chicken Fajitas", "Cauliflower Risotto", "Macaroni & Cheese", 
+            "Tuna Melt", "Hummus", "Sweet & Sour Sauce", "Tofu Fried Rice", "Cheeseburger", 
+            "Gyoza Soup", "Halloumi Wrap", "Swiss Steak", "Breakfast Wrap", "Chilli Cheese Toast", 
+            "Chai Latte", "Vanilla Matcha", "Hot Chocolate", "Strawberry Banana Smoothie",
+            "Detox Water", "Ribena Mocktail", "Blueberry Cheesecake", "Pan-fried Salmon", 
+            "Margherita Pizza", "Mushroom Curry", "Tiramisu", "Breakfast Parfait", 
+            "S'mores dip", "Lentil Bolognese", "Pad Thai", "Raspberry Ripple Milkshake", 
+            "Mocha frappé", "Mashed Potatoes", "Fish and Chips", "Mushy Peas", "Mee Goreng",
+            "Boba at home", "Nasi Lemak", "Lobster"       
+            ]
+        
+        adjectives = [
+            "Easy", "Quick", "Budget", "Simple", "Cheap",
+            "5-Minute", "Dorm Room", "One-Pot", "Viral",
+            "Microwave", "Leftover", "Late Night",
+            "Study Snack", "Protein-Packed", "Vegetarian",
+            "Meal Prep", "Batch Cook", "Freezer Friendly",
+            "TikTok", "Instagram-Worthy", "Comfort Food",
+            "Pinterest Worthy", "Spicy", "Creamy", 
+            "Healthy", "High Protein", "Low Carb",
+            "Trending", "Aesthetic",
+            "Weekend", "Brunch", "Midweek", "Fancy",
+            "Gourmet", "Homemade", "Restaurant-Style", "Summer", 
+            "Italian", "Asian", "Mediterranean", 
+            "Michelin Style", "Vegan", "Gluten Free", "Hot", 
+            "Cold"
+        ]
+        
+        if randint(0, 1):
+            return f"{choice(adjectives)} {choice(dishes)}"
+        else:
+            return f"{choice(dishes)}"
+    
+    def generate_adjectives(self):
+        """Generate recipe tags to describe meals."""
+        adjective_options = [
+            "quick easy", "budget-friendly", "cheap", "simple",
+            "viral trendy", "instagram worthy aesthetic", "5-minute",
+            "one pot", "leftover-friendly", "meal-prep batch",
+            "protein-packed filling", "vegetarian healthy", "vegan plant based",
+            "late-night comfort", "study snack energy", "cozy",
+            "freezer friendly", "restaurant style fancy", "homemade",
+            "spicy", "creamy", "crispy","trending", 
+            "tiktok famous", "brunch-worthy special",
+            "microwave easy", "dorm room friendly", "high protein low calories",
+            "italian", "indian", "vietnamese",
+            "chinese takeout", "mediterranean", "summer",
+            "gourmet", "weekend treat", "midweek"
+        ]
+        return choice(adjective_options)
+    
+    def generate_random_date(self):
+        """Generate a random publication date within the last 2 years."""
+        days_limit = randint(0, 730)
+        return timezone.now().date() - timedelta(days=days_limit)
+    
+    def try_create_recipe(self, data):
+        """Attempt to create a recipe."""
+        try:
+            Recipe.objects.create(
+                title=data['title'],
+                adjectives=data['adjectives'],
+                author=data['author'],
+                publication_date=data['publication_date']
+            )
+        except:
+            pass
+
 
 def create_username(first_name, last_name):
     """
