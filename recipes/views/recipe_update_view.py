@@ -17,8 +17,14 @@ def recipe_update(request, recipe_id):
 		if form.is_valid():
 			try:
 				recipe = form.save()
+
+				# Allow image deletion
+				if request.POST.get('image-clear'):
+					recipe.image.delete(save=False)
+					recipe.image = None
+				recipe.save()
 			except:
-				form.add_error(None, "It was not possible to save this recipe to the database.  Check the ISBN number.")
+				form.add_error(None, "It was not possible to save this recipe to the database.")
 			else:
 				messages.info(request, f"Updated recipe record to: {recipe}")
 				path = reverse('all_recipes')
