@@ -14,7 +14,7 @@ class Command(BaseCommand):
             `python manage.py help unseed`.
     """
     
-    help = 'Removes all non-admin seeded users from the database.'
+    help = 'Removes all non-admin seeded users from the database'
 
     def handle(self, *args, **options):
         """
