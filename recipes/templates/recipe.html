@@ -5,15 +5,138 @@ Recipes | Recipe #{{recipe.id}}
 {% endblock %}
 
 {% block content %}
-<h1>Recipe: {{recipe.title}}</h1>
-<p><b>Adjectives</b>: {{recipe.adjectives}}</p>
-<p><b>Author:</b> {{ recipe.author.username }}</p>
-<p>
-<a href="{% url 'home' %}" class="btn btn-lg btn-secondary">Go back home</a>
+<div class="container mt-4">
+<div class="row">
+    <div class="col-md-8">
+    {# Recipe Header #}
+    <div class="card shadow mb-4">
+        {% if recipe.image %}
+        <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}" style="max-height: 400px; object-fit: cover;">
+        {% endif %}
+        <div class="card-body">
+        <h1 class="card-title">{{ recipe.title }}</h1>
+        <p class="text-muted">
+            <i class="bi bi-person"></i> By {{ recipe.author.username }} |
+            <i class="bi bi-calendar"></i> {{ recipe.publication_date }} |
+            <i class="bi bi-tag"></i> {{ recipe.adjectives }}
+        </p>
+        </div>
+    </div>
 
-{% if user == recipe.author or user.is_staff %}
-    <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Update this recipe</a>
-    <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Delete this recipe</a>
-    {% endif %}
-</p>
+    {# Servings Adjustment #}
+    <div class="card shadow mb-4">
+        <div class="card-body">
+        <form method="GET" class="row g-3 align-items-center">
+            <div class="col-auto">
+            <label class="col-form-label fw-bold">
+                <i class="bi bi-people"></i> Adjust Servings:
+            </label>
+            </div>
+            <div class="col-auto">
+            <span class="form-text">Original: {{ recipe.servings }} servings</span>
+            </div>
+            <div class="col-auto">
+            <input type="number" 
+                    name="servings" 
+                    class="form-control" 
+                    value="{{ desired_servings }}" 
+                    min="1" 
+                    style="width: 100px;">
+            </div>
+            <div class="col-auto">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-calculator"></i> Recalculate
+            </button>
+            </div>
+        </form>
+        {% if scaling_factor != 1 %}
+            <div class="alert alert-info mt-3 mb-0">
+            <i class="bi bi-info-circle"></i>
+            Ingredients scaled by {{ scaling_factor|floatformat:2 }}x
+            </div>
+        {% endif %}
+        </div>
+    </div>
+
+    {# Ingredients #}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-success text-white">
+        <h4 class="mb-0">
+            <i class="bi bi-basket"></i> Ingredients ({{ desired_servings }} servings)
+        </h4>
+        </div>
+        <div class="card-body">
+        <div class="list-group list-group-flush">
+            {% for ingredient in scaled_ingredients %}
+            <label class="list-group-item d-flex align-items-center" style="cursor: pointer;">
+                <input class="form-check-input me-3 ingredient-checkbox" type="checkbox" style="width: 1.5em; height: 1.5em;">
+                <span class="ingredient-text">{{ ingredient }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        </div>
+    </div>
+
+
+    {# Steps #}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-info text-white">
+        <h4 class="mb-0">
+            <i class="bi bi-list-ol"></i> Instructions
+        </h4>
+        </div>
+        <div class="card-body">
+        <ol class="list-group list-group-numbered">
+            {% for step in steps %}
+            <label class="list-group-item d-flex align-items-start" style="cursor: pointer;">
+                <input class="form-check-input me-3 step-checkbox flex-shrink-0" type="checkbox" style="width: 1.5em; height: 1.5em; margin-top: 0.125rem;">
+                <span class="step-text flex-grow-1">{{ step }}</span>
+            </label>
+            {% endfor %}
+        </ol>
+        </div>
+    </div>
+
+    {# Action Buttons #}
+    <div class="mb-4">
+        <a href="{% url 'home' %}" class="btn btn-lg btn-secondary">
+        <i class="bi bi-arrow-left"></i> Go back home
+        </a>
+        <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-primary">
+        <i class="bi bi-pencil"></i> Update this recipe
+        </a>
+        <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-danger">
+        <i class="bi bi-trash"></i> Delete this recipe
+        </a>
+    </div>
+    </div>
+
+    {# Sidebar #}
+    <div class="col-md-4">
+    <div class="card shadow mb-4">
+        <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0">
+            <i class="bi bi-info-circle"></i> Recipe Info
+        </h5>
+        </div>
+        <div class="card-body">
+        <ul class="list-unstyled mb-0">
+            <li class="mb-2">
+            <strong><i class="bi bi-people"></i> Servings:</strong> {{ recipe.servings }}
+            </li>
+            <li class="mb-2">
+            <strong><i class="bi bi-tag"></i> Tags:</strong> {{ recipe.adjectives }}
+            </li>
+            <li class="mb-2">
+            <strong><i class="bi bi-person"></i> Author:</strong> {{ recipe.author.username }}
+            </li>
+            <li class="mb-2">
+            <strong><i class="bi bi-calendar"></i> Published:</strong> {{ recipe.publication_date }}
+            </li>
+        </ul>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
 {% endblock %}
