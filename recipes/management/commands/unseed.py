@@ -27,6 +27,7 @@ class Command(BaseCommand):
         # Delete all non-staff users preserving admin accounts.
         user_count = User.objects.filter(is_staff=False).count()
         User.objects.filter(is_staff=False, is_superuser=False).delete()
-        print(f"Deleted {user_count} users")
-        print("Unseeding complete")
+        
+        self.stdout.write(self.style.SUCCESS(f"Deleted {user_count} users"))
+        self.stdout.write(self.style.SUCCESS("Unseeding complete"))
 
