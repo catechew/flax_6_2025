@@ -2,8 +2,9 @@ from django.core.validators import MinLengthValidator
 from django.conf import settings
 from django.db import models
 
+
 """A Recipe can be posted by a user and later we will be able to do all CRUD operations on it.
-    It has 4 fields as shown below"""
+    It has 5 fields as shown below"""
 
 class Recipe(models.Model):
     
@@ -23,6 +24,13 @@ class Recipe(models.Model):
         help_text="Descriptive words for the recipe (e.g., 'quick', 'healthy', 'cheap')"
     )
     publication_date = models.DateField()
+
+    image = models.ImageField(
+        upload_to='recipe_images/',
+        null=True,
+        blank=True,
+        help_text="Upload an image of the dish (optional)."
+    )
 
     class Meta: 
         ordering = ['-publication_date']  # Newest first

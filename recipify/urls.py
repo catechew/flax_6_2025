@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from recipes import views
+from recipes.views.recipe_create_view import CreateRecipeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,5 +36,6 @@ urlpatterns = [
     path('update_recipe/<int:recipe_id>', views.recipe_update, name='update_recipe'),
     path('delete_recipe/<int:recipe_id>', views.recipe_delete, name='delete_recipe'),
     path('my_recipes/', views.my_recipes, name='my_recipes'),
+    path('create/', CreateRecipeView.as_view(), name='create_recipe'),
 ]
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
