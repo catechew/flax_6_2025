@@ -7,8 +7,6 @@ are left untouched—if a create fails (e.g., due to duplicates), the error
 is swallowed and generation continues.
 """
 
-
-
 from faker import Faker
 from random import randint, random
 from django.core.management.base import BaseCommand, CommandError
@@ -69,7 +67,22 @@ class Command(BaseCommand):
     def generate_user_fixtures(self):
         """Attempt to create each predefined fixture user."""
         for data in user_fixtures:
-            self.try_create_user(data)
+            # Make @johndoe an admin user 
+            if data["username"] == "@johndoe":
+                try:
+                    user = User.objects.create_superuser(
+                        username=data["username"],
+                        email=data["email"],
+                        password=Command.DEFAULT_PASSWORD,
+                        first_name=data["first_name"],
+                        last_name=data["last_name"],
+                    )
+                    user.is_staff = True
+                    user.save()
+                except Exception: 
+                    pass
+            else:
+                self.try_create_user(data)        
 
     def generate_random_users(self):
         """
