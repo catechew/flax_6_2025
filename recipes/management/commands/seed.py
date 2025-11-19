@@ -225,7 +225,11 @@ class Command(BaseCommand):
             "gourmet", "weekend treat", "midweek"
         ]
         return choice(adjective_options)
-        
+    
+    def generate_random_date(self):
+        """Generate a random publication date within the last 2 years."""
+        days_limit = randint(0, 730)
+        return timezone.now().date() - timedelta(days=days_limit)
 
 
 def create_username(first_name, last_name):
