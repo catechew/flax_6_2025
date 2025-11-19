@@ -9,7 +9,7 @@ class RecipeForm(forms.ModelForm):
     Form enabling registered users to add recipes.
 
     Fields:
-        author, title, adjectives, publication_date
+        author, title, adjectives, publication_date, image
     """
 
     publication_date = forms.DateField(
@@ -17,7 +17,7 @@ class RecipeForm(forms.ModelForm):
             attrs={
                 'type': 'date',
                 'class': 'form-control',
-                'max': timezone.now().date().isoformat(),  # Block future dates in UI
+                'max': timezone.now().date().isoformat(),
             }
         ),
         help_text='Select the publication date (today or earlier)'
@@ -34,69 +34,51 @@ class RecipeForm(forms.ModelForm):
         help_text='Upload an image of the dish (optional).'
     )
 
-
     class Meta:
         model = Recipe
         fields = ['author', 'title', 'adjectives', 'publication_date', 'image']
+        widgets = {
+            'author': forms.Select(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'adjectives': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
     def clean_publication_date(self):
         publication_date = self.cleaned_data.get('publication_date')
         if publication_date and publication_date > timezone.now().date():
             raise forms.ValidationError("Publication date cannot be in the future.")
         return publication_date
-    
+
+
 class RecipeIngredientForm(forms.ModelForm):
-    # Add a field to show suggested price
-    suggested_price = forms.DecimalField(
-        required=False,
-        disabled=True,
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control',
-            'readonly': 'readonly',
-            'style': 'background-color: #e9ecef;'
-        }),
-        label='Suggested Price (£)'
-    )
     class Meta:
         model = RecipeIngredient
         fields = ['name', 'quantity', 'store', 'custom_store', 'price', 'order']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder' : 'e.g., Flour'
+                'placeholder': 'e.g., Flour'
             }),
             'quantity': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder' : 'e.g., 2 cups'
+                'placeholder': 'e.g., 2 cups'
             }),
             'store': forms.Select(attrs={
-                'class': 'form-control store-select'
+                'class': 'form-control'
             }),
             'custom_store': forms.TextInput(attrs={
-                'class': 'form-control custom-store-input d-none',
-                'placeholder' : 'Enter store name'
+                'class': 'form-control',
+                'placeholder': 'Enter store name (only if Other selected)'
             }),
             'price': forms.NumberInput(attrs={
-                'class': 'form-control ingredient-price',
+                'class': 'form-control',
                 'step': '0.01',
                 'min': '0',
-                'placeholder' : '0.00'
+                'placeholder': '0.00'
             }),
             'order': forms.HiddenInput(),
         }
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Prepopulate suggested price if ingredient and store is known
-        if self.instance and self.instance.pk:
-            if self.instance.name and self.instance.store:
-                try:
-                    price_record = IngredientPrice.objects.get(
-                        ingredient_name=self.instance.name,
-                        store=self.instance.store
-                    )
-                    self.fields['suggested_price'].initial = price_record.price
-                except IngredientPrice.DoesNotExist:
-                    pass
+
 
 class RecipeStepForm(forms.ModelForm):
     class Meta:
@@ -107,23 +89,30 @@ class RecipeStepForm(forms.ModelForm):
             'instruction': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 3,
-                'placeholder' : 'Describe this step...'
+                'placeholder': 'Describe this step...'
             }),
         }
-    
-# Formsets for dynamic ingredient and step forms
+
+
+# Formsets - make all fields optional so empty rows don't cause validation errors
 RecipeIngredientFormSet = inlineformset_factory(
-    Recipe, 
-    RecipeIngredient, 
+    Recipe,
+    RecipeIngredient,
     form=RecipeIngredientForm,
-    extra=1,
-    can_delete=False
+    extra=10,
+    can_delete=False,
+    # Don't validate empty forms
+    validate_min=False,
+    min_num=0,
 )
 
 RecipeStepFormSet = inlineformset_factory(
-    Recipe, 
-    RecipeStep, 
+    Recipe,
+    RecipeStep,
     form=RecipeStepForm,
-    extra=1,
-    can_delete=False
+    extra=10,
+    can_delete=False,
+    # Don't validate empty forms
+    validate_min=False,
+    min_num=0,
 )

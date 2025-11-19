@@ -132,7 +132,15 @@
 
                 {% for form in step_formset %}
                   <div class="mb-3 border-bottom pb-3">
-                    {{ form.step_number }}
+                    <input type="hidden" 
+                            id="{{ form.step_number.id_for_label }}" 
+                            name="{{ form.step_number.html_name }}" 
+                            value="{{ forloop.counter }}">
+
+                    {% if form.instance.pk %}
+                      {{ form.id }}
+                    {% endif %}
+
                     <label class="form-label fw-bold">
                       <i class="bi bi-{{ forloop.counter }}-circle"></i>
                       Step {{ forloop.counter }}
@@ -140,6 +148,9 @@
                     {{ form.instruction }}
                     {% if form.instruction.errors %}
                       <div class="text-danger">{{ form.instruction.errors }}</div>
+                    {% endif %}
+                    {% if form.step_number.errors %}
+                      <div class="text-danger">{{ form.step_number.errors }}</div>
                     {% endif %}
                   </div>
                 {% endfor %}
