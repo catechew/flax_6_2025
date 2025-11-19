@@ -171,6 +171,43 @@ class Command(BaseCommand):
             'publication_date': publication_date
         })
 
+    def generate_recipe_title(self):
+        """Generate a recipe title for university students."""
+        dishes = [
+            "Pesto pasta", "Michelin Style Buldak Ramen", "Stir-fry", "Fried Rice", 
+            "Vegan Katsu Curry", "Tanghulu", "Noodles", "Salmon Rice Bowl", "Quesadilla", 
+            "Vegan Sausage Wrap", "Ceaser salad", "Tomato soup", "Red Thai Curry", "Omelette", 
+            "Egg Benedicts", "Beans on Toast", "Jacket Potato", "Trending Acai Bowl",
+            "Microwave Mug Cake", "Viral Overnight Oats", "Smoothie Bowl",
+            "Grilled Cheese", "Tuna Pasta", "Pizza Toast", "Chocolate Chip Muffins", 
+            "Butter Chicken", "Aloo Gobi", "Pho", "Spaghetti Bolognese", "Chili Con Carne", 
+            "Tarka Dal", "Chicken Fajitas", "Cauliflower Risotto", "Macaroni & Cheese", 
+            "Tuna Melt", "Hummus", "Sweet & Sour Sauce", "Tofu Fried Rice", "Cheeseburger", 
+            "Gyoza Soup", "Halloumi Wrap", "Beef Steak", "Breakfast Wrap", "Chilli Cheese Toast", 
+            "Chai Latte", "Viral Vanilla Matcha", "Hot Chocolate", "Strawberry Banana Smoothie",
+            "Detox Water", "Ribena Mocktail", "Bluberry Cheesecake"        
+            ]
+        
+        adjectives = [
+            "Easy", "Quick", "Budget", "Simple", "Cheap",
+            "5-Minute", "Dorm Room", "One-Pot", 
+            "Microwave", "Leftover", "Late Night",
+            "Study Snack", "Protein-Packed", "Vegetarian",
+            "Meal Prep", "Batch Cook", "Freezer-Friendly",
+            "Viral TikTok", "Instagram-Worthy", "Comfort Food",
+            "Spicy", "Creamy", "Crispy", "Fresh",
+            "Healthy", "High-Protein", "Low-Carb",
+            "Trending", "Aesthetic", "Cozy",
+            "Weekend", "Brunch", "Midweek", "Fancy",
+            "Gourmet", "Homemade", "Restaurant-Style", "Summer", 
+            "Italian", "Indian", "Vietnamese", "Chinese", "Mediterranean"
+        ]
+        
+        if randint(0, 1):
+            return f"{choice(adjectives)} {choice(dishes)}"
+        else:
+            return f"{choice(dishes)}"
+
 def create_username(first_name, last_name):
     """
     Construct a simple username from first and last names.
