@@ -174,33 +174,39 @@ class Command(BaseCommand):
     def generate_recipe_title(self):
         """Generate a recipe title for university students."""
         dishes = [
-            "Pesto pasta", "Michelin Style Buldak Ramen", "Stir-fry", "Fried Rice", 
-            "Vegan Katsu Curry", "Tanghulu", "Noodles", "Salmon Rice Bowl", "Quesadilla", 
-            "Vegan Sausage Wrap", "Ceaser salad", "Tomato soup", "Red Thai Curry", "Omelette", 
+            "Pesto pasta", "Buldak Ramen", "Stir-fry", "Fried Rice", 
+            "Vegan Katsu Curry", "Tanghulu", "Salmon Rice Bowl", "Quesadilla", 
+            "Vegan Sausage Wrap", "Ceaser salad", "Tomato soup", "Tofu Thai Curry", "Omelette", 
             "Egg Benedicts", "Beans on Toast", "Jacket Potato", "Trending Acai Bowl",
-            "Microwave Mug Cake", "Viral Overnight Oats", "Smoothie Bowl",
+            "Microwave Mug Cake", "Overnight Oats", "Smoothie Bowl",
             "Grilled Cheese", "Tuna Pasta", "Pizza Toast", "Chocolate Chip Muffins", 
             "Butter Chicken", "Aloo Gobi", "Pho", "Spaghetti Bolognese", "Chili Con Carne", 
             "Tarka Dal", "Chicken Fajitas", "Cauliflower Risotto", "Macaroni & Cheese", 
             "Tuna Melt", "Hummus", "Sweet & Sour Sauce", "Tofu Fried Rice", "Cheeseburger", 
-            "Gyoza Soup", "Halloumi Wrap", "Beef Steak", "Breakfast Wrap", "Chilli Cheese Toast", 
-            "Chai Latte", "Viral Vanilla Matcha", "Hot Chocolate", "Strawberry Banana Smoothie",
-            "Detox Water", "Ribena Mocktail", "Bluberry Cheesecake"        
+            "Gyoza Soup", "Halloumi Wrap", "Swiss Steak", "Breakfast Wrap", "Chilli Cheese Toast", 
+            "Chai Latte", "Vanilla Matcha", "Hot Chocolate", "Strawberry Banana Smoothie",
+            "Detox Water", "Ribena Mocktail", "Blueberry Cheesecake", "Pan-fried Salmon", 
+            "Margherita Pizza", "Mushroom Curry", "Tiramisu", "Breakfast Parfait", 
+            "S'mores dip", "Lentil Bolognese", "Pad Thai", "Raspberry Ripple Milkshake", 
+            "Mocha frappé", "Mashed Potatoes", "Fish and Chips", "Mushy Peas", "Mee Goreng",
+            "Boba at home", "Nasi Lemak", "Lobster"       
             ]
         
         adjectives = [
             "Easy", "Quick", "Budget", "Simple", "Cheap",
-            "5-Minute", "Dorm Room", "One-Pot", 
+            "5-Minute", "Dorm Room", "One-Pot", "Viral",
             "Microwave", "Leftover", "Late Night",
             "Study Snack", "Protein-Packed", "Vegetarian",
-            "Meal Prep", "Batch Cook", "Freezer-Friendly",
-            "Viral TikTok", "Instagram-Worthy", "Comfort Food",
-            "Spicy", "Creamy", "Crispy", "Fresh",
-            "Healthy", "High-Protein", "Low-Carb",
-            "Trending", "Aesthetic", "Cozy",
+            "Meal Prep", "Batch Cook", "Freezer Friendly",
+            "TikTok", "Instagram-Worthy", "Comfort Food",
+            "Pinterest Worthy", "Spicy", "Creamy", 
+            "Healthy", "High Protein", "Low Carb",
+            "Trending", "Aesthetic",
             "Weekend", "Brunch", "Midweek", "Fancy",
             "Gourmet", "Homemade", "Restaurant-Style", "Summer", 
-            "Italian", "Indian", "Vietnamese", "Chinese", "Mediterranean"
+            "Italian", "Asian", "Mediterranean", 
+            "Michelin Style", "Vegan", "Gluten Free", "Hot", 
+            "Cold"
         ]
         
         if randint(0, 1):

@@ -10,7 +10,10 @@ Recipes | Recipe #{{recipe.id}}
 <p><b>Author:</b> {{ recipe.author.username }}</p>
 <p>
 <a href="{% url 'home' %}" class="btn btn-lg btn-secondary">Go back home</a>
-<a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Update this recipe</a>
-<a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Delete this recipe</a>
+
+{% if user == recipe.author or user.is_staff %}
+    <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Update this recipe</a>
+    <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-secondary">Delete this recipe</a>
+    {% endif %}
 </p>
 {% endblock %}
