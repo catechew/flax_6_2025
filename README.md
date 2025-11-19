@@ -2,11 +2,11 @@
 
 ## Team members
 The members of the team are:
-- *enter full name 1 here*
-- *enter full name 2 here*
-- *enter full name 3 here*
-- *enter full name 4 here*
-- *enter full name 5 here (or delete if not applicable)*
+- *Arvin Hadidi-Fard*
+- *Cate Tay Chew*
+- *Hamed Latif*
+- *Katherine Wanting Zhao*
+- *Kausar Khan*
 
 ## Project structure
 The project is called `recipify`.  It currently consists of a single app `recipes`.
