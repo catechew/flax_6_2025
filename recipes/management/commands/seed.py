@@ -230,6 +230,18 @@ class Command(BaseCommand):
         """Generate a random publication date within the last 2 years."""
         days_limit = randint(0, 730)
         return timezone.now().date() - timedelta(days=days_limit)
+    
+    def try_create_recipe(self, data):
+        """Attempt to create a recipe."""
+        try:
+            Recipe.objects.create(
+                title=data['title'],
+                adjectives=data['adjectives'],
+                author=data['author'],
+                publication_date=data['publication_date']
+            )
+        except:
+            pass
 
 
 def create_username(first_name, last_name):
