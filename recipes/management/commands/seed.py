@@ -207,6 +207,26 @@ class Command(BaseCommand):
             return f"{choice(adjectives)} {choice(dishes)}"
         else:
             return f"{choice(dishes)}"
+    
+    def generate_adjectives(self):
+        """Generate recipe tags to describe meals."""
+        adjective_options = [
+            "quick easy", "budget-friendly", "cheap", "simple",
+            "viral trendy", "instagram worthy aesthetic", "5-minute",
+            "one pot", "leftover-friendly", "meal-prep batch",
+            "protein-packed filling", "vegetarian healthy", "vegan plant based",
+            "late-night comfort", "study snack energy", "cozy",
+            "freezer friendly", "restaurant style fancy", "homemade",
+            "spicy", "creamy", "crispy","trending", 
+            "tiktok famous", "brunch-worthy special",
+            "microwave easy", "dorm room friendly", "high protein low calories",
+            "italian", "indian", "vietnamese",
+            "chinese takeout", "mediterranean", "summer",
+            "gourmet", "weekend treat", "midweek"
+        ]
+        return choice(adjective_options)
+        
+
 
 def create_username(first_name, last_name):
     """
