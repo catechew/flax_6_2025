@@ -8,10 +8,11 @@ is swallowed and generation continues.
 """
 
 from faker import Faker
-from random import randint, random
+from random import randint, random, choice
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User
-
+from recipes.models import User, Recipe
+from django.utils import timezone
+from datetime import timedelta
 
 user_fixtures = [
     {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
