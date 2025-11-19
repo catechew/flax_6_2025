@@ -142,6 +142,21 @@ class Command(BaseCommand):
             last_name=data['last_name'],
         )
 
+    def create_recipes(self):
+        """Generate random recipes up to the recipe count."""
+        recipe_count = Recipe.objects.count()
+        users = list(User.objects.all())
+
+        if not users:
+            print("No users found. Cannot create recipes.")
+            return 
+
+        while recipe_count < self.RECIPE_COUNT:
+            print(f"Seeding recipe {recipe_count}/{self.RECIPE_COUNT}", end='\r')
+            self.generate_recipe(users)
+            recipe_count = Recipe.objects.count()
+        print("Recipe seeding complete. ")
+
 def create_username(first_name, last_name):
     """
     Construct a simple username from first and last names.
