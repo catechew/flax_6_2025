@@ -7,7 +7,7 @@ Update Recipe | Recipe #{{recipe.id}}
 
 {% block content %}
 <div class="container mt-4">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {% include 'partials/bootstrap_form.html' with form=form %}
         <input class="btn btn-primary" type="submit" value="Update Recipe">

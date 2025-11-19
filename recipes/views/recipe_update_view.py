@@ -13,7 +13,7 @@ def recipe_update(request, recipe_id):
 		raise Http404(f"Could not find recipe with primary key {recipe_id}") 
 
 	if request.method == "POST":
-		form = RecipeForm(request.POST, instance=recipe)
+		form = RecipeForm(request.POST, request.FILES, instance=recipe)
 		if form.is_valid():
 			try:
 				recipe = form.save()
