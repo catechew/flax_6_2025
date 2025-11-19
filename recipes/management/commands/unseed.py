@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from recipes.models import User
+from recipes.models import User, Recipe
 
 class Command(BaseCommand):
     """
@@ -14,21 +14,20 @@ class Command(BaseCommand):
             `python manage.py help unseed`.
     """
     
-    help = 'Seeds the database with sample data'
+    help = 'Removes all non-admin seeded users from the database.'
 
     def handle(self, *args, **options):
-        """
-        Execute the unseeding process.
+        """Start the unseeding process"""
 
-        Deletes all `User` records where `is_staff` is False, preserving
-        administrative accounts. Prints a confirmation message upon completion.
+        # Delete all recipes.
+        recipe_count = Recipe.objects.count()
+        Recipe.objects.all().delete()
+        print(f"Deleted {recipe_count} recipes")
 
-        Args:
-            *args: Positional arguments passed by Django (not used here).
-            **options: Keyword arguments passed by Django (not used here).
+        # Delete all non-staff users preserving admin accounts.
+        user_count = User.objects.filter(is_staff=False).count()
+        User.objects.filter(is_staff=False, is_superuser=False).delete()
+        
+        self.stdout.write(self.style.SUCCESS(f"Deleted {user_count} users"))
+        self.stdout.write(self.style.SUCCESS("Unseeding complete"))
 
-        Returns:
-            None
-        """
-
-        User.objects.filter(is_staff=False).delete()
