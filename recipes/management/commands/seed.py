@@ -31,12 +31,14 @@ class Command(BaseCommand):
 
     Attributes:
         USER_COUNT (int): Target total number of users in the database.
+        RECIPE_COUNT (int): Target total numbers of recipes in the database. 
         DEFAULT_PASSWORD (str): Default password assigned to all created users.
         help (str): Short description shown in ``manage.py help``.
         faker (Faker): Locale-specific Faker instance used for random data.
     """
 
     USER_COUNT = 200
+    RECIPE_COUNT = 500
     DEFAULT_PASSWORD = 'Password123'
     help = 'Seeds the database with sample data'
 
