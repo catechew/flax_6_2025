@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Start the unseeding process"""
-        
+
         # Delete all recipes.
         recipe_count = Recipe.objects.count()
         Recipe.objects.all().delete()
@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
         # Delete all non-staff users preserving admin accounts.
         user_count = User.objects.filter(is_staff=False).count()
-        User.objects.filter(is_staff=False).delete()
+        User.objects.filter(is_staff=False, is_superuser=False).delete()
         print(f"Deleted {user_count} users")
         print("Unseeding complete")
 
