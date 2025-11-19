@@ -66,20 +66,17 @@ Recipes | Recipe #{{recipe.id}}
         </h4>
         </div>
         <div class="card-body">
-        <table class="table table-striped mb-0">
-            <tbody>
+        <div class="list-group list-group-flush">
             {% for ingredient in scaled_ingredients %}
-                <tr>
-                <td style="width: 30px;">
-                    <i class="bi bi-check-circle text-success"></i>
-                </td>
-                <td>{{ ingredient }}</td>
-                </tr>
+            <label class="list-group-item d-flex align-items-center" style="cursor: pointer;">
+                <input class="form-check-input me-3 ingredient-checkbox" type="checkbox" style="width: 1.5em; height: 1.5em;">
+                <span class="ingredient-text">{{ ingredient }}</span>
+            </label>
             {% endfor %}
-            </tbody>
-        </table>
+        </div>
         </div>
     </div>
+
 
     {# Steps #}
     <div class="card shadow mb-4">
@@ -91,7 +88,10 @@ Recipes | Recipe #{{recipe.id}}
         <div class="card-body">
         <ol class="list-group list-group-numbered">
             {% for step in steps %}
-            <li class="list-group-item">{{ step }}</li>
+            <label class="list-group-item d-flex align-items-start" style="cursor: pointer;">
+                <input class="form-check-input me-3 step-checkbox flex-shrink-0" type="checkbox" style="width: 1.5em; height: 1.5em; margin-top: 0.125rem;">
+                <span class="step-text flex-grow-1">{{ step }}</span>
+            </label>
             {% endfor %}
         </ol>
         </div>

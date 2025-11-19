@@ -37,13 +37,20 @@ class RecipeForm(forms.ModelForm):
     servings = forms.IntegerField(
         min_value=1,
         initial=4,
+        required=True,
         widget=forms.NumberInput(
             attrs={
                 'class': 'form-control',
                 'min': '1',
+                'required': 'required',
             }
         ),
-        help_text='How many servings does this recipe make?'
+        help_text='How many servings does this recipe make?',
+        error_messages={
+            'required' : 'Please enter the number of servings for this recipe.',
+            'invalid' : 'Please enter a valid number',
+            'min_value' : 'Servings must be at least 1.',
+        }
     )
 
     ingredients = forms.CharField(

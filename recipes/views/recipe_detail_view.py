@@ -10,7 +10,11 @@ def recipe_detail(request, recipe_id):
         raise Http404(f"Could not find recipe with primary key {recipe_id}") 
     
     # Get desired servings from GET parameter, default to recipe's servings
-    desired_servings = int(request.GET.get('servings', recipe.servings))
+    servings_input = request.GET.get('servings', recipe.servings)
+    try:
+        desired_servings = int(servings_input) if servings_input else recipe.servings
+    except (ValueError, TypeError):
+        desired_servings = recipe.servings
 
     # Calculate scaling factor
     scaling_factor = desired_servings / recipe.servings
