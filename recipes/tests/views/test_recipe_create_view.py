@@ -3,6 +3,9 @@ from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
 from datetime import timedelta
+from django.core.files.uploadedfile import SimpleUploadedFile
+from PIL import Image
+from io import BytesIO
 
 class RecipeCreateViewTestCase(TestCase):
     """ Tests for the create recipe view """
@@ -14,18 +17,21 @@ class RecipeCreateViewTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
+        self.client.login(username='@johndoe', password='Password123')
         self.url = reverse('create_recipe')
 
         self.form_data = {
-            'author' : self.user.id,
             'title' : 'Test Recipe',
             'adjectives' : 'quick easy healthy',
             'publication_date' : timezone.now().date(),
+            'servings' : 4,
+            'ingredients' : "test (1)",
+            'steps' : "test"
         }
     
     # Test that the create recipe url is correct
     def test_create_recipe_url(self):
-        self.assertEqual(self.url, '/create_recipe/')
+        self.assertEqual(self.url, '/create/')
 
     # Test GET request to create recipe page
     def test_get_create_recipe_page(self):
@@ -44,10 +50,11 @@ class RecipeCreateViewTestCase(TestCase):
     def test_create_recipe_form_fields(self):
         response = self.client.get(self.url)
         form = response.context['form']
-        self.assertIn('author', form.fields)
         self.assertIn('title', form.fields)
         self.assertIn('adjectives', form.fields)
         self.assertIn('publication_date', form.fields)
+        self.assertIn('ingredients', form.fields)
+        self.assertIn('steps', form.fields)
 
     # Test successful recipe creation
     def test_successful_recipe_creation(self):
@@ -61,6 +68,9 @@ class RecipeCreateViewTestCase(TestCase):
         self.assertEqual(created_recipe.title, 'Test Recipe')
         self.assertEqual(created_recipe.adjectives, 'quick easy healthy')
         self.assertEqual(created_recipe.author, self.user)
+        self.assertEqual(created_recipe.servings, 4)
+        self.assertEqual(created_recipe.ingredients, 'test (1)')
+        self.assertEqual(created_recipe.steps, 'test')
 
     # Test that recipe creation fails with title less than 4 characters
     def test_recipe_creation_fails_with_short_title(self):
@@ -129,9 +139,9 @@ class RecipeCreateViewTestCase(TestCase):
         self.assertIn('publication_date', form.errors)
         self.assertTrue(any('This field is required' in e for e in form.errors['publication_date']))
     
-    # Test that recipe creation fails without author
-    def test_recipe_creation_fails_without_author(self):
-        self.form_data.pop('author')  # Remove author from form data
+    # Test that recipe creation fails without ingredients
+    def test_recipe_creation_fails_without_ingredients(self):
+        self.form_data.pop('ingredients')  # Remove ingredients from form data
         initial_recipe_count = Recipe.objects.count()
         response = self.client.post(self.url, self.form_data)
         # Check that recipe was not created
@@ -139,8 +149,34 @@ class RecipeCreateViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         form = response.context.get('form') if getattr(response, 'context', None) else None
         self.assertIsNotNone(form)
-        self.assertIn('author', form.errors)
-        self.assertTrue(any('This field is required' in e for e in form.errors['author']))
+        self.assertIn('ingredients', form.errors)
+        self.assertTrue(any('This field is required' in e for e in form.errors['ingredients']))
+    
+    # Test that recipe creation fails without steps
+    def test_recipe_creation_fails_without_steps(self):
+        self.form_data.pop('steps')  # Remove ingredients from form data
+        initial_recipe_count = Recipe.objects.count()
+        response = self.client.post(self.url, self.form_data)
+        # Check that recipe was not created
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
+        self.assertEqual(response.status_code, 200)
+        form = response.context.get('form') if getattr(response, 'context', None) else None
+        self.assertIsNotNone(form)
+        self.assertIn('steps', form.errors)
+        self.assertTrue(any('This field is required' in e for e in form.errors['steps']))
+
+    # Test that recipe creation fails without servings
+    def test_recipe_creation_fails_without_servings(self):
+        self.form_data.pop('servings')  # Remove ingredients from form data
+        initial_recipe_count = Recipe.objects.count()
+        response = self.client.post(self.url, self.form_data)
+        # Check that recipe was not created
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
+        self.assertEqual(response.status_code, 200)
+        form = response.context.get('form') if getattr(response, 'context', None) else None
+        self.assertIsNotNone(form)
+        self.assertIn('servings', form.errors)
+        self.assertTrue(any('Please enter the number of servings' in e for e in form.errors['servings']))
     
     # Test that recipe creation handles invalid date format
     def test_recipe_creation_fails_with_invalid_date_format(self):
@@ -321,3 +357,48 @@ class RecipeCreateViewTestCase(TestCase):
         form_html = str(response.content)
         self.assertIn('type="date"', form_html)
         self.assertIn('max=', form_html)
+
+    # Test that adding an image succeeds
+    def test_create_recipe_with_image_upload_succeeds(self):
+        initial_recipe_count = Recipe.objects.count()
+
+        # Create a real valid image file
+        image = Image.new('RGB', (100, 100), color='red')
+        image_file = BytesIO()
+        image.save(image_file, 'JPEG')
+        image_file.seek(0)
+
+        uploaded_file = SimpleUploadedFile(
+            name='test.jpg',
+            content=image_file.read(),
+            content_type='image/jpeg'
+        )
+
+        data = self.form_data.copy()
+        data['image'] = uploaded_file
+
+        response = self.client.post(self.url, data, format='multipart', follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        # Recipe should be created
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
+        created_recipe = Recipe.objects.latest('id')
+        # Image field should be populated
+        self.assertTrue(bool(created_recipe.image))
+
+    # Test that recipe will not be created with invalid ingredients input
+    # e.g. "Avo (1) avo" --> should end with ')'
+    def test_recipe_creation_fails_with_invalid_ingredient_line(self):
+        self.form_data['ingredients'] = 'Avo (1) avo'  # invalid: text after closing parenthesis
+        initial_recipe_count = Recipe.objects.count()
+        response = self.client.post(self.url, self.form_data)
+
+        # Recipe should not be created
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
+        self.assertEqual(response.status_code, 200)
+        form = response.context.get('form') if getattr(response, 'context', None) else None
+        self.assertIsNotNone(form)
+        self.assertIn('ingredients', form.errors)
+        # The validation error should mention parentheses position or the generic fix message
+        self.assertTrue(any('Parentheses should be at the end' in e or 'Please fix the following' in e for e in form.errors['ingredients']))
+
