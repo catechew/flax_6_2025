@@ -141,3 +141,12 @@ class LogInViewTestCase(TestCase, LogInTester, MenuTesterMixin):
         messages_list = list(response.context['messages'])
         self.assertEqual(len(messages_list), 1)
         self.assertEqual(messages_list[0].level, messages.ERROR)
+
+    def test_has_sign_up_button(self):
+        """Test that back to sign up button is present"""
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Don't have an account?")
+        sign_up_url = reverse('sign_up')
+        self.assertContains(response, sign_up_url)
