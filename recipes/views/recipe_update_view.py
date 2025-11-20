@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse
@@ -11,6 +11,12 @@ def recipe_update(request, recipe_id):
 		recipe = Recipe.objects.get(id=recipe_id)
 	except Recipe.DoesNotExist:
 		raise Http404(f"Could not find recipe with primary key {recipe_id}") 
+	
+	is_owner = recipe.author == request.user
+	
+	if request.method == "POST" and not is_owner:
+		messages.error(request, "You can only edit your own recipes.")
+		return HttpResponseRedirect(request.path)          # stay on same page
 
 	if request.method == "POST":
 		form = RecipeForm(request.POST, request.FILES, instance=recipe)
