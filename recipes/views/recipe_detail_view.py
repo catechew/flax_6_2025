@@ -16,10 +16,6 @@ def recipe_detail(request, recipe_id):
     except (ValueError, TypeError):
         desired_servings = recipe.servings
 
-    # Testing types of scaling_factor, desired_servings, recipe.servings
-    print("DEBUG servings_input:", servings_input, type(servings_input))
-    print("DEBUG desired_servings:", desired_servings, type(desired_servings))
-    print("DEBUG recipe.servings:", recipe.servings, type(recipe.servings))
     # Calculate scaling factor
     scaling_factor = desired_servings / recipe.servings
 

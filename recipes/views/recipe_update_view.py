@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse
@@ -16,7 +16,7 @@ def recipe_update(request, recipe_id):
 	
 	if request.method == "POST" and not is_owner:
 		messages.error(request, "You can only edit your own recipes.")
-		return HttpResponseRedirect(request.path)          # stay on same page
+		return HttpResponseRedirect(request.path)          
 
 	if request.method == "POST":
 		form = RecipeForm(request.POST, request.FILES, instance=recipe)
