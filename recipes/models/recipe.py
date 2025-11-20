@@ -39,10 +39,12 @@ class Recipe(models.Model):
     )
 
     ingredients = models.TextField(
+        default="none",
         help_text="List ingredients, one per line (e.g., 'Garlic (5 cloves)')"
     )
 
     steps = models.TextField(
+        default="none",
         help_text="List cooking steps, one per line"
     )
 
