@@ -51,7 +51,15 @@ class Recipe(models.Model):
         ordering = ['-publication_date']  # Newest first
         
     def __str__(self):
-        return f"{self.author.username} ({self.publication_date.year}) \"{self.title}\" Adjectives: {self.adjectives}."
+        # Format ingredients and steps as multi-line text for readability
+        ingredients_text = "\n".join(self.get_ingredient_list())
+        steps_text = "\n".join(self.get_step_list())
+        return (
+            f"{self.author.username} ({self.publication_date.year}) \"{self.title}\" "
+            f"Adjectives: {self.adjectives}.\n"
+            f"Ingredients: {ingredients_text}\n"
+            f"Steps: {steps_text}"
+        )
     
     # Returns the ingredients as a list of lines
     def get_ingredient_list(self):

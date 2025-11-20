@@ -18,7 +18,9 @@ class RecipeModelTestCase(TestCase):
             author=self.user,
             title="Korean Noodles",
             adjectives="quick easy",
-            publication_date=timezone.now().date()
+            publication_date=timezone.now().date(),
+            ingredients= "Garlic (5 cloves)\nSoy sauce (2 tbsp)",
+            steps="Mix everything together\nFry the mixture",
         )
 
     def test_str_method(self):
@@ -26,5 +28,7 @@ class RecipeModelTestCase(TestCase):
             f"@testuser "
             f"({self.recipe.publication_date.year}) "
             f"\"Korean Noodles\" Adjectives: quick easy."
+            f"\nIngredients: Garlic (5 cloves)\nSoy sauce (2 tbsp)\nSteps: Mix everything together\nFry the mixture"
         )
         self.assertEqual(str(self.recipe), expected)
+        
