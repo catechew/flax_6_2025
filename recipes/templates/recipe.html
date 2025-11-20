@@ -17,11 +17,48 @@ Recipes | Recipe #{{recipe.id}}
         <h1 class="card-title">{{ recipe.title }}</h1>
         <p class="text-muted">
             <i class="bi bi-person"></i> By {{ recipe.author.username }} |
-            <i class="bi bi-calendar"></i> {{ recipe.publication_date }} |
-            <i class="bi bi-tag"></i> {{ recipe.adjectives }}
+            <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
         </p>
+
+        {# Display Tags as Chips #}
+        {% if course_tags or dietary_tags or other_tags %}
+        <div class="mb-3">
+            <h6 class="mb-2"><i class="bi bi-tags"></i> Tags:</h6>
+            {% for tag in course_tags %}
+            <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
+            {% endfor %}
+            {% for tag in dietary_tags %}
+            <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+            {% endfor %}
+            {% for tag in other_tags %}
+            <span class="badge bg-warning text-dark me-1 mb-1">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# Display Times #}
+        {% if total_prep_minutes > 0 or total_cook_minutes > 0 %}
+        <div class="d-flex gap-3">
+            {% if total_prep_minutes > 0 %}
+            <div>
+                <i class="bi bi-clock"></i> <strong>Prep:</strong> {{ prep_time_display }}
+            </div>
+            {% endif %}
+            {% if total_cook_minutes > 0 %}
+            <div>
+                <i class="bi bi-fire"></i> <strong>Cook:</strong> {{ cook_time_display }}
+            </div>
+            {% endif %}
+            {% if total_time_display %}
+            <div>
+                <i class="bi bi-hourglass-split"></i> <strong>Total:</strong> {{ total_time_display }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
         </div>
     </div>
+
 
     {# Servings Adjustment #}
     <div class="card shadow mb-4">
@@ -86,14 +123,17 @@ Recipes | Recipe #{{recipe.id}}
         </h4>
         </div>
         <div class="card-body">
-        <ol class="list-group list-group-numbered">
+        <div class="list-group list-group-flush">
             {% for step in steps %}
             <label class="list-group-item d-flex align-items-start" style="cursor: pointer;">
                 <input class="form-check-input me-3 step-checkbox flex-shrink-0" type="checkbox" style="width: 1.5em; height: 1.5em; margin-top: 0.125rem;">
-                <span class="step-text flex-grow-1">{{ step }}</span>
+                <div class="flex-grow-1">
+                    <strong class="me-2">{{ forloop.counter }}.</strong>
+                    <span class="step-text">{{ step }}</span>
+                </div>
             </label>
             {% endfor %}
-        </ol>
+        </div>
         </div>
     </div>
 
@@ -124,19 +164,65 @@ Recipes | Recipe #{{recipe.id}}
             <li class="mb-2">
             <strong><i class="bi bi-people"></i> Servings:</strong> {{ recipe.servings }}
             </li>
+
+            {% if total_prep_minutes > 0 %}
             <li class="mb-2">
-            <strong><i class="bi bi-tag"></i> Tags:</strong> {{ recipe.adjectives }}
+            <strong><i class="bi bi-clock"></i> Prep Time:</strong> {{ prep_time_display }}
             </li>
+            {% endif %}
+
+            {% if total_cook_minutes > 0 %}
+            <li class="mb-2">
+            <strong><i class="bi bi-fire"></i> Cook Time:</strong> {{ cook_time_display }}
+            </li>
+            {% endif %}
+
+            {% if total_time_display %}
+            <li class="mb-2">
+            <strong><i class="bi bi-hourglass-split"></i> Total Time:</strong> {{ total_time_display }}
+            </li>
+            {% endif %}
+
+
             <li class="mb-2">
             <strong><i class="bi bi-person"></i> Author:</strong> {{ recipe.author.username }}
             </li>
             <li class="mb-2">
-            <strong><i class="bi bi-calendar"></i> Published:</strong> {{ recipe.publication_date }}
+            <strong><i class="bi bi-calendar"></i> Published:</strong> {{ recipe.publication_date|date:"M. j, Y" }}
             </li>
+
+            {% if course_tags or dietary_tags or other_tags %}
+            <li class="mb-0">
+            <strong><i class="bi bi-tags"></i> Tags:</strong><br>
+            <div class="mt-2">
+                {% for tag in course_tags %}
+                <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
+                {% endfor %}
+                {% for tag in dietary_tags %}
+                <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+                {% endfor %}
+                {% for tag in other_tags %}
+                <span class="badge bg-warning text-dark me-1 mb-1">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            </li>
+            {% endif %}
         </ul>
         </div>
     </div>
     </div>
 </div>
 </div>
+
+<style>
+.ingredient-checkbox:checked ~ .ingredient-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.step-checkbox:checked ~ div .step-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+</style>
 {% endblock %}
