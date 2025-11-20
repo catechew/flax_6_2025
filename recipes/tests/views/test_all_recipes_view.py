@@ -23,21 +23,27 @@ class AllRecipesViewTestCase(TestCase):
             author=self.user,
             title="Overnight Oats",
             adjectives="cheap healthy easy",
-            publication_date=timezone.now().date()
+            publication_date=timezone.now().date(),
+            ingredients="Oats (1 cup)\nGreek Yoghurt (300g)",
+            steps="Mix ingredients together\nPut it in the fridge overnight"
         )
 
         self.recipe2 = Recipe.objects.create(
             author=self.user,
             title="One Pot Chicken and Rice",
             adjectives = "protein healthy",
-            publication_date=timezone.now().date()
+            publication_date=timezone.now().date(),
+            ingredients="Chicken (1lb)\nRice (1 cup)",
+            steps="Fry the rice for one minute\nAdd water to the rice\nPut the chicken on top of the rice\nCover pot with a lid and boil under low heat for 20min"
         )
 
         self.recipe3 = Recipe.objects.create(
             author=self.user,
             title="Spaghetti Carbonara",
             adjectives="Italian quick",
-            publication_date=timezone.now().date()
+            publication_date=timezone.now().date(),
+            ingredients="Spaghetti (200g)\nEggs (2)\nCheese (200g)",
+            steps="Cook the spaghetti in salted water for 9 min\nDrain the water and mix the eggs and cheese in while still hot"
         )
 
     def test_all_recipes_url(self):
@@ -53,6 +59,7 @@ class AllRecipesViewTestCase(TestCase):
         recipes = response.context['recipes']
         self.assertIn(self.recipe1, recipes)
         self.assertIn(self.recipe2, recipes)
+        self.assertIn(self.recipe3, recipes)
     
     def test_login_required(self):
         self.client.logout()
@@ -66,7 +73,9 @@ class AllRecipesViewTestCase(TestCase):
             author=self.user,
             title=f"Recipe {i}",
             adjectives="test",
-            publication_date=timezone.now().date()
+            publication_date=timezone.now().date(),
+            ingredients="test(1)",
+            steps="test"
         )
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_object'].paginator.num_pages, 1)
@@ -79,7 +88,9 @@ class AllRecipesViewTestCase(TestCase):
                 author=self.user,
                 title=f"Recipe {i}",
                 adjectives="test",
-                publication_date=timezone.now().date()
+                publication_date=timezone.now().date(),
+                ingredients="test(1)",
+                steps="test"
             )
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_object'].paginator.num_pages, 2)
@@ -91,13 +102,17 @@ class AllRecipesViewTestCase(TestCase):
             author=self.user,
             title="Old Recipe",
             adjectives="old",
-            publication_date = timezone.now().date() - timedelta(days=10)
+            publication_date = timezone.now().date() - timedelta(days=10),
+            ingredients="test(1)",
+            steps="test"
         )
         new_recipe = Recipe.objects.create(
             author=self.user,
             title="New Recipe",
             adjectives="new",
-            publication_date=timezone.now().date()
+            publication_date=timezone.now().date(),
+            ingredients="test(1)",
+            steps="test"
         )
         response = self.client.get(self.url)
         recipes = response.context['recipes']
@@ -114,7 +129,9 @@ class AllRecipesViewTestCase(TestCase):
                 author=self.user,
                 title=f"Recipe {i}",
                 adjectives="test",
-                publication_date=timezone.now().date()
+                publication_date=timezone.now().date(),
+                ingredients="test(1)",
+                steps="test"
             )
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_object'].paginator.num_pages, 3)
@@ -163,6 +180,24 @@ class AllRecipesViewTestCase(TestCase):
         self.assertIn(self.recipe3, recipes)
         self.assertNotIn(self.recipe1, recipes)
         self.assertNotIn(self.recipe2, recipes)
+
+    # Test searching recipes by ingredient
+    def test_search_by_ingredients(self):
+        response = self.client.get(self.url, {'q': 'Yoghurt'})
+        self.assertEqual(response.status_code, 200)
+        recipes = list(response.context['recipes'])
+        self.assertIn(self.recipe1, recipes)
+        self.assertNotIn(self.recipe2, recipes)
+        self.assertNotIn(self.recipe3, recipes)
+
+    # Test searching recipes by steps
+    def test_search_by_steps(self):
+        response = self.client.get(self.url, {'q': 'water'})
+        self.assertEqual(response.status_code, 200)
+        recipes = list(response.context['recipes'])
+        self.assertNotIn(self.recipe1, recipes)
+        self.assertIn(self.recipe2, recipes)
+        self.assertIn(self.recipe3, recipes)
 
     # Test partial match search
     def test_search_partial_match(self):

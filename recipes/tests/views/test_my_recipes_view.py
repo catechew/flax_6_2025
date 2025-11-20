@@ -20,13 +20,17 @@ class MyRecipesViewTestCase(TestCase):
             author=self.user,
             title='Test Recipe One',
             adjectives='quick, easy, tasty',
-            publication_date=date(2025, 11, 17)
+            publication_date=date(2025, 11, 17),
+            ingredients="test (1)",
+            steps="test"
         )
         self.recipe2 = Recipe.objects.create(
             author=self.user,
             title='Test Recipe Two',
             adjectives='healthy, vegetarian',
-            publication_date=date(2025, 11, 16)
+            publication_date=date(2025, 11, 16),
+            ingredients="test (1)",
+            steps="test"
         )
         self.other_user = User.objects.create_user(
             username='@janedoe',
@@ -39,7 +43,9 @@ class MyRecipesViewTestCase(TestCase):
             author=self.other_user,
             title='Other User Recipe',
             adjectives='delicious',
-            publication_date=date(2025, 11, 15)
+            publication_date=date(2025, 11, 15),
+            ingredients="test (1)",
+            steps="test"
         )
 
     def test_my_recipes_url(self):
@@ -137,7 +143,9 @@ class MyRecipesViewTestCase(TestCase):
                 author=self.user,
                 title=f'Recipe Number {i}',
                 adjectives='test',
-                publication_date=date(2025, 11, 10)
+                publication_date=date(2025, 11, 10),
+                ingredients="test (1)",
+                steps="test"
             )
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url)
@@ -165,7 +173,9 @@ class MyRecipesViewTestCase(TestCase):
             author=self.user,
             title='Only Recipe',
             adjectives='ghost',
-            publication_date=date(2025, 11, 17)
+            publication_date=date(2025, 11, 17),
+            ingredients="test (1)",
+            steps="test"
         )
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url)
