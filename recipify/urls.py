@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.urls import path
 from recipes import views
 from recipes.views.recipe_create_view import create_recipe, create_recipe_tags, cancel_recipe_creation
+from recipes.views.recipe_update_view import recipe_update, update_recipe_tags, cancel_recipe_update
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,11 +33,13 @@ urlpatterns = [
     path('sign_up/', views.SignUpView.as_view(), name='sign_up'),
     path('all_recipes/', views.all_recipes, name='all_recipes'),
     path('recipe/<int:recipe_id>', views.recipe_detail, name='recipe_detail'),
-    path('update_recipe/<int:recipe_id>', views.recipe_update, name='update_recipe'),
     path('delete_recipe/<int:recipe_id>', views.recipe_delete, name='delete_recipe'),
     path('my_recipes/', views.my_recipes, name='my_recipes'),
     path('create_recipe/', create_recipe, name='create_recipe'),
     path('create_recipe/tags/', create_recipe_tags, name='create_recipe_tags'),
     path('create_recipe/cancel/', cancel_recipe_creation, name='cancel_recipe'),
+    path('update_recipe/<int:recipe_id>', recipe_update, name='update_recipe'),
+    path('update_recipe/<int:recipe_id>/tags/', update_recipe_tags, name='update_recipe_tags'),
+    path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_update, name='cancel_recipe_update'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
