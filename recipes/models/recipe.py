@@ -28,6 +28,11 @@ class Recipe(models.Model):
         default='',
         help_text="Comma-separated dietary tags (e.g., 'vegetarian,vegan')"
     )
+    cuisine_tags = models.TextField(
+        blank=True,
+        default='',
+        help_text="Comma-separated cuisine tags (e.g., 'Japanese, Asian, Chinese, Indian, Western, Jamaican')"
+    )
     other_tags = models.TextField(
         blank=True,
         default='',
@@ -63,7 +68,6 @@ class Recipe(models.Model):
         help_text="Cooking time in minutes"
     )
 
-
     image = models.ImageField(
         upload_to='recipe_images/',
         null=True,
@@ -95,6 +99,8 @@ class Recipe(models.Model):
             all_tags.extend([tag.strip() for tag in self.course_tags.split(',') if tag.strip()])
         if self.dietary_tags:
             all_tags.extend([tag.strip() for tag in self.dietary_tags.split(',') if tag.strip()])
+        if self.cuisine_tags:
+            all_tags.extend([tag.strip() for tag in self.cuisine_tags.split(',') if tag.strip()])
         if self.other_tags:
             all_tags.extend([tag.strip() for tag in self.other_tags.split(',') if tag.strip()])
 
@@ -132,6 +138,10 @@ class Recipe(models.Model):
     def get_dietary_tags_list(self):
         """Returns list of dietary tags"""
         return [tag.strip() for tag in self.dietary_tags.split(',') if tag.strip()]
+    
+    def get_cuisine_tags_list(self):
+        """Returns list of cuisine tags"""
+        return [tag.strip() for tag in self.cuisine_tags.split(',') if tag.strip()]
 
     def get_other_tags_list(self):
         """Returns list of other tags"""
@@ -139,7 +149,7 @@ class Recipe(models.Model):
 
     def get_all_tags_list(self):
         """Returns all tags combined as a list"""
-        return self.get_course_tags_list() + self.get_dietary_tags_list() + self.get_other_tags_list()
+        return self.get_course_tags_list() + self.get_dietary_tags_list() + self.get_cuisine_tags_list() + self.get_other_tags_list()
 
     def get_total_prep_time_minutes(self):
         """Returns total prep time in minutes"""

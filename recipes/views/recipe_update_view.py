@@ -31,6 +31,7 @@ def recipe_update(request, recipe_id):
 		request.session[session_key] = {
 			'course_tags': recipe.get_course_tags_list(),
 			'dietary_tags': recipe.get_dietary_tags_list(),
+			'cuisine_tags' : recipe.get_cuisine_tags_list(),
 			'other_tags': recipe.get_other_tags_list(),
 		}
 
@@ -113,6 +114,13 @@ def update_recipe_tags(request, recipe_id):
 			session_data['dietary_tags'].append(tag)
 			request.session.modified = True
 		return redirect('update_recipe_tags', recipe_id=recipe_id)
+	
+	if request.method == 'POST' and 'add_cuisine_tag' in request.POST:
+		tag = request.POST.get('add_cuisine_tag')
+		if tag and tag not in session_data['cuisine_tags']:
+			session_data['cuisine_tags'].append(tag)
+			request.session.modified = True
+		return redirect('update_recipe_tags', recipe_id=recipe_id)
 
 	if request.method == 'POST' and 'add_other_tag' in request.POST:
 		tag = request.POST.get('add_other_tag')
@@ -135,6 +143,13 @@ def update_recipe_tags(request, recipe_id):
 			session_data['dietary_tags'].append(tag)
 			request.session.modified = True
 		return redirect('update_recipe_tags', recipe_id=recipe_id)
+	
+	if request.method == 'POST' and 'add_cuisine_tag_custom' in request.POST:
+		tag = request.POST.get('cuisine_tag_value')
+		if tag and tag not in session_data['cuisine_tags']:
+			session_data['cuisine_tags'].append(tag)
+			request.session.modified = True
+		return redirect('update_recipe_tags', recipe_id=recipe_id)
 
 	if request.method == 'POST' and 'add_other_tag_custom' in request.POST:
 		tag = request.POST.get('other_tag_value')
@@ -155,6 +170,13 @@ def update_recipe_tags(request, recipe_id):
 		tag = request.POST.get('remove_dietary_tag')
 		if tag in session_data['dietary_tags']:
 			session_data['dietary_tags'].remove(tag)
+			request.session.modified = True
+		return redirect('update_recipe_tags', recipe_id=recipe_id)
+	
+	if request.method == 'POST' and 'remove_cuisine_tag' in request.POST:
+		tag = request.POST.get('remove_cuisine_tag')
+		if tag in session_data['cuisine_tags']:
+			session_data['cuisine_tags'].remove(tag)
 			request.session.modified = True
 		return redirect('update_recipe_tags', recipe_id=recipe_id)
 
@@ -191,6 +213,7 @@ def update_recipe_tags(request, recipe_id):
 				# Set tags from session
 				recipe.course_tags = ','.join(session_data['course_tags'])
 				recipe.dietary_tags = ','.join(session_data['dietary_tags'])
+				recipe.cuisine_tags = ','.join(session_data['cuisine_tags'])
 				recipe.other_tags = ','.join(session_data['other_tags'])
 
 				# Handle image deletion
@@ -224,6 +247,7 @@ def update_recipe_tags(request, recipe_id):
 	# Predefined tag options
 	course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
 	dietary_options = ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free']
+	cuisine_options = ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern']
 	other_options = ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
 
 	context = {
@@ -231,9 +255,11 @@ def update_recipe_tags(request, recipe_id):
 		'recipe': recipe,
 		'course_tags': session_data['course_tags'],
 		'dietary_tags': session_data['dietary_tags'],
+		'cuisine_tags': session_data['cuisine_tags'],
 		'other_tags': session_data['other_tags'],
 		'course_options': course_options,
 		'dietary_options': dietary_options,
+		'cuisine_options': cuisine_options,
 		'other_options': other_options,
 	}
 

@@ -27,6 +27,9 @@ Recipes | Recipe #{{recipe.id}}
             {% for tag in course_tags %}
             <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
             {% endfor %}
+            {% for tag in cuisine_tags %}
+            <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+            {% endfor %}
             {% for tag in dietary_tags %}
             <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
             {% endfor %}
@@ -197,6 +200,9 @@ Recipes | Recipe #{{recipe.id}}
             <div class="mt-2">
                 {% for tag in course_tags %}
                 <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
+                {% endfor %}
+                {% for tag in cuisine_tags %}
+                <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
                 {% endfor %}
                 {% for tag in dietary_tags %}
                 <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
