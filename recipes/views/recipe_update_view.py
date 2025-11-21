@@ -301,6 +301,7 @@ def update_recipe_tags(request, recipe_id):
 		'dietary_options': dietary_options,
 		'cuisine_options': cuisine_options,
 		'other_options': other_options,
+		'is_owner': is_owner,
 	}
 
 	return render(request, 'update_recipe_tags.html', context)
