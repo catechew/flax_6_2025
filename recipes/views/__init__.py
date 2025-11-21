@@ -13,3 +13,4 @@ from .recipe_update_view import *
 from .my_recipes_view import *
 from .follow_view import *
 from .user_profile_view import *
+from .followers_list_view import *
