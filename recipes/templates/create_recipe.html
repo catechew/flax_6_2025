@@ -24,6 +24,7 @@
 
             {# Basic Recipe Fields #}
             {% for field in form %}
+              {% if field.name not in 'prep_time_hours,prep_time_minutes,cook_time_hours,cook_time_minutes' %}
               <div class="mb-3">
                 <label for="{{ field.id_for_label }}" class="form-label fw-bold">
                   {{ field.label }}
@@ -39,7 +40,51 @@
                   </div>
                 {% endif %}
               </div>
+              {% endif %}
             {% endfor %}
+
+            <!-- Prep Time -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Preparation Time</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="number" name="prep_time_hours" id="id_prep_time_hours" 
+            value="{{ form.prep_time_hours.value|default:'0' }}" min="0" 
+            class="form-control" style="width: 80px;">
+                <span>h</span>
+                <input type="number" name="prep_time_minutes" id="id_prep_time_minutes" 
+            value="{{ form.prep_time_minutes.value|default:'0' }}" min="0" max="59" 
+            class="form-control" style="width: 80px;">
+                <span>min</span>
+              </div>
+              {% if form.prep_time_hours.errors or form.prep_time_minutes.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.prep_time_hours.errors }}
+                  {{ form.prep_time_minutes.errors }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Cook Time -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Cooking Time</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="number" name="cook_time_hours" id="id_cook_time_hours" 
+            value="{{ form.cook_time_hours.value|default:'0' }}" min="0" 
+            class="form-control" style="width: 80px;">
+                <span>h</span>
+                <input type="number" name="cook_time_minutes" id="id_cook_time_minutes" 
+            value="{{ form.cook_time_minutes.value|default:'0' }}" min="0" max="59" 
+            class="form-control" style="width: 80px;">
+                <span>min</span>
+              </div>
+              {% if form.cook_time_hours.errors or form.cook_time_minutes.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.cook_time_hours.errors }}
+                  {{ form.cook_time_minutes.errors }}
+                </div>
+              {% endif %}
+            </div>
+
 
             {# Form Buttons #}
             <div class="d-flex justify-content-between align-items-center mt-4">
