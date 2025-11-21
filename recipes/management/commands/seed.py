@@ -237,6 +237,22 @@ class Command(BaseCommand):
         days_limit = randint(0, 730)
         return timezone.now().date() - timedelta(days=days_limit)
     
+    def generate_random_ingredients(self):
+        ingredient_options = [
+            "Chicken Breast (2)\n", "Avocado (1)\n", "Rice (1 cup)\n", 
+            "Black Beans (1 can)\n", "Olive Oil (2 tbsp)\n", "Onion (1/2 medium)\n", 
+            "Garlic (3 cloves)\n", "Salt (1 tsp)\n", "Black Pepper (1/2 tsp)\n", 
+            "Cherry Tomatoes (1 cup)\n", "Lemon Juice (1 tbsp)\n", 
+            "Cheddar Cheese (1/4 cup)\n", "Butter (1/4 stick)\n", "Milk (1/2 cup)\n", 
+            "Flour (2 cups)\n", "Sugar (1/4 cup)\n", "Egg (2 large)\n", 
+            "Spinach (1 bunch)\n", "Penne Pasta (8 oz)\n", "Basil Leaves (1/4 cup)\n", 
+            "Soy Sauce (1 tbsp)\n", "Ginger (1 inch piece)\n", "Broccoli Florets (1 cup)\n", 
+            "Bell Pepper (1 large)\n", "Cilantro (1/4 bunch)\n",
+        ]
+        rand_num = random.randint(4,8)
+        return random.sample(ingredient_options, rand_num)
+
+    
     def try_create_recipe(self, data):
         """Attempt to create a recipe."""
         try:
@@ -249,7 +265,6 @@ class Command(BaseCommand):
         except:
             pass
     
-    # def generate_random_image(self):
                               
 
 
