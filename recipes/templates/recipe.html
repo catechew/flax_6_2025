@@ -146,7 +146,11 @@ Recipes | Recipe #{{recipe.id}}
         <i class="bi bi-arrow-left"></i> Go back home
         </a>
         <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-primary">
-        <i class="bi bi-pencil"></i> Update this recipe
+            {% if is_owner %}
+                <i class="bi bi-pencil"></i> Update this recipe
+            {% else %}
+                <i class="bi bi-plus-circle"></i> Create My Version
+            {% endif %}
         </a>
         <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-danger">
         <i class="bi bi-trash"></i> Delete this recipe

@@ -8,6 +8,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from recipes.forms.recipe_form import RecipeForm
 from recipes.models.recipe import Recipe
 import os
+from django.core.files import File
 
 
 def recipe_update(request, recipe_id):
@@ -21,9 +22,9 @@ def recipe_update(request, recipe_id):
 
 	is_owner = recipe.author == request.user
 
-	if not is_owner:
-		messages.error(request, "You can only edit your own recipes.")
-		return redirect('recipe_detail', recipe_id=recipe_id)
+	# if not is_owner:
+	# 	messages.error(request, "You can only edit your own recipes.")
+	# 	return redirect('recipe_detail', recipe_id=recipe_id)
 
 	# Initialize session data for update if not exists
 	session_key = f'recipe_update_{recipe_id}'
@@ -33,12 +34,18 @@ def recipe_update(request, recipe_id):
 			'dietary_tags': recipe.get_dietary_tags_list(),
 			'cuisine_tags' : recipe.get_cuisine_tags_list(),
 			'other_tags': recipe.get_other_tags_list(),
+			'is_owner': is_owner,
+			'original_author': recipe.author.username,
 		}
 
 	session_data = request.session[session_key]
 
 	if request.method == 'POST':
-		form = RecipeForm(request.POST, request.FILES, instance=recipe)
+		if is_owner:
+			form = RecipeForm(request.POST, request.FILES, instance=recipe)
+		else: # For non-owners, creates new recipe
+			form = RecipeForm(request.POST, request.FILES)
+
 		if form.is_valid():
 			# Save form data to session (excluding file)
 			form_dict = {}
@@ -55,6 +62,10 @@ def recipe_update(request, recipe_id):
 				temp_filename = f'temp_update_{request.user.id}_{recipe_id}_{uploaded_file.name}'
 				temp_path = default_storage.save(f'temp/{temp_filename}', ContentFile(uploaded_file.read()))
 				session_data['temp_image_path'] = temp_path
+			
+			# For non-owners, copy original image
+			elif not is_owner and recipe.image:
+				session_data['copy_original_image'] = True
 
 			request.session.modified = True
 
@@ -63,7 +74,10 @@ def recipe_update(request, recipe_id):
 	else:
 		# Pre-populate if coming back from page 2
 		if 'form_data' in session_data:
-			form = RecipeForm(session_data['form_data'], instance=recipe)
+			if is_owner:
+				form = RecipeForm(session_data['form_data'], instance=recipe)
+			else:
+				form = RecipeForm(session_data['form_data'])
 		else:
 			form = RecipeForm(instance=recipe)
 
@@ -71,6 +85,8 @@ def recipe_update(request, recipe_id):
 		'recipe_id': recipe_id,
 		'recipe': recipe,
 		'form': form,
+		'is_owner': is_owner,
+		'original_author': recipe.author.username,
 	}
 
 	return render(request, 'update_recipe.html', context)
@@ -79,6 +95,7 @@ def recipe_update(request, recipe_id):
 def update_recipe_tags(request, recipe_id):
 	"""
 	Page 2: Edit tags and save final changes
+	Owners update their recipe, non-owners create a modification 
 	"""
 	try:
 		recipe = Recipe.objects.get(id=recipe_id)
@@ -87,9 +104,9 @@ def update_recipe_tags(request, recipe_id):
 
 	is_owner = recipe.author == request.user
 
-	if not is_owner:
-		messages.error(request, "You can only edit your own recipes.")
-		return redirect('recipe_detail', recipe_id=recipe_id)
+	# if not is_owner:
+	# 	messages.error(request, "You can only edit your own recipes.")
+	# 	return redirect('recipe_detail', recipe_id=recipe_id)
 
 	session_key = f'recipe_update_{recipe_id}'
 
@@ -204,11 +221,27 @@ def update_recipe_tags(request, recipe_id):
 					filename = os.path.basename(temp_path).replace(f'temp_update_{request.user.id}_{recipe_id}_', '')
 					files = {'image': SimpleUploadedFile(filename, f.read())}
 
-		form = RecipeForm(form_data, files, instance=recipe)
+		# For owners: update existing recipe
+		# non owners: create new recipe
+		if is_owner:
+			form = RecipeForm(form_data, files, instance=recipe)
+		else:
+			form = RecipeForm(form_data, files)
 
 		if form.is_valid():
 			try:
 				recipe = form.save(commit=False)
+
+				#For non-owners, set the current user as author
+				if not is_owner:
+					recipe.author = request.user
+					if session_data.get('copy_original_image' and recipe.image):
+						recipe.image.save(
+							recipe.image.name,
+							File(recipe.image.file),
+							save=False
+						)
+
 
 				# Set tags from session
 				recipe.course_tags = ','.join(session_data['course_tags'])
@@ -217,10 +250,10 @@ def update_recipe_tags(request, recipe_id):
 				recipe.other_tags = ','.join(session_data['other_tags'])
 
 				# Handle image deletion
-				if session_data.get('image_clear'):
-					if recipe.image:
-						recipe.image.delete(save=False)
-					recipe.image = None
+				if is_owner and session_data.get('image_clear'):
+						if recipe.image:
+							recipe.image.delete(save=False)
+						recipe.image = None
 
 				recipe.save()
 
@@ -234,7 +267,14 @@ def update_recipe_tags(request, recipe_id):
 				del request.session[session_key]
 				request.session.modified = True
 
-				messages.success(request, f'Successfully updated recipe: {recipe.title}')
+				if is_owner:
+					messages.success(request, f'Successfully updated recipe: {recipe.title}')
+				else:
+					messages.success(request, f'Created your modified version: {recipe.title}')
+					messages.info(request, f'Original recipe by {recipe.author.username} was not changed.')
+
+
+
 				return redirect('recipe_detail', recipe_id=recipe.id)
 			except Exception as e:
 				messages.error(request, f'Error updating recipe: {str(e)}')

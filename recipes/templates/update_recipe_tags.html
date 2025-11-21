@@ -201,7 +201,11 @@ Update Recipe Tags | Recipe #{{recipe.id}}
             <form method="POST" style="display: inline;">
             {% csrf_token %}
             <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
-                <i class="bi bi-check-circle"></i> Update Recipe
+                {% if is_owner %}
+                    <i class="bi bi-check-circle"></i> Update Recipe
+                {% else %}
+                    <i class="bi bi-plus-circle"></i> Create My Version
+                {% endif %}
             </button>
             </form>
         </div>

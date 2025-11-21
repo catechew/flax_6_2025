@@ -12,10 +12,26 @@ Update Recipe | Recipe #{{recipe.id}}
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
         <h3 class="mb-0">
-            <i class="bi bi-pencil"></i> Update Recipe - Step 1 of 2
+            {% if is_owner %}
+                <i class="bi bi-pencil"></i> Update Recipe - Step 1 of 2
+            {% else %}
+                <i class="bi bi-copy"></i> Create Your Version - Step 1 of 2
+            {% endif %}
         </h3>
+        {% if is_owner %}
+            <small>Edit Your Recipe</small>
+        {% else %}
+            <small>Modifying recipe by {{ original_author }}</small>
+        {% endif %}
         </div>
         <div class="card-body">
+            {% if not is_owner %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    You're creating a modified version of <strong>{{ original_author }}</strong>'s recipe. Your changes will be saved as a new recipe under your name. The original will not be changed.
+                </div>
+            {% endif %}
+
 
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}

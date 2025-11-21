@@ -55,6 +55,7 @@ def recipe_detail(request, recipe_id):
         'total_prep_minutes': recipe.get_total_prep_time_minutes(),
         'total_cook_minutes': recipe.get_total_cook_time_minutes(),
         'total_time_display' : total_time_display,
+        'is_owner': recipe.author == request.user,
     }
    
     return render(request, 'recipe.html', context)
