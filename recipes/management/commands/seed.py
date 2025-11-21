@@ -251,6 +251,20 @@ class Command(BaseCommand):
         ]
         rand_num = random.randint(4,8)
         return random.sample(ingredient_options, rand_num)
+    
+    def generate_random_steps(self):
+        step_options = [
+            "Mix garlic and soy sauce\n", "Preheat oven to 350°F\n", 
+            "Chop the onion and bell pepper\n", "Sauté the vegetables until soft\n", 
+            "Bring water to a boil\n", "Add salt and pasta to the pot\n", 
+            "Season chicken with salt and pepper\n", "Bake for 20 minutes\n", 
+            "Stir constantly for 5 minutes\n", "Let rest for 10 minutes before slicing\n", 
+            "Garnish with fresh parsley\n", "Drain excess liquid\n", 
+            "Whisk eggs and milk together\n", "Fold in the dry ingredients\n", 
+            "Transfer batter to a prepared pan\n"
+        ]
+        rand_num = random.randint(4,8)
+        return random.sample(step_options, rand_num)
 
     
     def try_create_recipe(self, data):
