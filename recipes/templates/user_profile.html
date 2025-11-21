@@ -23,12 +23,18 @@
                         </p>
                     </div>
                     <div class="col-4">
-                        <strong>{{ profile_user.follower_count }}</strong>
-                        <p class="text-muted mb-0">Followers</p>
+                        <!-- Make followers clickable -->
+                        <a href="{% url 'followers_list' profile_user.id %}" class="text-decoration-none text-dark">
+                            <strong>{{ profile_user.follower_count }}</strong>
+                            <p class="text-muted mb-0">Followers</p>
+                        </a>
                     </div>
                     <div class="col-4">
-                        <strong>{{ profile_user.following_count }}</strong>
-                        <p class="text-muted mb-0">Following</p>
+                        <!-- Make following clickable -->
+                        <a href="{% url 'following_list' profile_user.id %}" class="text-decoration-none text-dark">
+                            <strong>{{ profile_user.following_count }}</strong>
+                            <p class="text-muted mb-0">Following</p>
+                        </a>
                     </div>
                 </div>
 
