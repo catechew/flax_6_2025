@@ -163,12 +163,25 @@ class Command(BaseCommand):
         adjectives = self.generate_adjectives()
         author = choice(users)
         publication_date = self.generate_random_date()
+        ingredients = self.generate_random_ingredients()
+        steps = self.generate_random_steps()
+        prep_time_hours = self.generate_random_hours()
+        prep_time_minutes = self.generate_random_minutes()
+        cook_time_hours = self.generate_random_hours()
+        cook_time_minutes = self.generate_random_minutes()
+
 
         self.try_create_recipe({
             'title': title,
             'adjectives': adjectives,
             'author': author,
-            'publication_date': publication_date
+            'publication_date': publication_date,
+            'ingredients' : ingredients,
+            'steps': steps,
+            'prep_time_hours': prep_time_hours,
+            'prep_time_minutes': prep_time_minutes,
+            'cook_time_hours': cook_time_hours,
+            'cook_time_minutes': cook_time_minutes,
         })
 
     def generate_recipe_title(self):
@@ -265,7 +278,14 @@ class Command(BaseCommand):
         ]
         rand_num = random.randint(4,8)
         return random.sample(step_options, rand_num)
-
+    
+    def generate_random_hours(self):
+        rand_hour = random.randint(0,24)
+        return rand_hour
+    
+    def generate_random_minutes(self):
+        rand_min = random.randint(1,60)
+        return rand_min
     
     def try_create_recipe(self, data):
         """Attempt to create a recipe."""
@@ -274,7 +294,12 @@ class Command(BaseCommand):
                 title=data['title'],
                 adjectives=data['adjectives'],
                 author=data['author'],
-                publication_date=data['publication_date']
+                publication_date=data['publication_date'],
+                ingredients=data['ingredients'],
+                prep_time_hours=data['prep_time_hours'],
+                prep_time_minutes=data['prep_time_minutes'],
+                cook_time_hours=data['cook_time_hours']
+                cook_time_minutes=data['cook_time_minutes'],
             )
         except:
             pass
