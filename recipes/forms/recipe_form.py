@@ -75,14 +75,44 @@ class RecipeForm(forms.ModelForm):
         help_text='List each step on a new line'
     )
 
+    prep_time_hours = forms.IntegerField(
+        min_value=0,
+        initial=0,
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min':'0'}),
+        label='Prep Time (hours)'
+    )
+    prep_time_minutes = forms.IntegerField(
+        min_value=0,
+        max_value=59,
+        initial=0,
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '59'}),
+        label='Prep Time (minutes)'
+    )
+    cook_time_hours = forms.IntegerField(
+        min_value=0,
+        initial=0,
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min':'0'}),
+        label='Cook Time (hours)'
+    )
+    cook_time_minutes = forms.IntegerField(
+        min_value=0,
+        max_value=59,
+        initial=0,
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '59'}),
+        label='Cook Time (minutes)'
+    )
+
+
 
     class Meta:
         model = Recipe
-        fields = ['title', 'adjectives', 'publication_date', 'servings', 'ingredients', 'steps', 'image']
+        fields = ['title', 'publication_date', 'servings', 'ingredients', 'steps', 'image', 'prep_time_hours', 'prep_time_minutes','cook_time_hours', 'cook_time_minutes']
         widgets = {
-            'author': forms.Select(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'adjectives': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def clean_publication_date(self):

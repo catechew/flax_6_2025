@@ -7,13 +7,10 @@
       <div class="card shadow">
         <div class="card-header bg-primary text-white">
           <h3 class="mb-0">
-            <i class="bi bi-plus-circle"></i> Create New Recipe
+            <i class="bi bi-plus-circle"></i> Create New Recipe - Step 1 of 2
           </h3>
         </div>
         <div class="card-body">
-          <p class="text-muted mb-4">
-            Fill in the details below to add a new recipe to the collection.
-          </p>
 
           <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -27,6 +24,7 @@
 
             {# Basic Recipe Fields #}
             {% for field in form %}
+              {% if field.name not in 'prep_time_hours,prep_time_minutes,cook_time_hours,cook_time_minutes' %}
               <div class="mb-3">
                 <label for="{{ field.id_for_label }}" class="form-label fw-bold">
                   {{ field.label }}
@@ -42,37 +40,68 @@
                   </div>
                 {% endif %}
               </div>
+              {% endif %}
             {% endfor %}
+
+            <!-- Prep Time -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Preparation Time</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="number" name="prep_time_hours" id="id_prep_time_hours" 
+            value="{{ form.prep_time_hours.value|default:'0' }}" min="0" 
+            class="form-control" style="width: 80px;">
+                <span>h</span>
+                <input type="number" name="prep_time_minutes" id="id_prep_time_minutes" 
+            value="{{ form.prep_time_minutes.value|default:'0' }}" min="0" max="59" 
+            class="form-control" style="width: 80px;">
+                <span>min</span>
+              </div>
+              {% if form.prep_time_hours.errors or form.prep_time_minutes.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.prep_time_hours.errors }}
+                  {{ form.prep_time_minutes.errors }}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Cook Time -->
+            <div class="mb-3">
+              <label class="form-label fw-bold">Cooking Time</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="number" name="cook_time_hours" id="id_cook_time_hours" 
+            value="{{ form.cook_time_hours.value|default:'0' }}" min="0" 
+            class="form-control" style="width: 80px;">
+                <span>h</span>
+                <input type="number" name="cook_time_minutes" id="id_cook_time_minutes" 
+            value="{{ form.cook_time_minutes.value|default:'0' }}" min="0" max="59" 
+            class="form-control" style="width: 80px;">
+                <span>min</span>
+              </div>
+              {% if form.cook_time_hours.errors or form.cook_time_minutes.errors %}
+                <div class="text-danger mt-1">
+                  {{ form.cook_time_hours.errors }}
+                  {{ form.cook_time_minutes.errors }}
+                </div>
+              {% endif %}
+            </div>
+
 
             {# Form Buttons #}
             <div class="d-flex justify-content-between align-items-center mt-4">
-              <a href="{% url 'all_recipes' %}" class="btn btn-secondary btn-lg">
+              <a href="{% url 'cancel_recipe' %}" class="btn btn-secondary btn-lg">
                 <i class="bi bi-x-circle"></i> Cancel
               </a>
               <button type="submit" class="btn btn-primary btn-lg">
-                <i class="bi bi-check-circle"></i> Create Recipe
+                Next: Add Tags <i class="bi bi-arrow-right"></i>
               </button>
             </div>
           </form>
-        </div>
-      </div>
 
-      {# Help Section #}
-      <div class="card mt-4 border-warning">
-        <div class="card-body">
-          <h5 class="card-title text-warning">
-            <i class="bi bi-lightbulb"></i> Tips for Creating Recipes
-          </h5>
-          <ul class="mb-0">
-            <li>Use a descriptive and appetizing title for your recipe</li>
-            <li>In "Adjectives/Tags", add keywords like "quick", "budget-friendly", "vegetarian"</li>
-            <li>Enter each ingredient on a new line with quantities in parentheses</li>
-            <li>Enter each cooking step on a new line</li>
-            <li>Specify how many servings the recipe makes</li>
-          </ul>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
+
+

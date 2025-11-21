@@ -248,6 +248,9 @@ class Command(BaseCommand):
             )
         except:
             pass
+    
+    # def generate_random_image(self):
+                              
 
 
 def create_username(first_name, last_name):
@@ -275,3 +278,4 @@ def create_email(first_name, last_name):
         str: An email in the form ``{firstname}.{lastname}@example.org``.
     """
     return first_name + '.' + last_name + '@example.org'
+

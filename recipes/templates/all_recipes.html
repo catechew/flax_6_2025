@@ -35,30 +35,59 @@
               {% endif %}
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ recipe.title }}</h5>
+
+                {# Tags #}
                 {% if recipe.adjectives %}
                   <p class="card-text mb-1">
-                    <small class="text-muted"><i class="bi bi-tag"></i>{{ recipe.adjectives }}</small>
+                    <small class="text-muted"><i class="bi bi-tag"></i> {{ recipe.adjectives }}</small>
                   </p>
                 {% endif %}
-                  <p class="card-text mb-1">
-                    <small class="text-muted">
-                      By {{ recipe.author.first_name }} {{ recipe.author.last_name }}
-                    </small>
-                  </p>
-                  <p class="card-text mb-1"><i class="bi bi-calendar"></i>
-                    <small class="text-muted">{{ recipe.publication_date }}</small>
-                  </p>
-                  <p class="card-text mb-3">
-                    <small class="text-muted">
-                      <i class="bi bi-people"></i> {{ recipe.servings }} servings
-                    </small>
-                  </p>
-                  <div class="mt-auto">
-                    <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary w-100">
-                      <i class="bi bi-eye"></i> View Recipe
-                    </a>
-                  </div>
+
+                {# Author #}
+                <p class="card-text mb-1">
+                  <small class="text-muted">
+                    <i class="bi bi-person"></i> By {{ recipe.author.first_name }} {{ recipe.author.last_name }}
+                  </small>
+                </p>
+
+                {# Publication Date #}
+                <p class="card-text mb-1">
+                  <small class="text-muted">
+                    <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
+                  </small>
+                </p>
+
+                {# Servings #}
+                <p class="card-text mb-1">
+                  <small class="text-muted">
+                    <i class="bi bi-people"></i> {{ recipe.servings }} servings
+                  </small>
+                </p>
+
+                {# Times - Prep and Cook #}
+                {% if recipe.get_total_prep_time_minutes > 0 or recipe.get_total_cook_time_minutes > 0 %}
+                <p class="card-text mb-3">
+                  <small class="text-muted">
+                    {% if recipe.get_total_prep_time_minutes > 0 %}
+                      <i class="bi bi-clock"></i> Prep: {{ recipe.get_prep_time_display }}
+                    {% endif %}
+                    {% if recipe.get_total_prep_time_minutes > 0 and recipe.get_total_cook_time_minutes > 0 %}
+                      <span class="mx-1">|</span>
+                    {% endif %}
+                    {% if recipe.get_total_cook_time_minutes > 0 %}
+                      <i class="bi bi-fire"></i> Cook: {{ recipe.get_cook_time_display }}
+                    {% endif %}
+                  </small>
+                </p>
+                {% endif %}
+
+                <div class="mt-auto">
+                  <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary w-100">
+                    <i class="bi bi-eye"></i> View Recipe
+                  </a>
+                </div>
               </div>
+
             </div>
           </div>
         {% endfor %}
