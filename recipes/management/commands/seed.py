@@ -169,6 +169,10 @@ class Command(BaseCommand):
         prep_time_minutes = self.generate_random_minutes()
         cook_time_hours = self.generate_random_hours()
         cook_time_minutes = self.generate_random_minutes()
+        course_tags = self.generate_course_tags()
+        cuisine_tags = self.generate_cuisine_tags()
+        dietary_tags = self.generate_dietary_tags()
+        other_tags = self.generate_other_tags()
 
 
         self.try_create_recipe({
@@ -182,6 +186,10 @@ class Command(BaseCommand):
             'prep_time_minutes': prep_time_minutes,
             'cook_time_hours': cook_time_hours,
             'cook_time_minutes': cook_time_minutes,
+            'course_tags': course_tags,
+            'cuisine_tags': cuisine_tags,
+            'dietary_tags': dietary_tags,
+            'other_tags': other_tags,
         })
 
     def generate_recipe_title(self):
@@ -251,6 +259,7 @@ class Command(BaseCommand):
         return timezone.now().date() - timedelta(days=days_limit)
     
     def generate_random_ingredients(self):
+        """Generate a list of random ingredients"""
         ingredient_options = [
             "Chicken Breast (2)\n", "Avocado (1)\n", "Rice (1 cup)\n", 
             "Black Beans (1 can)\n", "Olive Oil (2 tbsp)\n", "Onion (1/2 medium)\n", 
@@ -266,6 +275,7 @@ class Command(BaseCommand):
         return random.sample(ingredient_options, rand_num)
     
     def generate_random_steps(self):
+        """Generate a list of random steps"""
         step_options = [
             "Mix garlic and soy sauce\n", "Preheat oven to 350°F\n", 
             "Chop the onion and bell pepper\n", "Sauté the vegetables until soft\n", 
@@ -280,12 +290,51 @@ class Command(BaseCommand):
         return random.sample(step_options, rand_num)
     
     def generate_random_hours(self):
+        """Generate random hour"""
         rand_hour = random.randint(0,24)
         return rand_hour
     
     def generate_random_minutes(self):
+        """Generate random minute"""
         rand_min = random.randint(1,60)
         return rand_min
+    
+    def generate_course_tags(self):
+        """Generate random course tags"""
+        course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
+        num_tags = randint(0,2)
+        if num_tags == 0:
+            return ''
+        selected = random.sample(course_options, num_tags)
+        return ','.join(selected)
+    
+    def generate_cuisine_tags(self):
+        """Generate random cuisine tags"""
+        cuisine_options = ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern']
+        num_tags = randint(0,2)
+        if num_tags == 0:
+            return ''
+        selected = random.sample(cuisine_options, num_tags)
+        return ','.join(selected)
+    
+    def generate_dietary_tags(self):
+        """Generate random dietary tags"""
+        dietary_options = ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free']
+        num_tags = randint(0,2)
+        if num_tags == 0:
+            return ''
+        selected = random.sample(dietary_options, num_tags)
+        return ','.join(selected)
+    
+    def generate_other_tags(self):
+        """Generate random other tags"""
+        other_options = ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
+        num_tags = randint(0,2)
+        if num_tags == 0:
+            return ''
+        selected = random.sample(other_options, num_tags)
+        return ','.join(selected)
+         
     
     def try_create_recipe(self, data):
         """Attempt to create a recipe."""
@@ -300,6 +349,10 @@ class Command(BaseCommand):
                 prep_time_minutes=data['prep_time_minutes'],
                 cook_time_hours=data['cook_time_hours']
                 cook_time_minutes=data['cook_time_minutes'],
+                course_tags=data['course_tags'],
+                cuisine_tags=data['cuisine_tags'],
+                dietary_tags=data['dietary_tags'],
+                other_tags=data['other_tags']
             )
         except:
             pass
