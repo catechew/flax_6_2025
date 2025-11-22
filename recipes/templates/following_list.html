@@ -1,0 +1,60 @@
+{% extends 'base_content.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Header -->
+            <div class="d-flex align-items-center mb-4">
+                <a href="{% url 'user_profile' profile_user.id %}" class="text-decoration-none me-3">
+                    <i class="bi bi-arrow-left fs-4"></i>
+                </a>
+                <div>
+                    <h3 class="mb-0">{{ profile_user.get_full_name }}</h3>
+                    <p class="text-muted mb-0">{{ profile_user.username }}</p>
+                </div>
+            </div>
+
+            <!-- Following List -->
+            <h4 class="mb-3">Following</h4>
+
+            {% if users %}
+                <div class="list-group">
+                    {% for user in users %}
+                    <a href="{% url 'user_profile' user.id %}"
+                       class="list-group-item list-group-item-action d-flex align-items-center">
+                        <img src="{{ user.gravatar }}"
+                             alt="{{ user.get_full_name }}"
+                             class="rounded-circle me-3"
+                             style="width: 50px; height: 50px; object-fit: cover;">
+                        <div>
+                            <h6 class="mb-0">{{ user.get_full_name }}</h6>
+                            <small class="text-muted">{{ user.username }}</small>
+                        </div>
+
+                        {% if user != request.user and profile_user == request.user %}
+                            <div class="ms-auto">
+                                <form action="{% url 'unfollow_user' user.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Unfollow</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center text-muted p-5">
+                    <p>
+                        {% if profile_user == request.user %}
+                            You're not following anyone yet.
+                        {% else %}
+                            {{ profile_user.get_full_name }} isn't following anyone yet.
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

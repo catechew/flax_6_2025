@@ -41,5 +41,10 @@ urlpatterns = [
     path('update_recipe/<int:recipe_id>', recipe_update, name='update_recipe'),
     path('update_recipe/<int:recipe_id>/tags/', update_recipe_tags, name='update_recipe_tags'),
     path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_update, name='cancel_recipe_update'),
+    path('user/<int:user_id>/', views.user_profile, name='user_profile'),
+    path('user/<int:user_id>/follow/', views.follow_user, name='follow_user'),
+    path('user/<int:user_id>/unfollow/', views.unfollow_user, name='unfollow_user'),
+    path('user/<int:user_id>/followers/', views.followers_list, name='followers_list'),
+    path('user/<int:user_id>/following/', views.following_list, name='following_list'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
