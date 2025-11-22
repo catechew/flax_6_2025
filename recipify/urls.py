@@ -53,9 +53,10 @@ urlpatterns = [
     path('user/<int:user_id>/unfollow/', views.unfollow_user, name='unfollow_user'),
     path('user/<int:user_id>/followers/', views.followers_list, name='followers_list'),
     path('user/<int:user_id>/following/', views.following_list, name='following_list'),
-    
+
     path('meal-plan/create/', MealPlanCreateView.as_view(), name='meal-plan-create'),
     path('meal-plan/<int:plan_id>/', MealPlanDetailView.as_view(), name='meal-plan-detail'),
     path('meal-slot/<int:slot_id>/update/', MealSlotUpdateView.as_view(), name='meal-slot-update'),
 ]
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
