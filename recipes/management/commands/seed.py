@@ -404,7 +404,7 @@ class Command(BaseCommand):
                 author=data['author'],
                 publication_date=data['publication_date'],
                 ingredients=data['ingredients'],
-                steos=data['steps'],
+                steps=data['steps'],
                 prep_time_hours=data['prep_time_hours'],
                 prep_time_minutes=data['prep_time_minutes'],
                 cook_time_hours=data['cook_time_hours'],
@@ -418,6 +418,7 @@ class Command(BaseCommand):
             if data['image_content'] and data['image_filename']:
                 recipe.image.save(data['image_filename'], data['image_content'], save=True)
         except:
+            print(f"Error creating recipe: {e}")  # THIS LINE - temporarily add this
             pass
     
                               
