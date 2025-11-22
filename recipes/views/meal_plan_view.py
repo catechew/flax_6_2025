@@ -8,7 +8,7 @@ from recipes.models.recipe import Recipe
 
 def get_monday(d):
     """Return the Monday of the week for a given date"""
-    return -d - timedelta(days=d.weekday())
+    return d - timedelta(days=d.weekday())
 
 class MealPlanCreateView(LoginRequiredMixin, View):
     """
