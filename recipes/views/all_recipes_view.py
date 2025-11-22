@@ -3,6 +3,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 from recipes.models.recipe import Recipe
 from django.db.models import Q
+from django.db.models import F
 
 ITEMS_PER_PAGE = 25
 
@@ -65,8 +66,42 @@ def all_recipes(request):
             other_q |= Q(other_tags__icontains=other)
         recipes = recipes.filter(other_q)
 
-    # Ensure ordering (newest first)
-    recipes = recipes.order_by('-publication_date')
+    # Get sort parameters
+    sort_by = request.GET.get('sort', 'date_newest') # default to newest first
+
+    # Apply sorting
+    if sort_by == 'date_newest':
+        order_field = '-publication_date'
+    elif sort_by == 'date_oldest':
+        order_field = 'publication_date'
+    elif sort_by == 'prep_least':
+        order_field = 'prep_time_hours'
+    elif sort_by == 'prep_most':
+        order_field = '-prep_time_hours'
+    elif sort_by == 'cook_least':
+        order_field = 'cook_time_hours'
+    elif sort_by == 'cook_most':
+        order_field = '-cook_time_hours'
+    elif sort_by == 'total_least':
+      recipes = recipes.annotate(
+          total_minutes=(F('prep_time_hours') + F('cook_time_hours')) * 60 +
+                        (F('prep_time_minutes') + F('cook_time_minutes'))
+      )
+      order_field = 'total_minutes'
+    elif sort_by == 'total_most':
+        recipes = recipes.annotate(
+            total_minutes=(F('prep_time_hours') + F('cook_time_hours')) * 60 +
+                            (F('prep_time_minutes') + F('cook_time_minutes'))
+        )
+        order_field = '-total_minutes'
+    elif sort_by == 'title_az':
+        order_field = 'title'
+    elif sort_by == 'title_za':
+        order_field = '-title'
+    else:
+        order_field = '-publication_date'
+
+    recipes = recipes.order_by(order_field)
 
     # Filter options
     course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
@@ -95,6 +130,7 @@ def all_recipes(request):
         'dietary_filters': dietary_filters,
         'cuisine_filters': cuisine_filters,
         'other_filters': other_filters,
+        'sort_by': sort_by,
     }
 
     return render(request, 'all_recipes.html', context)

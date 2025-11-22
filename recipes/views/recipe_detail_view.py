@@ -24,21 +24,6 @@ def recipe_detail(request, recipe_id):
     for ingredient in recipe.get_ingredient_list():
         scaled_ingredient = scale_ingredient(ingredient, scaling_factor)
         scaled_ingredients.append(scaled_ingredient)
-
-    # Calculate total time
-    total_minutes = recipe.get_total_prep_time_minutes() + recipe.get_total_cook_time_minutes()
-    total_hours = total_minutes // 60
-    total_mins_remainder = total_minutes % 60
-
-    # Format total time display
-    if total_hours > 0 and total_mins_remainder > 0:
-        total_time_display = f"{total_hours} hr {total_mins_remainder} min"
-    elif total_hours > 0:
-        total_time_display = f"{total_hours} hr" if total_hours == 1 else f"{total_hours} hrs"
-    elif total_mins_remainder > 0:
-        total_time_display = f"{total_mins_remainder} min"
-    else:
-        total_time_display = None
     
     context = {
         'recipe': recipe,
@@ -54,7 +39,7 @@ def recipe_detail(request, recipe_id):
         'cook_time_display': recipe.get_cook_time_display(),
         'total_prep_minutes': recipe.get_total_prep_time_minutes(),
         'total_cook_minutes': recipe.get_total_cook_time_minutes(),
-        'total_time_display' : total_time_display,
+        'total_time_display' : recipe.get_total_time_display(),
         'is_owner': recipe.author == request.user,
     }
    
