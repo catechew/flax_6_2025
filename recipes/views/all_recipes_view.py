@@ -57,6 +57,12 @@ def all_recipes(request):
     # Ensure ordering (newest first)
     recipes = recipes.order_by('-publication_date')
 
+    # Filter options
+    course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
+    dietary_options = ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free']
+    cuisine_options = ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern']
+    other_options = ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
+
     # Paginate results 
     paginator = Paginator(recipes, ITEMS_PER_PAGE)
     page_number = request.GET.get('page')
@@ -70,6 +76,14 @@ def all_recipes(request):
         'page_object': page_object,
         'search_query': search_query,
         'total_count' : total_count,
+        'course_options': course_options,
+        'dietary_options': dietary_options,
+        'cuisine_options': cuisine_options,
+        'other_options': other_options,
+        'course_filter': course_filter,
+        'dietary_filter': dietary_filter,
+        'cuisine_filter': cuisine_filter,
+        'other_filter': other_filter,
     }
 
     return render(request, 'all_recipes.html', context)

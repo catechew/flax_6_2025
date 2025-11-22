@@ -20,6 +20,90 @@
     <h2> All Recipes </h2>
   {% endif %}
 
+  {# Filter Section #}
+  <div class="mb-4">
+      <form method="GET" action="{% url 'all_recipes' %}">
+        {# Preserve search query if it exists #}
+        {% if search_query %}
+          <input type="hidden" name="q" value="{{ search_query }}">
+        {% endif %}
+
+        <div class="d-flex align-items-center gap-2">
+          <h7 class="mb-0"><i class="bi bi-funnel"></i></h7>
+          {# Course Filter #}
+          <div class="col-auto">
+            <select name="course" class="form-select-sm">
+              <option value="">All Courses</option>
+              {% for option in course_options %}
+                <option value="{{ option }}" {% if course_filter == option %}selected{% endif %}>
+                  {{ option|title }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          {# Dietary Filter #}
+          <div class="col-auto">
+            <select name="dietary" class="form-select-sm">
+              <option value="">All Dietary</option>
+              {% for option in dietary_options %}
+                <option value="{{ option }}" {% if dietary_filter == option %}selected{% endif %}>
+                  {{ option|title }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          {# Cuisine Filter #}
+          <div class="col-auto">
+            <select name="cuisine" class="form-select-sm">
+              <option value="">All Cuisines</option>
+              {% for option in cuisine_options %}
+                <option value="{{ option }}" {% if cuisine_filter == option %}selected{% endif %}>
+                  {{ option }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          {# Other Filter #}
+          <div class="col-auto">
+            <select name="other" class="form-select-sm">
+              <option value="">All</option>
+              {% for option in other_options %}
+                <option value="{{ option }}" {% if other_filter == option %}selected{% endif %}>
+                  {{ option|title }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-sm">
+              <i class="bi bi-search"></i> Apply Filters
+            </button>
+            <a href="{% url 'all_recipes' %}" class="btn btn-secondary btn-sm">
+              <i class="bi bi-x-circle"></i> Clear Filters
+            </a>
+          </div>
+        </div>
+      </form>
+  </div>
+
+  {# Active Filters Display #}
+  {% if course_filter or dietary_filter or cuisine_filter or other_filter %}
+    <div class="alert alert-info">
+      <strong>Active Filters:</strong>
+      {% if course_filter %}<span class="badge bg-primary me-1">Course: {{ course_filter }}</span>{% endif %}
+      {% if dietary_filter %}<span class="badge bg-success me-1">Dietary: {{ dietary_filter }}</span>{% endif %}
+      {% if cuisine_filter %}<span class="badge bg-info me-1">Cuisine: {{ cuisine_filter }}</span>{% endif %}
+      {% if other_filter %}<span class="badge bg-warning text-dark me-1">Other: {{ other_filter }}</span>{% endif %}
+    </div>
+  {% endif %}
+
+
   {% if recipes %}
     <div class="row mt-4">
         {% for recipe in page_object %}
