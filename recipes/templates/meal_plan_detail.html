@@ -2,53 +2,36 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container mt-4">
-    <h1 class="page-title">📅 Weekly Meal Plan</h1>
-    <p><strong>Week starting:</strong> {{ plan.week_start }}</p>
+    <h1 class="mb-4">📅 Weekly Meal Plan</h1>
+    <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
 
-    <table class="table table-bordered meal-plan-table">
-        <thead class="table-light">
-            <tr>
-                <th style="width: 100px;">Day</th>
-                <th>🌅 Breakfast</th>
-                <th>🌞 Lunch</th>
-                <th>🌙 Dinner</th>
-                <th>🍿 Snack</th>
-            </tr>
-        </thead>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th style="width:120px;">Day</th>
+                    <th>🥞 Breakfast</th>
+                    <th>🥗 Lunch</th>
+                    <th>🍛 Dinner</th>
+                    <th>🍿 Snack</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day in schedule %}
+                <tr>
+                    <td class="fw-bold">{{ day.day_name }}</td>
 
-        <tbody>
-            {% for day in days %}
-            <tr>
-                <td><strong>{{ day|upper }}</strong></td>
-                
-                {% for meal in meals %}
-                <td>
-                    {% with slot=organized_slots|get_item:day|get_item:meal %}
-                        {% if slot %}
-                            {% if slot.recipe %}
-                                <div class="mb-2">
-                                    <a href="{% url 'recipe_detail' slot.recipe.id %}" class="text-decoration-none">
-                                        <strong>{{ slot.recipe.title }}</strong>
-                                    </a>
-                                </div>
-                            {% else %}
-                                <span class="text-muted">— empty —</span><br>
-                            {% endif %}
-                            
-                            <a href="{% url 'meal-slot-update' slot.id %}"
-                               class="btn btn-sm btn-outline-primary mt-1">
-                                ✏️ Edit
-                            </a>
-                        {% endif %}
-                    {% endwith %}
-                </td>
+                    <td>{% with slot=day.slots.breakfast %}{% include "partials/meal_slot.html" %}{% endwith %}</td>
+                    <td>{% with slot=day.slots.lunch %}{% include "partials/meal_slot.html" %}{% endwith %}</td>
+                    <td>{% with slot=day.slots.dinner %}{% include "partials/meal_slot.html" %}{% endwith %}</td>
+                    <td>{% with slot=day.slots.snack %}{% include "partials/meal_slot.html" %}{% endwith %}</td>
+                </tr>
                 {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
 
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Back to Dashboard</a>
+</div>
 {% endblock %}

@@ -12,19 +12,16 @@
 <form method="POST">
     {% csrf_token %}
     
-    <label for="recipe_id"><strong>Select Recipe:</strong></label>
-    <select name="recipe_id" id="recipe_id" class="form-control">
+    <label><strong>Select Recipe:</strong></label>
+    <select name="recipe_id" class="form-control">
         {% for recipe in recipes %}
-            <option value="{{ recipe.id }}"
-                {% if slot.recipe and slot.recipe.id == recipe.id %}selected{% endif %}
-            >
+            <option value="{{ recipe.id }}" {% if slot.recipe and recipe.id == slot.recipe.id %}selected{% endif %}>
                 {{ recipe.title }}
             </option>
         {% endfor %}
     </select>
 
-    <br>
-    <button type="submit" class="btn btn-success">Save</button>
-    <a href="{% url 'meal-plan-detail' slot.meal_plan.id %}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-success mt-3">Save</button>
+    <a href="{% url 'meal-plan-detail' slot.meal_plan.id %}" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 {% endblock %}

@@ -16,6 +16,11 @@ class MealPlanCreateView(LoginRequiredMixin, View):
     If it already exists, redirect to detail view
     """
     def get(self, request):
+        print("=" * 50)
+        print("🔍 MEAL PLAN CREATE VIEW CALLED!")
+        print(f"User: {request.user.username}")
+        print("=" * 50)
+        
         today = date.today()
         week_start = get_monday(today)
 
@@ -23,6 +28,8 @@ class MealPlanCreateView(LoginRequiredMixin, View):
             user=request.user,
             week_start=week_start
         )
+        
+        print(f"Plan ID: {plan.id}, Created: {created}")
 
         if created:
             # Create empty day slots for the whole week
@@ -37,36 +44,64 @@ class MealPlanCreateView(LoginRequiredMixin, View):
                         meal_type=m, 
                         recipe=None
                     )
+            print("✅ Created 28 new meal slots")
+        
+        print(f"Redirecting to meal-plan-detail with plan_id={plan.id}")
         return redirect("meal-plan-detail", plan_id=plan.id)
 
 class MealPlanDetailView(LoginRequiredMixin, View):
     """Show the whole weekly plan in a calendar layout"""
     def get(self, request, plan_id):
+        print("=" * 50)
+        print("🔍 MEAL PLAN DETAIL VIEW CALLED!")
+        print(f"Plan ID: {plan_id}")
+        print(f"User: {request.user.username}")
+        print("=" * 50)
+        
         plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
+        
+        print(f"✅ Plan found: {plan}")
         
         # Get all slots
         all_slots = plan.entries.all()
+        print(f"✅ Found {all_slots.count()} slots")
         
-        # Organize slots by day and meal type for easier template access
-        days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
-        meals = ["breakfast", "lunch", "dinner", "snack"]
+        # Define days and meals
+        days = [
+            ('mon', 'Monday'),
+            ('tue', 'Tuesday'),
+            ('wed', 'Wednesday'),
+            ('thu', 'Thursday'),
+            ('fri', 'Friday'),
+            ('sat', 'Saturday'),
+            ('sun', 'Sunday'),
+        ]
+        meals = ['breakfast', 'lunch', 'dinner', 'snack']
         
-        # Create a nested dictionary: organized_slots[day][meal] = slot
-        organized_slots = {}
-        for day in days:
-            organized_slots[day] = {}
+        # Build the schedule - list of day rows
+        schedule = []
+        for day_code, day_name in days:
+            row = {
+                'day_code': day_code,
+                'day_name': day_name,
+                'slots': {}
+            }
             for meal in meals:
-                
-                # Find the slot for this day/meal combination
-                slot = all_slots.filter(day=day, meal_type=meal).first()
-                organized_slots[day][meal] = slot
+                slot = all_slots.filter(day=day_code, meal_type=meal).first()
+                row['slots'][meal] = slot
+            schedule.append(row)
+        
+        print(f"✅ Built schedule with {len(schedule)} days")
 
         context = {
             "plan": plan,
-            "organized_slots": organized_slots,
-            "days": days,
+            "schedule": schedule,
             "meals": meals,
         }
+        
+        print("✅ Rendering meal_plan_detail.html")
+        print("=" * 50)
+        
         return render(request, "meal_plan_detail.html", context)
 
 class MealSlotUpdateView(LoginRequiredMixin, View):
