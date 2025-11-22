@@ -20,7 +20,6 @@ user_fixtures = [
     {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
 ]
 
-
 class Command(BaseCommand):
     """
     Build automation command to seed the database with data.
@@ -251,8 +250,6 @@ class Command(BaseCommand):
     
     # def generate_random_image(self):
                               
-
-
 def create_username(first_name, last_name):
     """
     Construct a simple username from first and last names.
@@ -278,4 +275,3 @@ def create_email(first_name, last_name):
         str: An email in the form ``{firstname}.{lastname}@example.org``.
     """
     return first_name + '.' + last_name + '@example.org'
-

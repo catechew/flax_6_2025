@@ -105,9 +105,7 @@ class RecipeForm(forms.ModelForm):
         widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '59'}),
         label='Cook Time (minutes)'
     )
-
-
-
+    
     class Meta:
         model = Recipe
         fields = ['title', 'publication_date', 'servings', 'ingredients', 'steps', 'image', 'prep_time_hours', 'prep_time_minutes','cook_time_hours', 'cook_time_minutes']

@@ -21,7 +21,6 @@ class User(AbstractUser):
 
     class Meta:
         """Model options."""
-
         ordering = ['last_name', 'first_name']
 
     def full_name(self):
