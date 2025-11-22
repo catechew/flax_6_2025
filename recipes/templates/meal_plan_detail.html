@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1 class="page-title">📅 Weekly Meal Plan</h1>
+    <p><strong>Week starting:</strong> {{ plan.week_start }}</p>
+
+    <table class="table table-bordered meal-plan-table">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 100px;">Day</th>
+                <th>🌅 Breakfast</th>
+                <th>🌞 Lunch</th>
+                <th>🌙 Dinner</th>
+                <th>🍿 Snack</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for day in days %}
+            <tr>
+                <td><strong>{{ day|upper }}</strong></td>
+                
+                {% for meal in meals %}
+                <td>
+                    {% with slot=organized_slots|get_item:day|get_item:meal %}
+                        {% if slot %}
+                            {% if slot.recipe %}
+                                <div class="mb-2">
+                                    <a href="{% url 'recipe_detail' slot.recipe.id %}" class="text-decoration-none">
+                                        <strong>{{ slot.recipe.title }}</strong>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">— empty —</span><br>
+                            {% endif %}
+                            
+                            <a href="{% url 'meal-slot-update' slot.id %}"
+                               class="btn btn-sm btn-outline-primary mt-1">
+                                ✏️ Edit
+                            </a>
+                        {% endif %}
+                    {% endwith %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

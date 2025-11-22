@@ -43,12 +43,29 @@ class MealPlanDetailView(LoginRequiredMixin, View):
     """Show the whole weekly plan in a calendar layout"""
     def get(self, request, plan_id):
         plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
-
-        slots = plan.entries.order_by("day", "meal_type")
+        
+        # Get all slots
+        all_slots = plan.entries.all()
+        
+        # Organize slots by day and meal type for easier template access
+        days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        meals = ["breakfast", "lunch", "dinner", "snack"]
+        
+        # Create a nested dictionary: organized_slots[day][meal] = slot
+        organized_slots = {}
+        for day in days:
+            organized_slots[day] = {}
+            for meal in meals:
+                
+                # Find the slot for this day/meal combination
+                slot = all_slots.filter(day=day, meal_type=meal).first()
+                organized_slots[day][meal] = slot
 
         context = {
             "plan": plan,
-            "slots": slots,
+            "organized_slots": organized_slots,
+            "days": days,
+            "meals": meals,
         }
         return render(request, "meal_plan_detail.html", context)
 
