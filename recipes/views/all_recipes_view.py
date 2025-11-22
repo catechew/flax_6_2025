@@ -31,7 +31,7 @@ def all_recipes(request):
             Q(title__icontains=search_query) |
             Q(adjectives__icontains=search_query) |
             Q(ingredients__icontains=search_query) |
-            Q(steps__icontains=search_query)
+            Q(steps__icontains=search_query) 
         )
 
     # Ensure ordering (newest first)
