@@ -34,7 +34,6 @@ class NewPasswordMixin(forms.Form):
         password_confirmation (CharField): The repeated password used to
             confirm accuracy of the first input.
     """
-
     new_password = forms.CharField(
         label='Password',
         widget=forms.PasswordInput(),
@@ -163,7 +162,6 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         username (CharField): The desired username.
         email (EmailField): The user's email address.
     """
-
     class Meta:
         """Form options."""
 

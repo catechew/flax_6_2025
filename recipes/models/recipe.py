@@ -107,8 +107,6 @@ class Recipe(models.Model):
         self.adjectives = ', '.join(all_tags) if all_tags else 'none'
         super().save(*args, **kwargs)
 
-
-
     class Meta: 
         ordering = ['-publication_date']  # Newest first
         
