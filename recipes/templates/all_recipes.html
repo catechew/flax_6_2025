@@ -28,78 +28,108 @@
           <input type="hidden" name="q" value="{{ search_query }}">
         {% endif %}
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-end gap-2">
           <h7 class="mb-0"><i class="bi bi-funnel"></i></h7>
+
           {# Course Filter #}
-          <div class="col-auto">
-            <select name="course" class="form-select-sm">
-              <option value="">All Courses</option>
+          <div class="dropdown">
+            <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="courseDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+              Course {% if course_filters %}({{ course_filters|length }}){% endif %}
+            </button>
+            <div class="dropdown-menu p-2" style="min-width: 200px;">
               {% for option in course_options %}
-                <option value="{{ option }}" {% if course_filter == option %}selected{% endif %}>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="course" value="{{ option }}" 
+                        id="course_{{ forloop.counter }}" {% if option in course_filters %}checked{% endif %}
+                        onchange="document.getElementById('filterForm').submit()">
+                <label class="form-check-label" for="course_{{ forloop.counter }}">
                   {{ option|title }}
-                </option>
+                </label>
+              </div>
               {% endfor %}
-            </select>
+            </div>
           </div>
+
+
 
           {# Dietary Filter #}
-          <div class="col-auto">
-            <select name="dietary" class="form-select-sm">
-              <option value="">All Dietary</option>
-              {% for option in dietary_options %}
-                <option value="{{ option }}" {% if dietary_filter == option %}selected{% endif %}>
-                  {{ option|title }}
-                </option>
-              {% endfor %}
-            </select>
+          <div class="dropdown">
+          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" id="dietaryDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+            Dietary {% if dietary_filters %}({{ dietary_filters|length }}){% endif %}
+          </button>
+          <div class="dropdown-menu p-2" style="min-width: 200px;">
+            {% for option in dietary_options %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="dietary" value="{{ option }}" 
+                      id="dietary_{{ forloop.counter }}" {% if option in dietary_filters %}checked{% endif %}
+                      onchange="document.getElementById('filterForm').submit()">
+              <label class="form-check-label" for="dietary_{{ forloop.counter }}">
+                {{ option|title }}
+              </label>
+            </div>
+            {% endfor %}
           </div>
+        </div>
+
 
           {# Cuisine Filter #}
-          <div class="col-auto">
-            <select name="cuisine" class="form-select-sm">
-              <option value="">All Cuisines</option>
-              {% for option in cuisine_options %}
-                <option value="{{ option }}" {% if cuisine_filter == option %}selected{% endif %}>
-                  {{ option }}
-                </option>
-              {% endfor %}
-            </select>
+          <div class="dropdown">
+          <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="cuisineDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+            Cuisine {% if cuisine_filters %}({{ cuisine_filters|length }}){% endif %}
+          </button>
+          <div class="dropdown-menu p-2" style="min-width: 200px;">
+            {% for option in cuisine_options %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="cuisine" value="{{ option }}" 
+                     id="cuisine_{{ forloop.counter }}" {% if option in cuisine_filters %}checked{% endif %}
+                     onchange="document.getElementById('filterForm').submit()">
+              <label class="form-check-label" for="cuisine_{{ forloop.counter }}">
+                {{ option }}
+              </label>
+            </div>
+            {% endfor %}
           </div>
+        </div>
+
 
           {# Other Filter #}
-          <div class="col-auto">
-            <select name="other" class="form-select-sm">
-              <option value="">All</option>
-              {% for option in other_options %}
-                <option value="{{ option }}" {% if other_filter == option %}selected{% endif %}>
-                  {{ option|title }}
-                </option>
-              {% endfor %}
-            </select>
+          <div class="dropdown">
+          <button class="btn btn-outline-warning btn-sm dropdown-toggle" type="button" id="otherDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+            Other {% if other_filters %}({{ other_filters|length }}){% endif %}
+          </button>
+          <div class="dropdown-menu p-2" style="min-width: 200px;">
+            {% for option in other_options %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="other" value="{{ option }}" 
+                     id="other_{{ forloop.counter }}" {% if option in other_filters %}checked{% endif %}
+                     onchange="document.getElementById('filterForm').submit()">
+              <label class="form-check-label" for="other_{{ forloop.counter }}">
+                {{ option|title }}
+              </label>
+            </div>
+            {% endfor %}
           </div>
         </div>
 
-        <div class="row mt-3">
-          <div class="col-12">
-            <button type="submit" class="btn btn-primary btn-sm">
+        <div class="mt-2">
+          <button type="submit" class="btn btn-primary btn-sm">
               <i class="bi bi-search"></i> Apply Filters
-            </button>
-            <a href="{% url 'all_recipes' %}" class="btn btn-secondary btn-sm">
-              <i class="bi bi-x-circle"></i> Clear Filters
-            </a>
-          </div>
+          </button>
+          <a href="{% url 'all_recipes' %}" class="btn btn-secondary + btn-sm">
+            <i class="bi bi-x-circle"></i> Clear Filters
+          </a>
         </div>
-      </form>
+    </form>
   </div>
 
   {# Active Filters Display #}
-  {% if course_filter or dietary_filter or cuisine_filter or other_filter %}
-    <div class="alert alert-info">
+  {% if course_filters or dietary_filters or cuisine_filters or other_filters %}
+    <div class="alert alert-info mt-3">
       <strong>Active Filters:</strong>
-      {% if course_filter %}<span class="badge bg-primary me-1">Course: {{ course_filter }}</span>{% endif %}
-      {% if dietary_filter %}<span class="badge bg-success me-1">Dietary: {{ dietary_filter }}</span>{% endif %}
-      {% if cuisine_filter %}<span class="badge bg-info me-1">Cuisine: {{ cuisine_filter }}</span>{% endif %}
-      {% if other_filter %}<span class="badge bg-warning text-dark me-1">Other: {{ other_filter }}</span>{% endif %}
+      {% for filter in course_filters %}<span class="badge bg-primary me-1">{% if filter %} Course: {{ filter }} {% endif %}</span>{% endfor %}
+      {% for filter in dietary_filters %}<span class="badge bg-success me-1">{% if filter %} Dietary: {{ filter }} {% endif %}</span>{% endfor %}
+      {% for filter in cuisine_filters %}<span class="badge bg-info me-1">{% if filter %} Cuisine: {{ filter }} {% endif %}</span>{% endfor %}
+      {% for filter in other_filters %}<span class="badge bg-warning text-dark me-1">{% if filter %} Other: {{ filter }} {% endif %}</span>{% endfor %}
     </div>
   {% endif %}
 

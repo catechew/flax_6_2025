@@ -23,10 +23,10 @@ def all_recipes(request):
         search_query = ''
 
     # Get filter parameters
-    course_filter = request.GET.get('course', '')
-    dietary_filter = request.GET.get('dietary', '')
-    cuisine_filter = request.GET.get('cuisine', '')
-    other_filter = request.GET.get('other', '')
+    course_filters = request.GET.getlist('course', '')
+    dietary_filters = request.GET.getlist('dietary', '')
+    cuisine_filters = request.GET.getlist('cuisine', '')
+    other_filters = request.GET.getlist('other', '')
 
     # Start with all recipes
     recipes = Recipe.objects.all()
@@ -37,22 +37,33 @@ def all_recipes(request):
             Q(title__icontains=search_query) |
             Q(adjectives__icontains=search_query) |
             Q(ingredients__icontains=search_query) |
-            Q(steps__icontains=search_query) |
-            Q(adjectives__icontains=search_query) 
+            Q(steps__icontains=search_query) 
         )
 
     # Apply tag filters
-    if course_filter:
-        recipes = recipes.filter(course_tags__icontains=course_filter)
+    if course_filters:
+        course_q = Q()
+        for course in course_filters:
+            course_q |= Q(course_tags__icontains=course)
+        recipes = recipes.filter(course_q)
 
-    if dietary_filter:
-        recipes = recipes.filter(dietary_tags__icontains=dietary_filter)
+    if dietary_filters:
+        dietary_q = Q()
+        for dietary in dietary_filters:
+            dietary_q |= Q(dietary_tags__icontains=dietary)
+        recipes = recipes.filter(dietary_q)
 
-    if cuisine_filter:
-        recipes = recipes.filter(cuisine_tags__icontains=cuisine_filter)
+    if cuisine_filters:
+        cuisine_q = Q()
+        for cuisine in cuisine_filters:
+            cuisine_q |= Q(cuisine_tags__icontains=cuisine)
+        recipes = recipes.filter(cuisine_q)
 
-    if other_filter:
-        recipes = recipes.filter(other_tags__icontains=other_filter)
+    if other_filters:
+        other_q = Q()
+        for other in other_filters:
+            other_q |= Q(other_tags__icontains=other)
+        recipes = recipes.filter(other_q)
 
     # Ensure ordering (newest first)
     recipes = recipes.order_by('-publication_date')
@@ -80,10 +91,10 @@ def all_recipes(request):
         'dietary_options': dietary_options,
         'cuisine_options': cuisine_options,
         'other_options': other_options,
-        'course_filter': course_filter,
-        'dietary_filter': dietary_filter,
-        'cuisine_filter': cuisine_filter,
-        'other_filter': other_filter,
+        'course_filters': course_filters,
+        'dietary_filters': dietary_filters,
+        'cuisine_filters': cuisine_filters,
+        'other_filters': other_filters,
     }
 
     return render(request, 'all_recipes.html', context)
