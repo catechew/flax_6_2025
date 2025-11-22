@@ -22,6 +22,12 @@ def all_recipes(request):
     else:
         search_query = ''
 
+    # Get filter parameters
+    course_filter = request.GET.get('course', '')
+    dietary_filter = request.GET.get('dietary', '')
+    cuisine_filter = request.GET.get('cuisine', '')
+    other_filter = request.GET.get('other', '')
+
     # Start with all recipes
     recipes = Recipe.objects.all()
 
@@ -31,8 +37,22 @@ def all_recipes(request):
             Q(title__icontains=search_query) |
             Q(adjectives__icontains=search_query) |
             Q(ingredients__icontains=search_query) |
-            Q(steps__icontains=search_query) 
+            Q(steps__icontains=search_query) |
+            Q(adjectives__icontains=search_query) 
         )
+
+    # Apply tag filters
+    if course_filter:
+        recipes = recipes.filter(course_tags__icontains=course_filter)
+
+    if dietary_filter:
+        recipes = recipes.filter(dietary_tags__icontains=dietary_filter)
+
+    if cuisine_filter:
+        recipes = recipes.filter(cuisine_tags__icontains=cuisine_filter)
+
+    if other_filter:
+        recipes = recipes.filter(other_tags__icontains=other_filter)
 
     # Ensure ordering (newest first)
     recipes = recipes.order_by('-publication_date')

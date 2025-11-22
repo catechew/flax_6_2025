@@ -279,7 +279,7 @@ class Command(BaseCommand):
         ]
         rand_num = randint(4,8)
         selected = sample(step_options, rand_num)
-        return '/n'.join(selected)
+        return '\n'.join(selected)
     
     def generate_random_hours(self):
         """Generate random hour"""
