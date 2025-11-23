@@ -21,7 +21,7 @@ from django.urls import path
 from recipes import views
 from recipes.views.recipe_create_view import create_recipe, create_recipe_tags, cancel_recipe_creation
 from recipes.views.recipe_update_view import recipe_update, update_recipe_tags, cancel_recipe_update
-from recipes.views.meal_plan_view import MealPlanCreateView, MealPlanDetailView, MealSlotUpdateView, MealPlanNavigateView
+from recipes.views.meal_plan_view import MealPlanCreateView, MealPlanDetailView, MealSlotUpdateView, MealPlanNavigateView, MealSlotClearView
 
 
 urlpatterns = [
@@ -56,8 +56,7 @@ urlpatterns = [
     path('meal-plan/create/', MealPlanCreateView.as_view(), name='meal-plan-create'),
     path('meal-plan/<int:plan_id>/', MealPlanDetailView.as_view(), name='meal-plan-detail'),
     path('meal-slot/<int:slot_id>/update/', MealSlotUpdateView.as_view(), name='meal-slot-update'),
-    path("meal-plan/<int:plan_id>/prev/", MealPlanNavigateView.as_view(), name="meal-plan-prev"),
-    path("meal-plan/<int:plan_id>/next/", MealPlanNavigateView.as_view(), name="meal-plan-next"),
+    path("meal-plan/<int:plan_id>/<str:direction>/", MealPlanNavigateView.as_view(), name="meal-plan-navigate"),
     path("meal-slot/<int:slot_id>/clear/", MealSlotClearView.as_view(), name="meal-slot-clear"),
 ]
 
