@@ -22,16 +22,19 @@ class RecipeCreateViewTestCase(TestCase):
 
         self.form_data = {
             'title' : 'Test Recipe',
-            'adjectives' : 'quick easy healthy',
             'publication_date' : timezone.now().date(),
             'servings' : 4,
             'ingredients' : "test (1)",
-            'steps' : "test"
+            'steps' : "test",
+            'prep_time_hours': 0,
+            'prep_time_minutes': 30,
+            'cook_time_hours': 1,
+            'cook_time_minutes': 15,
         }
     
     # Test that the create recipe url is correct
     def test_create_recipe_url(self):
-        self.assertEqual(self.url, '/create/')
+        self.assertEqual(self.url, '/create_recipe/')
 
     # Test GET request to create recipe page
     def test_get_create_recipe_page(self):
@@ -51,26 +54,39 @@ class RecipeCreateViewTestCase(TestCase):
         response = self.client.get(self.url)
         form = response.context['form']
         self.assertIn('title', form.fields)
-        self.assertIn('adjectives', form.fields)
         self.assertIn('publication_date', form.fields)
         self.assertIn('ingredients', form.fields)
         self.assertIn('steps', form.fields)
+        self.assertIn('prep_time_hours', form.fields)
+        self.assertIn('prep_time_minutes', form.fields)
+        self.assertIn('cook_time_hours', form.fields)
+        self.assertIn('cook_time_minutes', form.fields)
 
     # Test successful recipe creation
     def test_successful_recipe_creation(self):
         initial_recipe_count = Recipe.objects.count()
         response = self.client.post(self.url, self.form_data, follow=True)
+
+        # Should redirect to page 2 (tags)
+        self.assertRedirects(response, reverse('create_recipe_tags'))
+
+        # Page 2: Post with create_recipe button (no tags)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe':'true'}, follow=True)
+
         # Check that recipe was created
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
 
         # Check the created recipe
         created_recipe = Recipe.objects.latest('id')
         self.assertEqual(created_recipe.title, 'Test Recipe')
-        self.assertEqual(created_recipe.adjectives, 'quick easy healthy')
         self.assertEqual(created_recipe.author, self.user)
         self.assertEqual(created_recipe.servings, 4)
         self.assertEqual(created_recipe.ingredients, 'test (1)')
         self.assertEqual(created_recipe.steps, 'test')
+        self.assertEqual(created_recipe.prep_time_hours, 0)
+        self.assertEqual(created_recipe.prep_time_minutes, 30)
+        self.assertEqual(created_recipe.cook_time_hours, 1)
+        self.assertEqual(created_recipe.cook_time_minutes, 15)
 
     # Test that recipe creation fails with title less than 4 characters
     def test_recipe_creation_fails_with_short_title(self):
@@ -87,18 +103,6 @@ class RecipeCreateViewTestCase(TestCase):
         # Validator message may vary; check it mentions the minimum length
         self.assertTrue(any('at least' in e or 'Ensure this value has at least' in e for e in form.errors['title']))
     
-    # Test that recipe creation fails with adjectives less than 4 characters
-    def test_recipe_creation_fails_with_short_adjectives(self):
-        self.form_data['adjectives'] = 'abc'  # Adjectives with less than 4 characters
-        initial_recipe_count = Recipe.objects.count()
-        response = self.client.post(self.url, self.form_data)
-        # Check that recipe was not created
-        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
-        self.assertEqual(response.status_code, 200)
-        form = response.context.get('form') if getattr(response, 'context', None) else None
-        self.assertIsNotNone(form)
-        self.assertIn('adjectives', form.errors)
-        self.assertTrue(any('at least' in e or 'Ensure this value has at least' in e for e in form.errors['adjectives']))
 
     # Test that recipe creation fails without title
     def test_recipe_creation_fails_without_title(self):
@@ -112,19 +116,6 @@ class RecipeCreateViewTestCase(TestCase):
         self.assertIsNotNone(form)
         self.assertIn('title', form.errors)
         self.assertTrue(any('This field is required' in e for e in form.errors['title']))
-
-    # Test that recipe creation fails without adjectives
-    def test_recipe_creation_fails_without_adjectives(self):
-        self.form_data.pop('adjectives')  # Remove adjectives from form data
-        initial_recipe_count = Recipe.objects.count()
-        response = self.client.post(self.url, self.form_data)
-        # Check that recipe was not created
-        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
-        self.assertEqual(response.status_code, 200)
-        form = response.context.get('form') if getattr(response, 'context', None) else None
-        self.assertIsNotNone(form)
-        self.assertIn('adjectives', form.errors)
-        self.assertTrue(any('This field is required' in e for e in form.errors['adjectives']))
     
     # Test that recipe creation fails without publication date
     def test_recipe_creation_fails_without_publication_date(self):
@@ -196,6 +187,7 @@ class RecipeCreateViewTestCase(TestCase):
         self.form_data['title'] = 'A' * 255  # Title with 255 characters
         initial_recipe_count = Recipe.objects.count()
         response = self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
 
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
         
@@ -212,33 +204,13 @@ class RecipeCreateViewTestCase(TestCase):
         self.assertIn('title', form.errors)
         self.assertTrue(any('at most 255' in e or 'Ensure this value has at most' in e for e in form.errors['title']))
 
-    # Test that adjectives can be up to 255 characters
-    def test_recipe_creation_with_max_length_adjectives(self):
-        self.form_data['adjectives'] = 'test' * 50  # Adjectives with 255 characters
-        initial_recipe_count = Recipe.objects.count()
-        response = self.client.post(self.url, self.form_data, follow=True)
-
-        self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
-    
-    # Test that adjectives cannot exceed 255 characters
-    def test_recipe_creation_fails_with_too_long_adjectives(self):
-        # Ensure we exceed 255 characters for the adjectives field
-        self.form_data['adjectives'] = 'a' * 256
-        initial_recipe_count = Recipe.objects.count()
-        response = self.client.post(self.url, self.form_data)
-
-        self.assertEqual(Recipe.objects.count(), initial_recipe_count)
-        self.assertEqual(response.status_code, 200)
-        form = response.context.get('form') if getattr(response, 'context', None) else None
-        self.assertIsNotNone(form)
-        self.assertIn('adjectives', form.errors)
-        self.assertTrue(any('at most 255' in e or 'Ensure this value has at most' in e for e in form.errors['adjectives']))
-
     # Test create recipe with special characters in title
     def test_recipe_creation_with_special_characters_in_title(self):
         self.form_data['title'] = 'Test Recipe! @#&*()_+[]{};:,.<>?'
         initial_recipe_count = Recipe.objects.count()
         response = self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
+
 
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
         created_recipe = Recipe.objects.latest('id')
@@ -262,14 +234,10 @@ class RecipeCreateViewTestCase(TestCase):
         for i in range(5):
             self.form_data['title'] = f'Test Recipe {i}'
             response = self.client.post(self.url, self.form_data, follow=True)
+            response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
             self.assertEqual(response.status_code, 200)
         
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 5)
-
-    # Test that help/tips section is present in the form
-    def test_help_section_present_in_form(self):
-        response = self.client.get(self.url)
-        self.assertContains(response, 'Tips')
 
     # Test that creating a recipe with future publication date fails
     def test_create_recipe_with_future_date_fails(self):
@@ -319,6 +287,8 @@ class RecipeCreateViewTestCase(TestCase):
         initial_recipe_count = Recipe.objects.count()
 
         response = self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
+
 
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
         new_recipe = Recipe.objects.latest('id')
@@ -331,6 +301,7 @@ class RecipeCreateViewTestCase(TestCase):
         initial_recipe_count = Recipe.objects.count()
 
         response = self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
 
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
         new_recipe = Recipe.objects.latest('id')
@@ -343,6 +314,7 @@ class RecipeCreateViewTestCase(TestCase):
         initial_recipe_count = Recipe.objects.count()
 
         response = self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
 
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
         new_recipe = Recipe.objects.latest('id')
@@ -378,6 +350,7 @@ class RecipeCreateViewTestCase(TestCase):
         data['image'] = uploaded_file
 
         response = self.client.post(self.url, data, format='multipart', follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
 
         self.assertEqual(response.status_code, 200)
         # Recipe should be created
@@ -401,4 +374,42 @@ class RecipeCreateViewTestCase(TestCase):
         self.assertIn('ingredients', form.errors)
         # The validation error should mention parentheses position or the generic fix message
         self.assertTrue(any('Parentheses should be at the end' in e or 'Please fix the following' in e for e in form.errors['ingredients']))
+
+    # Test recipe creation with valid time values
+    def test_recipe_creation_with_valid_time_values(self):
+        self.form_data['prep_time_hours'] = 2
+        self.form_data['prep_time_minutes'] = 30
+        self.form_data['cook_time_hours'] = 1
+        self.form_data['cook_time_minutes'] = 45
+        initial_recipe_count = Recipe.objects.count()
+
+        response = self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe':'true'}, follow=True)
+
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
+        created_recipe = Recipe.objects.latest('id')
+        self.assertEqual(created_recipe.prep_time_hours, 2)
+        self.assertEqual(created_recipe.prep_time_minutes, 30)
+        self.assertEqual(created_recipe.cook_time_hours, 1)
+        self.assertEqual(created_recipe.cook_time_minutes, 45)
+
+    # Test recipe creation with zero time values
+    def test_recipe_creation_with_zero_times(self):
+        self.form_data['prep_time_hours'] = 0
+        self.form_data['prep_time_minutes'] = 0
+        self.form_data['cook_time_hours'] = 0
+        self.form_data['cook_time_minutes'] = 0
+        initial_recipe_count = Recipe.objects.count()
+
+        response = self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe':'true'}, follow=True)
+
+        self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
+
+    # Test that page 2 url exists
+    def test_create_recipe_tags_url(self):
+        self.assertEqual(reverse('create_recipe_tags'), '/create_recipe/tags/')
+
+
+                                    
 
