@@ -21,32 +21,48 @@
 
         </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead class="table-primary">
-                <tr>
-                    <th style="width:120px;">Day</th>
-                    <th>🥞 Breakfast</th>
-                    <th>🥗 Lunch</th>
-                    <th>🍛 Dinner</th>
-                    <th>🍿 Snack</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for day in schedule %}
-                <tr>
-                    <td class="fw-bold">{{ day.day_name }}</td>
+    <div class="row">
+        {% for day in schedule %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+            
+                <div class="card-header bg-primary text-white fw-bold text-center">
+                {{ day.day_name }}
+                </div>
 
-                    <td>{% with slot=day.slots.breakfast %}{% include "partials/meal_slot.html" %}{% endwith %}</td>
-                    <td>{% with slot=day.slots.lunch %}{% include "partials/meal_slot.html" %}{% endwith %}</td>
-                    <td>{% with slot=day.slots.dinner %}{% include "partials/meal_slot.html" %}{% endwith %}</td>
-                    <td>{% with slot=day.slots.snack %}{% include "partials/meal_slot.html" %}{% endwith %}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                <div class="card-body">
+
+                    <p><strong>🍳 Breakfast:</strong>
+                        {% with slot=day.slots.breakfast %}
+                            {% include "partials/meal_slot.html" %}
+                        {% endwith %}
+                    </p>
+
+                    <p><strong>🥗 Lunch:</strong>
+                        {% with slot=day.slots.lunch %}
+                            {% include "partials/meal_slot.html" %}
+                        {% endwith %}
+                    </p>
+
+                    <p><strong>🍝 Dinner:</strong>
+                        {% with slot=day.slots.dinner %}
+                            {% include "partials/meal_slot.html" %}
+                        {% endwith %}
+                    </p>
+
+                    <p><strong>🍿 Snack:</strong>
+                        {% with slot=day.slots.snack %}
+                            {% include "partials/meal_slot.html" %}
+                        {% endwith %}
+                    </p>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
     <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Back to Dashboard</a>
+
 </div>
 {% endblock %}
