@@ -410,6 +410,373 @@ class RecipeCreateViewTestCase(TestCase):
     def test_create_recipe_tags_url(self):
         self.assertEqual(reverse('create_recipe_tags'), '/create_recipe/tags/')
 
+    # PAGE 2 (Tags) TESTS 
 
-                                    
+    def test_get_create_recipe_tags_without_page1_redirects(self):
+        """Test accessing page 2 without completing page 1 redirects"""
+        response = self.client.get(reverse('create_recipe_tags'))
+        self.assertRedirects(response, reverse('create_recipe'))
+
+    def test_get_create_recipe_tags_after_page1(self):
+        """Test accessing page 2 after completing page 1"""
+        # Complete page 1
+        self.client.post(self.url, self.form_data, follow=True)
+        # Access page 2
+        response = self.client.get(reverse('create_recipe_tags'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'create_recipe_tags.html')
+
+    def test_create_recipe_tags_context(self):
+        """Test that page 2 has required context variables"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.get(reverse('create_recipe_tags'))
+
+        self.assertIn('course_tags', response.context)
+        self.assertIn('dietary_tags', response.context)
+        self.assertIn('cuisine_tags', response.context)
+        self.assertIn('other_tags', response.context)
+        self.assertIn('course_options', response.context)
+        self.assertIn('dietary_options', response.context)
+        self.assertIn('cuisine_options', response.context)
+        self.assertIn('other_options', response.context)
+
+    def test_add_course_tag(self):
+        """Test adding a course tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'add_course_tag': 'breakfast'}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('breakfast', response.context['course_tags'])
+
+    def test_add_dietary_tag(self):
+        """Test adding a dietary tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'add_dietary_tag': 'vegan'}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('vegan', response.context['dietary_tags'])
+
+    def test_add_cuisine_tag(self):
+        """Test adding a cuisine tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'add_cuisine_tag': 'Italian'}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Italian', response.context['cuisine_tags'])
+
+    def test_add_other_tag(self):
+        """Test adding an other tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'add_other_tag': 'quick'}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('quick', response.context['other_tags'])
+
+    def test_add_duplicate_tag_ignored(self):
+        """Test that adding a duplicate tag is ignored"""
+        self.client.post(self.url, self.form_data, follow=True)
+        # Add tag once
+        self.client.post(reverse('create_recipe_tags'), {'add_course_tag': 'breakfast'}, follow=True)
+        # Try to add same tag again
+        response = self.client.post(reverse('create_recipe_tags'), {'add_course_tag': 'breakfast'}, follow=True)
+
+        # Should only appear once
+        self.assertEqual(response.context['course_tags'].count('breakfast'), 1)
+
+    def test_add_multiple_tags_same_category(self):
+        """Test adding multiple tags to same category"""
+        self.client.post(self.url, self.form_data, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'add_course_tag': 'breakfast'}, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'add_course_tag': 'main'}, follow=True)
+
+        self.assertIn('breakfast', response.context['course_tags'])
+        self.assertIn('main', response.context['course_tags'])
+
+    def test_add_custom_course_tag(self):
+        """Test adding a custom course tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {
+            'add_course_tag_custom': 'true',
+            'course_tag_value': 'brunch'
+        }, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('brunch', response.context['course_tags'])
+
+    def test_add_custom_dietary_tag(self):
+        """Test adding a custom dietary tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {
+            'add_dietary_tag_custom': 'true',
+            'dietary_tag_value': 'paleo'
+        }, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('paleo', response.context['dietary_tags'])
+
+    def test_add_custom_cuisine_tag(self):
+        """Test adding a custom cuisine tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {
+            'add_cuisine_tag_custom': 'true',
+            'cuisine_tag_value': 'Mexican'
+        }, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Mexican', response.context['cuisine_tags'])
+
+    def test_add_custom_other_tag(self):
+        """Test adding a custom other tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {
+            'add_other_tag_custom': 'true',
+            'other_tag_value': 'family-friendly'
+        }, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('family-friendly', response.context['other_tags'])
+
+    def test_remove_course_tag(self):
+        """Test removing a course tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        # Add tag first
+        self.client.post(reverse('create_recipe_tags'), {'add_course_tag': 'breakfast'}, follow=True)
+        # Remove tag
+        response = self.client.post(reverse('create_recipe_tags'), {'remove_course_tag': 'breakfast'}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('breakfast', response.context['course_tags'])
+
+    def test_remove_dietary_tag(self):
+        """Test removing a dietary tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'add_dietary_tag': 'vegan'}, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'remove_dietary_tag': 'vegan'}, follow=True)
+
+        self.assertNotIn('vegan', response.context['dietary_tags'])
+
+    def test_remove_cuisine_tag(self):
+        """Test removing a cuisine tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'add_cuisine_tag': 'Italian'}, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'remove_cuisine_tag': 'Italian'}, follow=True)
+
+        self.assertNotIn('Italian', response.context['cuisine_tags'])
+
+    def test_remove_other_tag(self):
+        """Test removing an other tag"""
+        self.client.post(self.url, self.form_data, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'add_other_tag': 'quick'}, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'remove_other_tag': 'quick'}, follow=True)
+
+        self.assertNotIn('quick', response.context['other_tags'])
+
+    def test_remove_nonexistent_tag_ignored(self):
+        """Test that removing a tag that doesn't exist is handled gracefully"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {'remove_course_tag': 'nonexistent'}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_recipe_with_tags(self):
+        """Test creating recipe with tags"""
+        initial_count = Recipe.objects.count()
+        self.client.post(self.url, self.form_data, follow=True)
+
+        # Add some tags
+        self.client.post(reverse('create_recipe_tags'), {'add_course_tag': 'main'}, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'add_dietary_tag': 'vegan'}, follow=True)
+
+        # Create recipe
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
+
+        self.assertEqual(Recipe.objects.count(), initial_count + 1)
+        created_recipe = Recipe.objects.latest('id')
+        self.assertIn('main', created_recipe.course_tags)
+        self.assertIn('vegan', created_recipe.dietary_tags)
+
+    def test_create_recipe_with_all_tag_types(self):
+        """Test creating recipe with all tag types"""
+        initial_count = Recipe.objects.count()
+        self.client.post(self.url, self.form_data, follow=True)
+
+        self.client.post(reverse('create_recipe_tags'), {'add_course_tag': 'breakfast'}, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'add_dietary_tag': 'vegetarian'}, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'add_cuisine_tag': 'Italian'}, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'add_other_tag': 'quick'}, follow=True)
+
+        response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
+
+        self.assertEqual(Recipe.objects.count(), initial_count + 1)
+        created_recipe = Recipe.objects.latest('id')
+        self.assertEqual(created_recipe.course_tags, 'breakfast')
+        self.assertEqual(created_recipe.dietary_tags, 'vegetarian')
+        self.assertEqual(created_recipe.cuisine_tags, 'Italian')
+        self.assertEqual(created_recipe.other_tags, 'quick')
+
+    def test_session_cleared_after_successful_creation(self):
+        """Test that session data is cleared after recipe creation"""
+        self.client.post(self.url, self.form_data, follow=True)
+        self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
+
+        # Session should not have recipe_form_data anymore
+        session = self.client.session
+        self.assertNotIn('recipe_form_data', session)
+
+    def test_temp_image_deleted_after_creation(self):
+        """Test that temporary image is deleted after recipe creation"""
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from PIL import Image
+        from io import BytesIO
+
+        image = Image.new('RGB', (100, 100), color='red')
+        image_file = BytesIO()
+        image.save(image_file, 'JPEG')
+        image_file.seek(0)
+
+        uploaded_file = SimpleUploadedFile(
+            name='test.jpg',
+            content=image_file.read(),
+            content_type='image/jpeg'
+        )
+
+        data = self.form_data.copy()
+        data['image'] = uploaded_file
+
+        self.client.post(self.url, data, format='multipart', follow=True)
+
+        # Get temp path from session
+        session = self.client.session
+        temp_path = session.get('recipe_form_data', {}).get('temp_image_path')
+
+        # Create recipe
+        self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
+
+        # Temp file should be deleted
+        if temp_path:
+            from django.core.files.storage import default_storage
+            self.assertFalse(default_storage.exists(temp_path))
+
+    def test_cancel_recipe_creation_url(self):
+        """Test that cancel URL exists"""
+        url = reverse('cancel_recipe')
+        self.assertEqual(url, '/create_recipe/cancel/')
+
+    def test_cancel_recipe_creation_redirects(self):
+        """Test that cancel redirects to all_recipes"""
+        response = self.client.get(reverse('cancel_recipe'))
+        self.assertRedirects(response, reverse('all_recipes'))
+
+    def test_cancel_clears_session(self):
+        """Test that cancelling clears session data"""
+        # Start recipe creation
+        self.client.post(self.url, self.form_data, follow=True)
+
+        # Verify session has data
+        session = self.client.session
+        self.assertIn('recipe_form_data', session)
+
+        # Cancel
+        self.client.get(reverse('cancel_recipe'))
+
+        # Session should be cleared
+        session = self.client.session
+        self.assertNotIn('recipe_form_data', session)
+
+    def test_cancel_deletes_temp_image(self):
+        """Test that cancelling deletes temporary image"""
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from PIL import Image
+        from io import BytesIO
+
+        image = Image.new('RGB', (100, 100), color='blue')
+        image_file = BytesIO()
+        image.save(image_file, 'JPEG')
+        image_file.seek(0)
+
+        uploaded_file = SimpleUploadedFile(
+            name='cancel_test.jpg',
+            content=image_file.read(),
+            content_type='image/jpeg'
+        )
+
+        data = self.form_data.copy()
+        data['image'] = uploaded_file
+
+        self.client.post(self.url, data, format='multipart', follow=True)
+
+        # Get temp path
+        session = self.client.session
+        temp_path = session.get('recipe_form_data', {}).get('temp_image_path')
+
+        # Cancel
+        self.client.get(reverse('cancel_recipe'))
+
+        # Temp file should be deleted
+        if temp_path:
+            from django.core.files.storage import default_storage
+            self.assertFalse(default_storage.exists(temp_path))
+
+    def test_has_image_context_variable(self):
+        """Test that has_image context variable is set correctly"""
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from PIL import Image
+        from io import BytesIO
+
+        image = Image.new('RGB', (100, 100), color='green')
+        image_file = BytesIO()
+        image.save(image_file, 'JPEG')
+        image_file.seek(0)
+
+        uploaded_file = SimpleUploadedFile(
+            name='context_test.jpg',
+            content=image_file.read(),
+            content_type='image/jpeg'
+        )
+
+        data = self.form_data.copy()
+        data['image'] = uploaded_file
+
+        self.client.post(self.url, data, format='multipart', follow=True)
+        response = self.client.get(reverse('create_recipe_tags'))
+
+        self.assertTrue(response.context['has_image'])
+
+    def test_has_image_false_without_image(self):
+        """Test that has_image is False when no image uploaded"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.get(reverse('create_recipe_tags'))
+
+        self.assertFalse(response.context['has_image'])
+
+    def test_going_back_to_page1_preserves_data(self):
+        """Test that navigating back to page 1 preserves form data"""
+        self.client.post(self.url, self.form_data, follow=True)
+
+        # Go back to page 1
+        response = self.client.get(self.url)
+
+        # Form should be pre-populated
+        form = response.context['form']
+        self.assertEqual(form.data.get('title'), 'Test Recipe')
+
+    def test_add_empty_custom_tag_ignored(self):
+        """Test that adding empty custom tag is ignored"""
+        self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(reverse('create_recipe_tags'), {
+            'add_course_tag_custom': 'true',
+            'course_tag_value': ''
+        }, follow=True)
+
+        self.assertEqual(len(response.context['course_tags']), 0)
+
+    def test_cancel_without_session_data(self):
+        """Test cancelling when no session data exists"""
+        response = self.client.get(reverse('cancel_recipe'))
+
+        # Should still redirect without error
+        self.assertRedirects(response, reverse('all_recipes'))
+
+
+
 

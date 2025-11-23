@@ -4,6 +4,8 @@ from django.shortcuts import render
 from recipes.models.recipe import Recipe
 from django.db.models import Q
 from django.db.models import F
+from django.db.models.functions import Concat
+from django.db.models import Value
 
 ITEMS_PER_PAGE = 25
 
@@ -34,11 +36,17 @@ def all_recipes(request):
 
     # If there's a search query, filter recipes
     if search_query:
-        recipes = recipes.filter(
+        recipes = recipes.annotate(
+            full_name=Concat('author__first_name', Value(' '), 'author__last_name')
+        ).filter(
             Q(title__icontains=search_query) |
             Q(adjectives__icontains=search_query) |
             Q(ingredients__icontains=search_query) |
-            Q(steps__icontains=search_query) 
+            Q(steps__icontains=search_query) |
+            Q(author__username__icontains=search_query) |
+            Q(author__first_name__icontains=search_query) |
+            Q(author__last_name__icontains=search_query) |
+            Q(full_name__icontains=search_query) 
         )
 
     # Apply tag filters
