@@ -175,3 +175,22 @@ class Recipe(models.Model):
     def get_cook_time_display(self):
         """Returns formatted cook time"""
         return self.format_time(self.cook_time_hours, self.cook_time_minutes)
+    
+    def get_total_time_minutes(self):
+        """Returns total time (prep + cook) in minutes"""
+        return self.get_total_cook_time_minutes() + self.get_total_prep_time_minutes()
+    
+    def get_total_time_display(self):
+        """Returns formatted total time"""
+        total_minutes = self.get_total_time_minutes()
+        total_hours = total_minutes // 60
+        total_mins_remainder = total_minutes % 60
+
+        if total_hours > 0 and total_mins_remainder > 0:
+            return f"{total_hours} hr {total_mins_remainder} min" if total_hours == 1 else f"{total_hours} hrs {total_mins_remainder} min"
+        elif total_hours > 0:
+            return f"{total_hours} hr" if total_hours == 1 else f"{total_hours} hrs"
+        elif total_mins_remainder > 0:
+            return f"{total_mins_remainder} min"
+        else:
+            return None

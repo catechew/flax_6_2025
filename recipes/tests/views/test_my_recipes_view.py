@@ -19,18 +19,24 @@ class MyRecipesViewTestCase(TestCase):
         self.recipe1 = Recipe.objects.create(
             author=self.user,
             title='Test Recipe One',
-            adjectives='healthy, vegetarian',
             publication_date=date(2025, 11, 17),
             ingredients="test (1)",
-            steps="test"
+            steps="test",
+            course_tags="breakfast",
+            cuisine_tags="Japanese",
+            dietary_tags="vegan",
+            other_tags="other"
         )
         self.recipe2 = Recipe.objects.create(
             author=self.user,
             title='Test Recipe Two',
-            adjectives='healthy, vegetarian',
             publication_date=date(2025, 11, 16),
             ingredients="test (1)",
-            steps="test"
+            steps="test",
+            course_tags="main",
+            cuisine_tags="Italian",
+            dietary_tags="vegetarian",
+            other_tags="others"
         )
         self.other_user = User.objects.create_user(
             username='@janedoe',
@@ -42,7 +48,6 @@ class MyRecipesViewTestCase(TestCase):
         self.other_recipe = Recipe.objects.create(
             author=self.other_user,
             title='Other User Recipe',
-            adjectives='quick, easy, tasty',
             publication_date=date(2025, 11, 15),
             ingredients="test (1)",
             steps="test"
@@ -76,6 +81,12 @@ class MyRecipesViewTestCase(TestCase):
         response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'Test Recipe One')
         self.assertContains(response, 'Test Recipe Two')
+        self.assertContains(response, 'breakfast')
+        self.assertContains(response, 'main')
+        self.assertContains(response, 'other')
+        self.assertContains(response, 'Japanese')
+        self.assertContains(response, 'Italian')
+        self.assertContains(response, 'others')
         self.assertNotContains(response, 'Other User Recipe')
 
     def test_my_recipes_shows_correct_recipe_count(self):
@@ -106,6 +117,10 @@ class MyRecipesViewTestCase(TestCase):
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'Test Recipe One')
+        self.assertContains(response, 'breakfast')
+        self.assertContains(response, 'Japanese')
+        self.assertContains(response, 'vegan')    
+        self.assertContains(response, 'other')
         self.assertContains(response, 'Nov 17, 2025')
 
     def test_my_recipes_has_links_to_recipe_actions(self):
@@ -140,7 +155,6 @@ class MyRecipesViewTestCase(TestCase):
             Recipe.objects.create(
                 author=self.user,
                 title=f'Recipe Number {i}',
-                adjectives='test',
                 publication_date=date(2025, 11, 10),
                 ingredients="test (1)",
                 steps="test"
@@ -170,7 +184,6 @@ class MyRecipesViewTestCase(TestCase):
         Recipe.objects.create(
             author=self.user,
             title='Only Recipe',
-            adjectives='ghost',
             publication_date=date(2025, 11, 17),
             ingredients="test (1)",
             steps="test"
