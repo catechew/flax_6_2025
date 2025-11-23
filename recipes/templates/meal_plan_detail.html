@@ -6,6 +6,17 @@
     <h1 class="mb-4">📅 Weekly Meal Plan</h1>
     <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
 
+    <!-- Previous and Next buttons -->
+    <div class="d-flex justify-content-between mb-3">
+            <a href="{% url 'meal-plan-prev' plan.id %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Previous Week
+            </a>
+
+            <a href="{% url 'meal-plan-next' plan.id %}" class="btn btn-outline-primary">
+                Next Week <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead class="table-primary">
