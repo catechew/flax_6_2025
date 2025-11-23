@@ -32,29 +32,33 @@
 
                 <div class="card-body">
 
-                    <p><strong>🍳 Breakfast:</strong>
+                    <div class="slot-line">
+                        <strong>🍳 Breakfast:</strong>
                         {% with slot=day.slots.breakfast %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
-                    </p>
+                    </div>
 
-                    <p><strong>🥗 Lunch:</strong>
+                    <div class="slot-line">
+                        <strong>🥗 Lunch:</strong>
                         {% with slot=day.slots.lunch %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
-                    </p>
+                    </div>
 
-                    <p><strong>🍝 Dinner:</strong>
+                    <div class="slot-line">
+                        <strong>🍝 Dinner:</strong>
                         {% with slot=day.slots.dinner %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
-                    </p>
+                    </div>
 
-                    <p><strong>🍿 Snack:</strong>
+                    <div class="slot-line">
+                        <strong>🍿 Snack:</strong>
                         {% with slot=day.slots.snack %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
-                    </p>
+                    </div>
 
                 </div>
             </div>
