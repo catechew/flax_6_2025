@@ -21,8 +21,7 @@ from django.urls import path
 from recipes import views
 from recipes.views.recipe_create_view import create_recipe, create_recipe_tags, cancel_recipe_creation
 from recipes.views.recipe_update_view import recipe_update, update_recipe_tags, cancel_recipe_update
-from recipes.views.meal_plan_view import MealPlanCreateView, MealPlanDetailView, MealSlotUpdateView
-
+from recipes.views.meal_plan_view import MealPlanCreateView, MealPlanDetailView, MealSlotUpdateView, MealPlanNavigateView
 
 
 urlpatterns = [
