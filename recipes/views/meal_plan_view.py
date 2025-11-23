@@ -138,3 +138,13 @@ class MealSlotUpdateView(LoginRequiredMixin, View):
         slot.save()
 
         return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
+
+class MealSlotClearView(LoginRequiredMixin, View):
+    """Remove a recipe from the slot and make it empty."""
+    def get(self, request, slot_id):
+        slot = get_object_or_404(MealSlot, id=slot_id, meal_plan__user=request.user)
+
+        slot.recipe = None
+        slot.save()
+
+        return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
