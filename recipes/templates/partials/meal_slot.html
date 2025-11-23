@@ -14,7 +14,9 @@
         </a>
 
     {% else %}
-        <span class="text-muted fst-italic">— empty —</span><br>
+        <span class="empty-slot">
+            <i class="bi bi-plus-circle"></i> Add recipe
+        </span><br>
     {% endif %}
 
     <a href="{% url 'meal-slot-update' slot.id %}"
