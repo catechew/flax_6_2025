@@ -8,11 +8,11 @@
 
     <!-- Previous and Next buttons -->
     <div class="d-flex justify-content-between mb-3">
-            <a href="{% url 'meal-plan-prev' plan.id %}" class="btn btn-outline-primary">
+            <a href="{% url 'meal-plan-navigate' plan.id %}" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-left"></i> Previous Week
             </a>
 
-            <a href="{% url 'meal-plan-next' plan.id %}" class="btn btn-outline-primary">
+            <a href="{% url 'meal-plan-navigate' plan.id %}" class="btn btn-outline-primary">
                 Next Week <i class="bi bi-arrow-right"></i>
             </a>
         </div>
