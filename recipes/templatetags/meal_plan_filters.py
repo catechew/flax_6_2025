@@ -12,7 +12,7 @@ def get_item(dictionary, key):
 
 @register.filter
 def get_slot(day_dict, meal_type):
-    """Lookup nested dictionary day → meal"""
+    """Lookup nested dictionary day -> meal"""
     try:
         return day_dict.get(meal_type)
     except:
