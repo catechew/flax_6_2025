@@ -48,6 +48,11 @@ class Recipe(models.Model):
         help_text="List cooking steps, one per line"
     )
 
+    private = models.BooleanField(
+        default=False,
+        help_text="Set this to true to hide the recipe from other users"
+    )
+
 
     class Meta: 
         ordering = ['-publication_date']  # Newest first

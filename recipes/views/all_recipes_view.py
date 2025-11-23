@@ -25,6 +25,9 @@ def all_recipes(request):
     # Start with all recipes
     recipes = Recipe.objects.all()
 
+    # Filter recipes by visibility
+    recipes = recipes.filter(private=False)
+
     # If there's a search query, filter recipes
     if search_query:
         recipes = recipes.filter(
