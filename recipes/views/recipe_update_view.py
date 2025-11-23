@@ -10,7 +10,6 @@ from recipes.models.recipe import Recipe
 import os
 from django.core.files import File
 
-
 def recipe_update(request, recipe_id):
 	"""
 	Page 1: Edit basic recipe information

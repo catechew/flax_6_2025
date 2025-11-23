@@ -1,0 +1,119 @@
+{% extends 'base_content.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Profile Section -->
+            <div class="text-center mb-5">
+                <img src="{{ profile_user.gravatar }}"
+                     alt="{{ profile_user.get_full_name }}"
+                     class="rounded-circle mb-3"
+                     style="width: 120px; height: 120px; object-fit: cover;">
+
+                <h2>{{ profile_user.get_full_name }}</h2>
+                <p class="text-muted">{{ profile_user.username }}</p>
+
+                <!-- Follow Stats -->
+                <div class="row text-center mt-3 mb-3">
+                    <div class="col-4">
+                        <strong>{{ recipe_count }}</strong>
+                        <p class="text-muted mb-0">
+                            {% if recipe_count == 1 %}recipe{% else %}recipes{% endif %}
+                        </p>
+                    </div>
+                    <div class="col-4">
+                        <!-- Make followers clickable -->
+                        <a href="{% url 'followers_list' profile_user.id %}" class="text-decoration-none text-dark">
+                            <strong>{{ profile_user.follower_count }}</strong>
+                            <p class="text-muted mb-0">Followers</p>
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <!-- Make following clickable -->
+                        <a href="{% url 'following_list' profile_user.id %}" class="text-decoration-none text-dark">
+                            <strong>{{ profile_user.following_count }}</strong>
+                            <p class="text-muted mb-0">Following</p>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Show different buttons based on whose profile -->
+                {% if is_own_profile %}
+                    <!-- Your own profile, will show edit button -->
+                    <a href="{% url 'profile' %}" class="btn btn-sm btn-outline-primary">
+                        Edit Profile
+                    </a>
+                {% else %}
+                    <!-- Someone else's profile, will show follow/unfollow button -->
+                    {% if is_following %}
+                        <form action="{% url 'unfollow_user' profile_user.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">Unfollow</button>
+                        </form>
+                    {% else %}
+                        <form action="{% url 'follow_user' profile_user.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Follow</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <!-- Recipes Section -->
+            <h3 class="mb-4">
+                {% if is_own_profile %}
+                    My Recipes
+                {% else %}
+                    {{ profile_user.get_full_name }}'s Recipes
+                {% endif %}
+            </h3>
+
+            {% if recipes %}
+                <div class="row">
+                    {% for recipe in recipes %}
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a>
+                                </h5>
+                                <p class="card-text text-muted small">{{ recipe.adjectives }}</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        {{ recipe.publication_date|date:"M d, Y" }}
+                                    </small>
+                                </p>
+
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-sm btn-primary">View</a>
+
+                                    {% if is_own_profile %}
+                                        <!-- Only show 'edit'/'delete' on your own recipes -->
+                                        <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center text-muted p-5">
+                    <p>
+                        {% if is_own_profile %}
+                            You haven't created any recipes yet.
+                        {% else %}
+                            {{ profile_user.get_full_name }} hasn't created any recipes yet.
+                        {% endif %}
+                    </p>
+                    {% if is_own_profile %}
+                        <a href="{% url 'create_recipe' %}" class="btn btn-primary">Create Your First Recipe</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

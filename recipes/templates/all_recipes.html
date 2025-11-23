@@ -174,10 +174,8 @@
                 {% endif %}
 
                 {# Author #}
-                <p class="card-text mb-1">
-                  <small class="text-muted">
-                    <i class="bi bi-person"></i> By {{ recipe.author.first_name }} {{ recipe.author.last_name }}
-                  </small>
+                <p class="card-text">
+                  By <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a>
                 </p>
 
                 {# Publication Date #}

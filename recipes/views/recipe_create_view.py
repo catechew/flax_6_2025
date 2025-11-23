@@ -229,7 +229,6 @@ def create_recipe_tags(request):
 
     return render(request, 'create_recipe_tags.html', context)
 
-
 @login_required
 def cancel_recipe_creation(request):
     """Clear session data and redirect to home"""
