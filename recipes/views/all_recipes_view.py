@@ -2,10 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from recipes.models.recipe import Recipe
-from django.db.models import Q
-from django.db.models import F
+from django.db.models import Q, F, Value
 from django.db.models.functions import Concat
-from django.db.models import Value
 
 ITEMS_PER_PAGE = 25
 
@@ -36,18 +34,42 @@ def all_recipes(request):
 
     # If there's a search query, filter recipes
     if search_query:
+        # Split search words into individual words
+        search_words = search_query.split()
         recipes = recipes.annotate(
             full_name=Concat('author__first_name', Value(' '), 'author__last_name')
-        ).filter(
-            Q(title__icontains=search_query) |
-            Q(adjectives__icontains=search_query) |
-            Q(ingredients__icontains=search_query) |
-            Q(steps__icontains=search_query) |
-            Q(author__username__icontains=search_query) |
-            Q(author__first_name__icontains=search_query) |
-            Q(author__last_name__icontains=search_query) |
-            Q(full_name__icontains=search_query) 
         )
+        
+        # if multiple words, check if ALL appear in ingredients
+        if len(search_words) > 1:
+            # filter to check if all words are in ingredients
+            ingredients_filter = Q()
+            for word in search_words:
+                ingredients_filter &= Q(ingredients__icontains=word)
+
+            # Apply QR logic for other fields and logic for multi-word ingredients
+            recipes = recipes.filter(
+                Q(title__icontains=search_query) |
+                Q(adjectives__icontains=search_query) |
+                ingredients_filter |
+                Q(steps__icontains=search_query) |
+                Q(author__username__icontains=search_query) |
+                Q(author__first_name__icontains=search_query) |
+                Q(author__last_name__icontains=search_query) |
+                Q(full_name__icontains=search_query) 
+            )
+        else:
+            # Single word search
+            recipes = recipes.filter(
+                Q(title__icontains=search_query) |
+                Q(adjectives__icontains=search_query) |
+                Q(ingredients__icontains=search_query) |
+                Q(steps__icontains=search_query) |
+                Q(author__username__icontains=search_query) |
+                Q(author__first_name__icontains=search_query) |
+                Q(author__last_name__icontains=search_query) |
+                Q(full_name__icontains=search_query) 
+            )
 
     # Apply tag filters
     if course_filters:

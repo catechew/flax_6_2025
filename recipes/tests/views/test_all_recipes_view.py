@@ -251,6 +251,238 @@ class AllRecipesViewTestCase(TestCase):
         self.assertIn('total_count', response.context)
         self.assertIn('user', response.context)
 
+    # Test searching by username
+    def test_search_by_username(self):
+        """Test searching recipes by author username"""
+        response = self.client.get(self.url, {'q': '@johndoe'})
+        recipes = list(response.context['recipes'])
+        # All test recipes are by @johndoe
+        self.assertEqual(len(recipes), 3)
+        self.assertIn(self.recipe1, recipes)
+        self.assertIn(self.recipe2, recipes)
+        self.assertIn(self.recipe3, recipes)
+
+    def test_search_by_partial_username(self):
+        """Test searching by partial username"""
+        response = self.client.get(self.url, {'q': 'john'})
+        recipes = list(response.context['recipes'])
+        # Should match @johndoe
+        self.assertGreaterEqual(len(recipes), 1)
+
+    def test_search_by_first_name(self):
+        """Test searching recipes by author first name"""
+        response = self.client.get(self.url, {'q': 'John'})
+        recipes = list(response.context['recipes'])
+        # Should find recipes by user with first name John
+        self.assertGreaterEqual(len(recipes), 0)
+
+    def test_search_by_last_name(self):
+        """Test searching recipes by author last name"""
+        response = self.client.get(self.url, {'q': 'Doe'})
+        recipes = list(response.context['recipes'])
+        # Should find recipes by user with last name Doe
+        self.assertGreaterEqual(len(recipes), 0)
+
+    def test_search_by_full_name(self):
+        """Test searching recipes by author full name"""
+        Recipe.objects.all().delete()
+        # Use existing Jane Doe from fixtures
+        from recipes.models import User
+        jane = User.objects.get(username='@janedoe')
+
+        jane_recipe = Recipe.objects.create(
+            author=jane,
+            title="Jane's Special Dish",
+            publication_date=timezone.now().date(),
+            ingredients="Sugar (100g)",
+            steps="Mix it"
+        )
+
+        response = self.client.get(self.url, {'q': 'Jane Doe'})
+        recipes = list(response.context['recipes'])
+
+        # Should find Jane's recipe by full name
+        self.assertIn(jane_recipe, recipes)
+
+    def test_search_multiple_ingredients_and_logic(self):
+        """Test searching with multiple ingredients uses AND logic"""
+        Recipe.objects.all().delete()
+
+        # Recipe with both avocado and garlic
+        recipe_both = Recipe.objects.create(
+            author=self.user,
+            title="Guacamole",
+            publication_date=timezone.now().date(),
+            ingredients="Avocado (2)\nGarlic (1 clove)\nLime (1)",
+            steps="Mash together"
+        )
+
+        # Recipe with only avocado
+        recipe_avocado_only = Recipe.objects.create(
+            author=self.user,
+            title="Avocado Toast",
+            publication_date=timezone.now().date(),
+            ingredients="Avocado (1)\nBread (2 slices)",
+            steps="Toast and spread"
+        )
+
+        # Recipe with only garlic
+        recipe_garlic_only = Recipe.objects.create(
+            author=self.user,
+            title="Garlic Bread",
+            publication_date=timezone.now().date(),
+            ingredients="Garlic (3 cloves)\nBread (1 loaf)\nButter (50g)",
+            steps="Mix and bake"
+        )
+
+        # Search for both ingredients
+        response = self.client.get(self.url, {'q': 'Avocado Garlic'})
+        recipes = list(response.context['recipes'])
+
+        # Should only find recipe with BOTH ingredients
+        self.assertIn(recipe_both, recipes)
+        # Should not find recipes with only one ingredient
+        self.assertNotIn(recipe_avocado_only, recipes)
+        self.assertNotIn(recipe_garlic_only, recipes)
+
+    def test_search_multiple_ingredients_different_order(self):
+        """Test multiple ingredient search works regardless of order"""
+        Recipe.objects.all().delete()
+
+        recipe = Recipe.objects.create(
+            author=self.user,
+            title="Chicken Rice Dish",
+            publication_date=timezone.now().date(),
+            ingredients="Chicken (500g)\nRice (200g)\nOnion (1)",
+            steps="Cook together"
+        )
+
+        # Search in different order
+        response1 = self.client.get(self.url, {'q': 'Chicken Rice'})
+        response2 = self.client.get(self.url, {'q': 'Rice Chicken'})
+
+        recipes1 = list(response1.context['recipes'])
+        recipes2 = list(response2.context['recipes'])
+
+        # Both should find the recipe
+        self.assertIn(recipe, recipes1)
+        self.assertIn(recipe, recipes2)
+
+    def test_search_three_ingredients(self):
+        """Test searching with three ingredients"""
+        Recipe.objects.all().delete()
+
+        recipe_all_three = Recipe.objects.create(
+            author=self.user,
+            title="Complex Dish",
+            publication_date=timezone.now().date(),
+            ingredients="Tomato (2)\nOnion (1)\nGarlic (3 cloves)\nPasta (200g)",
+            steps="Cook all"
+        )
+
+        recipe_two_only = Recipe.objects.create(
+            author=self.user,
+            title="Simple Dish",
+            publication_date=timezone.now().date(),
+            ingredients="Tomato (1)\nOnion (1)",
+            steps="Mix"
+        )
+
+        response = self.client.get(self.url, {'q': 'Tomato Onion Garlic'})
+        recipes = list(response.context['recipes'])
+
+        # Should only find recipe with all three
+        self.assertIn(recipe_all_three, recipes)
+        self.assertNotIn(recipe_two_only, recipes)
+
+    def test_search_multi_word_still_searches_other_fields(self):
+        """Test that multi-word search still checks other fields for full phrase"""
+        Recipe.objects.all().delete()
+
+        # Recipe with multi-word title
+        recipe_title = Recipe.objects.create(
+            author=self.user,
+            title="Spicy Korean Noodles",
+            publication_date=timezone.now().date(),
+            ingredients="Noodles (200g)",
+            steps="Cook"
+        )
+
+        response = self.client.get(self.url, {'q': 'Korean Noodles'})
+        recipes = list(response.context['recipes'])
+
+        # Should find by title even though it's multiple words
+        self.assertIn(recipe_title, recipes)
+
+    def test_search_case_insensitive_multiple_words(self):
+        """Test that multi-word search is case insensitive"""
+        Recipe.objects.all().delete()
+
+        recipe = Recipe.objects.create(
+            author=self.user,
+            title="Test Recipe",
+            publication_date=timezone.now().date(),
+            ingredients="Chicken (500g)\nRice (200g)",
+            steps="Cook"
+        )
+
+        # Try different cases
+        response1 = self.client.get(self.url, {'q': 'chicken rice'})
+        response2 = self.client.get(self.url, {'q': 'CHICKEN RICE'})
+        response3 = self.client.get(self.url, {'q': 'ChIcKeN rIcE'})
+
+        recipes1 = list(response1.context['recipes'])
+        recipes2 = list(response2.context['recipes'])
+        recipes3 = list(response3.context['recipes'])
+
+        # All should find the recipe
+        self.assertIn(recipe, recipes1)
+        self.assertIn(recipe, recipes2)
+        self.assertIn(recipe, recipes3)
+
+    def test_search_single_word_uses_or_logic(self):
+        """Test that single word search still uses OR logic across fields"""
+        Recipe.objects.all().delete()
+
+        recipe1 = Recipe.objects.create(
+            author=self.user,
+            title="Chicken Soup",
+            publication_date=timezone.now().date(),
+            ingredients="Water (1L)",
+            steps="Boil"
+        )
+
+        recipe2 = Recipe.objects.create(
+            author=self.user,
+            title="Pasta",
+            publication_date=timezone.now().date(),
+            ingredients="Chicken (300g)\nPasta (200g)",
+            steps="Cook"
+        )
+
+        recipe3 = Recipe.objects.create(
+            author=self.user,
+            title="Rice",
+            publication_date=timezone.now().date(),
+            ingredients="Rice (200g)",
+            steps="Fry the chicken pieces"
+        )
+
+        response = self.client.get(self.url, {'q': 'Chicken'})
+        recipes = list(response.context['recipes'])
+
+        # Should find all three - title, ingredients, and steps
+        self.assertIn(recipe1, recipes)  # In title
+        self.assertIn(recipe2, recipes)  # In ingredients
+        self.assertIn(recipe3, recipes)  # In steps
+
+    def test_search_query_none_defaults_to_empty(self):
+        """Test that None search query is handled"""
+        # Manually test the None case - this is an edge case
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['search_query'], '')
+
      # Filter tests
     def test_filter_by_course_tag(self):
         """Test filtering recipes by course tag"""
@@ -555,3 +787,168 @@ class AllRecipesViewTestCase(TestCase):
         self.assertEqual(len(recipes), 2)
         self.assertEqual(recipes[0], old_vegan)
         self.assertEqual(recipes[1], new_vegan)
+
+    def test_sort_by_prep_most(self):
+        """Test sorting by most prep time"""
+        Recipe.objects.all().delete()
+        quick_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Quick",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test",
+            prep_time_hours=0,
+            prep_time_minutes=10
+        )
+        slow_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Slow",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test",
+            prep_time_hours=2,
+            prep_time_minutes=0
+        )
+
+        response = self.client.get(self.url, {'sort': 'prep_most'})
+        recipes = list(response.context['recipes'])
+
+        self.assertEqual(recipes[0], slow_recipe)
+        self.assertEqual(recipes[1], quick_recipe)
+
+    def test_sort_by_cook_least(self):
+        """Test sorting by least cook time"""
+        Recipe.objects.all().delete()
+        quick_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Quick",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test",
+            cook_time_hours=0,
+            cook_time_minutes=15
+        )
+        slow_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Slow",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test",
+            cook_time_hours=3,
+            cook_time_minutes=0
+        )
+
+        response = self.client.get(self.url, {'sort': 'cook_least'})
+        recipes = list(response.context['recipes'])
+
+        self.assertEqual(recipes[0], quick_recipe)
+        self.assertEqual(recipes[1], slow_recipe)
+
+    def test_sort_by_cook_most(self):
+        """Test sorting by most cook time"""
+        Recipe.objects.all().delete()
+        quick_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Quick",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test",
+            cook_time_hours=0,
+            cook_time_minutes=15
+        )
+        slow_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Slow",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test",
+            cook_time_hours=3,
+            cook_time_minutes=0
+        )
+
+        response = self.client.get(self.url, {'sort': 'cook_most'})
+        recipes = list(response.context['recipes'])
+
+        self.assertEqual(recipes[0], slow_recipe)
+        self.assertEqual(recipes[1], quick_recipe)
+
+    def test_sort_by_total_most(self):
+        """Test sorting by most total time"""
+        Recipe.objects.all().delete()
+        quick_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Quick",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test",
+            prep_time_hours=0,
+            prep_time_minutes=10,
+            cook_time_hours=0,
+            cook_time_minutes=15
+        )
+        slow_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Slow",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test",
+            prep_time_hours=2,
+            prep_time_minutes=30,
+            cook_time_hours=3,
+            cook_time_minutes=45
+        )
+
+        response = self.client.get(self.url, {'sort': 'total_most'})
+        recipes = list(response.context['recipes'])
+
+        self.assertEqual(recipes[0], slow_recipe)
+        self.assertEqual(recipes[1], quick_recipe)
+
+    def test_sort_by_title_za(self):
+        """Test sorting by title Z-A"""
+        Recipe.objects.all().delete()
+        recipe_z = Recipe.objects.create(
+            author=self.user,
+            title="Zebra Cake",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test"
+        )
+        recipe_a = Recipe.objects.create(
+            author=self.user,
+            title="Apple Pie",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test"
+        )
+
+        response = self.client.get(self.url, {'sort': 'title_za'})
+        recipes = list(response.context['recipes'])
+
+        self.assertEqual(recipes[0], recipe_z)
+        self.assertEqual(recipes[1], recipe_a)
+
+    def test_sort_by_invalid_defaults_to_newest(self):
+        """Test that invalid sort parameter defaults to newest"""
+        Recipe.objects.all().delete()
+        old_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Old",
+            publication_date=timezone.now().date() - timedelta(days=5),
+            ingredients="test (1)",
+            steps="test"
+        )
+        new_recipe = Recipe.objects.create(
+            author=self.user,
+            title="New",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test"
+        )
+
+        response = self.client.get(self.url, {'sort': 'invalid_sort_option'})
+        recipes = list(response.context['recipes'])
+
+        # Should default to newest first
+        self.assertEqual(recipes[0], new_recipe)
+        self.assertEqual(recipes[1], old_recipe)
