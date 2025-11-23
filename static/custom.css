@@ -12,18 +12,13 @@ body {
 }
 
 
-/*
- * Alerts
- */
+/* Alerts */
 
 .alert {
   border-radius: 0px;
 }
 
-
-/*
- * Cover page
- */
+/* Cover page */
 
 .content {
   padding-top: 10px;
@@ -39,9 +34,7 @@ body {
     align-items: center;
 }
 
-/*
- * Cover page for home.html (welcome page)
- */
+/* Cover page for home.html (welcome page) */
 h1.cover-heading {
   color: #1E4297;
   font-weight: bold;
@@ -66,9 +59,7 @@ p.cover-text {
   opacity: 1
 }
 
-/*
- * forms
- */
+/* Forms */
 .nolabel label {
   display: none;
 }
@@ -79,9 +70,7 @@ ul.errorlist {
   margin: 0;
 }
 
-/*
- * Typefaces
- */
+/* Typefaces */
 
 .low-key {
   color: #777777;
@@ -93,9 +82,7 @@ ul.errorlist {
   margin-bottom: 20px;
 }
 
-/*
- * Profile
- */
+/* Profile */
 .profile-image {
   width: 120px;
   clear:both;
@@ -118,9 +105,7 @@ h3.profile-title {
 }
 
 
-/*
- * Hyperlinks
- */
+/* Hyperlinks */
 .content a {
   text-decoration: none;
   color: #0d6efd;
@@ -130,9 +115,7 @@ h3.profile-title {
   color: #0d6efd;
 }
 
-/*
- * Buttons
- */
+/* Buttons */
  .btn-secondary,
  .btn-primary {
     background-color: var(--primary-colour);
@@ -146,16 +129,12 @@ h3.profile-title {
     border-color: var(--primary-colour-darker);
 }
 
-/*
- * Navbars
- */
+/* Navbars */
  .main-navbar {
     background-color: var(--primary-colour);
 }
 
-/*
- * Meal Plan Card UI
- */
+/* Meal Plan Card UI */
  .meal-card {
     border-radius: 12px !important;
     box-shadow: 0 3px 12px rgba(0,0,0,0.05) !important;
@@ -183,3 +162,12 @@ h3.profile-title {
     width: 20px;
     margin-right: 4px;
 }
+
+/* Meal plan - day headers */
+.meal-header-mon { background: #007bff; }
+.meal-header-tue { background: #17a2b8; }
+.meal-header-wed { background: #28a745; }
+.meal-header-thu { background: #ffc107; color: #000 !important; }
+.meal-header-fri { background: #fd7e14; }
+.meal-header-sat { background: #6f42c1; }
+.meal-header-sun { background: #e83e8c; }
