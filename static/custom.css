@@ -163,11 +163,6 @@ h3.profile-title {
     margin-right: 4px;
 }
 
-/* Force override Bootstrap card-header background */
-.card-header.day-header {
-    background-color: inherit !important;
-}
-
 /* Meal plan - day headers */
 .meal-header-mon { background-color: #0d6efd !important; }
 .meal-header-tue { background-color: #0dcaf0 !important; }
