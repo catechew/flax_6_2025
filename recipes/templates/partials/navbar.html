@@ -21,15 +21,22 @@
             <b><i class="bi bi-plus-circle"></i> Create Recipe</b>
           </a>
         </li>
+        
         <!-- Link to my recipes -->
         <li class="nav-item">
           <a class="nav-link" href="{% url 'my_recipes' %}">
             <b>My Recipes</b>
           </a>
         </li>
-      </ul>
-       
 
+        <!-- Meal Plan Link -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'meal-plan-create' %}">
+            <b>📅 Meal Plan</b>
+          </a>
+        </li>
+      </ul>
+      
       <!-- Search bar -->
       <form class="d-flex mx-auto col-lg-4" method="GET" action="{% url 'all_recipes' %}">
       <input class="form-control me-2" type="search" name="q" placeholder="Search for recipes..." aria-label="Search" value="{{ request.GET.q }}">
