@@ -12,15 +12,10 @@ def get_monday(d):
 
 class MealPlanCreateView(LoginRequiredMixin, View):
     """
-    Creates a meal plan for the current week
-    If it already exists, redirect to detail view
+    Creates a meal plan for the current week.
+    If it already exists, redirect user to detail view.
     """
-    def get(self, request):
-        print("=" * 50)
-        print("🔍 MEAL PLAN CREATE VIEW CALLED!")
-        print(f"User: {request.user.username}")
-        print("=" * 50)
-        
+    def get(self, request):   
         today = date.today()
         week_start = get_monday(today)
 
@@ -29,10 +24,8 @@ class MealPlanCreateView(LoginRequiredMixin, View):
             week_start=week_start
         )
         
-        print(f"Plan ID: {plan.id}, Created: {created}")
-
         if created:
-            # Create empty day slots for the whole week
+            # Create empty day slots for the entire 7 day week
             days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
             meals = ["breakfast", "lunch", "dinner", "snack"]
 
@@ -44,27 +37,16 @@ class MealPlanCreateView(LoginRequiredMixin, View):
                         meal_type=m, 
                         recipe=None
                     )
-            print("✅ Created 28 new meal slots")
-        
-        print(f"Redirecting to meal-plan-detail with plan_id={plan.id}")
+
         return redirect("meal-plan-detail", plan_id=plan.id)
 
 class MealPlanDetailView(LoginRequiredMixin, View):
     """Show the whole weekly plan in a calendar layout"""
     def get(self, request, plan_id):
-        print("=" * 50)
-        print("🔍 MEAL PLAN DETAIL VIEW CALLED!")
-        print(f"Plan ID: {plan_id}")
-        print(f"User: {request.user.username}")
-        print("=" * 50)
-        
         plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
-        
-        print(f"✅ Plan found: {plan}")
-        
+            
         # Get all slots
         all_slots = plan.entries.all()
-        print(f"✅ Found {all_slots.count()} slots")
         
         # Define days and meals
         days = [
@@ -90,8 +72,6 @@ class MealPlanDetailView(LoginRequiredMixin, View):
                 slot = all_slots.filter(day=day_code, meal_type=meal).first()
                 row['slots'][meal] = slot
             schedule.append(row)
-        
-        print(f"✅ Built schedule with {len(schedule)} days")
 
         context = {
             "plan": plan,
@@ -99,16 +79,12 @@ class MealPlanDetailView(LoginRequiredMixin, View):
             "meals": meals,
         }
         
-        print("✅ Rendering meal_plan_detail.html")
-        print("=" * 50)
-        
         return render(request, "meal_plan_detail.html", context)
 
 class MealSlotUpdateView(LoginRequiredMixin, View):
     """Assign or change the recipe for one slot."""
     def get(self, request, slot_id):
         slot = get_object_or_404(MealSlot, id=slot_id, meal_plan__user=request.user)
-
         recipes = Recipe.objects.all()
 
         return render(request, "meal_slot_update.html", {
