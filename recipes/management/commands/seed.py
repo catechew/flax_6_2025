@@ -282,7 +282,7 @@ class Command(BaseCommand):
     
     def generate_random_hours(self):
         """Generate random hour"""
-        rand_hour = randint(0,24)
+        rand_hour = randint(0,2)
         return rand_hour
     
     def generate_random_minutes(self):
