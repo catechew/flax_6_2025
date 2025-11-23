@@ -164,10 +164,10 @@ h3.profile-title {
 }
 
 /* Meal plan - day headers */
-.meal-header-mon { background: #007bff; }
-.meal-header-tue { background: #17a2b8; }
-.meal-header-wed { background: #28a745; }
-.meal-header-thu { background: #ffc107; color: #000 !important; }
-.meal-header-fri { background: #fd7e14; }
-.meal-header-sat { background: #6f42c1; }
-.meal-header-sun { background: #e83e8c; }
+.meal-header-mon { background: #0d6efd !important; }  /* blue */
+.meal-header-tue { background: #0dcaf0 !important; }  /* cyan */
+.meal-header-wed { background: #198754 !important; }  /* green */
+.meal-header-thu { background: #ffc107 !important; color: #000 !important; } /* yellow */
+.meal-header-fri { background: #fd7e14 !important; }  /* orange */
+.meal-header-sat { background: #6f42c1 !important; }  /* purple */
+.meal-header-sun { background: #e83e8c !important; }  /* pink */
