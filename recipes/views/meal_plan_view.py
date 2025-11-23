@@ -80,6 +80,44 @@ class MealPlanDetailView(LoginRequiredMixin, View):
         }
         
         return render(request, "meal_plan_detail.html", context)
+    
+class MealPlanNavigateView(LoginRequiredMixin, View):
+    """ 
+    Navigate to previous or next week's meal plan. 
+    URL examples:
+    /meal-plan/1/prev/
+    /meal-plan/1/next/
+    """
+    def get(self, request, plan_id, direction):
+        plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
+
+        if direction == "prev":
+            new_week = plan.week_start - timedelta(days=7)
+        elif direction == "next":
+            new_week = plan.week_start + timedelta(days=7)
+        else:
+            return redirect("meal-plan-detail", plan_id=plan.id)
+
+        # Get plan for new week or create if it does not exist. 
+        new_plan, created = MealPlan.objects.get_or_create(
+            user=request.user,
+            week_start=new_week
+        )
+
+        # If brand new meal plan: create 28 slots
+        if created:
+            days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+            meals = ["breakfast", "lunch", "dinner", "snack"]
+            for d in days:
+                for m in meals:
+                    MealSlot.objects.create(
+                        meal_plan=new_plan,
+                        day=d,
+                        meal_type=m,
+                        recipe=None
+                    )
+
+        return redirect("meal-plan-detail", plan_id=new_plan.id)
 
 class MealSlotUpdateView(LoginRequiredMixin, View):
     """Assign or change the recipe for one slot."""
