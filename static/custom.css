@@ -149,7 +149,37 @@ h3.profile-title {
 /*
  * Navbars
  */
-
  .main-navbar {
     background-color: var(--primary-colour);
+}
+
+/*
+ * Meal Plan Card UI
+ */
+ .meal-card {
+    border-radius: 12px !important;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05) !important;
+    transition: 0.2s ease-in-out;
+}
+
+.meal-card:hover {
+    transform: translateY(-2px);
+}
+
+.day-header {
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.empty-slot {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.slot-line {
+    margin-bottom: 12px;
+}
+
+.meal-icon {
+    width: 20px;
+    margin-right: 4px;
 }
