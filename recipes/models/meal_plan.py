@@ -48,6 +48,7 @@ class MealSlot(models.Model):
         on_delete=models.CASCADE, 
         related_name='entries'
     )
+    
     day=models.CharField(max_length=3, choices=DAYS)
     meal_type = models.CharField(max_length=10, choices=MEAL_TYPES)
     recipe = models.ForeignKey(
