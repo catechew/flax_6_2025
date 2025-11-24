@@ -1,4 +1,4 @@
-/*
+/* 
  * Root Variables
  */
 :root {
@@ -392,16 +392,25 @@ h3.profile-title {
  * Meal Plan Card UI
  */
 .meal-card {
-  background: var(--white-colour) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
   border-radius: 12px !important;
-  border: none !important;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.05) !important;
-  transition: 0.2s ease-in-out;
-  padding: 15px 20px;
+  transition: 0.15s ease-in-out;
 }
 
 .meal-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12) !important;
+}
+
+.meal-tag {
+    display: inline-block;
+    background: #f4f4f4;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 4px;
+    color: #444;
 }
 
 .day-header {
@@ -439,8 +448,12 @@ h3.profile-title {
 }
 
 .recipe-link {
+    font-weight: 600;
     color: var(--primary-colour-darkest);
-    text-decoration: none;
+}
+
+.recipe-link:hover {
+    color: var(--primary-colour);
 }
 
 /* Meal Slot UI Improvements*/
@@ -452,6 +465,14 @@ h3.profile-title {
 
 .recipe-card:hover{
   color: var(--primary-colour);
+}
+
+.meal-thumb {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    object-fit: cover;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
 .btn-row .btn {
