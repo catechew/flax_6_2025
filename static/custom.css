@@ -450,10 +450,13 @@ h3.profile-title {
 }
 
 .slot-line strong {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #1e1c1c;
-  }
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #2a2522;
+    letter-spacing: 0.3px;
+    display: block;
+    margin-bottom: 15px;
+}
 
 .meal-icon {
   width: 20px;
