@@ -220,6 +220,47 @@ def ai_recipe_finder_view(request):
                 if ranking_text.startswith('json'):
                     ranking_text = ranking_text[4:]
                 ranking_text = ranking_text.strip()
+
+            # remove whitespace from start/end
+            ranking_data = json.loads(ranking_text)
+
+            top_picks = ranking_data.get('top_picks', [])
+            search_explanation = ranking_data.get('search_explanation', '')
+
+            # Build URL for when you click "View All Results" button
+            # append each parameter to the url
+            url_params = []
+            if search_query:
+                url_params.append(f'q={search_query}')
+            for course in course_filters:
+                url_params.append(f'course={course}')
+            for dietary in dietary_filters:
+                url_params.append(f'dietary={dietary}')
+            for cuisine in cuisine_filters:
+                url_params.append(f'cuisine={cuisine}')
+            for other in other_filters:
+                url_params.append(f'other={other}')
+            if sort_by:
+                url_params.append(f'sort={sort_by}')
+            
+            view_all_url = '/all_recipes/?' + '&'.join(url_params)
+
+            # supply context to html file
+            context = {
+                'user_context': user_context,
+                'search_params': search_params,
+                'search_explanation': search_explanation,
+                'top_picks': top_picks,
+                'total_count': total_count,
+                'view_all_url': view_all_url,
+                'show_results': True
+            }
+
+            print(f"AI RESPONSE 1: {ai_response[:100]}")
+            print(f"AI RESPONSE 2: {ranking_text[:100]}")
+            
+            return render(request, 'ai_recipe_finder.html', context)
+
         
     return render(request, 'ai_recipe_finder.html')
     
