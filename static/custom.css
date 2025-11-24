@@ -432,10 +432,10 @@ h3.profile-title {
   }
 
 .meal-plan-wrapper {
-    background: #e8d2b8;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0px 5px 20px rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, #faf8f5 0%, #f0ebe3 100%);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.06);
 }
 
 .empty-slot {
@@ -481,18 +481,15 @@ h3.profile-title {
 }
 
 .recipe-link {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     font-weight: 600;
+    color: var(--primary-colour-darker);
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
 .recipe-link:hover {
     color: var(--primary-colour);
-}
-
-.recipe-link {
-  font-size: 0.95rem;
-  color: var(--primary-colour-darker);
-  text-decoration: none;
 }
 
 .recipe-card:hover{
@@ -500,14 +497,14 @@ h3.profile-title {
 }
 
 .meal-thumb {
-    width: 55px;
-    height: 55px;
+    width: 180px;
+    height: 130px;
     border-radius: 10px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.06);
 }
 
 .btn-row .btn {
-    padding: 10px 50x !important;
+    padding: 10px 12x !important;
     font-size: 0.9rem !important;
 }
 
