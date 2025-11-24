@@ -433,6 +433,7 @@ h3.profile-title {
   height: 20px;
   margin-right: 4px;
   object-fit: contain;
+  opacity: 0.85;
 }
 
 .slot-content {
