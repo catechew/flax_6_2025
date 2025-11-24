@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.db.models import Q
 from recipes.models.recipe import Recipe
 
 @login_required
@@ -14,8 +15,10 @@ def dashboard(request):
     """
 
     current_user = request.user
-    # Get the 3 most recent recipes, order by publication_date descending, limit to 3
-    recent_recipes = Recipe.objects.filter(private=False).order_by('-publication_date')[:3]
+    # Get the 3 most recent recipes (public recipes + user's own private recipes)
+    recent_recipes = Recipe.objects.filter(
+        Q(private=False) | Q(author=current_user)
+    ).order_by('-publication_date')[:3]
 
     # Get the user's saved recipes, limit to 3
     saved_recipes = current_user.saved_recipes.all().order_by('-publication_date')[:3]

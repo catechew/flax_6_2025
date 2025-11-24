@@ -235,7 +235,6 @@ h3.profile-title {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   padding: 2px;
   background: var(--white-colour);
-  
 }
 
 .dropdown-item {
@@ -321,7 +320,7 @@ h3.profile-title {
 }
 
 .recipe-card:hover {
-    transform: translateY(-4px);
+  transform: translateY(-4px);
 }
 
 .recipe-card i.bi-tag,
@@ -378,4 +377,53 @@ h3.profile-title {
 
 .rating-input input[type="radio"]:checked ~ label {
     color: #f0ad4e !important;
+/*
+ * Meal plan - day headers
+ */
+.meal-header-mon { background-color: #D81159 !important; }
+.meal-header-tue { background-color: #F0D3F7 !important; }
+.meal-header-wed { background-color: #ffc8b3 !important; }
+.meal-header-thu { background-color: #feadb9 !important; color: #000 !important; }
+.meal-header-fri { background-color: #bc85a3 !important; }
+.meal-header-sat { background-color: #9799ba !important; }
+.meal-header-sun { background-color: #4a7ba6 !important; }
+
+/*
+ * Meal Plan Card UI
+ */
+.meal-card {
+  background: var(--white-colour) !important;
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05) !important;
+  transition: 0.2s ease-in-out;
+  padding: 15px 20px;
+}
+
+.meal-card:hover {
+  transform: translateY(-2px);
+}
+
+.day-header {
+  border-radius: 12px 12px 0 0 !important;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--white-colour);
+}
+
+.empty-slot {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.slot-line {
+  margin-bottom: 12px;
+}
+
+.meal-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  object-fit: contain;
 }
