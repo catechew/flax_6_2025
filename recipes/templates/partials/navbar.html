@@ -5,8 +5,8 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <a class="navbar-brand position-absolute top-50 start-50 translate-middle" href="{% url 'dashboard' %}">
-      <b>RECIPIFY</b>
+    <a class="navbar-brand navbar-brand-centered" href="{% url 'dashboard' %}">
+      RECIPIFY
     </a>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -19,10 +19,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="discoverDropdown">
             <li>
-                <!-- View all recipes -->
-                <a class="dropdown-item" href="{% url 'all_recipes' %}">
-                   All Recipes
-                </a>
+                <a class="dropdown-item" href="{% url 'all_recipes' %}">All Recipes</a>
             </li>
           </ul>
         </li>
@@ -32,24 +29,17 @@
               <b>My Kitchen</b>
             </a>
             <ul class="dropdown-menu" aria-labelledby="kitchenDropdown">
-              
-              <!-- My recipes link -->
               <li>
                   <a class="dropdown-item" href="{% url 'my_recipes' %}">
                     <i class="bi bi-journal-text"></i> My Recipes
                   </a>
               </li>
-              
-              <!-- Saved recipes link -->
               <li>
                   <a class="dropdown-item" href="{% url 'saved_recipe_list' %}">
                     <i class="bi bi-bookmark-heart"></i> Saved Recipes
                   </a>
               </li>
-
               <li><hr class="dropdown-divider"></li>
-              
-              <!-- Meal plan link -->
               <li>
                   <a class="dropdown-item" href="{% url 'meal-plan-create' %}">
                     <i class="bi bi-calendar-week"></i> Meal Plan
@@ -58,7 +48,6 @@
             </ul>
         </li>
 
-        <!-- Create recipe -->
         <li class="nav-item">
           <a class="nav-link" href="{% url 'create_recipe' %}">
             <b><i class="bi bi-plus-circle"></i> Create Recipe</b>
@@ -69,7 +58,6 @@
       
       <div class="d-flex align-items-center ms-auto gap-3">
         
-        <!-- Search bar -->
         <form class="d-flex" method="GET" action="{% url 'all_recipes' %}">
             <div class="input-group">
                 <input class="form-control form-control-sm" type="search" name="q" placeholder="Search for recipes..." aria-label="Search" value="{{ request.GET.q }}">
