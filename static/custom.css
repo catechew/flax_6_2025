@@ -377,6 +377,8 @@ h3.profile-title {
 
 .rating-input input[type="radio"]:checked ~ label {
     color: #f0ad4e !important;
+}
+
 /*
  * Meal plan - day headers
  */
