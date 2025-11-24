@@ -85,10 +85,6 @@ class RecipeForm(forms.ModelForm):
         label= 'Recipe Visibility'
     )
 
-
-    class Meta:
-        model = Recipe
-        fields = ['title', 'adjectives', 'publication_date', 'servings', 'ingredients', 'steps', 'image', 'private']
     prep_time_hours = forms.IntegerField(
         min_value=0,
         initial=0,
@@ -122,7 +118,7 @@ class RecipeForm(forms.ModelForm):
     
     class Meta:
         model = Recipe
-        fields = ['title', 'publication_date', 'servings', 'ingredients', 'steps', 'image', 'prep_time_hours', 'prep_time_minutes','cook_time_hours', 'cook_time_minutes']
+        fields = ['title', 'publication_date', 'servings', 'ingredients', 'steps', 'image', 'prep_time_hours', 'prep_time_minutes','cook_time_hours', 'cook_time_minutes', 'private']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
         }
