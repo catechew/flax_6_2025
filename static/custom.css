@@ -360,8 +360,8 @@ h3.profile-title {
 
 /* Meal plan - day headers */
 .meal-header-mon { background-color: #ea8c95 !important; }
-.meal-header-tue { background-color: #9D0208 !important; }
-.meal-header-wed { background-color: #D00000 !important; }
+.meal-header-tue { background-color: #db6065 !important; }
+.meal-header-wed { background-color: #ed4d4d !important; }
 .meal-header-thu { background-color: #DC2F02 !important; color: #000 !important; }
 .meal-header-fri { background-color: #E85D04 !important; }
 .meal-header-sat { background-color: #F48C06 !important; }
