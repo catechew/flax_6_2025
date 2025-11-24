@@ -11,3 +11,8 @@ from .recipe_delete_view import *
 from .recipe_detail_view import *
 from .recipe_update_view import *
 from .my_recipes_view import *
+from .follow_view import *
+from .user_profile_view import *
+from .followers_list_view import *
+from .meal_plan_view import *
+from .decorators import *

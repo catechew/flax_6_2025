@@ -8,18 +8,20 @@ is swallowed and generation continues.
 """
 
 from faker import Faker
-from random import randint, random, choice
-from django.core.management.base import BaseCommand, CommandError
+from random import randint, random, choice, sample
+from django.core.management.base import BaseCommand
 from recipes.models import User, Recipe
 from django.utils import timezone
 from datetime import timedelta
+import requests
+from django.core.files.base import ContentFile
+
 
 user_fixtures = [
     {'username': '@johndoe', 'email': 'john.doe@example.org', 'first_name': 'John', 'last_name': 'Doe'},
     {'username': '@janedoe', 'email': 'jane.doe@example.org', 'first_name': 'Jane', 'last_name': 'Doe'},
     {'username': '@charlie', 'email': 'charlie.johnson@example.org', 'first_name': 'Charlie', 'last_name': 'Johnson'},
 ]
-
 
 class Command(BaseCommand):
     """
@@ -160,15 +162,41 @@ class Command(BaseCommand):
     def generate_recipe(self, users):
         """Generate a random recipe."""
         title = self.generate_recipe_title()
-        adjectives = self.generate_adjectives()
         author = choice(users)
         publication_date = self.generate_random_date()
+        ingredients = self.generate_random_ingredients()
+        steps = self.generate_random_steps()
+        prep_time_hours = self.generate_random_hours()
+        prep_time_minutes = self.generate_random_minutes()
+        cook_time_hours = self.generate_random_hours()
+        cook_time_minutes = self.generate_random_minutes()
+        course_tags = self.generate_course_tags()
+        cuisine_tags = self.generate_cuisine_tags()
+        dietary_tags = self.generate_dietary_tags()
+        other_tags = self.generate_other_tags()
+
+        # Download random food image 
+        image_content = None
+        image_filename = None
+        image_content, image_filename = self.download_random_food_image(title=title)
+
 
         self.try_create_recipe({
             'title': title,
-            'adjectives': adjectives,
             'author': author,
-            'publication_date': publication_date
+            'publication_date': publication_date,
+            'ingredients' : ingredients,
+            'steps': steps,
+            'prep_time_hours': prep_time_hours,
+            'prep_time_minutes': prep_time_minutes,
+            'cook_time_hours': cook_time_hours,
+            'cook_time_minutes': cook_time_minutes,
+            'course_tags': course_tags,
+            'cuisine_tags': cuisine_tags,
+            'dietary_tags': dietary_tags,
+            'other_tags': other_tags,
+            'image_content': image_content,
+            'image_filename': image_filename,
         })
 
     def generate_recipe_title(self):
@@ -214,10 +242,84 @@ class Command(BaseCommand):
         else:
             return f"{choice(dishes)}"
     
-    def generate_adjectives(self):
-        """Generate recipe tags to describe meals."""
-        adjective_options = [
-            "quick easy", "budget-friendly", "cheap", "simple",
+    def generate_random_date(self):
+        """Generate a random publication date within the last 2 years."""
+        days_limit = randint(0, 730)
+        return timezone.now().date() - timedelta(days=days_limit)
+    
+    def generate_random_ingredients(self):
+        """Generate a list of random ingredients"""
+        ingredient_options = [
+            "Chicken Breast (2)", "Avocado (1)", "Rice (1 cup)", 
+            "Black Beans (1 can)", "Olive Oil (2 tbsp)", "Onion (1/2 medium)", 
+            "Garlic (3 cloves)", "Salt (1 tsp)", "Black Pepper (1/2 tsp)", 
+            "Cherry Tomatoes (1 cup)", "Lemon Juice (1 tbsp)", 
+            "Cheddar Cheese (1/4 cup)", "Butter (1/4 stick)", "Milk (1/2 cup)", 
+            "Flour (2 cups)", "Sugar (1/4 cup)", "Egg (2 large)", 
+            "Spinach (1 bunch)", "Penne Pasta (8 oz)", "Basil Leaves (1/4 cup)", 
+            "Soy Sauce (1 tbsp)", "Ginger (1 inch piece)", "Broccoli Florets (1 cup)", 
+            "Bell Pepper (1 large)", "Cilantro (1/4 bunch)",
+        ]
+        rand_num = randint(4,8)
+        selected = sample(ingredient_options, rand_num)
+        return '\n'.join(selected)
+    
+    def generate_random_steps(self):
+        """Generate a list of random steps"""
+        step_options = [
+            "Mix garlic and soy sauce", "Preheat oven to 350°F", 
+            "Chop the onion and bell pepper", "Sauté the vegetables until soft", 
+            "Bring water to a boil", "Add salt and pasta to the pot", 
+            "Season chicken with salt and pepper", "Bake for 20 minutes", 
+            "Stir constantly for 5 minutes", "Let rest for 10 minutes before slicing", 
+            "Garnish with fresh parsley", "Drain excess liquid", 
+            "Whisk eggs and milk together", "Fold in the dry ingredients", 
+            "Transfer batter to a prepared pan"
+        ]
+        rand_num = randint(4,8)
+        selected = sample(step_options, rand_num)
+        return '\n'.join(selected)
+    
+    def generate_random_hours(self):
+        """Generate random hour"""
+        rand_hour = randint(0,2)
+        return rand_hour
+    
+    def generate_random_minutes(self):
+        """Generate random minute"""
+        rand_min = randint(1,60)
+        return rand_min
+    
+    def generate_course_tags(self):
+        """Generate random course tags"""
+        course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
+        num_tags = randint(0,2)
+        if num_tags == 0:
+            return ''
+        selected = sample(course_options, num_tags)
+        return ','.join(selected)
+    
+    def generate_cuisine_tags(self):
+        """Generate random cuisine tags"""
+        cuisine_options = ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern']
+        num_tags = randint(0,2)
+        if num_tags == 0:
+            return ''
+        selected = sample(cuisine_options, num_tags)
+        return ','.join(selected)
+    
+    def generate_dietary_tags(self):
+        """Generate random dietary tags"""
+        dietary_options = ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free']
+        num_tags = randint(0,2)
+        if num_tags == 0:
+            return ''
+        selected = sample(dietary_options, num_tags)
+        return ','.join(selected)
+    
+    def generate_other_tags(self):
+        """Generate random other tags"""
+        other_options = ['high protein', 'low calorie', 'low carb', 'quick', 'budget', "quick easy", "budget-friendly", "cheap", "simple",
             "viral trendy", "instagram worthy aesthetic", "5-minute",
             "one pot", "leftover-friendly", "meal-prep batch",
             "protein-packed filling", "vegetarian healthy", "vegan plant based",
@@ -228,28 +330,97 @@ class Command(BaseCommand):
             "microwave easy", "dorm room friendly", "high protein low calories",
             "italian", "indian", "vietnamese",
             "chinese takeout", "mediterranean", "summer",
-            "gourmet", "weekend treat", "midweek"
-        ]
-        return choice(adjective_options)
+            "gourmet", "weekend treat", "midweek"]
+        num_tags = randint(0,2)
+        if num_tags == 0:
+            return ''
+        selected = sample(other_options, num_tags)
+        return ','.join(selected)
     
-    def generate_random_date(self):
-        """Generate a random publication date within the last 2 years."""
-        days_limit = randint(0, 730)
-        return timezone.now().date() - timedelta(days=days_limit)
+    def get_dish_type_from_title(self, title):
+        """Map recipe title to Foodish API dish type."""
+        title_lower = title.lower()
+
+        # Foodish API available dishes
+        dish_mapping = {
+            'biryani': ['biryani'],
+            'burger': ['burger', 'cheeseburger'],
+            'butter-chicken': ['butter chicken'],
+            'dessert': ['dessert', 'cake', 'cheesecake', 'tiramisu', 'muffin'],
+            'dosa': ['dosa'],
+            'idly': ['idly'],
+            'pasta': ['pasta', 'spaghetti', 'penne', 'macaroni'],
+            'pizza': ['pizza', 'margherita'],
+            'rice': ['rice', 'fried rice', 'rice bowl'],
+            'samosa': ['samosa'],
+        }
+
+        # Check if title contains any keywords
+        for api_dish, keywords in dish_mapping.items():
+            for keyword in keywords:
+                if keyword in title_lower:
+                    return api_dish
+
+        # Default to random
+        return None
+
+    
+    def download_random_food_image(self, title=None):
+        """Download a random food image from Foodish API"""
+        try:
+            # Try to get specific dish type from title
+            dish_type = None
+            if title:
+                dish_type = self.get_dish_type_from_title(title)
+
+            # Build API URL
+            if dish_type:
+                url = f'https://foodish-api.com/api/images/{dish_type}'
+            else:
+                url = 'https://foodish-api.com/api/'
+
+            response = requests.get(url, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                image_url = data['image']
+
+                # Download the actual image
+                img_response = requests.get(image_url, timeout=10)
+                if img_response.status_code == 200:
+                    # Generate a filename
+                    filename = f"recipe_{randint(1000,9999)}.jpg"
+                    return ContentFile(img_response.content), filename
+        except Exception as e:
+            if title: # retry with random food image 
+                return self.download_random_food_image(title=None)
+        return None, None
     
     def try_create_recipe(self, data):
         """Attempt to create a recipe."""
         try:
-            Recipe.objects.create(
+            recipe = Recipe.objects.create(
                 title=data['title'],
-                adjectives=data['adjectives'],
                 author=data['author'],
-                publication_date=data['publication_date']
+                publication_date=data['publication_date'],
+                ingredients=data['ingredients'],
+                steps=data['steps'],
+                prep_time_hours=data['prep_time_hours'],
+                prep_time_minutes=data['prep_time_minutes'],
+                cook_time_hours=data['cook_time_hours'],
+                cook_time_minutes=data['cook_time_minutes'],
+                course_tags=data['course_tags'],
+                cuisine_tags=data['cuisine_tags'],
+                dietary_tags=data['dietary_tags'],
+                other_tags=data['other_tags'],
             )
+            # Save image if available
+            if data['image_content'] and data['image_filename']:
+                recipe.image.save(data['image_filename'], data['image_content'], save=True)
         except:
+            print(f"Error creating recipe: {e}")  # THIS LINE - temporarily add this
             pass
-
-
+    
+                              
 def create_username(first_name, last_name):
     """
     Construct a simple username from first and last names.

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Update Meal Slot</h2>
+
+<p>
+    <strong>Day:</strong> {{ slot.get_day_display }}<br>
+    <strong>Meal:</strong> {{ slot.get_meal_type_display }}
+</p>
+
+<form method="POST">
+    {% csrf_token %}
+    
+    <label><strong>Select Recipe:</strong></label>
+    <select name="recipe_id" class="form-control">
+        {% for recipe in recipes %}
+            <option value="{{ recipe.id }}" {% if slot.recipe and recipe.id == slot.recipe.id %}selected{% endif %}>
+                {{ recipe.title }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="btn btn-success mt-3">Save</button>
+    <a href="{% url 'meal-plan-detail' slot.meal_plan.id %}" class="btn btn-secondary mt-3">Cancel</a>
+</form>
+{% endblock %}

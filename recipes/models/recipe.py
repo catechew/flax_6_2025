@@ -18,12 +18,55 @@ class Recipe(models.Model):
         max_length=255,
         validators=[MinLengthValidator(4)]
     )
+    course_tags = models.TextField(
+        blank=True,
+        default='',
+        help_text="Comma-separated course tags (e.g., 'main,dessert')"
+    )
+    dietary_tags = models.TextField(
+        blank=True,
+        default='',
+        help_text="Comma-separated dietary tags (e.g., 'vegetarian,vegan')"
+    )
+    cuisine_tags = models.TextField(
+        blank=True,
+        default='',
+        help_text="Comma-separated cuisine tags (e.g., 'Japanese, Asian, Chinese, Indian, Western, Jamaican')"
+    )
+    other_tags = models.TextField(
+        blank=True,
+        default='',
+        help_text="Comma-separated other tags (e.g., 'high protein,low calorie')"
+    )
+
+    # Auto-populated combined tags field (for backward compatibility)
     adjectives = models.CharField(
         max_length=255,
-        validators=[MinLengthValidator(4)],
-        help_text="Descriptive words for the recipe (e.g., 'quick', 'healthy', 'cheap')"
+        blank=True,
+        default='',
+        help_text="Combined tags from all categories (auto-populated)"
     )
+
     publication_date = models.DateField()
+
+    prep_time_hours = models.PositiveIntegerField(
+        default=0,
+        help_text="Preparation time in hours"
+    )
+    prep_time_minutes = models.PositiveIntegerField(
+        default=0,
+        validators=[MinValueValidator(0)],
+        help_text="Preparation time in minutes"
+    )
+    cook_time_hours = models.PositiveIntegerField(
+        default=0,
+        help_text="Cooking time in hours"
+    )
+    cook_time_minutes = models.PositiveIntegerField(
+        default=0,
+        validators=[MinValueValidator(0)],
+        help_text="Cooking time in minutes"
+    )
 
     image = models.ImageField(
         upload_to='recipe_images/',
@@ -53,6 +96,28 @@ class Recipe(models.Model):
         help_text="Set this to true to hide the recipe from other users"
     )
 
+    saved_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='saved_recipes',
+        blank=True,
+        help_text="Users who have saved this recipe"
+    )
+
+    def save(self, *args, **kwargs):
+        """Auto-populate adjectives from tag fields"""
+        all_tags = []
+
+        if self.course_tags:
+            all_tags.extend([tag.strip() for tag in self.course_tags.split(',') if tag.strip()])
+        if self.dietary_tags:
+            all_tags.extend([tag.strip() for tag in self.dietary_tags.split(',') if tag.strip()])
+        if self.cuisine_tags:
+            all_tags.extend([tag.strip() for tag in self.cuisine_tags.split(',') if tag.strip()])
+        if self.other_tags:
+            all_tags.extend([tag.strip() for tag in self.other_tags.split(',') if tag.strip()])
+
+        self.adjectives = ', '.join(all_tags) if all_tags else 'none'
+        super().save(*args, **kwargs)
 
     class Meta: 
         ordering = ['-publication_date']  # Newest first
@@ -68,10 +133,76 @@ class Recipe(models.Model):
             f"Steps: {steps_text}"
         )
     
-    # Returns the ingredients as a list of lines
     def get_ingredient_list(self):
+        """Returns the ingredients as a list of lines"""
         return [line.strip() for line in self.ingredients.split('\n') if line.strip()]
     
-    # Returns the steps as a list of lines
     def get_step_list(self):
+        """Returns the steps as a list of lines"""
         return [line.strip() for line in self.steps.split('\n') if line.strip()]
+    
+    def get_course_tags_list(self):
+        """Returns list of course tags"""
+        return [tag.strip() for tag in self.course_tags.split(',') if tag.strip()]
+
+    def get_dietary_tags_list(self):
+        """Returns list of dietary tags"""
+        return [tag.strip() for tag in self.dietary_tags.split(',') if tag.strip()]
+    
+    def get_cuisine_tags_list(self):
+        """Returns list of cuisine tags"""
+        return [tag.strip() for tag in self.cuisine_tags.split(',') if tag.strip()]
+
+    def get_other_tags_list(self):
+        """Returns list of other tags"""
+        return [tag.strip() for tag in self.other_tags.split(',') if tag.strip()]
+
+    def get_all_tags_list(self):
+        """Returns all tags combined as a list"""
+        return self.get_course_tags_list() + self.get_dietary_tags_list() + self.get_cuisine_tags_list() + self.get_other_tags_list()
+
+    def get_total_prep_time_minutes(self):
+        """Returns total prep time in minutes"""
+        return (self.prep_time_hours * 60) + self.prep_time_minutes
+
+    def get_total_cook_time_minutes(self):
+        """Returns total cook time in minutes"""
+        return (self.cook_time_hours * 60) + self.cook_time_minutes
+
+    def format_time(self, hours, minutes):
+        """Format time as a readable string"""
+        if hours == 0 and minutes == 0:
+            return "Not specified"
+        parts = []
+        if hours > 0:
+            parts.append(f"{hours} hr" if hours == 1 else f"{hours} hrs")
+        if minutes > 0:
+            parts.append(f"{minutes} min")
+        return " ".join(parts)
+
+    def get_prep_time_display(self):
+        """Returns formatted prep time"""
+        return self.format_time(self.prep_time_hours, self.prep_time_minutes)
+
+    def get_cook_time_display(self):
+        """Returns formatted cook time"""
+        return self.format_time(self.cook_time_hours, self.cook_time_minutes)
+    
+    def get_total_time_minutes(self):
+        """Returns total time (prep + cook) in minutes"""
+        return self.get_total_cook_time_minutes() + self.get_total_prep_time_minutes()
+    
+    def get_total_time_display(self):
+        """Returns formatted total time"""
+        total_minutes = self.get_total_time_minutes()
+        total_hours = total_minutes // 60
+        total_mins_remainder = total_minutes % 60
+
+        if total_hours > 0 and total_mins_remainder > 0:
+            return f"{total_hours} hr {total_mins_remainder} min" if total_hours == 1 else f"{total_hours} hrs {total_mins_remainder} min"
+        elif total_hours > 0:
+            return f"{total_hours} hr" if total_hours == 1 else f"{total_hours} hrs"
+        elif total_mins_remainder > 0:
+            return f"{total_mins_remainder} min"
+        else:
+            return None

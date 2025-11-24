@@ -19,18 +19,24 @@ class MyRecipesViewTestCase(TestCase):
         self.recipe1 = Recipe.objects.create(
             author=self.user,
             title='Test Recipe One',
-            adjectives='quick, easy, tasty',
             publication_date=date(2025, 11, 17),
             ingredients="test (1)",
-            steps="test"
+            steps="test",
+            course_tags="breakfast",
+            cuisine_tags="Japanese",
+            dietary_tags="vegan",
+            other_tags="other"
         )
         self.recipe2 = Recipe.objects.create(
             author=self.user,
             title='Test Recipe Two',
-            adjectives='healthy, vegetarian',
             publication_date=date(2025, 11, 16),
             ingredients="test (1)",
-            steps="test"
+            steps="test",
+            course_tags="main",
+            cuisine_tags="Italian",
+            dietary_tags="vegetarian",
+            other_tags="others"
         )
         self.other_user = User.objects.create_user(
             username='@janedoe',
@@ -42,7 +48,6 @@ class MyRecipesViewTestCase(TestCase):
         self.other_recipe = Recipe.objects.create(
             author=self.other_user,
             title='Other User Recipe',
-            adjectives='delicious',
             publication_date=date(2025, 11, 15),
             ingredients="test (1)",
             steps="test"
@@ -54,41 +59,46 @@ class MyRecipesViewTestCase(TestCase):
 
     def test_get_my_recipes_redirects_when_not_logged_in(self):
         """Test that accessing my_recipes redirects to login when not authenticated."""
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         redirect_url = reverse('log_in') + f'?next={self.url}'
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
 
     def test_get_my_recipes_when_logged_in(self):
         """Test that logged-in users can access their recipes page."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_my_recipes_uses_correct_template(self):
         """Test that the correct template is used."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'my_recipes.html')
+        response = self.client.get(self.url, follow=True)
+        self.assertTemplateUsed(response, 'user_profile.html')
 
     def test_my_recipes_shows_only_user_recipes(self):
         """Test that users only see their own recipes, not others'."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'Test Recipe One')
         self.assertContains(response, 'Test Recipe Two')
-        self.assertContains(response, 'quick, easy, tasty')
+        self.assertContains(response, 'breakfast')
+        self.assertContains(response, 'main')
+        self.assertContains(response, 'other')
+        self.assertContains(response, 'Japanese')
+        self.assertContains(response, 'Italian')
+        self.assertContains(response, 'others')
         self.assertNotContains(response, 'Other User Recipe')
 
     def test_my_recipes_shows_correct_recipe_count(self):
         """Test that the recipe count is accurate."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertEqual(response.context['recipe_count'], 2)
 
     def test_my_recipes_shows_user_information(self):
         """Test that user's name and username are displayed."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertContains(response, '@johndoe')
         self.assertContains(response, self.user.first_name)
         self.assertContains(response, self.user.last_name)
@@ -97,7 +107,7 @@ class MyRecipesViewTestCase(TestCase):
         """Test empty page view when user has no recipes."""
         Recipe.objects.filter(author=self.user).delete()
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['recipe_count'], 0)
         self.assertContains(response, "You haven't created any recipes yet")
@@ -105,15 +115,18 @@ class MyRecipesViewTestCase(TestCase):
     def test_my_recipes_displays_recipe_details(self):
         """Test that recipe details are displayed correctly."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'Test Recipe One')
-        self.assertContains(response, 'quick, easy, tasty')
+        self.assertContains(response, 'breakfast')
+        self.assertContains(response, 'Japanese')
+        self.assertContains(response, 'vegan')    
+        self.assertContains(response, 'other')
         self.assertContains(response, 'Nov 17, 2025')
 
     def test_my_recipes_has_links_to_recipe_actions(self):
         """Test that view/edit/delete links are present."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'View')
         self.assertContains(response, 'Edit')
         self.assertContains(response, 'Delete')
@@ -122,7 +135,7 @@ class MyRecipesViewTestCase(TestCase):
         """Test that create recipe link appears when no recipes exist."""
         Recipe.objects.filter(author=self.user).delete()
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         create_url = reverse('create_recipe')
         self.assertContains(response, create_url)
         self.assertContains(response, 'Create Your First Recipe')
@@ -130,7 +143,7 @@ class MyRecipesViewTestCase(TestCase):
     def test_my_recipes_context_contains_required_data(self):
         """Test that the context user has all required variables."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertIn('user', response.context)
         self.assertIn('recipes', response.context)
         self.assertIn('recipe_count', response.context)
@@ -142,20 +155,19 @@ class MyRecipesViewTestCase(TestCase):
             Recipe.objects.create(
                 author=self.user,
                 title=f'Recipe Number {i}',
-                adjectives='test',
                 publication_date=date(2025, 11, 10),
                 ingredients="test (1)",
                 steps="test"
             )
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertEqual(response.context['recipe_count'], 12)
         self.assertEqual(len(response.context['recipes']), 12)
 
     def test_my_recipes_recipe_ordering(self):
         """Test that recipes are ordered by publication date (newest first)."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         recipes = list(response.context['recipes'])
         self.assertEqual(recipes[0].title, 'Test Recipe One') #has publication date as 17th
         self.assertEqual(recipes[1].title, 'Test Recipe Two') #has publication date as 16th
@@ -163,7 +175,7 @@ class MyRecipesViewTestCase(TestCase):
     def test_my_recipes_displays_gravatar(self):
         """Test that user's Gravatar is displayed."""
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'gravatar')
 
     def test_my_recipes_pluralization(self):
@@ -172,12 +184,11 @@ class MyRecipesViewTestCase(TestCase):
         Recipe.objects.create(
             author=self.user,
             title='Only Recipe',
-            adjectives='ghost',
             publication_date=date(2025, 11, 17),
             ingredients="test (1)",
             steps="test"
         )
         self.client.login(username='@johndoe', password='Password123')
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, follow=True)
         self.assertContains(response, '1')
         self.assertContains(response, 'recipe')

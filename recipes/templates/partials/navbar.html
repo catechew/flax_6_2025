@@ -1,46 +1,83 @@
 <nav class="navbar navbar-expand-lg navbar-dark main-navbar mb-3">
-  <div class="container">
-    <a class="navbar-brand" href="{% url 'dashboard' %}">
-      <b>RECIPIFY</b>
-    </a>
+    <div class="container position-relative">
+    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    <a class="navbar-brand navbar-brand-centered" href="{% url 'dashboard' %}">
+      RECIPIFY
+    </a>
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       
-      <!-- View all recipes -->
-      <ul class="navbar-nav me-3 mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'all_recipes' %}">
-            <b>All recipes</b>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="discoverDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <b>Discover</b>
           </a>
+          <ul class="dropdown-menu" aria-labelledby="discoverDropdown">
+            <li>
+                <a class="dropdown-item" href="{% url 'all_recipes' %}">All Recipes</a>
+            </li>
+          </ul>
         </li>
-        <!-- Link to create recipes -->
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="kitchenDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <b>My Kitchen</b>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="kitchenDropdown">
+              <li>
+                  <a class="dropdown-item" href="{% url 'my_recipes' %}">
+                    <i class="bi bi-journal-text"></i> My Recipes
+                  </a>
+              </li>
+              <li>
+                  <a class="dropdown-item" href="{% url 'saved_recipe_list' %}">
+                    <i class="bi bi-bookmark-heart"></i> Saved Recipes
+                  </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                  <a class="dropdown-item" href="{% url 'meal-plan-create' %}">
+                    <i class="bi bi-calendar-week"></i> Meal Plan
+                  </a>
+              </li>
+            </ul>
+        </li>
+
         <li class="nav-item">
           <a class="nav-link" href="{% url 'create_recipe' %}">
             <b><i class="bi bi-plus-circle"></i> Create Recipe</b>
           </a>
         </li>
-        <!-- Link to my recipes -->
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'my_recipes' %}">
-            <b>My Recipes</b>
-          </a>
-        </li>
+
       </ul>
-       
+      
+      <div class="d-flex align-items-center ms-auto gap-3">
+        
+        <form class="d-flex" method="GET" action="{% url 'all_recipes' %}">
+            <div class="input-group">
+                <input class="form-control form-control-sm" type="search" name="q" placeholder="Search for recipes..." aria-label="Search" value="{{ request.GET.q }}">
+                <button class="btn btn-light btn-sm text-primary" type="submit">
+                    <span class="bi-search"></span>
+                </button>
+            </div>
+        </form>
 
-      <!-- Search bar -->
-      <form class="d-flex mx-auto col-lg-4" method="GET" action="{% url 'all_recipes' %}">
-      <input class="form-control me-2" type="search" name="q" placeholder="Search for recipes..." aria-label="Search" value="{{ request.GET.q }}">
-      <button class="btn btn-primary" type="submit">
-        <span class="bi-search"></span>
-      </button>
-      </form>
+        {% if user.is_authenticated %}
+            <div class="navbar-nav">
+                {% include 'partials/menu.html' %}
+            </div>
+        {% else %}
+             <div class="navbar-nav">
+                <a class="nav-link" href="{% url 'log_in' %}"><b>Log In</b></a>
+             </div>
+        {% endif %}
+      </div>
 
-      {% if user.is_authenticated %}
-        {% include 'partials/menu.html' %}
-      {% endif %}
     </div>
   </div>
 </nav>

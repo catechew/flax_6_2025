@@ -14,11 +14,14 @@ class RecipeFormTestCase(TestCase):
         self.client.login(username='@johndoe', password='Password123')
         self.form_data = {
             'title': 'Test Recipe',
-            'adjectives': 'quick easy',
             'publication_date': timezone.now().date(),
             'servings' : 4,
             'ingredients' : "test (1)",
-            'steps' : "test"
+            'steps' : "test",
+            'prep_time_hours': 0,
+            'prep_time_minutes': 30,
+            'cook_time_hours': 1,
+            'cook_time_minutes': 15,
         }
 
     # Test that form is valid with correct data
@@ -30,11 +33,14 @@ class RecipeFormTestCase(TestCase):
     def test_form_has_necessary_fields(self):
         form = RecipeForm()
         self.assertIn('title', form.fields)
-        self.assertIn('adjectives', form.fields)
         self.assertIn('publication_date', form.fields)
         self.assertIn('servings', form.fields)
         self.assertIn('ingredients', form.fields)
         self.assertIn('steps', form.fields)
+        self.assertIn('prep_time_hours', form.fields)
+        self.assertIn('prep_time_minutes', form.fields)
+        self.assertIn('cook_time_hours', form.fields)
+        self.assertIn('cook_time_minutes', form.fields)
 
     # Test that form rejects blank title
     def test_form_rejects_blank_title(self):
@@ -42,13 +48,6 @@ class RecipeFormTestCase(TestCase):
         form = RecipeForm(data=self.form_data)
         self.assertFalse(form.is_valid())
         self.assertIn('title', form.errors)
-
-    # Test that form rejects blank adjectives
-    def test_form_rejects_blank_adjectives(self):
-        self.form_data['adjectives'] = ''
-        form = RecipeForm(data=self.form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('adjectives', form.errors)
 
     # Test that form rejects blank servings
     def test_form_rejects_blank_servings(self):
@@ -63,13 +62,6 @@ class RecipeFormTestCase(TestCase):
         form = RecipeForm(data=self.form_data)
         self.assertFalse(form.is_valid())
         self.assertIn('ingredients', form.errors)
-    
-    # Test that form rejects blank steps
-    def test_form_rejects_blank_adjectives(self):
-        self.form_data['steps'] = ''
-        form = RecipeForm(data=self.form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('steps', form.errors)
 
     # Test that form rejects title less than 4 characters
     def test_form_rejects_short_title(self):
@@ -78,22 +70,9 @@ class RecipeFormTestCase(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('title', form.errors)
 
-    # Test that form rejects adjectives less than 4 characters
-    def test_form_rejects_short_adjectives(self):
-        self.form_data['adjectives'] = 'ok'
-        form = RecipeForm(data=self.form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('adjectives', form.errors)
-
     # Test that form accepts title with exactly 4 characters
     def test_form_accepts_minimum_length_title(self):
         self.form_data['title'] = 'Test'
-        form = RecipeForm(data=self.form_data)
-        self.assertTrue(form.is_valid())
-
-    # Test that form accepts adjectives with exactly 4 characters
-    def test_form_accepts_minimum_length_adjectives(self):
-        self.form_data['adjectives'] = 'fast'
         form = RecipeForm(data=self.form_data)
         self.assertTrue(form.is_valid())
 
@@ -105,7 +84,6 @@ class RecipeFormTestCase(TestCase):
         recipe.author=self.user
         recipe.save()
         self.assertEqual(recipe.title, 'Test Recipe')
-        self.assertEqual(recipe.adjectives, 'quick easy')
         self.assertEqual(recipe.author, self.user)
         self.assertEqual(recipe.servings, 4)
         self.assertEqual(recipe.ingredients, 'test (1)')
@@ -284,7 +262,6 @@ class RecipeFormTestCase(TestCase):
     def test_form_with_special_characters_in_fields(self):
         """Test that special characters are handled correctly"""
         self.form_data['title'] = "Chef's Special: 'Delicious!' Recipe"
-        self.form_data['adjectives'] = 'unique & tasty!'
         self.form_data['ingredients'] = "Chef's secret ingredient (1 tsp)"
         form = RecipeForm(data=self.form_data)
         self.assertTrue(form.is_valid())
@@ -300,3 +277,137 @@ class RecipeFormTestCase(TestCase):
         self.form_data['steps'] = 'Mix flour\n\nAdd sugar\n\n'
         form = RecipeForm(data=self.form_data)
         self.assertTrue(form.is_valid())
+
+    def test_form_accepts_zero_prep_time(self):
+      """Test that zero prep time is accepted"""
+      self.form_data['prep_time_hours'] = 0
+      self.form_data['prep_time_minutes'] = 0
+      form = RecipeForm(data=self.form_data)
+      self.assertTrue(form.is_valid())
+
+    def test_form_accepts_zero_cook_time(self):
+        """Test that zero cook time is accepted"""
+        self.form_data['cook_time_hours'] = 0
+        self.form_data['cook_time_minutes'] = 0
+        form = RecipeForm(data=self.form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_accepts_valid_prep_time(self):
+        """Test that valid prep time is accepted"""
+        self.form_data['prep_time_hours'] = 2
+        self.form_data['prep_time_minutes'] = 30
+        form = RecipeForm(data=self.form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_accepts_valid_cook_time(self):
+        """Test that valid cook time is accepted"""
+        self.form_data['cook_time_hours'] = 1
+        self.form_data['cook_time_minutes'] = 45
+        form = RecipeForm(data=self.form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_rejects_negative_prep_time_hours(self):
+        """Test that negative prep time hours are rejected"""
+        self.form_data['prep_time_hours'] = -1
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('prep_time_hours', form.errors)
+
+    def test_form_rejects_negative_prep_time_minutes(self):
+        """Test that negative prep time minutes are rejected"""
+        self.form_data['prep_time_minutes'] = -5
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('prep_time_minutes', form.errors)
+
+    def test_form_rejects_negative_cook_time_hours(self):
+        """Test that negative cook time hours are rejected"""
+        self.form_data['cook_time_hours'] = -2
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('cook_time_hours', form.errors)
+
+    def test_form_rejects_negative_cook_time_minutes(self):
+        """Test that negative cook time minutes are rejected"""
+        self.form_data['cook_time_minutes'] = -10
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('cook_time_minutes', form.errors)
+
+    def test_form_rejects_prep_minutes_over_59(self):
+        """Test that prep minutes over 59 are rejected"""
+        self.form_data['prep_time_minutes'] = 60
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('prep_time_minutes', form.errors)
+
+    def test_form_rejects_cook_minutes_over_59(self):
+        """Test that cook minutes over 59 are rejected"""
+        self.form_data['cook_time_minutes'] = 75
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('cook_time_minutes', form.errors)
+
+    def test_form_accepts_prep_minutes_at_59(self):
+        """Test that prep minutes at exactly 59 are accepted"""
+        self.form_data['prep_time_minutes'] = 59
+        form = RecipeForm(data=self.form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_accepts_cook_minutes_at_59(self):
+        """Test that cook minutes at exactly 59 are accepted"""
+        self.form_data['cook_time_minutes'] = 59
+        form = RecipeForm(data=self.form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_accepts_large_time_values(self):
+        """Test that large but valid time values are accepted"""
+        self.form_data['prep_time_hours'] = 10
+        self.form_data['cook_time_hours'] = 8
+        form = RecipeForm(data=self.form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_time_fields_are_optional(self):
+        """Test that time fields can be omitted (defaults to 0)"""
+        # Remove time fields from form_data
+        del self.form_data['prep_time_hours']
+        del self.form_data['prep_time_minutes']
+        del self.form_data['cook_time_hours']
+        del self.form_data['cook_time_minutes']
+        form = RecipeForm(data=self.form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_rejects_string_in_prep_time_hours(self):
+      """Test that string values in prep time hours are rejected"""
+      self.form_data['prep_time_hours'] = 'two'
+      form = RecipeForm(data=self.form_data)
+      self.assertFalse(form.is_valid())
+      self.assertIn('prep_time_hours', form.errors)
+
+    def test_form_rejects_string_in_prep_time_minutes(self):
+        """Test that string values in prep time minutes are rejected"""
+        self.form_data['prep_time_minutes'] = 'thirty'
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('prep_time_minutes', form.errors)
+
+    def test_form_rejects_string_in_cook_time_hours(self):
+        """Test that string values in cook time hours are rejected"""
+        self.form_data['cook_time_hours'] = 'one'
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('cook_time_hours', form.errors)
+
+    def test_form_rejects_string_in_cook_time_minutes(self):
+        """Test that string values in cook time minutes are rejected"""
+        self.form_data['cook_time_minutes'] = 'fifteen'
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('cook_time_minutes', form.errors)
+
+    def test_form_rejects_decimal_in_time_fields(self):
+        """Test that decimal values in time fields are rejected"""
+        self.form_data['prep_time_hours'] = 1.5
+        form = RecipeForm(data=self.form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('prep_time_hours', form.errors)

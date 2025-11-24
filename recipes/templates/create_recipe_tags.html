@@ -1,0 +1,254 @@
+{% extends 'base_content.html' %}
+
+{% block content %}
+<div class="container mt-4">
+<div class="row justify-content-center">
+    <div class="col-md-10">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+        <h3 class="mb-0">
+            <i class="bi bi-tags"></i> Create New Recipe - Step 2 of 2
+        </h3>
+        <small>Select Tags (Optional)</small>
+        </div>
+        <div class="card-body">
+
+        <!-- Course Tags Section -->
+        <div class="mb-4 p-3 border rounded bg-light">
+            <h5 class="mb-3">Course Type(s)</h5>
+
+            <!-- Display selected course tags as chips -->
+            <div class="mb-3">
+            {% if course_tags %}
+                {% for tag in course_tags %}
+                <span class="tag-chip">
+                {{ tag }}
+                <form method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" name="remove_course_tag" value="{{ tag }}" class="tag-remove">&times;</button>
+                </form>
+                </span>
+                {% endfor %}
+            {% else %}
+                <span class="text-muted">No course tags selected</span>
+            {% endif %}
+            </div>
+
+            <!-- Predefined course tag buttons -->
+            <div class="mb-2">
+            <strong>Quick select:</strong><br>
+            {% for option in course_options %}
+                {% if option not in course_tags %}
+                <form method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" name="add_course_tag" value="{{ option }}" class="btn btn-sm btn-outline-primary m-1">+ {{ option }}</button>
+                </form>
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <!-- Custom course tag input -->
+            <form method="POST" class="mt-2">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="course_tag_value" class="form-control" placeholder="Add custom course tag">
+                <button type="submit" name="add_course_tag_custom" class="btn btn-primary">Add</button>
+            </div>
+            </form>
+        </div>
+
+        <!-- Cuisine Tags Section -->
+        <div class="mb-4 p-3 border rounded bg-light">
+            <h5 class="mb-3">Cuisine(s)</h5>
+
+            <!-- Display selected cuisine tags as chips -->
+            <div class="mb-3">
+            {% if cuisine_tags %}
+                {% for tag in cuisine_tags %}
+                <span class="tag-chip tag-chip-success">
+                {{ tag }}
+                <form method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" name="remove_cuisine_tag" value="{{ tag }}" class="tag-remove">&times;</button>
+                </form>
+                </span>
+                {% endfor %}
+            {% else %}
+                <span class="text-muted">No dietary tags selected</span>
+            {% endif %}
+            </div>
+
+            <!-- Predefined cuisine tag buttons -->
+            <div class="mb-2">
+            <strong>Quick select:</strong><br>
+            {% for option in cuisine_options %}
+                {% if option not in cuisine_tags %}
+                <form method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" name="add_cuisine_tag" value="{{ option }}" class="btn btn-sm btn-outline-success m-1">+ {{ option }}</button>
+                </form>
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <!-- Custom cuisine tag input -->
+            <form method="POST" class="mt-2">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="cuisine_tag_value" class="form-control" placeholder="Add custom cuisine tag">
+                <button type="submit" name="add_cuisine_tag_custom" class="btn btn-success">Add</button>
+            </div>
+            </form>
+        </div>
+
+        <!-- Dietary Tags Section -->
+        <div class="mb-4 p-3 border rounded bg-light">
+            <h5 class="mb-3">Dietary Preferences</h5>
+
+            <!-- Display selected dietary tags as chips -->
+            <div class="mb-3">
+            {% if dietary_tags %}
+                {% for tag in dietary_tags %}
+                <span class="tag-chip tag-chip-success">
+                {{ tag }}
+                <form method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" name="remove_dietary_tag" value="{{ tag }}" class="tag-remove">&times;</button>
+                </form>
+                </span>
+                {% endfor %}
+            {% else %}
+                <span class="text-muted">No dietary tags selected</span>
+            {% endif %}
+            </div>
+
+            <!-- Predefined dietary tag buttons -->
+            <div class="mb-2">
+            <strong>Quick select:</strong><br>
+            {% for option in dietary_options %}
+                {% if option not in dietary_tags %}
+                <form method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" name="add_dietary_tag" value="{{ option }}" class="btn btn-sm btn-outline-success m-1">+ {{ option }}</button>
+                </form>
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <!-- Custom dietary tag input -->
+            <form method="POST" class="mt-2">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="dietary_tag_value" class="form-control" placeholder="Add custom dietary tag">
+                <button type="submit" name="add_dietary_tag_custom" class="btn btn-success">Add</button>
+            </div>
+            </form>
+        </div>
+
+        <!-- Other Tags Section -->
+        <div class="mb-4 p-3 border rounded bg-light">
+            <h5 class="mb-3">Other Tags</h5>
+
+            <!-- Display selected other tags as chips -->
+            <div class="mb-3">
+            {% if other_tags %}
+                {% for tag in other_tags %}
+                <span class="tag-chip tag-chip-warning">
+                {{ tag }}
+                <form method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" name="remove_other_tag" value="{{ tag }}" class="tag-remove">&times;</button>
+                </form>
+                </span>
+                {% endfor %}
+            {% else %}
+                <span class="text-muted">No other tags selected</span>
+            {% endif %}
+            </div>
+
+            <!-- Predefined other tag buttons -->
+            <div class="mb-2">
+            <strong>Quick select:</strong><br>
+            {% for option in other_options %}
+                {% if option not in other_tags %}
+                <form method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" name="add_other_tag" value="{{ option }}" class="btn btn-sm btn-outline-warning m-1">+ {{ option }}</button>
+                </form>
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <!-- Custom other tag input -->
+            <form method="POST" class="mt-2">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="other_tag_value" class="form-control" placeholder="Add custom tag">
+                <button type="submit" name="add_other_tag_custom" class="btn btn-warning">Add</button>
+            </div>
+            </form>
+        </div>
+
+        <!-- Final Actions -->
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <a href="{% url 'create_recipe' %}" class="btn btn-secondary btn-lg">
+            <i class="bi bi-arrow-left"></i> Back
+            </a>
+            <form method="POST" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" name="create_recipe" class="btn btn-success btn-lg">
+                <i class="bi bi-check-circle"></i> Create Recipe
+            </button>
+            </form>
+        </div>
+
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+
+<style>
+.tag-chip {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    margin: 3px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.tag-chip-success {
+    background-color: #28a745;
+}
+
+.tag-chip-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.tag-remove {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
+    padding: 0 5px;
+}
+
+.tag-chip-warning .tag-remove {
+    color: #000;
+}
+
+.tag-remove:hover {
+    color: #ffcccc;
+}
+
+.tag-chip-warning .tag-remove:hover {
+    color: #666;
+}
+</style>
+{% endblock %}

@@ -31,6 +31,16 @@ def recipe_detail(request, recipe_id):
         'desired_servings': desired_servings,
         'scaling_factor': scaling_factor,
         'steps' : recipe.get_step_list(),
+        'course_tags': recipe.get_course_tags_list(),
+        'dietary_tags': recipe.get_dietary_tags_list(),
+        'cuisine_tags': recipe.get_cuisine_tags_list(),
+        'other_tags': recipe.get_other_tags_list(),
+        'prep_time_display': recipe.get_prep_time_display(),
+        'cook_time_display': recipe.get_cook_time_display(),
+        'total_prep_minutes': recipe.get_total_prep_time_minutes(),
+        'total_cook_minutes': recipe.get_total_cook_time_minutes(),
+        'total_time_display' : recipe.get_total_time_display(),
+        'is_owner': recipe.author == request.user,
     }
    
     return render(request, 'recipe.html', context)
