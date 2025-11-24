@@ -1,6 +1,7 @@
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
+from django.db.models import Avg
 
 
 """A Recipe can be posted by a user and later we will be able to do all CRUD operations on it.
@@ -210,3 +211,15 @@ class Recipe(models.Model):
     def get_save_count(self):
         """Return the number of users who have saved this recipe"""
         return self.saved_by.count()
+
+    def average_rating(self):
+        """Return the average rating of this recipe by users"""
+        return self.ratings.aggregate(avg=Avg("stars"))["avg"] or 0
+
+    def average_rating_rounded(self):
+        """Return average rating to the nearest whole star"""
+        return round(self.average_rating())
+
+    def rating_count(self):
+        """Return the number of ratings for this recipe"""
+        return self.ratings.count()

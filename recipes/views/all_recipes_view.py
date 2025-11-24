@@ -4,6 +4,7 @@ from django.shortcuts import render
 from recipes.models.recipe import Recipe
 from django.db.models import Q, F, Value, Count
 from django.db.models.functions import Concat
+from django.db.models import Avg
 
 ITEMS_PER_PAGE = 25
 
@@ -131,7 +132,14 @@ def all_recipes(request):
         recipes = recipes.annotate(
             save_count=Count('saved_by')
         )
-        order_field = '-save_count'
+        order_field = '-saved_by'
+    elif sort_by == 'rating_highest':
+        recipes = recipes.annotate(avg_rating=Avg('ratings__stars'))
+        recipes = recipes.order_by(
+            F('avg_rating').desc(nulls_last=True),
+            '-publication_date'
+        )
+        order_field = None
     elif sort_by == 'title_az':
         order_field = 'title'
     elif sort_by == 'title_za':
@@ -139,7 +147,8 @@ def all_recipes(request):
     else:
         order_field = '-publication_date'
 
-    recipes = recipes.order_by(order_field)
+    if order_field:
+        recipes = recipes.order_by(order_field)
 
     # Filter options
     course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']

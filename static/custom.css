@@ -357,6 +357,26 @@ h3.profile-title {
   margin-top: 0.5rem !important;
 }
 
+.rating-input {
+    direction: rtl;
+}
+
+.rating-input input[type="radio"] {
+    display: none;
+}
+
+.rating-input label {
+    cursor: pointer;
+    color: var(--primary-colour-darker);
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label {
+    color: #f0ad4e !important;
+}
+
+.rating-input input[type="radio"]:checked ~ label {
+    color: #f0ad4e !important;
 /*
  * Meal plan - day headers
  */
