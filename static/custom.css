@@ -59,7 +59,6 @@ p.cover-text {
   padding-left: 50px;
   padding-right: 50px;
   padding-bottom: 30px;
-  border-radius: 15%;
 }
 .cover-card-block {
   opacity: 1
@@ -146,26 +145,24 @@ h3.profile-title {
 }
 
 /*
- * Navbar Styling
+ * Navbar
  */
 
  .main-navbar {
     background-color: var(--primary-colour);
 }
 
-/* Mobile Navbar */
 .navbar-brand-centered {
-    font-weight: bold;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
+    font-weight: 900;
+    font-size: 26px;
 }
 
-/* Make search bar full width on mobile */
+/* Mobile navbar adjustments */
 @media (max-width: 991.98px) {
     .navbar-collapse {
-        text-align: left; 
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        text-align: left;
+        padding: 1rem 0;
     }
     
     .navbar-nav.me-auto {
@@ -179,10 +176,7 @@ h3.profile-title {
         align-items: flex-start !important;
     }
 
-    .navbar form.d-flex {
-        width: 100%;
-    }
-    
+    .navbar form.d-flex,
     .navbar form .input-group {
         width: 100%;
     }
@@ -199,10 +193,9 @@ h3.profile-title {
 }
 
 /*
- * Dropdown Menu Styling
+ * Dropdown Menus
  */
 
-/* Main container box */
 .dropdown-menu {
     border: none;
     border-radius: 2px;
@@ -211,7 +204,7 @@ h3.profile-title {
     background-color: #ffffff;
 }
 
-/* Navigation links */
+/* Dropdown navigation links */
 .dropdown-item {
     border-radius: 4px;
     padding: 6px 8px;
