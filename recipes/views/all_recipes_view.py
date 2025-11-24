@@ -126,7 +126,7 @@ def all_recipes(request):
         order_field = '-total_minutes'
     elif sort_by == 'most_saves':
         recipes = recipes.annotate(
-            save_count=models.Count('saved_by')
+            save_count=Count('saved_by')
         )
         order_field = '-saved_by'
     elif sort_by == 'title_az':
