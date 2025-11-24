@@ -32,7 +32,7 @@ Recipes | Recipe #{{recipe.id}}
             {# --- Star Rating Input --- #}
             <div class="rating-input">
                 {% with current=user_rating.stars|default:0 %}
-                    {% for i in "54321" %}  {# reversed order for CSS hover trick #}
+                    {% for i in "54321" %}
 
                         <input type="radio"
                             name="stars"

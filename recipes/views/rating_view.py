@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from recipes.models import Recipe
 from recipes.models.rating import Rating
+from django.contrib import messages
 
 
 @login_required
@@ -12,6 +13,11 @@ def rate_recipe(request, recipe_id):
     """
     recipe = get_object_or_404(Recipe, id=recipe_id)
 
+    # Prevent authors from rating their own recipes
+    if recipe.author == request.user:
+        messages.warning(request, "You cannot rate your own recipe.")
+        return redirect("recipe_detail", recipe_id=recipe.id)
+
     if request.method == "POST":
         stars = int(request.POST.get("stars", 0))
         if 1 <= stars <= 5:
@@ -20,5 +26,6 @@ def rate_recipe(request, recipe_id):
                 user=request.user,
                 defaults={"stars": stars}
             )
+            messages.success(request, "Your rating has been saved.")
 
     return redirect("recipe_detail", recipe_id=recipe.id)
