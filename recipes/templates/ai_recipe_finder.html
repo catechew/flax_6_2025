@@ -1,0 +1,73 @@
+{% extends 'base_content.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow">
+        <div class="card-header bg-info text-white">
+          <h3 class="mb-0">
+            <i class="bi bi-lightbulb"></i> AI Recipe Finder
+          </h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            Describe your situation, event, or craving, and our AI will find the perfect recipes for you!
+          </p>
+
+          <!-- Example Scenarios -->
+          <div class="alert alert-light border">
+            <strong><i class="bi bi-chat-dots"></i> Example scenarios:</strong>
+            <ul class="mb-0 mt-2">
+              <li>"My 12-year-old son is having a birthday party with 30 friends. He loves pizza and chocolate."</li>
+              <li>"I need a romantic dinner for two. My partner is vegetarian and loves Italian food."</li>
+              <li>"Quick weeknight dinner for a family of 4. We're trying to eat healthier."</li>
+              <li>"Hosting a brunch for 10 people. Some guests are vegan, budget is tight."</li>
+            </ul>
+          </div>
+
+          <!-- Input Form -->
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="context" class="form-label">
+                <strong>Describe Your Situation:</strong>
+              </label>
+              <textarea 
+                class="form-control" 
+                id="context" 
+                name="context" 
+                rows="5" 
+                placeholder="Tell us about your occasion, dietary needs, time constraints, who you're cooking for, etc."
+                required
+              ></textarea>
+              <small class="form-text text-muted">
+                Be as specific as possible - mention the occasion, number of people, preferences, restrictions, time available, etc.
+              </small>
+            </div>
+
+            <button type="submit" class="btn btn-info btn-lg w-100">
+              <i class="bi bi-search"></i> Find Perfect Recipes
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tips Card -->
+      <div class="card mt-4 border-info">
+        <div class="card-body">
+          <h5 class="card-title text-info">
+            <i class="bi bi-info-circle"></i> How It Works
+          </h5>
+          <ol class="mb-0">
+            <li>Our AI analyzes your situation and extracts key requirements</li>
+            <li>Generates smart search queries and filters based on your needs</li>
+            <li>Searches through our recipe database</li>
+            <li>Shows you the most suitable recipes</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

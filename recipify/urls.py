@@ -22,7 +22,7 @@ from recipes import views
 from recipes.views.recipe_create_view import create_recipe, create_recipe_tags, cancel_recipe_creation
 from recipes.views.recipe_update_view import recipe_update, update_recipe_tags, cancel_recipe_update
 from recipes.views.meal_plan_view import MealPlanCreateView, MealPlanDetailView, MealSlotUpdateView, MealPlanNavigateView, MealSlotClearView
-
+from recipes.views.ai_recipe_finder_view import ai_recipe_finder_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -46,6 +46,8 @@ urlpatterns = [
 
     path('update_recipe/<int:recipe_id>/tags/', update_recipe_tags, name='update_recipe_tags'),
     path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_update, name='cancel_recipe_update'),
+
+    path('ai_finder/', ai_recipe_finder_view, name='ai_recipe_finder'),
 
     path('user/<int:user_id>/', views.user_profile, name='user_profile'),
     path('user/<int:user_id>/follow/', views.follow_user, name='follow_user'),
