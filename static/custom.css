@@ -9,7 +9,7 @@
 
   --secondary-colour: #0F607B;
 
-  --black-colour: #251B21;
+  --black-colour: #1d1f1f;
   --bg-colour: #f7f3eb;
   --white-colour: #FAF9F5;
 }
@@ -19,6 +19,7 @@
  */
 body, button, input, textarea, select {
   font-family: Tahoma, sans-serif !important;
+  color: var(--black-colour);
 }
 
 body {
@@ -146,6 +147,7 @@ h3.profile-title {
   color: var(--primary-colour) !important;
   border-color: var(--primary-colour) !important;
   background: transparent !important;
+  box-shadow: 0 2px 0 var(--primary-colour);
 }
 
 .btn-outline-primary:hover,
@@ -165,7 +167,8 @@ h3.profile-title {
 }
 
 .btn:active {
-  transform: scale(0.96);
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--primary-colour);
 }
 
 .btn:focus,
