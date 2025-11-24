@@ -137,47 +137,39 @@ h3.profile-title {
  * Buttons
  */
 .btn-primary,
-.btn-outline-primary,
-.btn-light.text-primary {
+.btn-secondary {
     background-color: var(--primary-colour) !important;
     border-color: var(--primary-colour) !important;
     color: var(--bg-colour) !important;
 }
 
 .btn-primary:hover,
-.btn-outline-primary:hover,
-.btn-light.text-primary:hover {
+.btn-secondary:hover {
     background-color: var(--primary-colour-darker) !important;
     border-color: var(--primary-colour-darker) !important;
-    color: var(--bg-colour) !important;
 }
 
-.btn-outline-primary {
-    background-color: transparent !important;
-    color: var(--primary-colour) !important;
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--primary-colour) !important;
-    color: var(--bg-colour) !important;
-}
-
-.btn-secondary,
+.btn-outline-primary,
 .btn-outline-secondary {
-    background-color: var(--primary-colour) !important;
+    color: var(--primary-colour) !important;
     border-color: var(--primary-colour) !important;
-    color: var(--bg-colour) !important;
+    background-color: transparent !important;
 }
 
-.btn-secondary:hover,
+.btn-outline-primary:hover,
 .btn-outline-secondary:hover {
-    background-color: var(--primary-colour-darker) !important;
-    border-color: var(--primary-colour-darker) !important;
+    background-color: var(--primary-colour) !important;
     color: var(--bg-colour) !important;
 }
 
 .btn-light.text-primary {
     color: var(--primary-colour) !important;
+    border-color: var(--primary-colour) !important;
+}
+
+.btn-light.text-primary:hover {
+    background-color: var(--primary-colour) !important;
+    color: var(--bg-colour) !important;
 }
 
 /*
