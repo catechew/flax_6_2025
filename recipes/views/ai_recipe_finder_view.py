@@ -161,11 +161,11 @@ def ai_recipe_finder_view(request):
         
         recipes = recipes.order_by(order_field)
 
-        print(f"=== FOUND {recipes.count()} RECIPES")  # ADD THIS
+        print(f"=== FOUND {recipes.count()} RECIPES")
 
         # Get top 10 results for ranking
         top_recipes = recipes[:10]
-        print(f"=== TOP RECIPES: {list(top_recipes.values_list('id', 'title'))}")  # ADD THIS
+        print(f"=== TOP RECIPES: {list(top_recipes.values_list('id', 'title'))}")
 
         total_count = recipes.count()
 
@@ -178,6 +178,48 @@ def ai_recipe_finder_view(request):
                 'show_results': True
             }
             return render(request, 'ai_recipe_finder.html', context)
+        
+        if top_recipes.exists():
+            print("=== STARTING API CALL 2")
+            recipe_list = [
+                {
+                    'id': recipe.id,
+                    'title': recipe.title,
+                    # get tags and trim off whitespace
+                    'tags': f"{getattr(recipe, 'course_tags', '')} {getattr(recipe, 'dietary_tags', '')}".strip()
+                }
+                for recipe in top_recipes
+            ]
+            
+            ranking_prompt = f"""Context: "{user_context}"
+
+                Recipes:
+                {json.dumps(recipe_list, indent=2)}
+
+                Rank top 3 recipes. Return JSON:
+                {{
+                "top_picks": [{{"recipe_id": 123, "title": "Name", "reason": "Why it fits (1 sentence)"}}],
+                "search_explanation": "Search strategy (1 sentence)"
+                }}"""
+            
+            ranking_response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "Rank recipes. Return only JSON."},
+                    {"role": "user", "content": ranking_prompt}
+                ],
+                temperature=0.5,
+                max_tokens=300
+            )
+
+            ranking_text = ranking_response.choices[0].message.content.strip()
+
+            # once again, clean markdown
+            if ranking_text.startswith('```'):
+                ranking_text = ranking_text.split('```')[1]
+                if ranking_text.startswith('json'):
+                    ranking_text = ranking_text[4:]
+                ranking_text = ranking_text.strip()
         
     return render(request, 'ai_recipe_finder.html')
     
