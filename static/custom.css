@@ -1,7 +1,6 @@
 /*
-* General consistent styling
-*/
-
+ * Root Variables
+ */
 :root {
   --primary-colour: #f15034;
   --primary-colour-darker: #c53c32;
@@ -15,26 +14,24 @@
   --white-colour: #FAF9F5;
 }
 
+/*
+ * Base
+ */
+body, button, input, textarea, select {
+  font-family: Tahoma, sans-serif !important;
+}
+
 body {
   background-color: var(--bg-colour);
 }
 
-body, button, input, textarea, select {
-    font-family: Tahoma, sans-serif !important;
-}
-
-/*
- * Alerts
- */
-
 .alert {
-  border-radius: 0px;
+  border-radius: 0;
 }
 
 /*
- * Cover page
+ * Layout Helpers
  */
-
 .content {
   padding-top: 10px;
 }
@@ -50,7 +47,7 @@ body, button, input, textarea, select {
 }
 
 /*
- * Cover page for home.html (welcome page)
+ * Welcome Page
  */
 h1.cover-heading {
   color: var(--primary-colour);
@@ -63,44 +60,35 @@ p.cover-text {
 }
 
 .cover-card {
-  background-color: transparent;
+  background: transparent;
   border: none;
   max-width: 30rem;
-  padding-top: 30px;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-bottom: 30px;
-}
-
-.cover-card-block {
-  opacity: 1
+  padding: 30px 50px;
 }
 
 /*
- * forms
+ * Forms
  */
 .nolabel label {
   display: none;
 }
 
 ul.errorlist {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
   margin: 0;
 }
 
 /*
- * Typefaces
+ * Typography
  */
-
 .low-key {
-  color: #777777;
+  color: #777;
   font-weight: 300;
 }
 
 .list-title {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin: 10px 0 20px;
 }
 
 /*
@@ -108,17 +96,16 @@ ul.errorlist {
  */
 .profile-image {
   width: 120px;
-  clear: both;
   float: left;
 }
 
 .profile-text {
   overflow: hidden;
-  padding-left: 20px
+  padding-left: 20px;
 }
 
 h3.profile-title {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .profile-username {
@@ -126,9 +113,8 @@ h3.profile-title {
   font-style: italic;
 }
 
-
 /*
- * Hyperlinks
+ * Links
  */
 .content a {
   text-decoration: none;
@@ -136,7 +122,6 @@ h3.profile-title {
 }
 
 .content a:hover {
-  text-decoration: underline;
   color: var(--primary-colour-darkest);
 }
 
@@ -160,7 +145,7 @@ h3.profile-title {
 .btn-outline-secondary {
   color: var(--primary-colour) !important;
   border-color: var(--primary-colour) !important;
-  background-color: transparent !important;
+  background: transparent !important;
 }
 
 .btn-outline-primary:hover,
@@ -169,20 +154,29 @@ h3.profile-title {
   color: var(--bg-colour) !important;
 }
 
-.btn-light.text-primary {
+.btn-light.text-primary,
+.btn-light.text-primary:hover {
   color: var(--primary-colour) !important;
   border-color: var(--primary-colour) !important;
 }
 
-.btn-light.text-primary:hover {
-  background-color: var(--primary-colour) !important;
-  color: var(--bg-colour) !important;
+.btn {
+  transition: transform 0.08s ease;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn:focus,
+.btn:active:focus {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  outline: none !important;
 }
 
 /*
  * Navbar
  */
-
 .main-navbar {
   background-color: var(--primary-colour);
   color: var(--bg-colour);
@@ -194,7 +188,7 @@ h3.profile-title {
   font-size: 26px;
 }
 
-/* Mobile navbar adjustments */
+/* Mobile Navbar */
 @media (max-width: 991.98px) {
   .navbar-collapse {
     text-align: left;
@@ -231,39 +225,34 @@ h3.profile-title {
 /*
  * Dropdown Menus
  */
-
 .dropdown-menu {
   border: none;
   border-radius: 2px;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   padding: 2px;
-  background-color: var(--white-colour);
+  background: var(--white-colour);
 }
 
-/* Dropdown navigation links */
 .dropdown-item {
   border-radius: 4px;
   padding: 6px 8px;
   color: var(--primary-colour-darker);
   font-weight: 600;
-  transition: all 0.1s ease-in-out;
+  transition: 0.1s ease-in-out;
 }
 
-/* Hover effect */
 .dropdown-item:hover,
 .dropdown-item:focus {
-  background-color: var(--primary-colour-lighter);
+  background: var(--primary-colour-lighter);
   color: var(--primary-colour);
 }
 
-/* Active state */
 .dropdown-item.active,
 .dropdown-item:active {
-  background-color: var(--primary-colour);
+  background: var(--primary-colour);
   color: var(--white-colour);
 }
 
-/* Dividers */
 .dropdown-divider {
   border-top: 1px solid var(--white-colour);
   margin: 4px 0;
@@ -272,28 +261,17 @@ h3.profile-title {
 /*
  * Filter Dropdowns
  */
-
-/* Dropdown options*/
 .dropdown-menu .form-check {
   padding: 4px 5px 4px 35px;
   border-radius: 4px;
   margin-bottom: 2px;
-  transition: background-color 0.1s;
   cursor: pointer;
 }
 
 .dropdown-menu .form-check:hover {
-  background-color: #eef1f5;
+  background: #eef1f5;
 }
 
-.dropdown-menu .form-check-label {
-  width: 100%;
-  cursor: pointer;
-  font-weight: 400;
-  color: #444;
-}
-
-/* Checkbox */
 .form-check-input:checked {
   background-color: var(--primary-colour);
   border-color: var(--primary-colour);
@@ -305,9 +283,7 @@ h3.profile-title {
   overflow-y: auto;
 }
 
-/* * 
- * Desktop only fade animation
- */
+/* Desktop fade animation */
 @media (min-width: 992px) {
   .dropdown-menu {
     display: block;
@@ -324,29 +300,26 @@ h3.profile-title {
   }
 }
 
-/* *
-* Cards
-*/
-
+/*
+ * Cards
+ */
 .recipe-card {
-  background-color: var(--white-colour) !important;
-  border-radius: 1px;
-  overflow: hidden;
+  background: var(--white-colour) !important;
   border: none !important;
-  box-shadow: 0px 10px var(--black-colour);
-  background-color: var(--white-colour);
   border-radius: 2px;
   padding: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0px 10px var(--black-colour);
 }
 
 .recipe-card i.bi-tag,
 .recipe-card i.bi-people {
-    color: var(--primary-colour) !important;
-    text-shadow:
-        0.2px 0 0 var(--primary-colour),
-        -0.2px 0 0 var(--primary-colour),
-        0 0.2px 0 var(--primary-colour),
-        0 -0.2px 0 var(--primary-colour);
+  color: var(--primary-colour) !important;
+  text-shadow:
+    0.2px 0 0 var(--primary-colour),
+    -0.2px 0 0 var(--primary-colour),
+    0 0.2px 0 var(--primary-colour),
+    0 -0.2px 0 var(--primary-colour);
 }
 
 .recipe-card-img {
