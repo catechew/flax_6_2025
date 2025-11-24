@@ -7,6 +7,9 @@
   --primary-colour-darker: #c53c32;
   --primary-colour-darkest: #5c0404;
   --primary-colour-lighter: #f7e0e0;
+
+  --secondary-colour: #0F607B;
+
   --black-colour: #251B21;
   --bg-colour: #f7f3eb;
   --white-colour: #FAF9F5;
@@ -14,6 +17,10 @@
 
 body {
   background-color: var(--bg-colour);
+}
+
+body, button, input, textarea, select {
+    font-family: Tahoma, sans-serif !important;
 }
 
 /*
@@ -138,38 +145,38 @@ h3.profile-title {
  */
 .btn-primary,
 .btn-secondary {
-    background-color: var(--primary-colour) !important;
-    border-color: var(--primary-colour) !important;
-    color: var(--bg-colour) !important;
+  background-color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
 }
 
 .btn-primary:hover,
 .btn-secondary:hover {
-    background-color: var(--primary-colour-darker) !important;
-    border-color: var(--primary-colour-darker) !important;
+  background-color: var(--primary-colour-darker) !important;
+  border-color: var(--primary-colour-darker) !important;
 }
 
 .btn-outline-primary,
 .btn-outline-secondary {
-    color: var(--primary-colour) !important;
-    border-color: var(--primary-colour) !important;
-    background-color: transparent !important;
+  color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
+  background-color: transparent !important;
 }
 
 .btn-outline-primary:hover,
 .btn-outline-secondary:hover {
-    background-color: var(--primary-colour) !important;
-    color: var(--bg-colour) !important;
+  background-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
 }
 
 .btn-light.text-primary {
-    color: var(--primary-colour) !important;
-    border-color: var(--primary-colour) !important;
+  color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
 }
 
 .btn-light.text-primary:hover {
-    background-color: var(--primary-colour) !important;
-    color: var(--bg-colour) !important;
+  background-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
 }
 
 /*
@@ -253,12 +260,12 @@ h3.profile-title {
 .dropdown-item.active,
 .dropdown-item:active {
   background-color: var(--primary-colour);
-  color: white;
+  color: var(--white-colour);
 }
 
 /* Dividers */
 .dropdown-divider {
-  border-top: 1px solid white;
+  border-top: 1px solid var(--white-colour);
   margin: 4px 0;
 }
 
@@ -329,24 +336,39 @@ h3.profile-title {
   box-shadow: 0px 10px var(--black-colour);
   background-color: var(--white-colour);
   border-radius: 2px;
-  padding: 0.75rem;                 
+  padding: 0.75rem;
+}
+
+.recipe-card i.bi-tag,
+.recipe-card i.bi-people {
+    color: var(--primary-colour) !important;
+    text-shadow:
+        0.2px 0 0 var(--primary-colour),
+        -0.2px 0 0 var(--primary-colour),
+        0 0.2px 0 var(--primary-colour),
+        0 -0.2px 0 var(--primary-colour);
 }
 
 .recipe-card-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 2px;                /* Softer image corners */
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 2px;
 }
 
 .recipe-card .card-body {
   padding: 0.5rem 0.75rem;
 }
 
+.recipe-card .card-title {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
 .recipe-card .card-text {
-  margin-bottom: 0.25rem !important;
+  line-height: 1.2;
 }
 
 .recipe-card .mt-auto {
-  margin-top: 0.25rem !important;
+  margin-top: 0.5rem !important;
 }
