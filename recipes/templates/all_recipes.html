@@ -208,6 +208,14 @@
                     {% endif %}
                   </small>
                 </p>
+
+                {# Save Count #}
+                <p class="card-text mb-3">
+                  <small class="text-muted">
+                    <i class="bi bi-heart"></i> Saved by {{ recipe.get_save_count }}user{{ recipe.get_save_count|pluralize }}
+                  </small>
+                </p>
+
                 {% endif %}
 
                 <div class="mt-auto d-flex gap-2">

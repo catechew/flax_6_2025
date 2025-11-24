@@ -202,6 +202,6 @@ class Recipe(models.Model):
         else:
             return None
         
-    def get_saved_count(self):
+    def get_save_count(self):
         """Return the number of users who have saved this recipe"""
         return self.saved_by.count()
