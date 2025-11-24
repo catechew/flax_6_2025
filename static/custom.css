@@ -377,13 +377,13 @@ h3.profile-title {
 }
 
  /* Meal plan - day headers */
-.meal-header-mon { background-color: #ea8c95 !important; }
-.meal-header-tue { background-color: #db6065 !important; }
-.meal-header-wed { background-color: #ed4d4d !important; }
-.meal-header-thu { background-color: #DC2F02 !important; color: #000 !important; }
+.meal-header-mon { background-color: #E85D04 !important; }
+.meal-header-tue { background-color: #E85D04 !important; }
+.meal-header-wed { background-color: #E85D04 !important; }
+.meal-header-thu { background-color: #E85D04 !important; color: #000 !important; }
 .meal-header-fri { background-color: #E85D04 !important; }
-.meal-header-sat { background-color: #F48C06 !important; }
-.meal-header-sun { background-color: #FAA307 !important; }
+.meal-header-sat { background-color: #E85D04 !important; }
+.meal-header-sun { background-color: #E85D04 !important; }
 .rating-input {
     direction: rtl;
 }
@@ -392,13 +392,19 @@ h3.profile-title {
  * Meal Plan Card UI
  */
 .meal-card {
-  border: 1px solid rgba(0,0,0,0.06) !important;
-  box-shadow: 0px 3px 8px rgba(0,0,0,0.08) !important;
+  background: #ffffff;
+  border-radius: 60px !important;
+  padding: 20px;
+  border: 3px solid #f04800 !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important;
+  transition: 0.6s ease;
 }
 
 .meal-card:hover {
-  box-shadow: 0px 6px 12px rgba(0,0,0,0.10) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08) !important;
 }
+
 
 .meal-tag {
     display: inline-block;
