@@ -2,6 +2,7 @@ from recipes.models.recipe import Recipe
 from django.http import Http404
 from django.shortcuts import render
 import re
+from recipes.models.rating import Rating
 
 def recipe_detail(request, recipe_id):
     try:
@@ -24,6 +25,11 @@ def recipe_detail(request, recipe_id):
     for ingredient in recipe.get_ingredient_list():
         scaled_ingredient = scale_ingredient(ingredient, scaling_factor)
         scaled_ingredients.append(scaled_ingredient)
+    
+    # Retrieve logged in user's rating for the recipe
+    user_rating = None
+    if request.user.is_authenticated:
+        user_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
     
     context = {
         'recipe': recipe,

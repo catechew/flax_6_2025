@@ -1,6 +1,7 @@
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
+from django.db.models import Avg
 
 
 """A Recipe can be posted by a user and later we will be able to do all CRUD operations on it.
@@ -89,6 +90,18 @@ class Recipe(models.Model):
     steps = models.TextField(
         default="none",
         help_text="List cooking steps, one per line"
+    )
+
+    private = models.BooleanField(
+        default=False,
+        help_text="Set this to true to hide the recipe from other users"
+    )
+
+    saved_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='saved_recipes',
+        blank=True,
+        help_text="Users who have saved this recipe"
     )
 
     def save(self, *args, **kwargs):
@@ -194,3 +207,19 @@ class Recipe(models.Model):
             return f"{total_mins_remainder} min"
         else:
             return None
+        
+    def get_save_count(self):
+        """Return the number of users who have saved this recipe"""
+        return self.saved_by.count()
+
+    def average_rating(self):
+        """Return the average rating of this recipe by users"""
+        return self.ratings.aggregate(avg=Avg("stars"))["avg"] or 0
+
+    def average_rating_rounded(self):
+        """Return average rating to the nearest whole star"""
+        return round(self.average_rating())
+
+    def rating_count(self):
+        """Return the number of ratings for this recipe"""
+        return self.ratings.count()

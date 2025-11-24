@@ -235,7 +235,6 @@ h3.profile-title {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   padding: 2px;
   background: var(--white-colour);
-  
 }
 
 .dropdown-item {
@@ -321,7 +320,7 @@ h3.profile-title {
 }
 
 .recipe-card:hover {
-    transform: translateY(-4px);
+  transform: translateY(-4px);
 }
 
 .recipe-card i.bi-tag,
@@ -358,6 +357,25 @@ h3.profile-title {
   margin-top: 0.5rem !important;
 }
 
+
+.rating-input input[type="radio"] {
+    display: none;
+}
+
+.rating-input label {
+    cursor: pointer;
+    color: var(--primary-colour-darker);
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label {
+    color: #f0ad4e !important;
+}
+
+.rating-input input[type="radio"]:checked ~ label {
+    color: #f0ad4e !important;
+}
+
 /* Meal plan - day headers */
 .meal-header-mon { background-color: #ea8c95 !important; }
 .meal-header-tue { background-color: #db6065 !important; }
@@ -366,44 +384,46 @@ h3.profile-title {
 .meal-header-fri { background-color: #E85D04 !important; }
 .meal-header-sat { background-color: #F48C06 !important; }
 .meal-header-sun { background-color: #FAA307 !important; }
+.rating-input {
+    direction: rtl;
+}
 
-/* Meal Plan Card UI */
+/*
+ * Meal Plan Card UI
+ */
 .meal-card {
-    background: var(--white-colour) !important;
-    border-radius: 12px !important;
-    border: none !important;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.05) !important;
-    transition: 0.2s ease-in-out;
-    padding: 15px 20px;
+  background: var(--white-colour) !important;
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05) !important;
+  transition: 0.2s ease-in-out;
+  padding: 15px 20px;
 }
 
 .meal-card:hover {
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
 
 .day-header {
-    border-radius: 12px 12px 0 0 !important;
-    padding: 10px 15px;
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--white-colour);
+  border-radius: 12px 12px 0 0 !important;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--white-colour);
 }
 
-/* Empty meal slot text */
 .empty-slot {
-    color: #6c757d;
-    font-style: italic;
+  color: #6c757d;
+  font-style: italic;
 }
 
-/* Spacing between meal rows */
 .slot-line {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
-/* Tiny meal-type icons */
 .meal-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 4px;
-    object-fit: contain;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  object-fit: contain;
 }

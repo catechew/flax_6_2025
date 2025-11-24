@@ -75,6 +75,16 @@ class RecipeForm(forms.ModelForm):
         help_text='List each step on a new line'
     )
 
+    visibility_choices = [(True, 'private'), (False, 'public')]
+
+    private = forms.ChoiceField(
+        choices = visibility_choices,
+        initial = False,
+        required = True, 
+        widget = forms.Select(attrs={'class': 'form-control'}),
+        label= 'Recipe Visibility'
+    )
+
     prep_time_hours = forms.IntegerField(
         min_value=0,
         initial=0,
@@ -108,7 +118,7 @@ class RecipeForm(forms.ModelForm):
     
     class Meta:
         model = Recipe
-        fields = ['title', 'publication_date', 'servings', 'ingredients', 'steps', 'image', 'prep_time_hours', 'prep_time_minutes','cook_time_hours', 'cook_time_minutes']
+        fields = ['title', 'publication_date', 'servings', 'ingredients', 'steps', 'image', 'prep_time_hours', 'prep_time_minutes','cook_time_hours', 'cook_time_minutes', 'private']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
         }

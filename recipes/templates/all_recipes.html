@@ -37,7 +37,7 @@
               <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="courseDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                 Course {% if course_filters %}({{ course_filters|length }}){% endif %}
               </button>
-              <div class="dropdown-menu p-2" style="min-width: 200px;">
+              <div class="dropdown-menu filter-dropdown-menu">
                 {% for option in course_options %}
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" name="course" value="{{ option }}" 
@@ -130,6 +130,8 @@
             <option value="cook_most" {% if sort_by == 'cook_most' %}selected{% endif %}>Cook Time (Most)</option>
             <option value="total_least" {% if sort_by == 'total_least' %}selected{% endif %}>Total Time (Least)</option>
             <option value="total_most" {% if sort_by == 'total_most' %}selected{% endif %}>Total Time (Most)</option>
+            <option value="most_saves" {% if sort_by == 'most_saves' %}selected{% endif %}>Most Saved</option>
+            <option value="rating_highest" {% if sort_by == "rating_highest" %}selected{% endif %}>Highest Rated</option>
             <option value="title_az" {% if sort_by == 'title_az' %}selected{% endif %}>Title (A-Z)</option>
             <option value="title_za" {% if sort_by == 'title_za' %}selected{% endif %}>Title (Z-A)</option>
           </select>
@@ -153,73 +155,11 @@
   {% if recipes %}
     <div class="row mt-4">
         {% for recipe in page_object %}
-          <div class="col-md-4 mb-4">
-            <div class="card h-auto">
-              {# Recipe image #}
-              {% if recipe.image %}
-                <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}" style="height: 200px; object-fit: cover;">
-              {% else %}
-                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
-                  <i class="bi bi-image" style="font-size: 3rem; color: #dee2e6;"></i>
-                </div>
-              {% endif %}
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title">{{ recipe.title }}</h5>
-
-                {# Tags #}
-                {% if recipe.adjectives %}
-                  <p class="card-text mb-1">
-                    <small class="text-muted"><i class="bi bi-tag"></i> {{ recipe.adjectives }}</small>
-                  </p>
-                {% endif %}
-
-                {# Author #}
-                <p class="card-text">
-                  By <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.get_full_name }}</a>
-                </p>
-
-                {# Publication Date #}
-                <p class="card-text mb-1">
-                  <small class="text-muted">
-                    <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
-                  </small>
-                </p>
-
-                {# Servings #}
-                <p class="card-text mb-1">
-                  <small class="text-muted">
-                    <i class="bi bi-people"></i> {{ recipe.servings }} servings
-                  </small>
-                </p>
-
-                {# Times - Prep and Cook #}
-                {% if recipe.get_total_prep_time_minutes > 0 or recipe.get_total_cook_time_minutes > 0 %}
-                <p class="card-text mb-3">
-                  <small class="text-muted">
-                    {% if recipe.get_total_prep_time_minutes > 0 %}
-                      <i class="bi bi-clock"></i> Prep: {{ recipe.get_prep_time_display }}
-                    {% endif %}
-                    {% if recipe.get_total_prep_time_minutes > 0 and recipe.get_total_cook_time_minutes > 0 %}
-                      <span class="mx-1">|</span>
-                    {% endif %}
-                    {% if recipe.get_total_cook_time_minutes > 0 %}
-                      <i class="bi bi-clock"></i> Cook: {{ recipe.get_cook_time_display }}
-                    {% endif %}
-                  </small>
-                </p>
-                {% endif %}
-
-                <div class="mt-auto">
-                  <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary w-100">
-                    <i class="bi bi-eye"></i> View Recipe
-                  </a>
-                </div>
-              </div>
-
-            </div>
-          </div>
+        <div class="col-md-4 mb-4">
+            {% include "partials/recipe_card.html" with recipe=recipe show_save_button=True %}
+        </div>
         {% endfor %}
-      </div>
+    </div>
 
     {# Pagination: only render if recipes is a Page object with a paginator #}
     {% if page_object.paginator %}

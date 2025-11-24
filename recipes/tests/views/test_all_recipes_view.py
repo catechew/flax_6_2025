@@ -952,3 +952,37 @@ class AllRecipesViewTestCase(TestCase):
         # Should default to newest first
         self.assertEqual(recipes[0], new_recipe)
         self.assertEqual(recipes[1], old_recipe)
+
+    def test_sort_by_saves_most(self):
+        """Test sorting by most saved"""
+        Recipe.objects.all().delete()
+
+        # Create users
+        user2 = User.objects.get(username='@janedoe')
+        user3 = User.objects.get(username='@petrapickles')
+
+        # Create recipes
+        popular_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Popular Recipe",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test"
+        )
+        unpopular_recipe = Recipe.objects.create(
+            author=self.user,
+            title="Unpopular Recipe",
+            publication_date=timezone.now().date(),
+            ingredients="test (1)",
+            steps="test"
+        )
+
+        # Add saves
+        popular_recipe.saved_by.add(self.user, user2, user3)
+        unpopular_recipe.saved_by.add(self.user)
+
+        response = self.client.get(self.url, {'sort': 'saves_most'})
+        recipes = list(response.context['recipes'])
+
+        self.assertEqual(recipes[0], popular_recipe)
+        self.assertEqual(recipes[1], unpopular_recipe)
