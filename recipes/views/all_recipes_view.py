@@ -129,11 +129,6 @@ def all_recipes(request):
             save_count=models.Count('saved_by')
         )
         order_field = '-saved_by'
-    elif sort_by == 'least_saves':
-        recipes = recipes.annotate(
-            save_count=models.Count('saved_by')
-        )
-        order_field = 'saved_by'
     elif sort_by == 'title_az':
         order_field = 'title'
     elif sort_by == 'title_za':
