@@ -3,7 +3,6 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="meal-plan-wrapper">
 
     <h1 class="mb-4">📅 Weekly Meal Plan</h1>
     <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
@@ -19,16 +18,19 @@
         </a>
     </div>
 
-    <div class="row">
+    <div class="meal-grid">
+
         {% for day in schedule %}
-        <div class="col-md-4 mb-4">
             <div class="card meal-card border-0">
 
+                <!-- Day header -->
                 <div class="card-header text-dark fw-bold text-center day-header meal-header-{{ day.day_code }}">
                     {{ day.day_name }}
                 </div>
 
                 <div class="card-body">
+
+                    <!-- Breakfast -->
                     <div class="slot-line">
                         <strong>🍳 Breakfast:</strong>
                         {% with slot=day.slots.breakfast %}
@@ -36,6 +38,7 @@
                         {% endwith %}
                     </div>
 
+                    <!-- Lunch -->
                     <div class="slot-line">
                         <strong>🥗 Lunch:</strong>
                         {% with slot=day.slots.lunch %}
@@ -43,6 +46,7 @@
                         {% endwith %}
                     </div>
 
+                    <!-- Dinner -->
                     <div class="slot-line">
                         <strong>🍝 Dinner:</strong>
                         {% with slot=day.slots.dinner %}
@@ -50,21 +54,22 @@
                         {% endwith %}
                     </div>
 
+                    <!-- Snack -->
                     <div class="slot-line">
                         <strong>🍿 Snack:</strong>
                         {% with slot=day.slots.snack %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
                     </div>
+
                 </div>
 
             </div>
-        </div>
         {% endfor %}
+
     </div>
 
     <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Back to Dashboard</a>
 
-    </div> 
 </div>
 {% endblock %}

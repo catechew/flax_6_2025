@@ -446,6 +446,12 @@ h3.profile-title {
   opacity: 0.85;
 }
 
+.meal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
 .slot-content {
     display: flex;
     flex-direction: column;
