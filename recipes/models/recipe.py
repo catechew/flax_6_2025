@@ -219,3 +219,7 @@ class Recipe(models.Model):
     def average_rating_rounded(self):
         """Return average rating to the nearest whole star"""
         return round(self.average_rating())
+
+    def rating_count(self):
+        """Return the number of ratings for this recipe"""
+        return self.ratings.count()

@@ -51,18 +51,34 @@ Recipes | Recipe #{{recipe.id}}
         {% endif %}
 
         {# Average rating section #}
-        <div class="mt-2">
+        <div class="mt-2 d-flex align-items-center gap-2">
             <strong>Average Rating:</strong>
-            {% with avg=recipe.average_rating_rounded %}
-                {% for i in "12345" %}
-                    {% if forloop.counter <= avg %}
-                        ⭐
-                    {% else %}
-                        ☆
-                    {% endif %}
-                {% endfor %}
-            {% endwith %}
-            <span class="text-muted">({{ recipe.average_rating|floatformat:1 }})</span>
+
+            <span>
+                {% with avg=recipe.average_rating_rounded %}
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= avg %}
+                            ⭐
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+            </span>
+
+            <span class="text-muted">
+                {{ recipe.average_rating|floatformat:1 }}
+            </span>
+
+            {% if recipe.rating_count > 0 %}
+                <span class="text-muted" style="font-size: 0.9rem;">
+                    ({{ recipe.rating_count }} rating{% if recipe.rating_count != 1 %}s{% endif %})
+                </span>
+            {% else %}
+                <span class="text-muted" style="font-size: 0.9rem;">
+                    (No ratings yet)
+                </span>
+            {% endif %}
         </div>
 
     </div>
