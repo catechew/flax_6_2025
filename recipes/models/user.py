@@ -18,13 +18,24 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+    ]
+
+    gender = models.CharField(
+        max_length=1,
+        choices=GENDER_CHOICES,
+        default='M',
+        help_text='Select your gender'
+    )
+
     following = models.ManyToManyField(
         'self',
         symmetrical=False,  # If A follows B, B doesn't automatically follow A
         related_name='followers',
         blank=True
     )
-
     class Meta:
         """Model options."""
         ordering = ['last_name', 'first_name']
@@ -36,11 +47,9 @@ class User(AbstractUser):
 
     def gravatar(self, size=120):
         """Return a URL to the user's gravatar."""
-
-        gravatar_object = Gravatar(self.email)
-        # Use 'identicon', 'monsterid', 'wavatar', or 'retro' as default
-        gravatar_url = gravatar_object.get_image(size=size, default='identicon')
-        return gravatar_url
+        import hashlib
+        seed = int(hashlib.md5(self.username.encode()).hexdigest()[:8], 16) % 70
+        return f"https://i.pravatar.cc/{size}?img={seed}"
 
     def mini_gravatar(self):
         """Return a URL to a miniature version of the user's gravatar."""
