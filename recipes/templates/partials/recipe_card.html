@@ -21,7 +21,9 @@
 
         <p class="card-text mb-1">
             <small class="text-muted">
-                By {{ recipe.author.get_full_name }}
+                By <a href="{% url 'user_profile' recipe.author.id %}">
+                    {{ recipe.author.get_full_name }}
+                </a>
             </small>
         </p>
 
