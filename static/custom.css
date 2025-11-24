@@ -163,7 +163,7 @@ h3.profile-title {
 /* Make search bar full width on mobile */
 @media (max-width: 991.98px) {
     .navbar-collapse {
-        text-align: center; 
+        text-align: left; 
         padding-top: 1rem;
         padding-bottom: 1rem;
     }
@@ -176,6 +176,7 @@ h3.profile-title {
         flex-direction: column;
         width: 100%;
         gap: 15px !important; 
+        align-items: flex-start !important;
     }
 
     .navbar form.d-flex {
