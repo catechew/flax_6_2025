@@ -5,12 +5,12 @@
 :root {
     --primary-colour: #1E4297; 
     --primary-colour-darker: #163273; 
+    --primary-colour-lighter: #a4baee; 
 }
 
 body {
   background-color: #FFF8F0;
 }
-
 
 /*
  * Alerts
@@ -19,7 +19,6 @@ body {
 .alert {
   border-radius: 0px;
 }
-
 
 /*
  * Cover page
@@ -147,7 +146,7 @@ h3.profile-title {
 }
 
 /*
- * Navbars
+ * Navbar Styling
  */
 
  .main-navbar {
@@ -195,5 +194,100 @@ h3.profile-title {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+    }
+}
+
+/*
+ * Dropdown Menu Styling
+ */
+
+/* Main container box */
+.dropdown-menu {
+    border: none;
+    border-radius: 2px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); 
+    padding: 2px;
+    background-color: #ffffff;
+}
+
+/* Navigation links */
+.dropdown-item {
+    border-radius: 4px;
+    padding: 6px 8px;
+    color: var(--primary-colour-darker);
+    font-weight: 600;
+    transition: all 0.1s ease-in-out;
+}
+
+/* Hover effect */
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: var(--primary-colour-lighter);
+    color: var(--primary-colour);
+}
+
+/* Active state */
+.dropdown-item.active, .dropdown-item:active {
+    background-color: var(--primary-colour);
+    color: white;
+}
+
+/* Dividers */
+.dropdown-divider {
+    border-top: 1px solid white;
+    margin: 4px 0;
+}
+
+/*
+ * Filter Dropdowns
+ */
+
+/* Dropdown options*/
+.dropdown-menu .form-check {
+    padding: 4px 5px 4px 35px; 
+    border-radius: 4px;
+    margin-bottom: 2px;
+    transition: background-color 0.1s;
+    cursor: pointer;
+}
+
+.dropdown-menu .form-check:hover {
+    background-color: #eef1f5;
+}
+
+.dropdown-menu .form-check-label {
+    width: 100%;
+    cursor: pointer;
+    font-weight: 400;
+    color: #444;
+}
+
+/* Checkbox */
+.form-check-input:checked {
+    background-color: var(--primary-colour);
+    border-color: var(--primary-colour);
+}
+
+.filter-dropdown-menu {
+    min-width: 220px;
+    max-height: 300px; 
+    overflow-y: auto;
+}
+
+/* * 
+ * Desktop only fade animation
+ */
+@media (min-width: 992px) {
+    .dropdown-menu {
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
     }
 }
