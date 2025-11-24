@@ -446,8 +446,8 @@ h3.profile-title {
 }
 
 .recipe-link {
+    font-size: 1.05rem;
     font-weight: 600;
-    color: var(--primary-colour-darkest);
 }
 
 .recipe-link:hover {
