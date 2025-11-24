@@ -357,9 +357,6 @@ h3.profile-title {
   margin-top: 0.5rem !important;
 }
 
-.rating-input {
-    direction: rtl;
-}
 
 .rating-input input[type="radio"] {
     display: none;
@@ -379,16 +376,17 @@ h3.profile-title {
     color: #f0ad4e !important;
 }
 
-/*
- * Meal plan - day headers
- */
-.meal-header-mon { background-color: #D81159 !important; }
-.meal-header-tue { background-color: #F0D3F7 !important; }
-.meal-header-wed { background-color: #ffc8b3 !important; }
-.meal-header-thu { background-color: #feadb9 !important; color: #000 !important; }
-.meal-header-fri { background-color: #bc85a3 !important; }
-.meal-header-sat { background-color: #9799ba !important; }
-.meal-header-sun { background-color: #4a7ba6 !important; }
+/* Meal plan - day headers */
+.meal-header-mon { background-color: #ea8c95 !important; }
+.meal-header-tue { background-color: #db6065 !important; }
+.meal-header-wed { background-color: #ed4d4d !important; }
+.meal-header-thu { background-color: #DC2F02 !important; color: #000 !important; }
+.meal-header-fri { background-color: #E85D04 !important; }
+.meal-header-sat { background-color: #F48C06 !important; }
+.meal-header-sun { background-color: #FAA307 !important; }
+.rating-input {
+    direction: rtl;
+}
 
 /*
  * Meal Plan Card UI
@@ -428,4 +426,48 @@ h3.profile-title {
   height: 20px;
   margin-right: 4px;
   object-fit: contain;
+}
+
+.slot-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-row {
+    display: flex;
+    gap: 6px;
+}
+
+.recipe-link {
+    color: var(--primary-colour-darkest);
+    text-decoration: none;
+}
+
+/* Meal Slot UI Improvements*/
+.recipe-link {
+  font-size: 0.95rem;
+  color: var(--primary-colour-darker);
+  text-decoration: none;
+}
+
+.recipe-card:hover{
+  color: var(--primary-colour);
+}
+
+.btn-row .btn {
+    padding: 2px 8px !important;
+    font-size: 0.75rem !important;
+}
+
+.btn-add {
+    padding: 2px 8px !important;
+    font-size: 0.75rem !important;
+    border-radius: 6px !important;
+    border-color: var(--primary-colour) !important;
+    color: var(--primary-colour) !important;
+}
+
+.btn-add:hover {
+    background-color: var(--primary-colour) !important;
+    color: white !important;
 }
