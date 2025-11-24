@@ -512,14 +512,26 @@ h3.profile-title {
 }
 
 .btn-add {
-    padding: 2px 8px !important;
-    font-size: 0.75rem !important;
-    border-radius: 6px !important;
-    border-color: var(--primary-colour) !important;
+    padding: 5px 14px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    border: 1.5px solid var(--primary-colour) !important;
     color: var(--primary-colour) !important;
+    background: transparent !important;
+    transition: all 0.2s ease !important;
 }
 
 .btn-add:hover {
     background-color: var(--primary-colour) !important;
     color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(197, 60, 50, 0.2);
+}
+
+.btn-outline-danger {
+    padding: 5px 14px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
 }
