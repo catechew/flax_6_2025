@@ -15,7 +15,7 @@ def dashboard(request):
 
     current_user = request.user
     # Get the 3 most recent recipes, order by publication_date descending, limit to 3
-    recent_recipes = Recipe.objects.order_by('-publication_date')[:3]
+    recent_recipes = Recipe.objects.filter(private=False).order_by('-publication_date')[:3]
 
     # Get the user's saved recipes, limit to 3
     saved_recipes = current_user.saved_recipes.all().order_by('-publication_date')[:3]
