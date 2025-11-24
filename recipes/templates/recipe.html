@@ -39,9 +39,9 @@ Recipes | Recipe #{{recipe.id}}
                                 checked
                                 {% endif %}>
                             {% if user_rating and user_rating.stars >= forloop.counter %}
-                                ⭐
+                                <i class="bi bi-star-fill text-warning"></i>
                             {% else %}
-                                ☆
+                                <i class="bi bi-star text-warning"></i>
                             {% endif %}
                         </label>
                     {% endfor %}
@@ -60,9 +60,9 @@ Recipes | Recipe #{{recipe.id}}
                 {% with avg=recipe.average_rating_rounded %}
                     {% for i in "12345" %}
                         {% if forloop.counter <= avg %}
-                            ⭐
+                            <i class="bi bi-star-fill text-warning"></i>
                         {% else %}
-                            ☆
+                            <i class="bi bi-star text-warning"></i>
                         {% endif %}
                     {% endfor %}
                 {% endwith %}

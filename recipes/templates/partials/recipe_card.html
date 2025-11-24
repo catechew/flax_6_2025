@@ -15,9 +15,9 @@
             {% with avg=recipe.average_rating_rounded %}
                 {% for i in "12345" %}
                     {% if forloop.counter <= avg %}
-                        ⭐
+                        <i class="bi bi-star-fill text-warning"></i>
                     {% else %}
-                        ☆
+                        <i class="bi bi-star text-warning"></i>
                     {% endif %}
                 {% endfor %}
             {% endwith %}
