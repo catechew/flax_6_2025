@@ -449,6 +449,12 @@ h3.profile-title {
   border-bottom: 1px solid #f0f0f0;
 }
 
+.slot-line strong {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e1c1c;
+  }
+
 .meal-icon {
   width: 20px;
   height: 20px;
@@ -501,8 +507,8 @@ h3.profile-title {
 }
 
 .btn-row .btn {
-    padding: 2px 8px !important;
-    font-size: 0.75rem !important;
+    padding: 10px 50x !important;
+    font-size: 0.9rem !important;
 }
 
 .btn-add {
