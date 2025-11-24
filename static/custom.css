@@ -467,6 +467,14 @@ h3.profile-title {
   color: var(--primary-colour);
 }
 
+.meal-thumb {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    object-fit: cover;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
 .btn-row .btn {
     padding: 2px 8px !important;
     font-size: 0.75rem !important;
