@@ -1,34 +1,23 @@
 {% if slot %}
-
     {% if slot.recipe %}
-        <!-- Show recipe name -->
-        <div class="mb-1">
+        <div class="slot-content">
             <a href="{% url 'recipe_detail' slot.recipe.id %}" 
-               class="fw-bold text-primary text-decoration-none">
-                {{ slot.recipe.title }}
+               class="fw-bold recipe-link">
+               {{ slot.recipe.title }}
             </a>
+
+            <div class="mt-1 mb-2 btn-row">
+                <a href="{% url 'meal-slot-update' slot.id %}"
+                   class="btn btn-sm btn-outline-primary">Edit</a>
+
+                <a href="{% url 'meal-slot-clear' slot.id %}"
+                   class="btn btn-sm btn-outline-danger ms-2">Clear</a>
+            </div>
         </div>
-
-        <!-- Edit button -->
-        <a href="{% url 'meal-slot-update' slot.id %}" 
-           class="btn btn-sm btn-outline-primary me-1">
-            ✏️ Edit
-        </a>
-
-        <!-- Clear button -->
-        <a href="{% url 'meal-slot-clear' slot.id %}" 
-           class="btn btn-sm btn-outline-danger">
-            🗑 Clear
-        </a>
-
     {% else %}
-        <!-- Empty slot UI -->
-        <a href="{% url 'meal-slot-update' slot.id %}"
-           class="btn btn-sm btn-outline-secondary">
-            ➕ Add
-        </a>
+        <a href="{% url 'meal-slot-update' slot.id %}" 
+           class="btn btn-sm btn-outline-primary">+ Add</a>
     {% endif %}
-
 {% else %}
     <span class="text-danger">No slot found</span>
 {% endif %}

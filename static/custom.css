@@ -427,3 +427,18 @@ h3.profile-title {
   margin-right: 4px;
   object-fit: contain;
 }
+
+.slot-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-row {
+    display: flex;
+    gap: 6px;
+}
+
+.recipe-link {
+    color: var(--primary-colour-darkest);
+    text-decoration: none;
+}
