@@ -2,8 +2,12 @@ import os
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q, F, Value
+from django.db.models.functions import Concat
 import json
 import openai
+
+from recipes.models.recipe import Recipe
 
 
 openai.api_key = os.environ.get('OPENAI_API_KEY')
@@ -51,12 +55,12 @@ def ai_recipe_finder_view(request):
             timeout=30  # added this one because it was taking too long before
         )
         
-        print(f"=== GOT RESPONSE: {response}")  # ADD THIS
+        print(f"=== GOT RESPONSE: {response}")  
         # get ai's response
         ai_response = response.choices[0].message.content.strip()
-        print(f"=== API RESPONSE 1: {ai_response}")  # ADD THIS
+        print(f"=== API RESPONSE 1: {ai_response}")  
         
-        # Clean markdown formatting
+        # clean markdown formatting: it didn't work without this
         if ai_response.startswith('```'):
             ai_response = ai_response.split('```')[1]
             if ai_response.startswith('json'):
@@ -66,6 +70,114 @@ def ai_recipe_finder_view(request):
         # get search parameters from ai's response
         search_params = json.loads(ai_response)
 
-    # GET request - just show the form
-    return render(request, 'ai_recipe_finder.html')
+        # start with all recipes and whittle it down based on search params
+        recipes = Recipe.objects.all()
+            
+        # apply search query - search each word separately and combine results
+        search_query = search_params.get('search_query', '').strip()
+        if search_query:
+            search_words = search_query.split()
+            recipes = recipes.annotate(
+                full_name=Concat('author__first_name', Value(' '), 'author__last_name')
+            )
+            
+            # combine all searches with one word each at a time
+            combined_q = Q()
+            for word in search_words:
+                combined_q |= (
+                    Q(title__icontains=word) |
+                    Q(adjectives__icontains=word) |
+                    Q(ingredients__icontains=word) |
+                    Q(steps__icontains=word) |
+                    Q(author__username__icontains=word) |
+                    Q(author__first_name__icontains=word) |
+                    Q(author__last_name__icontains=word) |
+                    Q(full_name__icontains=word)
+                )
+            
+            recipes = recipes.filter(combined_q)
         
+        # Apply filters
+        course_filters = search_params.get('course_filters', [])
+        if course_filters:
+            course_q = Q()
+            for course in course_filters:
+                course_q |= Q(course_tags__icontains=course)
+            recipes = recipes.filter(course_q)
+        
+        dietary_filters = search_params.get('dietary_filters', [])
+        if dietary_filters:
+            dietary_q = Q()
+            for dietary in dietary_filters:
+                dietary_q |= Q(dietary_tags__icontains=dietary)
+            recipes = recipes.filter(dietary_q)
+        
+        cuisine_filters = search_params.get('cuisine_filters', [])
+        if cuisine_filters:
+            cuisine_q = Q()
+            for cuisine in cuisine_filters:
+                cuisine_q |= Q(cuisine_tags__icontains=cuisine)
+            recipes = recipes.filter(cuisine_q)
+        
+        other_filters = search_params.get('other_filters', [])
+        if other_filters:
+            other_q = Q()
+            for other in other_filters:
+                other_q |= Q(other_tags__icontains=other)
+            recipes = recipes.filter(other_q)
+        
+        # Apply sorting, so AI recommendations can be top
+        sort_by = search_params.get('sort_by', 'date_newest')
+        if sort_by == 'date_newest':
+            order_field = '-publication_date'
+        elif sort_by == 'date_oldest':
+            order_field = 'publication_date'
+        elif sort_by == 'prep_least':
+            order_field = 'prep_time_hours'
+        elif sort_by == 'prep_most':
+            order_field = '-prep_time_hours'
+        elif sort_by == 'cook_least':
+            order_field = 'cook_time_hours'
+        elif sort_by == 'cook_most':
+            order_field = '-cook_time_hours'
+        elif sort_by == 'total_least':
+            recipes = recipes.annotate(
+                total_minutes=(F('prep_time_hours') + F('cook_time_hours')) * 60 +
+                                (F('prep_time_minutes') + F('cook_time_minutes'))
+            )
+            order_field = 'total_minutes'
+        elif sort_by == 'total_most':
+            recipes = recipes.annotate(
+                total_minutes=(F('prep_time_hours') + F('cook_time_hours')) * 60 +
+                                (F('prep_time_minutes') + F('cook_time_minutes'))
+            )
+            order_field = '-total_minutes'
+        elif sort_by == 'title_az':
+            order_field = 'title'
+        elif sort_by == 'title_za':
+            order_field = '-title'
+        else:
+            order_field = '-publication_date'
+        
+        recipes = recipes.order_by(order_field)
+
+        print(f"=== FOUND {recipes.count()} RECIPES")  # ADD THIS
+
+        # Get top 10 results for ranking
+        top_recipes = recipes[:10]
+        print(f"=== TOP RECIPES: {list(top_recipes.values_list('id', 'title'))}")  # ADD THIS
+
+        total_count = recipes.count()
+
+        if total_count == 0:
+            # No recipes found - show friendly message
+            context = {
+                'user_context': user_context,
+                'search_params': search_params,
+                'no_results': True,
+                'show_results': True
+            }
+            return render(request, 'ai_recipe_finder.html', context)
+        
+    return render(request, 'ai_recipe_finder.html')
+    
