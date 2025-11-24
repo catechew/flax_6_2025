@@ -376,7 +376,7 @@ h3.profile-title {
     color: #f0ad4e !important;
 }
 
-/* Meal plan - day headers */
+ /* Meal plan - day headers */
 .meal-header-mon { background-color: #ea8c95 !important; }
 .meal-header-tue { background-color: #db6065 !important; }
 .meal-header-wed { background-color: #ed4d4d !important; }
@@ -392,14 +392,12 @@ h3.profile-title {
  * Meal Plan Card UI
  */
 .meal-card {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
-  border-radius: 12px !important;
-  transition: 0.15s ease-in-out;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.08) !important;
 }
 
 .meal-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0px 6px 12px rgba(0,0,0,0.10) !important;
 }
 
 .meal-tag {
