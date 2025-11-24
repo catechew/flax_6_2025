@@ -91,6 +91,11 @@ class Recipe(models.Model):
         help_text="List cooking steps, one per line"
     )
 
+    private = models.BooleanField(
+        default=False,
+        help_text="Set this to true to hide the recipe from other users"
+    )
+
     saved_by = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='saved_recipes',
