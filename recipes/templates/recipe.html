@@ -20,6 +20,53 @@ Recipes | Recipe #{{recipe.id}}
             <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
         </p>
 
+    <div class="mb-3">
+
+        {# Rating form for logged-in users #}
+        {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'rate_recipe' recipe.id %}">
+            {% csrf_token %}
+
+            <label class="fw-bold d-block mb-1">Your Rating:</label>
+
+            {% with user_rating=user_rating %}
+                {% for i in "12345" %}
+                    <label style="cursor:pointer; font-size:1.4rem; display:inline-block;">
+                        <input type="radio" name="stars"
+                            value="{{ forloop.counter }}" class="d-none"
+                            {% if user_rating and user_rating.stars == forloop.counter %}
+                            checked
+                            {% endif %}>
+                        {% if user_rating and user_rating.stars >= forloop.counter %}
+                            ⭐
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    </label>
+                {% endfor %}
+            {% endwith %}
+
+            <button class="btn btn-sm btn-primary ms-2">Save Rating</button>
+        </form>
+        {% endif %}
+
+        {# Average rating section #}
+        <div class="mt-2">
+            <strong>Average Rating:</strong>
+            {% with avg=recipe.average_rating_rounded %}
+                {% for i in "12345" %}
+                    {% if forloop.counter <= avg %}
+                        ⭐
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
+            <span class="text-muted">({{ recipe.average_rating|floatformat:1 }})</span>
+        </div>
+
+    </div>
+
         {# Display Tags as Chips #}
         {% if course_tags or dietary_tags or other_tags %}
         <div class="mb-3">

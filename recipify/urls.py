@@ -44,6 +44,8 @@ from recipes.views.followers_list_view import followers_list, following_list
 
 from recipes.views.saved_recipe_view import toggle_save_recipe, saved_recipe_list
 
+from recipes.views.rating_view import rate_recipe
+
 from recipes.views.recipe_create_view import (
     create_recipe,
     create_recipe_tags,
@@ -103,6 +105,8 @@ urlpatterns = [
 
     path('recipe/<int:recipe_id>/save/', toggle_save_recipe, name='toggle_save_recipe'),
     path('saved_recipes/', saved_recipe_list, name='saved_recipe_list'),
+
+    path("recipes/<int:recipe_id>/rate/", rate_recipe, name="rate_recipe"),
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
