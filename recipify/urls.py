@@ -42,6 +42,8 @@ from recipes.views.follow_view import follow_user, unfollow_user
 from recipes.views.user_profile_view import user_profile
 from recipes.views.followers_list_view import followers_list, following_list
 
+from recipes.views.saved_recipe_view import toggle_save_recipe, saved_recipe_list
+
 from recipes.views.recipe_create_view import (
     create_recipe,
     create_recipe_tags,
@@ -98,6 +100,9 @@ urlpatterns = [
     path('meal-slot/<int:slot_id>/update/', MealSlotUpdateView.as_view(), name='meal-slot-update'),
     path("meal-plan/<int:plan_id>/<str:direction>/", MealPlanNavigateView.as_view(), name="meal-plan-navigate"),
     path("meal-slot/<int:slot_id>/clear/", MealSlotClearView.as_view(), name="meal-slot-clear"),
+
+    path('recipe/<int:recipe_id>/save/', toggle_save_recipe, name='toggle_save_recipe'),
+    path('saved_recipes/', saved_recipe_list, name='saved_recipe_list'),
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

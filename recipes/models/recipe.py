@@ -91,6 +91,13 @@ class Recipe(models.Model):
         help_text="List cooking steps, one per line"
     )
 
+    saved_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='saved_recipes',
+        blank=True,
+        help_text="Users who have saved this recipe"
+    )
+
     def save(self, *args, **kwargs):
         """Auto-populate adjectives from tag fields"""
         all_tags = []
