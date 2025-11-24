@@ -24,29 +24,31 @@ Recipes | Recipe #{{recipe.id}}
 
         {# Rating form for logged-in users #}
         {% if user.is_authenticated %}
-        <form method="POST" action="{% url 'rate_recipe' recipe.id %}">
+        <form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="d-flex align-items-center gap-3 mb-2">
             {% csrf_token %}
 
-            <label class="fw-bold d-block mb-1">Your Rating:</label>
+            <span class="fw-bold">Your Rating:</span>
 
-            {% with user_rating=user_rating %}
-                {% for i in "12345" %}
-                    <label style="cursor:pointer; font-size:1.4rem; display:inline-block;">
-                        <input type="radio" name="stars"
-                            value="{{ forloop.counter }}" class="d-none"
-                            {% if user_rating and user_rating.stars == forloop.counter %}
-                            checked
-                            {% endif %}>
-                        {% if user_rating and user_rating.stars >= forloop.counter %}
-                            ⭐
-                        {% else %}
-                            ☆
-                        {% endif %}
-                    </label>
-                {% endfor %}
-            {% endwith %}
+            <div class="d-flex align-items-center">
+                {% with user_rating=user_rating %}
+                    {% for i in "12345" %}
+                        <label style="cursor:pointer; font-size:1.5rem; margin-right: 4px;">
+                            <input type="radio" name="stars"
+                                value="{{ forloop.counter }}" class="d-none"
+                                {% if user_rating and user_rating.stars == forloop.counter %}
+                                checked
+                                {% endif %}>
+                            {% if user_rating and user_rating.stars >= forloop.counter %}
+                                ⭐
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        </label>
+                    {% endfor %}
+                {% endwith %}
+            </div>
 
-            <button class="btn btn-sm btn-primary ms-2">Save Rating</button>
+            <button class="btn btn-sm btn-primary">Save Rating</button>
         </form>
         {% endif %}
 
