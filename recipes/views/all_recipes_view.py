@@ -131,7 +131,7 @@ def all_recipes(request):
         recipes = recipes.annotate(
             save_count=Count('saved_by')
         )
-        order_field = '-saved_by'
+        order_field = '-save_count'
     elif sort_by == 'title_az':
         order_field = 'title'
     elif sort_by == 'title_za':
