@@ -224,4 +224,38 @@ class RecipeModelTestCase(TestCase):
 
         tags = self.recipe.get_course_tags_list()
         self.assertEqual(len(tags), 0)
-            
+    
+    def test_get_save_count(self):
+        """Test that get_save_count returns correct number of saves"""
+
+        # Create additional users
+        user2 = User.objects.create_user(
+            username='@testuser2',
+            first_name='Test2',
+            last_name='User2',
+            email='test2@example.com',
+            password='Password123'
+        )
+        user3 = User.objects.create_user(
+            username='@testuser3',
+            first_name='Test3',
+            last_name='User3',
+            email='test3@example.com',
+            password='Password123'
+        )
+
+        # Initially should be 0
+        self.assertEqual(self.recipe.get_save_count(), 0)
+
+        # Add one save
+        self.recipe.saved_by.add(self.user)
+        self.assertEqual(self.recipe.get_save_count(), 1)
+
+        # Add more saves
+        self.recipe.saved_by.add(user2, user3)
+        self.assertEqual(self.recipe.get_save_count(), 3)
+
+        # Remove a save
+        self.recipe.saved_by.remove(user2)
+        self.assertEqual(self.recipe.get_save_count(), 2)
+
