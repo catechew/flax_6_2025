@@ -4,14 +4,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, F, Value
 from django.db.models.functions import Concat
+from dotenv import load_dotenv
 import json
 import openai
 
 from recipes.models.recipe import Recipe
 
-
+# load .env file to get API key
+load_dotenv()
 openai.api_key = os.environ.get('OPENAI_API_KEY')
-print(f"=== API KEY: {os.environ.get('OPENAI_API_KEY', 'NOT SET')[:20]}...")
 
 """
 AI Recipe Finder - handles both displaying the form and processing results.
@@ -21,14 +22,12 @@ def ai_recipe_finder_view(request):
     
     if request.method == 'POST':
         user_context = request.POST.get('context', '').strip()
-        print(f"=== RECEIVED CONTEXT: {user_context}")  # Debugging print, there will be a few of these
         
         if not user_context:
             messages.error(request, 'Please describe your situation')
             return render(request, 'ai_recipe_finder.html')
         
         try:
-            print("=== STARTING API CALL 1")
             # pass in context to chatGPT, which outputs a json of search parameters
             # right now we have to hardcode the list of params which I think is not easily avoidable
             ai_prompt = f"""Context: "{user_context}"
@@ -53,11 +52,9 @@ def ai_recipe_finder_view(request):
                 max_tokens=150,
                 timeout=30  # added this one because it was taking too long before
             )
-            
-            print(f"=== GOT RESPONSE: {response}")  
+             
             # get ai's response
             ai_response = response.choices[0].message.content.strip()
-            print(f"=== API RESPONSE 1: {ai_response}")  
             
             # get search parameters from ai's response
             search_params = json.loads(ai_response)
@@ -153,11 +150,8 @@ def ai_recipe_finder_view(request):
             
             recipes = recipes.order_by(order_field)
 
-            print(f"=== FOUND {recipes.count()} RECIPES")
-
             # Get top 10 results for ranking
             top_recipes = recipes[:10]
-            print(f"=== TOP RECIPES: {list(top_recipes.values_list('id', 'title'))}")
 
             total_count = recipes.count()
 
@@ -173,7 +167,6 @@ def ai_recipe_finder_view(request):
             
             # if there are recipes to rank, get the AI to rank them
             if top_recipes.exists():
-                print("=== STARTING API CALL 2")
                 recipe_list = [
                     {
                         'id': recipe.id,
@@ -241,9 +234,6 @@ def ai_recipe_finder_view(request):
                     'view_all_url': view_all_url,
                     'show_results': True
                 }
-
-                print(f"AI RESPONSE 1: {ai_response[:100]}")
-                print(f"AI RESPONSE 2: {ranking_text[:100]}")
                 
                 return render(request, 'ai_recipe_finder.html', context)
         
