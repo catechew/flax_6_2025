@@ -437,8 +437,12 @@ h3.profile-title {
 }
 
 .recipe-link {
+    font-weight: 600;
     color: var(--primary-colour-darkest);
-    text-decoration: none;
+}
+
+.recipe-link:hover {
+    color: var(--primary-colour);
 }
 
 /* Meal Slot UI Improvements*/
