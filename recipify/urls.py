@@ -19,10 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path
+from recipes import views
 
 from recipes.views.home_view import home
 from recipes.views.dashboard_view import dashboard
@@ -76,6 +73,8 @@ urlpatterns = [
     path('log_out/', log_out, name='log_out'),
     path('password/', PasswordView.as_view(), name='password'),
     path('profile/', ProfileUpdateView.as_view(), name='profile'),
+    path('profile/randomise/', views.randomise_avatar, name='randomise_avatar'),
+    path('profile/use-initials/', views.use_initials_avatar, name='use_initials_avatar'),
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
 
     path('all_recipes/', all_recipes, name='all_recipes'),
