@@ -1,0 +1,80 @@
+<div class="recipe-card card shadow-sm">
+
+    {% if recipe.image %}
+    <img src="{{ recipe.image.url }}" class="card-img-top recipe-card-img" alt="{{ recipe.title }}">
+    {% else %}
+    <div class="card-img-top recipe-card-img d-flex align-items-center justify-content-center bg-secondary">
+        <i class="bi bi-image text-light" style="font-size: 3rem;"></i>
+    </div>
+    {% endif %}
+
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ recipe.title }}</h5>
+
+        {% if recipe.adjectives %}
+        <p class="card-text mb-1">
+            <small class="text-muted">
+                <i class="bi bi-tag"></i> {{ recipe.adjectives }}
+            </small>
+        </p>
+        {% endif %}
+
+        <p class="card-text mb-1">
+            <small class="text-muted">
+                By {{ recipe.author.get_full_name }}
+            </small>
+        </p>
+
+        <p class="card-text mb-1">
+            <small class="text-muted">
+                <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
+            </small>
+        </p>
+
+        {% if recipe.servings %}
+        <p class="card-text mb-1">
+            <small class="text-muted">
+                <i class="bi bi-people"></i> {{ recipe.servings }} servings
+            </small>
+        </p>
+        {% endif %}
+
+        {% if recipe.get_total_prep_time_minutes > 0 or recipe.get_total_cook_time_minutes > 0 %}
+        <p class="card-text mb-3">
+            <small class="text-muted">
+                {% if recipe.get_total_prep_time_minutes > 0 %}
+                <i class="bi bi-clock"></i> Prep: {{ recipe.get_prep_time_display }}
+                {% endif %}
+                {% if recipe.get_total_prep_time_minutes > 0 and recipe.get_total_cook_time_minutes > 0 %}
+                <span class="mx-1">|</span>
+                {% endif %}
+                {% if recipe.get_total_cook_time_minutes > 0 %}
+                <i class="bi bi-clock"></i> Cook: {{ recipe.get_cook_time_display }}
+                {% endif %}
+            </small>
+        </p>
+        {% endif %}
+
+        <div class="mt-auto d-flex gap-2">
+            <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary flex-grow-1">
+                <i class="bi bi-eye"></i> View
+            </a>
+
+            {% if user.is_authenticated and show_save_button %}
+            <form action="{% url 'toggle_save_recipe' recipe.id %}" method="POST">
+                {% csrf_token %}
+                {% if user in recipe.saved_by.all %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-heart-fill"></i>
+                </button>
+                {% else %}
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-heart"></i>
+                </button>
+                {% endif %}
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+</div>

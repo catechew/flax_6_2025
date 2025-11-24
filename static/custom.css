@@ -3,13 +3,13 @@
 */
 
 :root {
-    --primary-colour: #f15034; 
-    --primary-colour-darker: #c53c32; 
-    --primary-colour-darkest: #5c0404; 
-    --primary-colour-lighter: #f7e0e0; 
-    --black-colour: #251B21;
-    --bg-colour: #fdf4ea;
-    --white-colour: #FFFFFF;
+  --primary-colour: #f15034;
+  --primary-colour-darker: #c53c32;
+  --primary-colour-darkest: #5c0404;
+  --primary-colour-lighter: #f7e0e0;
+  --black-colour: #251B21;
+  --bg-colour: #fdf4ea;
+  --white-colour: #FFFFFF;
 }
 
 body {
@@ -37,9 +37,9 @@ body {
   height: 100vh;
 }
 
-.vcenter-item{
-    display: flex;
-    align-items: center;
+.vcenter-item {
+  display: flex;
+  align-items: center;
 }
 
 /*
@@ -64,6 +64,7 @@ p.cover-text {
   padding-right: 50px;
   padding-bottom: 30px;
 }
+
 .cover-card-block {
   opacity: 1
 }
@@ -100,13 +101,13 @@ ul.errorlist {
  */
 .profile-image {
   width: 120px;
-  clear:both;
-  float:left;
+  clear: both;
+  float: left;
 }
 
 .profile-text {
-  overflow:hidden;
-  padding-left:20px
+  overflow: hidden;
+  padding-left: 20px
 }
 
 h3.profile-title {
@@ -126,6 +127,7 @@ h3.profile-title {
   text-decoration: none;
   color: var(--primary-colour-darkest);
 }
+
 .content a:hover {
   text-decoration: underline;
   color: var(--primary-colour-darkest);
@@ -134,66 +136,89 @@ h3.profile-title {
 /*
  * Buttons
  */
- .btn-secondary,
- .btn-primary {
-    background-color: var(--primary-colour);
-    border-color: var(--primary-colour);
-    color: var(--bg-colour);
+.btn-primary,
+.btn-secondary {
+    background-color: var(--primary-colour) !important;
+    border-color: var(--primary-colour) !important;
+    color: var(--bg-colour) !important;
 }
 
-.btn-secondary:hover,
-.btn-primary:hover {
-    background-color: var(--primary-colour-darker);
-    border-color: var(--primary-colour-darker);
+.btn-primary:hover,
+.btn-secondary:hover {
+    background-color: var(--primary-colour-darker) !important;
+    border-color: var(--primary-colour-darker) !important;
+}
+
+.btn-outline-primary,
+.btn-outline-secondary {
+    color: var(--primary-colour) !important;
+    border-color: var(--primary-colour) !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover {
+    background-color: var(--primary-colour) !important;
+    color: var(--bg-colour) !important;
+}
+
+.btn-light.text-primary {
+    color: var(--primary-colour) !important;
+    border-color: var(--primary-colour) !important;
+}
+
+.btn-light.text-primary:hover {
+    background-color: var(--primary-colour) !important;
+    color: var(--bg-colour) !important;
 }
 
 /*
  * Navbar
  */
 
- .main-navbar {
-    background-color: var(--primary-colour);
-    color: var(--bg-colour);
+.main-navbar {
+  background-color: var(--primary-colour);
+  color: var(--bg-colour);
 }
 
 .navbar-brand-centered {
-    margin: 0 auto;
-    font-weight: 900;
-    font-size: 26px;
+  margin: 0 auto;
+  font-weight: 900;
+  font-size: 26px;
 }
 
 /* Mobile navbar adjustments */
 @media (max-width: 991.98px) {
-    .navbar-collapse {
-        text-align: left;
-        padding: 1rem 0;
-    }
-    
-    .navbar-nav.me-auto {
-        margin-bottom: 1rem;
-    }
+  .navbar-collapse {
+    text-align: left;
+    padding: 1rem 0;
+  }
 
-    .d-flex.align-items-center.ms-auto {
-        flex-direction: column;
-        width: 100%;
-        gap: 15px !important; 
-        align-items: flex-start !important;
-    }
+  .navbar-nav.me-auto {
+    margin-bottom: 1rem;
+  }
 
-    .navbar form.d-flex,
-    .navbar form .input-group {
-        width: 100%;
-    }
+  .d-flex.align-items-center.ms-auto {
+    flex-direction: column;
+    width: 100%;
+    gap: 15px !important;
+    align-items: flex-start !important;
+  }
+
+  .navbar form.d-flex,
+  .navbar form .input-group {
+    width: 100%;
+  }
 }
 
 /* Desktop Navbar */
 @media (min-width: 992px) {
-    .navbar-brand-centered {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
+  .navbar-brand-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 /*
@@ -201,38 +226,40 @@ h3.profile-title {
  */
 
 .dropdown-menu {
-    border: none;
-    border-radius: 2px;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); 
-    padding: 2px;
-    background-color: var(--white-colour);
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  padding: 2px;
+  background-color: var(--white-colour);
 }
 
 /* Dropdown navigation links */
 .dropdown-item {
-    border-radius: 4px;
-    padding: 6px 8px;
-    color: var(--primary-colour-darker);
-    font-weight: 600;
-    transition: all 0.1s ease-in-out;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: var(--primary-colour-darker);
+  font-weight: 600;
+  transition: all 0.1s ease-in-out;
 }
 
 /* Hover effect */
-.dropdown-item:hover, .dropdown-item:focus {
-    background-color: var(--primary-colour-lighter);
-    color: var(--primary-colour);
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--primary-colour-lighter);
+  color: var(--primary-colour);
 }
 
 /* Active state */
-.dropdown-item.active, .dropdown-item:active {
-    background-color: var(--primary-colour);
-    color: white;
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--primary-colour);
+  color: white;
 }
 
 /* Dividers */
 .dropdown-divider {
-    border-top: 1px solid white;
-    margin: 4px 0;
+  border-top: 1px solid white;
+  margin: 4px 0;
 }
 
 /*
@@ -241,51 +268,80 @@ h3.profile-title {
 
 /* Dropdown options*/
 .dropdown-menu .form-check {
-    padding: 4px 5px 4px 35px; 
-    border-radius: 4px;
-    margin-bottom: 2px;
-    transition: background-color 0.1s;
-    cursor: pointer;
+  padding: 4px 5px 4px 35px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  transition: background-color 0.1s;
+  cursor: pointer;
 }
 
 .dropdown-menu .form-check:hover {
-    background-color: #eef1f5;
+  background-color: #eef1f5;
 }
 
 .dropdown-menu .form-check-label {
-    width: 100%;
-    cursor: pointer;
-    font-weight: 400;
-    color: #444;
+  width: 100%;
+  cursor: pointer;
+  font-weight: 400;
+  color: #444;
 }
 
 /* Checkbox */
 .form-check-input:checked {
-    background-color: var(--primary-colour);
-    border-color: var(--primary-colour);
+  background-color: var(--primary-colour);
+  border-color: var(--primary-colour);
 }
 
 .filter-dropdown-menu {
-    min-width: 220px;
-    max-height: 300px; 
-    overflow-y: auto;
+  min-width: 220px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 /* * 
  * Desktop only fade animation
  */
 @media (min-width: 992px) {
-    .dropdown-menu {
-        display: block;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(10px);
-        transition: all 0.2s ease;
-    }
+  .dropdown-menu {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+  }
 
-    .dropdown-menu.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
+  .dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+/* *
+* Cards
+*/
+
+.recipe-card {
+  background-color: var(--white-colour) !important;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.recipe-card-img {
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.recipe-card .card-body {
+  padding: 0.5rem 0.75rem;
+}
+
+.recipe-card .card-text {
+  margin-bottom: 0.25rem !important;
+}
+
+.recipe-card .mt-auto {
+  margin-top: 0.25rem !important;
 }
