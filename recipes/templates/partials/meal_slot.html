@@ -1,24 +1,29 @@
-{% if slot %}
-    {% if slot.recipe %}
-        <div class="slot-content">
+{% if slot.recipe %}
+    <div class="slot-content">
+
+        <div class="d-flex align-items-center mb-1">
+            {% if slot.recipe.image %}
+                <img src="{{ slot.recipe.image.url }}"
+                     class="meal-thumb"
+                     alt="{{ slot.recipe.title }}">
+            {% endif %}
+
             <a href="{% url 'recipe_detail' slot.recipe.id %}" 
-               class="fw-bold recipe-link">
+               class="fw-bold recipe-link ms-2">
                {{ slot.recipe.title }}
             </a>
-
-            <div class="mt-1 mb-2 btn-row">
-                <a href="{% url 'meal-slot-update' slot.id %}"
-                   class="btn btn-add btn-outline-primary">Edit</a>
-
-                <a href="{% url 'meal-slot-clear' slot.id %}"
-                   class="btn btn-sm btn-outline-danger ms-2">Clear</a>
-            </div>
         </div>
 
-    {% else %}
-        <a href="{% url 'meal-slot-update' slot.id %}" 
-           class="btn btn-sm btn-outline-primary">+ Add</a>
-    {% endif %}
+        <div class="btn-row">
+            <a href="{% url 'meal-slot-update' slot.id %}"
+               class="btn btn-add">Edit</a>
+
+            <a href="{% url 'meal-slot-clear' slot.id %}"
+               class="btn btn-sm btn-outline-danger">Clear</a>
+        </div>
+
+    </div>
 {% else %}
-    <span class="text-danger">No slot found</span>
+    <a href="{% url 'meal-slot-update' slot.id %}" 
+       class="btn btn-add">+ Add</a>
 {% endif %}
