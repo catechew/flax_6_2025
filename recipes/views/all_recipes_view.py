@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from recipes.models.recipe import Recipe
-from django.db.models import Q, F, Value
+from django.db.models import Q, F, Value, Count
 from django.db.models.functions import Concat
 
 ITEMS_PER_PAGE = 25
@@ -124,6 +124,16 @@ def all_recipes(request):
                             (F('prep_time_minutes') + F('cook_time_minutes'))
         )
         order_field = '-total_minutes'
+    elif sort_by == 'most_saves':
+        recipes = recipes.annotate(
+            save_count=models.Count('saved_by')
+        )
+        order_field = '-saved_by'
+    elif sort_by == 'least_saves':
+        recipes = recipes.annotate(
+            save_count=models.Count('saved_by')
+        )
+        order_field = 'saved_by'
     elif sort_by == 'title_az':
         order_field = 'title'
     elif sort_by == 'title_za':
