@@ -8,12 +8,13 @@
 
             <div class="mt-1 mb-2 btn-row">
                 <a href="{% url 'meal-slot-update' slot.id %}"
-                   class="btn btn-sm btn-outline-primary">Edit</a>
+                   class="btn btn-add btn-outline-primary">Edit</a>
 
                 <a href="{% url 'meal-slot-clear' slot.id %}"
                    class="btn btn-sm btn-outline-danger ms-2">Clear</a>
             </div>
         </div>
+
     {% else %}
         <a href="{% url 'meal-slot-update' slot.id %}" 
            class="btn btn-sm btn-outline-primary">+ Add</a>

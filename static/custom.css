@@ -442,3 +442,32 @@ h3.profile-title {
     color: var(--primary-colour-darkest);
     text-decoration: none;
 }
+
+/* Meal Slot UI Improvements*/
+.recipe-link {
+  font-size: 0.95rem;
+  color: var(--primary-colour-darker);
+  text-decoration: none;
+}
+
+.recipe-card:hover{
+  color: var(--primary-colour);
+}
+
+.btn-row .btn {
+    padding: 2px 8px !important;
+    font-size: 0.75rem !important;
+}
+
+.btn-add {
+    padding: 2px 8px !important;
+    font-size: 0.75rem !important;
+    border-radius: 6px !important;
+    border-color: var(--primary-colour) !important;
+    color: var(--primary-colour) !important;
+}
+
+.btn-add:hover {
+    background-color: var(--primary-colour) !important;
+    color: white !important;
+}
