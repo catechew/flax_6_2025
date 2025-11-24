@@ -359,13 +359,13 @@ h3.profile-title {
 }
 
 /* Meal plan - day headers */
-.meal-header-mon { background-color: #D81159 !important; }
-.meal-header-tue { background-color: #F0D3F7 !important; }
-.meal-header-wed { background-color: #ffc8b3 !important; }
-.meal-header-thu { background-color: #feadb9 !important; color: #000 !important; }
-.meal-header-fri { background-color: #bc85a3 !important; }
-.meal-header-sat { background-color: #9799ba !important; }
-.meal-header-sun { background-color: #4a7ba6 !important; }
+.meal-header-mon { background-color: #6A040F !important; }
+.meal-header-tue { background-color: #9D0208 !important; }
+.meal-header-wed { background-color: #D00000 !important; }
+.meal-header-thu { background-color: #DC2F02 !important; color: #000 !important; }
+.meal-header-fri { background-color: #E85D04 !important; }
+.meal-header-sat { background-color: #F48C06 !important; }
+.meal-header-sun { background-color: #FAA307 !important; }
 
 /* Meal Plan Card UI */
 .meal-card {
