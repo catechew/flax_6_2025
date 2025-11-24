@@ -41,14 +41,13 @@ class MealPlanCreateView(LoginRequiredMixin, View):
         return redirect("meal-plan-detail", plan_id=plan.id)
 
 class MealPlanDetailView(LoginRequiredMixin, View):
-    """Show the whole weekly plan in a calendar layout"""
+    """ Handles the display of a full weekly meal plan. """
+
     def get(self, request, plan_id):
+        # Fetch the meal plan belonging to the logged in user
         plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
-            
-        # Get all slots
         all_slots = plan.entries.all()
-        
-        # Define days and meals
+
         days = [
             ('mon', 'Monday'),
             ('tue', 'Tuesday'),
@@ -58,28 +57,33 @@ class MealPlanDetailView(LoginRequiredMixin, View):
             ('sat', 'Saturday'),
             ('sun', 'Sunday'),
         ]
+        # Types of meals a day contains
         meals = ['breakfast', 'lunch', 'dinner', 'snack']
-        
-        # Build the schedule - list of day rows
+
         schedule = []
-        for day_code, day_name in days:
+
+        for index, (day_code, day_name) in enumerate(days):
+            current_date = plan.week_start + timedelta(days=index)
+
             row = {
                 'day_code': day_code,
                 'day_name': day_name,
-                'slots': {}
+                'day_date': current_date,
+                'slots': {} # Container for breakfast/lunch/dinner/snack entries
             }
+            
+            # Attach the corresponding MealSlot for each meal type
             for meal in meals:
                 slot = all_slots.filter(day=day_code, meal_type=meal).first()
                 row['slots'][meal] = slot
+
             schedule.append(row)
 
-        context = {
+        return render(request, "meal_plan_detail.html", {
             "plan": plan,
             "schedule": schedule,
             "meals": meals,
-        }
-        
-        return render(request, "meal_plan_detail.html", context)
+        })
     
 class MealPlanNavigateView(LoginRequiredMixin, View):
     """ 

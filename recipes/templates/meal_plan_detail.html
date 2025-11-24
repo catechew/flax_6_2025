@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load meal_extras %}
 
 {% block content %}
 <div class="container mt-4">
@@ -25,9 +26,9 @@
 
                 <!-- Day header -->
                 <div class="card-header text-dark fw-bold text-center day-header meal-header-{{ day.day_code }}">
-                    {{ day.day_name }}
+                    {{ day.day_name }} • {{ day.day_date.day|ordinal }} {{ day.day_date|date:"M" }}
                 </div>
-
+                
                 <div class="card-body">
 
                     <!-- Breakfast -->
