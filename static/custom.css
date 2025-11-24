@@ -1,4 +1,4 @@
-/*
+/* 
  * Root Variables
  */
 :root {
@@ -392,16 +392,14 @@ h3.profile-title {
  * Meal Plan Card UI
  */
 .meal-card {
-  background: var(--white-colour) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) !important;
   border-radius: 12px !important;
-  border: none !important;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.05) !important;
-  transition: 0.2s ease-in-out;
-  padding: 15px 20px;
+  transition: 0.15s ease-in-out;
 }
 
 .meal-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12) !important;
 }
 
 .day-header {
