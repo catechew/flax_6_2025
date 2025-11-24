@@ -7,8 +7,8 @@ from recipes.models.rating import Rating
 @login_required
 def rate_recipe(request, recipe_id):
     """
-    Handles submission of a user's star rating for a recipe.
-    If the user has already rated this recipe, the rating is updated.
+    Handle submission of a user's star rating for a recipe.
+    If user has already rated this recipe, rating is updated.
     """
     recipe = get_object_or_404(Recipe, id=recipe_id)
 
