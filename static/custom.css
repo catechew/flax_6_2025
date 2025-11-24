@@ -413,9 +413,9 @@ h3.profile-title {
 
 .day-header {
   border-radius: 12px 12px 0 0 !important;
-  padding: 10px 15px;
+  padding: 8px 12px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--white-colour);
 }
 
