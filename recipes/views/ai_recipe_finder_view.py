@@ -13,13 +13,11 @@ from recipes.models.recipe import Recipe
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 print(f"=== API KEY: {os.environ.get('OPENAI_API_KEY', 'NOT SET')[:20]}...")
 
-
+"""
+AI Recipe Finder - handles both displaying the form and processing results.
+"""
 @login_required
 def ai_recipe_finder_view(request):
-    """
-    AI Recipe Finder - handles both displaying the form and processing results.
-    No JavaScript needed - all server-side rendering.
-    """
     
     if request.method == 'POST':
         user_context = request.POST.get('context', '').strip()
@@ -60,13 +58,6 @@ def ai_recipe_finder_view(request):
             # get ai's response
             ai_response = response.choices[0].message.content.strip()
             print(f"=== API RESPONSE 1: {ai_response}")  
-            
-            # clean markdown formatting: it didn't work without this
-            if ai_response.startswith('```'):
-                ai_response = ai_response.split('```')[1]
-                if ai_response.startswith('json'):
-                    ai_response = ai_response[4:]
-                ai_response = ai_response.strip()
             
             # get search parameters from ai's response
             search_params = json.loads(ai_response)
@@ -180,6 +171,7 @@ def ai_recipe_finder_view(request):
                 }
                 return render(request, 'ai_recipe_finder.html', context)
             
+            # if there are recipes to rank, get the AI to rank them
             if top_recipes.exists():
                 print("=== STARTING API CALL 2")
                 recipe_list = [
@@ -214,13 +206,6 @@ def ai_recipe_finder_view(request):
                 )
 
                 ranking_text = ranking_response.choices[0].message.content.strip()
-
-                # once again, clean markdown
-                if ranking_text.startswith('```'):
-                    ranking_text = ranking_text.split('```')[1]
-                    if ranking_text.startswith('json'):
-                        ranking_text = ranking_text[4:]
-                    ranking_text = ranking_text.strip()
 
                 # remove whitespace from start/end
                 ranking_data = json.loads(ranking_text)
