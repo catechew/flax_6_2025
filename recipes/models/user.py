@@ -30,6 +30,19 @@ class User(AbstractUser):
         help_text='Select your gender'
     )
 
+    AGE_CHOICES = [
+        ('young', '18-30'),
+        ('middle', '31-50'),
+        ('senior', '51+'),
+    ]
+
+    age_range = models.CharField(
+        max_length=10,
+        choices=AGE_CHOICES,
+        default='young',
+        help_text='Select your age range'
+    )
+
     following = models.ManyToManyField(
         'self',
         symmetrical=False,  # If A follows B, B doesn't automatically follow A
