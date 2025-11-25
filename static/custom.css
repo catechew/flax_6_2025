@@ -557,3 +557,15 @@ h3.profile-title {
     font-weight: 500 !important;
     border-radius: 8px !important;
 }
+
+/* 
+* Edit Meal Page
+*/
+.edit-meal-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
