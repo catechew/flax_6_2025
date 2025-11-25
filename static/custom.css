@@ -514,8 +514,8 @@ h3.profile-title {
 }
 
 .meal-thumb {
-    width: 190px;
-    height: 190px;
+    width: 150px;
+    height: 180px;
     border-radius: 10px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.08);
     object-fit: cover;
@@ -595,4 +595,47 @@ h3.profile-title {
 .edit-meal-wrapper .form-select:focus {
   border-color: var(--primary-colour);
   box-shadow: 0 0 0 3px rgba(241, 80, 52, 0.1);
+}
+
+/*
+ * Statistics Card
+ */
+.stats-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-colour);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stats-card .col-4 {
+    padding: 12px;
+}
+
+@media (max-width: 768px) {
+    .stats-card .col-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-bottom: 16px;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
 }

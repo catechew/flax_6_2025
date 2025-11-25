@@ -79,10 +79,18 @@ class MealPlanDetailView(LoginRequiredMixin, View):
 
             schedule.append(row)
 
+        # Calculate statistics 
+        filled_slots = all_slots.filter(recipe__isnull=False).count()
+        unique_recipes = all_slots.filter(recipe__isnull=False).values('recipe').distinct().count()
+        completion = round((filled_slots / 28) * 100) if filled_slots > 0 else 0
+
         return render(request, "meal_plan_detail.html", {
             "plan": plan,
             "schedule": schedule,
             "meals": meals,
+            "filled_slots": filled_slots,
+            "unique_recipes": unique_recipes,
+            "completion": completion,
         })
     
 class MealPlanNavigateView(LoginRequiredMixin, View):
@@ -138,7 +146,13 @@ class MealSlotUpdateView(LoginRequiredMixin, View):
         slot = get_object_or_404(MealSlot, id=slot_id, meal_plan__user=request.user)
 
         recipe_id = request.POST.get("recipe_id")
-        slot.recipe = Recipe.objects.get(id=recipe_id)
+
+        # Handle empty recipe selection (remove meal choice)
+        if recipe_id:
+            slot.recipe = Recipe.objects.get(id=recipe_id)
+        else:
+            slot.recipe = None
+        
         slot.save()
 
         return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
