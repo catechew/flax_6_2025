@@ -79,10 +79,18 @@ class MealPlanDetailView(LoginRequiredMixin, View):
 
             schedule.append(row)
 
+        # Calculate statistics 
+        filled_slots = all_slots.filter(recipe__isnull=False).count()
+        unique_recipes = all_slots.filter(recipe__isnull=False).values('recipe').distinct().count()
+        completion = round((filled_slots / 28) * 100) if filled_slots > 0 else 0
+
         return render(request, "meal_plan_detail.html", {
             "plan": plan,
             "schedule": schedule,
             "meals": meals,
+            "filled_slots": filled_slots,
+            "unique_recipes": unique_recipes,
+            "completion": completion,
         })
     
 class MealPlanNavigateView(LoginRequiredMixin, View):
