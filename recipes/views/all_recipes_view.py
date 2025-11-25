@@ -162,6 +162,9 @@ def all_recipes(request):
     page_object = paginator.get_page(page_number)
     
     total_count = recipes.count()
+
+    # Calculate total active filters
+    total_filters = len(course_filters) + len(dietary_filters) + len(cuisine_filters) + len(other_filters)
     
     context = {
         'user': current_user,
@@ -178,6 +181,7 @@ def all_recipes(request):
         'cuisine_filters': cuisine_filters,
         'other_filters': other_filters,
         'sort_by': sort_by,
+        'total_filters': total_filters,
     }
 
     return render(request, 'all_recipes.html', context)
