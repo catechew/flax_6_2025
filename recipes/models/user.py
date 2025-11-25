@@ -18,9 +18,65 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
+    # Gender field (for AI avatar)
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+    ]
+
+    gender = models.CharField(
+        max_length=1,
+        choices=GENDER_CHOICES,
+        default='M',
+        blank=True
+    )
+
+    # Age field (for AI avatar)
+    AGE_CHOICES = [
+        ('young', '18-30'),
+        ('middle', '31-50'),
+        ('senior', '51+'),
+    ]
+
+    age_range = models.CharField(
+        max_length=10,
+        choices=AGE_CHOICES,
+        default='young',
+        blank=True
+    )
+
+    # Avatar type selection
+    AVATAR_TYPE_CHOICES = [
+        ('initials', 'Initials'),
+        ('random', 'Random'),
+        ('ai', 'AI Generated'),
+    ]
+
+    avatar_type = models.CharField(
+        max_length=10,
+        choices=AVATAR_TYPE_CHOICES,
+        default='initials',
+        help_text='Type of avatar to display'
+    )
+
+    # Profile picture upload (optional)
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures/',
+        blank=True,
+        null=True
+    )
+
+    # Random avatar seed (for random avatars)
+    avatar_seed = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text='Seed for random avatar generation'
+    )
+
+    # Following relationship
     following = models.ManyToManyField(
         'self',
-        symmetrical=False,  # If A follows B, B doesn't automatically follow A
+        symmetrical=False,
         related_name='followers',
         blank=True
     )
@@ -29,17 +85,41 @@ class User(AbstractUser):
         """Model options."""
         ordering = ['last_name', 'first_name']
 
-    def full_name(self):
-        """Return a string containing the user's full name."""
-
-        return f'{self.first_name} {self.last_name}'
-
     def gravatar(self, size=120):
-        """Return a URL to the user's gravatar."""
+        """Return avatar URL based on user preference."""
 
-        gravatar_object = Gravatar(self.email)
-        gravatar_url = gravatar_object.get_image(size=size, default='mp')
-        return gravatar_url
+        # 1. If user uploaded custom picture, use it (highest priority)
+        if self.profile_picture:
+            return self.profile_picture.url
+
+        # 2. User chose initials
+        if self.avatar_type == 'initials':
+            name = f"{self.first_name} {self.last_name}".strip()
+            return f"https://ui-avatars.com/api/?name={name}&size={size}&background=f15034&color=fff&bold=true&rounded=true"
+
+        # 3. User chose random avatar
+        if self.avatar_type == 'random' and self.avatar_seed:
+            return f"https://api.dicebear.com/7.x/avataaars/svg?seed={self.avatar_seed}&size={size}"
+
+        # 4. User has AI type (seeded users)
+        if self.avatar_type == 'ai':
+            import hashlib
+            seed = int(hashlib.md5(self.username.encode()).hexdigest()[:8], 16)
+
+            gender_path = 'men' if self.gender == 'M' else 'women'
+
+            if self.age_range == 'young':
+                photo_num = (seed % 33) + 1
+            elif self.age_range == 'middle':
+                photo_num = (seed % 33) + 34
+            else:  # senior
+                photo_num = (seed % 33) + 67
+
+            return f"https://randomuser.me/api/portraits/{gender_path}/{photo_num}.jpg"
+
+        # 5. Fallback: initials
+        name = f"{self.first_name} {self.last_name}".strip()
+        return f"https://ui-avatars.com/api/?name={name}&size={size}&background=f15034&color=fff&bold=true&rounded=true"
 
     def mini_gravatar(self):
         """Return a URL to a miniature version of the user's gravatar."""
