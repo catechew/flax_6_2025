@@ -138,7 +138,13 @@ class MealSlotUpdateView(LoginRequiredMixin, View):
         slot = get_object_or_404(MealSlot, id=slot_id, meal_plan__user=request.user)
 
         recipe_id = request.POST.get("recipe_id")
-        slot.recipe = Recipe.objects.get(id=recipe_id)
+
+        # Handle empty recipe selection (remove meal choice)
+        if recipe_id:
+            slot.recipe = Recipe.objects.get(id=recipe_id)
+        else:
+            slot.recipe = None
+        
         slot.save()
 
         return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
