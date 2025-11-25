@@ -482,8 +482,22 @@ h3.profile-title {
 
 .meal-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr); /* 4 day columns*/
     gap: 24px;
+}
+
+/* Ajdust week layout for tablet view */
+@media (max-width: 1200px) {
+    .meal-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Ajdust week layout for mobile view */
+@media (max-width: 768px) {
+    .meal-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .slot-content {
@@ -638,4 +652,34 @@ h3.profile-title {
     .stat-number {
         font-size: 2rem;
     }
+}
+
+/*
+ * Progress bar
+ */
+.progress-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.progress-text {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.progress-percentage {
+    font-weight: 700;
+    color: var(--primary-colour);
+    font-size: 1.1rem;
+}
+
+.progress {
+    background-color: #f0f0f0;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
 }

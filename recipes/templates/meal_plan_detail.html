@@ -37,6 +37,27 @@
         </div>
     </div>
 
+    <!-- Progress bar-->
+    <div class="progress-container mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="progress-text">Week Progress</span>
+            <span class="progress-percentage">{{ completion }}%</span>
+        </div>
+        <div class="progress" style="height: 12px; border-radius: 10px;">
+            <div class="progress-bar bg-success" 
+                role="progressbar"
+                style="width: {{ completion }}%"
+                aria-valuenow="{{ completion }}"
+                aria-valuemin="0"
+                aria-valuemax="100">
+            </div>
+        </div>
+        <small class="text-muted mt-1 d-block">
+            {{ filled_slots }} of 28 meals planned
+        </small>
+    </div>
+
+    <!-- Meal grid -->
     <div class="meal-grid">
 
         {% for day in schedule %}
