@@ -32,8 +32,8 @@
         <div class="d-md-none d-flex gap-2 mb-2">
           <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersSection" aria-expanded="false">
             <i class="bi bi-funnel"></i>
-            {% if course_filters or dietary_filters or cuisine_filters or other_filters %}
-              <span class="badge bg-primary rounded-pill ms-1">{{ course_filters|length|add:dietary_filters|length|add:cuisine_filters|length|add:other_filters|length }}</span>
+            {% if total_filters > 0 %}
+              <span class="ms-1">({{ total_filters }})</span>
             {% endif %}
           </button>
           <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#sortSection" aria-expanded="false">
