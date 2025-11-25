@@ -482,8 +482,22 @@ h3.profile-title {
 
 .meal-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr); /* 4 day columns*/
     gap: 24px;
+}
+
+/* Ajdust week layout for tablet view */
+@media (max-width: 1200px) {
+    .meal-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Ajdust week layout for mobile view */
+@media (max-width: 768px) {
+    .meal-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .slot-content {
