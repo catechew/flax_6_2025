@@ -82,11 +82,11 @@
             <form action="{% url 'toggle_save_recipe' recipe.id %}" method="POST">
                 {% csrf_token %}
                 {% if user in recipe.saved_by.all %}
-                <button type="submit" class="btn btn-danger">
+                <button type="submit" class="heart-btn favourited">
                     <i class="bi bi-heart-fill"></i>
                 </button>
                 {% else %}
-                <button type="submit" class="btn btn-outline-danger">
+                <button type="submit" class="heart-btn">
                     <i class="bi bi-heart"></i>
                 </button>
                 {% endif %}
