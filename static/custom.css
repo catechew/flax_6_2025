@@ -514,10 +514,18 @@ h3.profile-title {
 }
 
 .meal-thumb {
-    width: 180px;
-    height: 130px;
+    width: 190px;
+    height: 190px;
     border-radius: 10px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    object-fit: cover;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.meal-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    cursor: pointer;
 }
 
 .btn-row .btn {
@@ -548,4 +556,43 @@ h3.profile-title {
     font-size: 0.8rem !important;
     font-weight: 500 !important;
     border-radius: 8px !important;
+}
+
+/* 
+* Edit Meal Page
+*/
+.edit-meal-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.meal-context .badge {
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  margin-right: 8px;
+}
+
+.edit-meal-wrapper h2 {
+  margin-bottom: 20px;
+  color: var(--black-colour);
+}
+
+.edit-meal-wrapper .form-label {
+  color: #5a4f47;
+  font-size: 0.95rem;
+}
+
+.edit-meal-wrapper .form-select {
+  border: 2px solid #e0e0e0;
+  padding: 12px; 
+  border-radius: 10px;
+}
+
+.edit-meal-wrapper .form-select:focus {
+  border-color: var(--primary-colour);
+  box-shadow: 0 0 0 3px rgba(241, 80, 52, 0.1);
 }
