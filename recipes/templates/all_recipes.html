@@ -28,23 +28,23 @@
           <input type="hidden" name="q" value="{{ search_query }}">
         {% endif %}
 
-        {# Mobile view: Icon buttons to toggle filters/sort #}
-        <div class="d-md-none d-flex gap-2 mb-3">
-          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
-            <i class="bi bi-funnel"></i> Filters
+        {# Mobile: Icon buttons that toggle collapse #}
+        <div class="d-md-none d-flex gap-2 mb-2">
+          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersSection" aria-expanded="false">
+            <i class="bi bi-funnel"></i>
             {% if course_filters or dietary_filters or cuisine_filters or other_filters %}
-              <span class="badge bg-primary">{{ course_filters|length|add:dietary_filters|length|add:cuisine_filters|length|add:other_filters|length }}</span>
+              <span class="badge bg-primary rounded-pill ms-1">{{ course_filters|length|add:dietary_filters|length|add:cuisine_filters|length|add:other_filters|length }}</span>
             {% endif %}
           </button>
-          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse">
-            <i class="bi bi-sort-down"></i> Sort
+          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#sortSection" aria-expanded="false">
+            <i class="bi bi-sort-down"></i>
           </button>
         </div>
-
-        <div class="d-none d-md--flex align-items-end gap-2 justify-content-between">
-          {# Filter #}
-          <div class="d-flex align-items-end gap-2">
-            <h7 class="mb-0"><i class="bi bi-funnel"></i></h7>
+        
+        {# Filter #}
+        <div class="collapse d-md-block mb-3 mb-md-0" id="filtersSection">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <h7 class="mb-0 d-none d-md-inline"><i class="bi bi-funnel"></i></h7>
 
             {# Course Filter #}
             <div class="dropdown">
@@ -119,21 +119,20 @@
               {% endfor %}
             </div>
           </div>
-          <div class="mt-2">
-            <button type="submit" class="btn btn-primary btn-sm">
-                <i class="bi bi-search"></i> Apply Filters
-            </button>
-            <a href="{% url 'all_recipes' %}" class="btn btn-secondary + btn-sm">
-              <i class="bi bi-x-circle"></i> Clear Filters
-            </a>
-          </div>
+          <button type="submit" class="btn btn-primary btn-sm">
+              <i class="bi bi-search"></i> Apply
+          </button>
+          <a href="{% url 'all_recipes' %}" class="btn btn-secondary btn-sm">
+            <i class="bi bi-x-circle"></i> Clear
+          </a>
         </div>
+      </div>
 
-        {# Sort-by #}
-        <div class="d-flex align-items-end gap-2">
-          <h7 class="mb-0"><i class="bi bi-sort-down"></i></h7>
-
-          <select name="sort" class="form-select form-select-sm" style="width: auto;" onchange="document.getElementById('filterForm').submit()">
+      {# Sort-by #}
+      <div class="collapse d-md-block" id="sortSection">
+        <div class="d-flex align-items-center gap-2">
+          <h7 class="mb-0 d-none d-md-inline"><i class="bi bi-sort-down"></i></h7>
+          <select name="sort" class="form-select form-select-sm w-100" style="max-width: 250px;" onchange="document.getElementById('filterForm').submit()">
             <option value="date_newest" {% if sort_by == 'date_newest' %}selected{% endif %}>Newest First</option>
             <option value="date_oldest" {% if sort_by == 'date_oldest' %}selected{% endif %}>Oldest First</option>
             <option value="prep_least" {% if sort_by == 'prep_least' %}selected{% endif %}>Prep Time (Least)</option>
@@ -148,7 +147,7 @@
             <option value="title_za" {% if sort_by == 'title_za' %}selected{% endif %}>Title (Z-A)</option>
           </select>
         </div>
-
+      </div>
     </form>
   </div>
 
