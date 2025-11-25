@@ -27,116 +27,133 @@
         {% if search_query %}
           <input type="hidden" name="q" value="{{ search_query }}">
         {% endif %}
-        <div class="d-flex align-items-end gap-2 justify-content-between">
-          {# Filter #}
-          <div class="d-flex align-items-end gap-2">
-            <h7 class="mb-0"><i class="bi bi-funnel"></i></h7>
 
-            {# Course Filter #}
-            <div class="dropdown">
-              <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="courseDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                Course {% if course_filters %}({{ course_filters|length }}){% endif %}
-              </button>
-              <div class="dropdown-menu filter-dropdown-menu">
-                {% for option in course_options %}
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="course" value="{{ option }}" 
-                          id="course_{{ forloop.counter }}" {% if option in course_filters %}checked{% endif %}>
-                  <label class="form-check-label" for="course_{{ forloop.counter }}">
-                    {{ option|title }}
-                  </label>
+        {# Mobile: Icon buttons that toggle collapse #}
+        <div class="d-md-none d-flex gap-2 mb-2">
+          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersSection" aria-expanded="false">
+            <i class="bi bi-funnel"></i>
+            {% if total_filters > 0 %}
+              <span class="ms-1">({{ total_filters }})</span>
+            {% endif %}
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#sortSection" aria-expanded="false">
+            <i class="bi bi-sort-down"></i>
+          </button>
+        </div>
+        
+        {# Filter #}
+        <div class="row g-2">
+          <div class="col-12 col-md-auto">
+            <div class="collapse d-md-block mb-3 mb-md-0" id="filtersSection">
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <h7 class="mb-0 d-none d-md-inline"><i class="bi bi-funnel"></i></h7>
+
+                {# Course Filter #}
+                <div class="dropdown">
+                  <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="courseDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                    Course {% if course_filters %}({{ course_filters|length }}){% endif %}
+                  </button>
+                  <div class="dropdown-menu filter-dropdown-menu">
+                    {% for option in course_options %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="course" value="{{ option }}" 
+                              id="course_{{ forloop.counter }}" {% if option in course_filters %}checked{% endif %}>
+                      <label class="form-check-label" for="course_{{ forloop.counter }}">
+                        {{ option|title }}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
                 </div>
-                {% endfor %}
+
+                {# Dietary Filter #}
+                <div class="dropdown">
+                <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" id="dietaryDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                  Dietary {% if dietary_filters %}({{ dietary_filters|length }}){% endif %}
+                </button>
+                <div class="dropdown-menu p-2" style="min-width: 200px;">
+                  {% for option in dietary_options %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="dietary" value="{{ option }}" 
+                            id="dietary_{{ forloop.counter }}" {% if option in dietary_filters %}checked{% endif %}>
+                    <label class="form-check-label" for="dietary_{{ forloop.counter }}">
+                      {{ option|title }}
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
               </div>
-            </div>
 
 
-
-            {# Dietary Filter #}
-            <div class="dropdown">
-            <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" id="dietaryDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-              Dietary {% if dietary_filters %}({{ dietary_filters|length }}){% endif %}
-            </button>
-            <div class="dropdown-menu p-2" style="min-width: 200px;">
-              {% for option in dietary_options %}
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="dietary" value="{{ option }}" 
-                        id="dietary_{{ forloop.counter }}" {% if option in dietary_filters %}checked{% endif %}>
-                <label class="form-check-label" for="dietary_{{ forloop.counter }}">
-                  {{ option|title }}
-                </label>
+                {# Cuisine Filter #}
+                <div class="dropdown">
+                <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="cuisineDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                  Cuisine {% if cuisine_filters %}({{ cuisine_filters|length }}){% endif %}
+                </button>
+                <div class="dropdown-menu p-2" style="min-width: 200px;">
+                  {% for option in cuisine_options %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="cuisine" value="{{ option }}" 
+                          id="cuisine_{{ forloop.counter }}" {% if option in cuisine_filters %}checked{% endif %}>
+                    <label class="form-check-label" for="cuisine_{{ forloop.counter }}">
+                      {{ option }}
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
               </div>
-              {% endfor %}
-            </div>
-          </div>
 
 
-            {# Cuisine Filter #}
-            <div class="dropdown">
-            <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="cuisineDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-              Cuisine {% if cuisine_filters %}({{ cuisine_filters|length }}){% endif %}
-            </button>
-            <div class="dropdown-menu p-2" style="min-width: 200px;">
-              {% for option in cuisine_options %}
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="cuisine" value="{{ option }}" 
-                      id="cuisine_{{ forloop.counter }}" {% if option in cuisine_filters %}checked{% endif %}>
-                <label class="form-check-label" for="cuisine_{{ forloop.counter }}">
-                  {{ option }}
-                </label>
+                {# Other Filter #}
+                <div class="dropdown">
+                <button class="btn btn-outline-warning btn-sm dropdown-toggle" type="button" id="otherDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                  Other {% if other_filters %}({{ other_filters|length }}){% endif %}
+                </button>
+                <div class="dropdown-menu p-2" style="min-width: 200px;">
+                  {% for option in other_options %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="other" value="{{ option }}" 
+                          id="other_{{ forloop.counter }}" {% if option in other_filters %}checked{% endif %}>
+                    <label class="form-check-label" for="other_{{ forloop.counter }}">
+                      {{ option|title }}
+                    </label>
+                  </div>
+                  {% endfor %}
+                </div>
               </div>
-              {% endfor %}
+              <button type="submit" class="btn btn-primary btn-sm">
+                  <i class="bi bi-search"></i> Apply
+              </button>
+              <a href="{% url 'all_recipes' %}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-x-circle"></i> Clear
+              </a>
             </div>
-          </div>
-
-
-            {# Other Filter #}
-            <div class="dropdown">
-            <button class="btn btn-outline-warning btn-sm dropdown-toggle" type="button" id="otherDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-              Other {% if other_filters %}({{ other_filters|length }}){% endif %}
-            </button>
-            <div class="dropdown-menu p-2" style="min-width: 200px;">
-              {% for option in other_options %}
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="other" value="{{ option }}" 
-                      id="other_{{ forloop.counter }}" {% if option in other_filters %}checked{% endif %}>
-                <label class="form-check-label" for="other_{{ forloop.counter }}">
-                  {{ option|title }}
-                </label>
-              </div>
-              {% endfor %}
-            </div>
-          </div>
-          <div class="mt-2">
-            <button type="submit" class="btn btn-primary btn-sm">
-                <i class="bi bi-search"></i> Apply Filters
-            </button>
-            <a href="{% url 'all_recipes' %}" class="btn btn-secondary + btn-sm">
-              <i class="bi bi-x-circle"></i> Clear Filters
-            </a>
           </div>
         </div>
 
         {# Sort-by #}
-        <div class="d-flex align-items-end gap-2">
-          <h7 class="mb-0"><i class="bi bi-sort-down"></i></h7>
-
-          <select name="sort" class="form-select form-select-sm" style="width: auto;" onchange="document.getElementById('filterForm').submit()">
-            <option value="date_newest" {% if sort_by == 'date_newest' %}selected{% endif %}>Newest First</option>
-            <option value="date_oldest" {% if sort_by == 'date_oldest' %}selected{% endif %}>Oldest First</option>
-            <option value="prep_least" {% if sort_by == 'prep_least' %}selected{% endif %}>Prep Time (Least)</option>
-            <option value="prep_most" {% if sort_by == 'prep_most' %}selected{% endif %}>Prep Time (Most)</option>
-            <option value="cook_least" {% if sort_by == 'cook_least' %}selected{% endif %}>Cook Time (Least)</option>
-            <option value="cook_most" {% if sort_by == 'cook_most' %}selected{% endif %}>Cook Time (Most)</option>
-            <option value="total_least" {% if sort_by == 'total_least' %}selected{% endif %}>Total Time (Least)</option>
-            <option value="total_most" {% if sort_by == 'total_most' %}selected{% endif %}>Total Time (Most)</option>
-            <option value="most_saves" {% if sort_by == 'most_saves' %}selected{% endif %}>Most Saved</option>
-            <option value="rating_highest" {% if sort_by == "rating_highest" %}selected{% endif %}>Highest Rated</option>
-            <option value="title_az" {% if sort_by == 'title_az' %}selected{% endif %}>Title (A-Z)</option>
-            <option value="title_za" {% if sort_by == 'title_za' %}selected{% endif %}>Title (Z-A)</option>
-          </select>
+        <div class="col-12 col-md-auto ms-md-auto">
+          <div class="collapse d-md-block" id="sortSection">
+            <div class="d-flex align-items-center gap-2">
+              <h7 class="mb-0 d-none d-md-inline"><i class="bi bi-sort-down"></i></h7>
+              <select name="sort" class="form-select form-select-sm w-100" style="max-width: 250px;" onchange="document.getElementById('filterForm').submit()">
+                <option value="date_newest" {% if sort_by == 'date_newest' %}selected{% endif %}>Newest First</option>
+                <option value="date_oldest" {% if sort_by == 'date_oldest' %}selected{% endif %}>Oldest First</option>
+                <option value="prep_least" {% if sort_by == 'prep_least' %}selected{% endif %}>Prep Time (Least)</option>
+                <option value="prep_most" {% if sort_by == 'prep_most' %}selected{% endif %}>Prep Time (Most)</option>
+                <option value="cook_least" {% if sort_by == 'cook_least' %}selected{% endif %}>Cook Time (Least)</option>
+                <option value="cook_most" {% if sort_by == 'cook_most' %}selected{% endif %}>Cook Time (Most)</option>
+                <option value="total_least" {% if sort_by == 'total_least' %}selected{% endif %}>Total Time (Least)</option>
+                <option value="total_most" {% if sort_by == 'total_most' %}selected{% endif %}>Total Time (Most)</option>
+                <option value="most_saves" {% if sort_by == 'most_saves' %}selected{% endif %}>Most Saved</option>
+                <option value="rating_highest" {% if sort_by == "rating_highest" %}selected{% endif %}>Highest Rated</option>
+                <option value="title_az" {% if sort_by == 'title_az' %}selected{% endif %}>Title (A-Z)</option>
+                <option value="title_za" {% if sort_by == 'title_za' %}selected{% endif %}>Title (Z-A)</option>
+              </select>
+            </div>
+          </div>
         </div>
-
+      </div>
     </form>
   </div>
 
