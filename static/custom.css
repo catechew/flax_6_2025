@@ -569,3 +569,29 @@ h3.profile-title {
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
+
+.meal-context .badge {
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  margin-right: 8px;
+}
+
+.edit-meal-wrapper h2 {
+  margin-bottom: 20px;
+  color: var(--black-colour);
+}
+
+.edit-meal-wrapper .form-label {
+  color: #5a4f47;
+  font-size: 0.95rem;
+}
+
+.edit-meal-wrapper .form-select {
+  border: 2px solid #e0e0e0;
+  padding: 12px; 
+  border-radius: 10px;
+
+.edit-meal-wrapper .form-select:focus {
+  border-color: var(--primary-colour);
+  box-shadow: 0 0 0 3px rgba(241, 80, 52, 0.1);
+}
