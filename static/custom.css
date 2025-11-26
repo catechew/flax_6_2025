@@ -407,8 +407,7 @@ h3.profile-title {
 }
 
 .meal-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08) !important;
+  transform: translateY(-20px);
 }
 
 .meal-tag {
