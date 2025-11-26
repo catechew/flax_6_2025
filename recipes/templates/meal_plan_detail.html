@@ -7,13 +7,6 @@
 
     <h1 class="mb-4">📅 Weekly Meal Plan</h1>
 
-    <!-- Action buttons -->
-    <div class="d-flex gap-2 mb-3 flex-wrap">
-        <a href="{% url 'shopping-list' plan.id %}" class="btn btn-success">
-            🛒 Shopping List
-        </a>
-    </div>
-
     <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
 
     <!-- Prev / Next buttons -->
@@ -115,6 +108,19 @@
             </div>
         {% endfor %}
 
+    </div>
+
+    <!-- Shopping list call to action -->
+     <div class="shopping-list-cta mt-5 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+            <div class="card-body text-center py-4">
+                <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
+                <p class="text-white mb-3">View your shopping list for this week's meal plan!</p>
+                <a href="{% url 'shopping-list' plan.id %}" class="btn btn-light btn-lg px-5">
+                    <i class="bi bi-cart-check"></i> View Shopping List
+                </a>
+            </div>
+        </div>
     </div>
 
     <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Back to Dashboard</a>
