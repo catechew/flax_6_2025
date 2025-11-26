@@ -364,6 +364,9 @@ class Command(BaseCommand):
             sample(finish_steps, randint(1, 2))
         )
 
+        if "Serve hot" not in steps:
+            steps.append("Serve hot") # So users never see a recipe that ends mid-process
+
         return '\n'.join(steps)
        
     
