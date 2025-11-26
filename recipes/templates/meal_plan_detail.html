@@ -59,16 +59,31 @@
         {% for day in schedule %}
             <div class="card meal-card border-0">
 
-                <!-- Day header -->
-                <div class="card-header text-dark fw-bold text-center day-header meal-header-{{ day.day_code }}">
-                    {{ day.day_name }} • {{ day.day_date.day|ordinal }} {{ day.day_date|date:"M" }}
+                <!-- Day header with action buttons -->
+                <div class="card-header text-dark fw-bold day-header meal-header-{{ day.day_code }}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ day.day_name }} • {{ day.day_date.day|ordinal }} {{ day.day_date|date:"M" }}</span>
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                ✏️ Edit
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.breakfast.id %}">Edit Breakfast</a></li>
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.lunch.id %}">Edit Lunch</a></li>
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.dinner.id %}">Edit Dinner</a></li>
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.snack.id %}">Edit Snack</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="card-body">
 
                     <!-- Breakfast -->
                     <div class="slot-line">
-                        <strong>Breakfast:</strong>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong class="meal-label">Breakfast:</strong>
+                        </div>
                         {% with slot=day.slots.breakfast %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
@@ -76,7 +91,9 @@
 
                     <!-- Lunch -->
                     <div class="slot-line">
-                        <strong>Lunch:</strong>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong class="meal-label">Lunch:</strong>
+                        </div>
                         {% with slot=day.slots.lunch %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
@@ -84,7 +101,9 @@
 
                     <!-- Dinner -->
                     <div class="slot-line">
-                        <strong>Dinner:</strong>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong class="meal-label">Dinner:</strong>
+                        </div>
                         {% with slot=day.slots.dinner %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
@@ -92,7 +111,9 @@
 
                     <!-- Snack -->
                     <div class="slot-line">
-                        <strong>Snack:</strong>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <strong class="meal-label">Snack:</strong>
+                        </div>
                         {% with slot=day.slots.snack %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
@@ -103,6 +124,7 @@
             </div>
         {% endfor %}
 
+    </div>
     </div>
 
     <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Back to Dashboard</a>
