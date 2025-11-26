@@ -15,6 +15,8 @@ from django.utils import timezone
 from datetime import timedelta
 import requests
 from django.core.files.base import ContentFile
+import os
+from django.conf import settings
 
 
 user_fixtures = [
@@ -217,7 +219,7 @@ class Command(BaseCommand):
             "Margherita Pizza", "Mushroom Curry", "Tiramisu", "Breakfast Parfait", 
             "S'mores dip", "Lentil Bolognese", "Pad Thai", "Raspberry Ripple Milkshake", 
             "Mocha frappé", "Mashed Potatoes", "Fish and Chips", "Mushy Peas", "Mee Goreng",
-            "Boba at home", "Nasi Lemak", "Lobster"       
+            "Boba at home", "Nasi Lemak", "Lobster", "Apple Pie", "Banana Split"      
             ]
         
         adjectives = [
@@ -248,37 +250,125 @@ class Command(BaseCommand):
         return timezone.now().date() - timedelta(days=days_limit)
     
     def generate_random_ingredients(self):
-        """Generate a list of random ingredients"""
-        ingredient_options = [
-            "Chicken Breast (2)", "Avocado (1)", "Rice (1 cup)", 
-            "Black Beans (1 can)", "Olive Oil (2 tbsp)", "Onion (1/2 medium)", 
-            "Garlic (3 cloves)", "Salt (1 tsp)", "Black Pepper (1/2 tsp)", 
-            "Cherry Tomatoes (1 cup)", "Lemon Juice (1 tbsp)", 
-            "Cheddar Cheese (1/4 cup)", "Butter (1/4 stick)", "Milk (1/2 cup)", 
-            "Flour (2 cups)", "Sugar (1/4 cup)", "Egg (2 large)", 
-            "Spinach (1 bunch)", "Penne Pasta (8 oz)", "Basil Leaves (1/4 cup)", 
-            "Soy Sauce (1 tbsp)", "Ginger (1 inch piece)", "Broccoli Florets (1 cup)", 
-            "Bell Pepper (1 large)", "Cilantro (1/4 bunch)",
+        """Generate a realistic list of random ingredients"""
+        protein = [
+            "Chicken Breast (2)",
+            "Salmon Fillet (1)",
+            "Minced Beef (500g)",
+            "Tuna (1 can)",
+            "Eggs (2)",
+            "Halloumi (200g)",
+            "Tofu (1 block)",
         ]
-        rand_num = randint(4,8)
-        selected = sample(ingredient_options, rand_num)
-        return '\n'.join(selected)
+
+        vegetables = [
+            "Onion (1)",
+            "Garlic (3 cloves)",
+            "Bell Pepper (1)",
+            "Spinach (1 handful)",
+            "Broccoli (1 cup)",
+            "Cherry Tomatoes (1 cup)",
+            "Mushrooms (1 cup)",
+            "Avocado (1)",
+        ]
+
+        fruits = [
+            "Apple (1)",
+            "Banana (1)",
+            "Lemon Zest (1)",
+            "Strawberries (1 cup)",
+        ]
+
+        grains = [
+            "Rice (1 cup)",
+            "Penne Pasta (200g)",
+            "Bread (2 slices)",
+            "Flour (1 cup)",
+        ]
+
+        dairy = [
+            "Milk (1/2 cup)",
+            "Butter (50g)",
+            "Cheddar Cheese (1/4 cup)",
+            "Yogurt (1/2 cup)",
+        ]
+
+        pantry = [
+            "Olive Oil (1 tbsp)",
+            "Soy Sauce (1 tbsp)",
+            "Salt (1 tsp)",
+            "Black Pepper (1/2 tsp)",
+            "Sugar (1 tbsp)",
+        ]
+
+        herbs_spices = [
+            "Basil Leaves",
+            "Cilantro",
+            "Ginger (1 inch)",
+            "Chili Flakes",
+        ]
+
+        # Pick a realistic mix
+        ingredients = (
+            sample(protein, randint(1, 2)) +
+            sample(vegetables, randint(2, 3)) +
+            sample(grains, randint(1, 2)) +
+            sample(dairy, randint(0, 2)) +
+            sample(fruits, randint(0, 1)) +
+            sample(pantry, randint(2, 3)) +
+            sample(herbs_spices, randint(0, 2))
+        )
+
+        return '\n'.join(ingredients)
     
     def generate_random_steps(self):
-        """Generate a list of random steps"""
-        step_options = [
-            "Mix garlic and soy sauce", "Preheat oven to 350°F", 
-            "Chop the onion and bell pepper", "Sauté the vegetables until soft", 
-            "Bring water to a boil", "Add salt and pasta to the pot", 
-            "Season chicken with salt and pepper", "Bake for 20 minutes", 
-            "Stir constantly for 5 minutes", "Let rest for 10 minutes before slicing", 
-            "Garnish with fresh parsley", "Drain excess liquid", 
-            "Whisk eggs and milk together", "Fold in the dry ingredients", 
-            "Transfer batter to a prepared pan"
+        """Generate a realistic list of cooking steps"""
+
+        prep_steps = [
+            "Chop the onion and garlic",
+            "Season ingredients with salt and pepper",
+            "Preheat oven to 350°F",
+            "Wash and prepare vegetables",
+            "Whisk eggs and milk together",
+            "Chop the onion and bell pepper",
+            "Slice apples into thin cubes",
+            "Marinate salmon with lemon zest, salt and pepper",
         ]
-        rand_num = randint(4,8)
-        selected = sample(step_options, rand_num)
-        return '\n'.join(selected)
+
+        cook_steps = [
+            "Heat oil in a pan over medium heat",
+            "Add ingredients and cook until soft",
+            "Bring water to a boil and add pasta",
+            "Bake for 20 minutes until golden",
+            "Simmer on low heat for 7 minutes",
+            "Stir occasionally whilst cooking",
+            "Mix garlic and soy sauce",
+            "Season chicken with salt and pepper",
+            "Fold in the dry ingredients", 
+            "Boil chicken in stock for 10 minutes",
+        ]
+
+        finish_steps = [
+            "Garnish with fresh herbs",
+            "Let rest for 5 minutes before serving",
+            "Taste and adjust seasoning",
+            "Serve hot",
+            "Garnish with fresh parsley",
+            "Drizzle caramel sauce on top before serving",
+            "Drizzle mayo and siracha on top",
+        ]
+
+        steps = (
+            sample(prep_steps, randint(1, 2)) +
+            sample(cook_steps, randint(2, 3)) +
+            sample(finish_steps, randint(1, 2))
+        )
+
+        if "Serve hot" not in steps:
+            steps.append("Serve hot") # So users never see a recipe that ends mid-process
+
+        return '\n'.join(steps)
+       
     
     def generate_random_hours(self):
         """Generate random hour"""
@@ -343,56 +433,62 @@ class Command(BaseCommand):
 
         # Foodish API available dishes
         dish_mapping = {
-            'biryani': ['biryani'],
+            'pasta': ['pasta', 'spaghetti', 'penne', 'macaroni', 'bolognese'],
+            'rice': ['rice', 'fried rice', 'rice bowl', 'biryani', 'nasi lemak'],
             'burger': ['burger', 'cheeseburger'],
-            'butter-chicken': ['butter chicken'],
-            'dessert': ['dessert', 'cake', 'cheesecake', 'tiramisu', 'muffin'],
-            'dosa': ['dosa'],
-            'idly': ['idly'],
-            'pasta': ['pasta', 'spaghetti', 'penne', 'macaroni'],
             'pizza': ['pizza', 'margherita'],
-            'rice': ['rice', 'fried rice', 'rice bowl'],
-            'samosa': ['samosa'],
+            'dessert': ['dessert', 'cake', 'cheesecake', 'tiramisu', 'muffin','s\'mores', 'parfait'],
+            'curry': ['curry', 'butter chicken', 'aloo gobi', 'dal', 'katsu'],
+            'soup': ['soup', 'pho', 'gyoza soup'],
+            'wrap': ['wrap', 'quesadilla', 'fajitas'],
+            'salad': ['salad', 'bowl', 'acai'],
+            'toast': ['toast', 'beans on toast', 'cheese toast', 'pizza toast'],
+            'drink': ['smoothie', 'latte', 'chocolate', 'mocktail','milkshake', 'frappé', 'boba'],
         }
 
         # Check if title contains any keywords
-        for api_dish, keywords in dish_mapping.items():
+        for image_name, keywords in dish_mapping.items():
             for keyword in keywords:
                 if keyword in title_lower:
-                    return api_dish
+                    return image_name
 
-        # Default to random
-        return None
+        # Default to default image
+        return 'default'
 
     
     def download_random_food_image(self, title=None):
-        """Download a random food image from Foodish API"""
+        """Select a local food placeholder image based on recipe title"""
         try:
-            # Try to get specific dish type from title
-            dish_type = None
+            # Get the image type from title
+            image_type = 'default'
             if title:
-                dish_type = self.get_dish_type_from_title(title)
+                image_type = self.get_dish_type_from_title(title)
 
             # Build API URL
-            if dish_type:
-                url = f'https://foodish-api.com/api/images/{dish_type}'
+            image_path = f'static/images/food_placeholders/{image_type}.jpg'
+
+            # Check if the file exists
+            full_path = os.path.join(settings.BASE_DIR, image_path)
+
+            if os.path.exists(full_path):
+                with open(full_path, 'rb') as f:
+                    image_content = ContentFile(f.read())
+                    filename = f"recipe_{image_type}_{randint(1000,9999)}.jpg"
+                    return image_content, filename
+            
             else:
-                url = 'https://foodish-api.com/api/'
+                # If specific image doesn't exist, try default
+                default_path = os.path.join(settings.BASE_DIR, 'static/images/food_placeholders/default.jpg')
+                if os.path.exists(default_path):
+                    with open(default_path, 'rb') as f:
+                        image_content = ContentFile(f.read())
+                        filename = f"recipe_default_{randint(1000,9999)}.jpg"
+                        return image_content, filename
 
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                image_url = data['image']
-
-                # Download the actual image
-                img_response = requests.get(image_url, timeout=10)
-                if img_response.status_code == 200:
-                    # Generate a filename
-                    filename = f"recipe_{randint(1000,9999)}.jpg"
-                    return ContentFile(img_response.content), filename
         except Exception as e:
-            if title: # retry with random food image 
-                return self.download_random_food_image(title=None)
+            print(f"Error loading placeholder image: {e}")
+            pass
+        
         return None, None
     
     def try_create_recipe(self, data):

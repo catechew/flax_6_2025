@@ -1,29 +1,16 @@
 {% if slot.recipe %}
-    <div class="slot-content">
+    <div class="d-flex align-items-center">
+        {% if slot.recipe.image %}
+            <img src="{{ slot.recipe.image.url }}"
+                 class="meal-thumb me-2"
+                 alt="{{ slot.recipe.title }}">
+        {% endif %}
 
-        <div class="d-flex align-items-center mb-1">
-            {% if slot.recipe.image %}
-                <img src="{{ slot.recipe.image.url }}"
-                     class="meal-thumb"
-                     alt="{{ slot.recipe.title }}">
-            {% endif %}
-
-            <a href="{% url 'recipe_detail' slot.recipe.id %}" 
-               class="fw-bold recipe-link ms-2">
-               {{ slot.recipe.title }}
-            </a>
-        </div>
-
-        <div class="btn-row">
-            <a href="{% url 'meal-slot-update' slot.id %}"
-               class="btn btn-add">Edit</a>
-
-            <a href="{% url 'meal-slot-clear' slot.id %}"
-               class="btn btn-sm btn-outline-danger">Clear</a>
-        </div>
-
+        <a href="{% url 'recipe_detail' slot.recipe.id %}" 
+           class="recipe-link">
+           {{ slot.recipe.title }}
+        </a>
     </div>
 {% else %}
-    <a href="{% url 'meal-slot-update' slot.id %}" 
-       class="btn btn-add">+ Add</a>
+    <span class="text-muted fst-italic">Not planned</span>
 {% endif %}
