@@ -168,3 +168,36 @@ class MealSlotClearView(LoginRequiredMixin, View):
         slot.save()
 
         return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
+    
+class ShoppingListView(LoginRequiredMixin, View):
+    """ Generate shopping list from meal plan """
+    def get(self, request, plan_id):
+        plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
+        slots = plan.entries.filter(recipe__isnull=False)
+
+        # Group ingredients by category
+        shopping_list = defaultdict(list)
+
+        for slot in slots:
+            recipe = slot.recipe
+            for ingredient in recipe.ingredients.split('\n'):
+                ingredient = ingredient.strip()
+                if ingredient:
+                    category = self.categorise_ingredient(ingredient)
+                    shopping_list[category].append({
+                        'item': ingredient,
+                        'recipe': recipe.title,
+                        'day': slot.get_day_display(),
+                        'meal': slot.get_meal_type_display()
+                    })
+        
+        # Consolidate duplicates
+        organised_list = {}
+        for category, items in shopping_list.items():
+            organised_list[category] = self.consolidate_items(items)
+        
+        return render(request, 'shopping_list.html', {
+            'plan': plan,
+            'shopping_list': organised_list,
+            'total_items': sum(len(items) for items in organised_list.values())
+        })
