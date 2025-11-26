@@ -357,7 +357,6 @@ h3.profile-title {
   margin-top: 0.5rem !important;
 }
 
-
 .rating-input input[type="radio"] {
     display: none;
 }
@@ -394,7 +393,7 @@ h3.profile-title {
  */
 .meal-card {
   background: #ffffff;
-  border-radius: 20px !important;
+  border-radius: 12px !important;
   padding: 0 !important;
   border: 1px solid rgba(0,0,0,0.08) !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04) !important;
@@ -402,15 +401,19 @@ h3.profile-title {
   overflow: hidden;
 }
 
+.meal-card .card-header {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
 .meal-card .card-body {
-  padding: 18px 16px;
+  padding: 0.75rem;
 }
 
 .meal-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.08) !important;
 }
-
 
 .meal-tag {
     display: inline-block;
@@ -630,49 +633,6 @@ h3.profile-title {
 .edit-meal-wrapper .form-select:focus {
   border-color: var(--primary-colour);
   box-shadow: 0 0 0 3px rgba(241, 80, 52, 0.1);
-}
-
-/*
- * Statistics Card
- */
-.stats-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    margin-bottom: 24px;
-}
-
-.stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary-colour);
-    line-height: 1;
-    margin-bottom: 8px;
-}
-
-.stat-label {
-    font-size: 0.85rem;
-    color: #666;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stats-card .col-4 {
-    padding: 12px;
-}
-
-@media (max-width: 768px) {
-    .stats-card .col-4 {
-        flex: 0 0 50%;
-        max-width: 50%;
-        margin-bottom: 16px;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-    }
 }
 
 /*
