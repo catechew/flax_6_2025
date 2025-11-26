@@ -222,5 +222,16 @@ class ShoppingListView(LoginRequiredMixin, View):
             return '🧂 Spices & Herbs'
         else:
             return '🛒 Other Items'
+    
+    def consolidate_items(self, items):
+        """Group identical items and count occurrences"""
+        consolidated = defaultdict(lambda: {'count': 0, 'recipes': []})
         
+        for item in items:
+            key = item['item'].lower()
+            consolidated[key]['count'] += 1
+            consolidated[key]['item'] = item['item']
+            consolidated[key]['recipes'].append(f"{item['day']} {item['meal']}: {item['recipe']}")
+        
+        return list(consolidated.values())
    
