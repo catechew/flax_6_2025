@@ -15,6 +15,8 @@ from django.utils import timezone
 from datetime import timedelta
 import requests
 from django.core.files.base import ContentFile
+import os
+from django.conf import settings
 
 
 user_fixtures = [
@@ -343,56 +345,62 @@ class Command(BaseCommand):
 
         # Foodish API available dishes
         dish_mapping = {
-            'biryani': ['biryani'],
+            'pasta': ['pasta', 'spaghetti', 'penne', 'macaroni', 'bolognese'],
+            'rice': ['rice', 'fried rice', 'rice bowl', 'biryani', 'nasi lemak'],
             'burger': ['burger', 'cheeseburger'],
-            'butter-chicken': ['butter chicken'],
-            'dessert': ['dessert', 'cake', 'cheesecake', 'tiramisu', 'muffin'],
-            'dosa': ['dosa'],
-            'idly': ['idly'],
-            'pasta': ['pasta', 'spaghetti', 'penne', 'macaroni'],
             'pizza': ['pizza', 'margherita'],
-            'rice': ['rice', 'fried rice', 'rice bowl'],
-            'samosa': ['samosa'],
+            'dessert': ['dessert', 'cake', 'cheesecake', 'tiramisu', 'muffin','s\'mores', 'parfait'],
+            'curry': ['curry', 'butter chicken', 'aloo gobi', 'dal', 'katsu'],
+            'soup': ['soup', 'pho', 'gyoza soup'],
+            'wrap': ['wrap', 'quesadilla', 'fajitas'],
+            'salad': ['salad', 'bowl', 'acai'],
+            'toast': ['toast', 'beans on toast', 'cheese toast', 'pizza toast'],
+            'drink': ['smoothie', 'latte', 'chocolate', 'mocktail','milkshake', 'frappé', 'boba'],
         }
 
         # Check if title contains any keywords
-        for api_dish, keywords in dish_mapping.items():
+        for image_name, keywords in dish_mapping.items():
             for keyword in keywords:
                 if keyword in title_lower:
-                    return api_dish
+                    return image_name
 
-        # Default to random
-        return None
+        # Default to default image
+        return 'default'
 
     
     def download_random_food_image(self, title=None):
-        """Download a random food image from Foodish API"""
+        """Select a local food placeholder image based on recipe title"""
         try:
-            # Try to get specific dish type from title
-            dish_type = None
+            # Get the image type from title
+            image_type = 'default'
             if title:
-                dish_type = self.get_dish_type_from_title(title)
+                image_type = self.get_dish_type_from_title(title)
 
             # Build API URL
-            if dish_type:
-                url = f'https://foodish-api.com/api/images/{dish_type}'
+            image_path = f'static/images/food_placeholders/{image_type}.jpg'
+
+            # Check if the file exists
+            full_path = os.path.join(settings.BASE_DIR, image_path)
+
+            if os.path.exists(full_path):
+                with open(full_path, 'rb') as f:
+                    image_content = ContentFile(f.read())
+                    filename = f"recipe_{image_type}_{randint(1000,9999)}.jpg"
+                    return image_content, filename
+            
             else:
-                url = 'https://foodish-api.com/api/'
+                # If specific image doesn't exist, try default
+                default_path = os.path.join(settings.BASE_DIR, 'static/images/food_placeholders/default.jpg')
+                if os.path.exists(default_path):
+                    with open(default_path, 'rb') as f:
+                        image_content = ContentFile(f.read())
+                        filename = f"recipe_default_{randint(1000,9999)}.jpg"
+                        return image_content, filename
 
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                image_url = data['image']
-
-                # Download the actual image
-                img_response = requests.get(image_url, timeout=10)
-                if img_response.status_code == 200:
-                    # Generate a filename
-                    filename = f"recipe_{randint(1000,9999)}.jpg"
-                    return ContentFile(img_response.content), filename
         except Exception as e:
-            if title: # retry with random food image 
-                return self.download_random_food_image(title=None)
+            print(f"Error loading placeholder image: {e}")
+            pass
+        
         return None, None
     
     def try_create_recipe(self, data):
