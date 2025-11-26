@@ -2,7 +2,7 @@
  * Root Variables
  */
 :root {
-  --primary-colour: #f15034;
+  --primary-colour: #f14f32;
   --primary-colour-darker: #c53c32;
   --primary-colour-darkest: #5c0404;
   --primary-colour-lighter: #f7e0e0;
@@ -381,8 +381,8 @@ h3.profile-title {
 
  /* Meal plan - day headers */
 .day-header {
-    background: #fafafa;
-    color: #333;
+    background: #f14f32;
+    color: #000000;
     border-bottom: 1px solid #eee;
 }
 
