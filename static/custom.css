@@ -380,13 +380,11 @@ h3.profile-title {
 }
 
  /* Meal plan - day headers */
-.meal-header-mon { background-color: #e8957d !important; }
-.meal-header-tue { background-color: #dc7060 !important; }
-.meal-header-wed { background-color: #d15a4f !important; }
-.meal-header-thu { background-color: #c8493e !important; color: #000 !important; }
-.meal-header-fri { background-color: #d9663d !important; }
-.meal-header-sat { background-color: #e8823d !important; }
-.meal-header-sun { background-color: #f09f3d !important; }
+.day-header {
+    background: #fafafa;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
 
 /*
  * Meal Plan Card UI
@@ -486,7 +484,7 @@ h3.profile-title {
 .meal-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 day columns*/
-    gap: 24px;
+    gap: 18px;
 }
 
 /* Ajdust week layout for tablet view */
@@ -531,18 +529,12 @@ h3.profile-title {
 }
 
 .meal-thumb {
-    width: 150px;
-    height: 150px;
-    border-radius: 10px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
     object-fit: cover;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.meal-thumb:hover {
-    transform: scale(1.15);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    cursor: pointer;
+    box-shadow: none;
+    margin-right: 10px;
 }
 
 .btn-row .btn {
