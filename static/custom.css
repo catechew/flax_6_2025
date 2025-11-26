@@ -407,7 +407,7 @@ h3.profile-title {
 }
 
 .meal-card:hover {
-  transform: translateY(-20px);
+  transform: translateY(-2px);
 }
 
 .meal-tag {
@@ -566,6 +566,7 @@ h3.profile-title {
 .recipe-card:hover{
   color: var(--primary-colour);
 }
+
 
 .meal-thumb {
     width: 90px;
