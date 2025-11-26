@@ -191,6 +191,27 @@ class ShoppingListView(LoginRequiredMixin, View):
                         'meal': slot.get_meal_type_display()
                     })
         
+        def categorise_ingredient(self, ingredient):
+            """Categorise ingredient by type"""
+            ingredient_lower = ingredient.lower()
+            
+            if any(word in ingredient_lower for word in ['chicken', 'beef', 'lamb', 'meat']):
+                return '🥩 Meat & Poultry'
+            elif any(word in ingredient_lower for word in ['fish', 'salmon', 'tuna', 'seafood']):
+                return '🐟 Seafood'
+            elif any(word in ingredient_lower for word in ['milk', 'cheese', 'butter', 'cream', 'yogurt', 'egg']):
+                return '🧀 Dairy & Eggs'
+            elif any(word in ingredient_lower for word in ['tomato', 'onion', 'pepper', 'lettuce', 'spinach', 'carrot']):
+                return '🥬 Vegetables'
+            elif any(word in ingredient_lower for word in ['apple', 'banana', 'orange', 'berry', 'lemon']):
+                return '🍎 Fruits'
+            elif any(word in ingredient_lower for word in ['pasta', 'rice', 'bread', 'flour']):
+                return '🌾 Grains & Pasta'
+            elif any(word in ingredient_lower for word in ['salt', 'pepper', 'spice', 'herb', 'cumin', 'garlic', 'basil']):
+                return '🧂 Spices & Herbs'
+            else:
+                return '🛒 Other Items'
+        
         # Consolidate duplicates
         organised_list = {}
         for category, items in shopping_list.items():
