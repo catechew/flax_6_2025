@@ -391,12 +391,10 @@ h3.profile-title {
  */
 .meal-card {
   background: #ffffff;
-  border-radius: 12px !important;
-  padding: 0 !important;
-  border: 1px solid rgba(0,0,0,0.08) !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04) !important;
-  transition: 0.25s ease;
-  overflow: hidden;
+  border-radius: 14px !important;
+  border: 1px solid #eee !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
+  transition: 0.2s ease;
 }
 
 .meal-card .card-header {
