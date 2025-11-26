@@ -219,7 +219,7 @@ class Command(BaseCommand):
             "Margherita Pizza", "Mushroom Curry", "Tiramisu", "Breakfast Parfait", 
             "S'mores dip", "Lentil Bolognese", "Pad Thai", "Raspberry Ripple Milkshake", 
             "Mocha frappé", "Mashed Potatoes", "Fish and Chips", "Mushy Peas", "Mee Goreng",
-            "Boba at home", "Nasi Lemak", "Lobster"       
+            "Boba at home", "Nasi Lemak", "Lobster", "Apple Pie", "Banana Split"      
             ]
         
         adjectives = [
