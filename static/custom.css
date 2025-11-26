@@ -481,7 +481,7 @@ h3.profile-title {
 .meal-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 day columns*/
-    gap: 18px;
+    gap: 10px;
 }
 
 /* Ajdust week layout for tablet view */
