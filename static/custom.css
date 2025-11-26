@@ -653,3 +653,43 @@ h3.profile-title {
 .progress-bar {
     transition: width 0.6s ease;
 }
+
+/* Dropdown edit button in day header */
+.day-header .btn-light {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    color: #555 !important;
+    font-size: 0.75rem !important;
+    padding: 3px 10px !important;
+    font-weight: 500 !important;
+}
+
+.day-header .btn-light:hover {
+    background: #f8f9fa !important;
+    border-color: var(--primary-colour) !important;
+    color: var(--primary-colour) !important;
+}
+
+.meal-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 6px;
+    display: block;
+    font-weight: 600;
+}
+
+/* Cleaner slot display */
+.slot-line {
+    margin-bottom: 14px !important;
+    padding-bottom: 12px !important;
+}
+
+.slot-line:last-child {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.recipe-link {
+    font-size: 0.9rem;
+}
