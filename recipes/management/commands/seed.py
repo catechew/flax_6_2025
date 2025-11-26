@@ -322,20 +322,50 @@ class Command(BaseCommand):
         return '\n'.join(ingredients)
     
     def generate_random_steps(self):
-        """Generate a list of random steps"""
-        step_options = [
-            "Mix garlic and soy sauce", "Preheat oven to 350°F", 
-            "Chop the onion and bell pepper", "Sauté the vegetables until soft", 
-            "Bring water to a boil", "Add salt and pasta to the pot", 
-            "Season chicken with salt and pepper", "Bake for 20 minutes", 
-            "Stir constantly for 5 minutes", "Let rest for 10 minutes before slicing", 
-            "Garnish with fresh parsley", "Drain excess liquid", 
-            "Whisk eggs and milk together", "Fold in the dry ingredients", 
-            "Transfer batter to a prepared pan"
+        """Generate a realistic list of cooking steps"""
+
+        prep_steps = [
+            "Chop the onion and garlic",
+            "Season ingredients with salt and pepper",
+            "Preheat oven to 350°F",
+            "Wash and prepare vegetables",
+            "Whisk eggs and milk together",
+            "Chop the onion and bell pepper",
+            "Slice apples into thin cubes",
+            "Marinate salmon with lemon zest, salt and pepper",
         ]
-        rand_num = randint(4,8)
-        selected = sample(step_options, rand_num)
-        return '\n'.join(selected)
+
+        cook_steps = [
+            "Heat oil in a pan over medium heat",
+            "Add ingredients and cook until soft",
+            "Bring water to a boil and add pasta",
+            "Bake for 20 minutes until golden",
+            "Simmer on low heat for 7 minutes",
+            "Stir occasionally whilst cooking",
+            "Mix garlic and soy sauce",
+            "Season chicken with salt and pepper",
+            "Fold in the dry ingredients", 
+            "Boil chicken in stock for 10 minutes",
+        ]
+
+        finish_steps = [
+            "Garnish with fresh herbs",
+            "Let rest for 5 minutes before serving",
+            "Taste and adjust seasoning",
+            "Serve hot",
+            "Garnish with fresh parsley",
+            "Drizzle caramel sauce on top before serving",
+            "Drizzle mayo and siracha on top",
+        ]
+
+        steps = (
+            sample(prep_steps, randint(1, 2)) +
+            sample(cook_steps, randint(2, 3)) +
+            sample(finish_steps, randint(1, 2))
+        )
+
+        return '\n'.join(steps)
+       
     
     def generate_random_hours(self):
         """Generate random hour"""
