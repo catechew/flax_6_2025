@@ -21,7 +21,7 @@
     </div>
 
     <!-- Progress bar-->
-    <div class="progress-container mb-4">
+    <div class="progress-container mb-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="progress-text">Week Progress</span>
             <span class="progress-percentage">{{ completion }}%</span>
@@ -42,10 +42,10 @@
 
     <!-- Shopping list call to action -->
      <div class="shopping-list-cta mt-5 mb-4">
-        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #04ac2b 0%, #04ac2b 100%);">
             <div class="card-body text-center py-4">
                 <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
-                <p class="text-white mb-3">View your shopping list for this week's meal plan!</p>
+                <p class="text-white mb-3">View your shopping list for this week's meal plan</p>
                 <a href="{% url 'shopping-list' plan.id %}" class="btn btn-light btn-lg px-5">
                     <i class="bi bi-cart-check"></i> View Shopping List
                 </a>
@@ -68,7 +68,7 @@
 
                     <!-- Breakfast -->
                     <div class="slot-line">
-                        <strong>🍳 Breakfast:</strong>
+                        <strong>Breakfast:</strong>
                         {% with slot=day.slots.breakfast %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
@@ -76,7 +76,7 @@
 
                     <!-- Lunch -->
                     <div class="slot-line">
-                        <strong>🥗 Lunch:</strong>
+                        <strong>Lunch:</strong>
                         {% with slot=day.slots.lunch %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
@@ -84,7 +84,7 @@
 
                     <!-- Dinner -->
                     <div class="slot-line">
-                        <strong>🍝 Dinner:</strong>
+                        <strong>Dinner:</strong>
                         {% with slot=day.slots.dinner %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
@@ -92,7 +92,7 @@
 
                     <!-- Snack -->
                     <div class="slot-line">
-                        <strong>🍿 Snack:</strong>
+                        <strong>Snack:</strong>
                         {% with slot=day.slots.snack %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
