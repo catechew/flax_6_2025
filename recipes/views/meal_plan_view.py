@@ -196,10 +196,12 @@ class ShoppingListView(LoginRequiredMixin, View):
         for category, items in shopping_list.items():
             organised_list[category] = self.consolidate_items(items)
         
+        ingredients_count = sum(len(items) for items in organised_list.values())
+
         return render(request, 'shopping_list.html', {
             'plan': plan,
             'shopping_list': organised_list,
-            'total_items': sum(len(items) for items in organised_list.values())
+            'ingredients_count': ingredients_count
         })
         
     def categorise_ingredient(self, ingredient):
