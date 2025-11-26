@@ -19,6 +19,19 @@
             Next Week <i class="bi bi-arrow-right"></i>
         </a>
     </div>
+    
+    <!-- Shopping list call to action -->
+     <div class="shopping-list-cta mt-5 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #04ac2b 0%, #04ac2b 100%);">
+            <div class="card-body text-center py-4">
+                <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
+                <p class="text-white mb-3">View your shopping list for this week's meal plan</p>
+                <a href="{% url 'shopping-list' plan.id %}" class="btn btn-light btn-lg px-5">
+                    <i class="bi bi-cart-check"></i> View Shopping List
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Progress bar-->
     <div class="progress-container mb-3">
@@ -38,19 +51,6 @@
         <small class="text-muted mt-1 d-block">
             {{ filled_slots }} of 28 meals planned
         </small>
-    </div>
-
-    <!-- Shopping list call to action -->
-     <div class="shopping-list-cta mt-5 mb-4">
-        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #04ac2b 0%, #04ac2b 100%);">
-            <div class="card-body text-center py-4">
-                <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
-                <p class="text-white mb-3">View your shopping list for this week's meal plan</p>
-                <a href="{% url 'shopping-list' plan.id %}" class="btn btn-light btn-lg px-5">
-                    <i class="bi bi-cart-check"></i> View Shopping List
-                </a>
-            </div>
-        </div>
     </div>
 
     <!-- Meal grid -->
@@ -124,7 +124,6 @@
             </div>
         {% endfor %}
 
-    </div>
     </div>
 
     <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Back to Dashboard</a>
