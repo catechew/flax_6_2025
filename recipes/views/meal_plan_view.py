@@ -5,6 +5,8 @@ from datetime import date, timedelta
 
 from recipes.models.meal_plan import MealPlan, MealSlot
 from recipes.models.recipe import Recipe
+from collections import defaultdict
+from django.contrib import messages
 
 def get_monday(d):
     """Return the Monday of the week for a given date"""
