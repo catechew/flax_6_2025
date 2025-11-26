@@ -5,6 +5,8 @@ from datetime import date, timedelta
 
 from recipes.models.meal_plan import MealPlan, MealSlot
 from recipes.models.recipe import Recipe
+from collections import defaultdict
+from django.contrib import messages
 
 def get_monday(d):
     """Return the Monday of the week for a given date"""
@@ -166,3 +168,72 @@ class MealSlotClearView(LoginRequiredMixin, View):
         slot.save()
 
         return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
+    
+class ShoppingListView(LoginRequiredMixin, View):
+    """ Generate shopping list from meal plan """
+    def get(self, request, plan_id):
+        plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
+        slots = plan.entries.filter(recipe__isnull=False)
+    
+        # Group ingredients by category
+        shopping_list = defaultdict(list)
+    
+        for slot in slots:
+            recipe = slot.recipe
+            for ingredient in recipe.ingredients.split('\n'):
+                ingredient = ingredient.strip()
+                if ingredient:
+                    category = self.categorise_ingredient(ingredient)
+                    shopping_list[category].append({
+                        'item': ingredient,
+                        'recipe': recipe.title,
+                        'day': slot.get_day_display(),
+                        'meal': slot.get_meal_type_display()
+                    })
+    
+        # Consolidate duplicates
+        organised_list = {}
+        for category, items in shopping_list.items():
+            organised_list[category] = self.consolidate_items(items)
+        
+        return render(request, 'shopping_list.html', {
+            'plan': plan,
+            'shopping_list': organised_list,
+            'total_items': sum(len(items) for items in organised_list.values())
+        })
+        
+    def categorise_ingredient(self, ingredient):
+        """Categorise ingredient by type"""
+        ingredient_lower = ingredient.lower()
+        
+        if any(word in ingredient_lower for word in ['chicken', ]):
+            return '🥩 Meat & Poultry'
+        elif any(word in ingredient_lower for word in []):
+            return '🐟 Seafood'
+        elif any(word in ingredient_lower for word in ['cheese', 'cheddar', 'butter', 'milk', 'egg']):
+            return '🧀 Dairy & Eggs'
+        elif any(word in ingredient_lower for word in ['avacado', 'beans', 'onion', 'garlic', 'tomatoes', 'lemon', 'spinach', 'ginger', 'broccoli', 'bell pepper']):
+            return '🥬 Vegetables'
+        elif any(word in ingredient_lower for word in []):
+            return '🍎 Fruits'
+        elif any(word in ingredient_lower for word in ['rice', 'flour', 'penne', 'pasta']):
+            return '🌾 Grains & Pasta'
+        elif any(word in ingredient_lower for word in ['black pepper', 'basil', 'leaves', 'cilantro']):
+            return '🌶️ Spices & Herbs'
+        elif any(word in ingredient_lower for word in ['oil', 'sugar', 'sauce', 'soy']):
+            return '🧂 Condiments'
+        else:
+            return '🛒 Other Items'
+    
+    def consolidate_items(self, items):
+        """Group identical items and count occurrences"""
+        consolidated = defaultdict(lambda: {'count': 0, 'recipes': []})
+        
+        for item in items:
+            key = item['item'].lower()
+            consolidated[key]['count'] += 1
+            consolidated[key]['item'] = item['item']
+            consolidated[key]['recipes'].append(f"{item['day']} {item['meal']}: {item['recipe']}")
+        
+        return list(consolidated.values())
+   
