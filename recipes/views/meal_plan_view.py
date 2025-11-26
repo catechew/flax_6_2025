@@ -174,10 +174,10 @@ class ShoppingListView(LoginRequiredMixin, View):
     def get(self, request, plan_id):
         plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
         slots = plan.entries.filter(recipe__isnull=False)
-
+    
         # Group ingredients by category
         shopping_list = defaultdict(list)
-
+    
         for slot in slots:
             recipe = slot.recipe
             for ingredient in recipe.ingredients.split('\n'):
@@ -190,7 +190,7 @@ class ShoppingListView(LoginRequiredMixin, View):
                         'day': slot.get_day_display(),
                         'meal': slot.get_meal_type_display()
                     })
-        
+    
         # Consolidate duplicates
         organised_list = {}
         for category, items in shopping_list.items():
