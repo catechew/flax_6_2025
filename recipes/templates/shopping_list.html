@@ -11,8 +11,11 @@
 
     <div class="alert alert-info">
         <strong>Week of {{ plan.week_start|date:"M d, Y" }}</strong><br>
-        Total items: <strong>{{ total_items }}</strong>
+        <p class="text-muted mb-0">
+            🛒 {{ ingredients_count }} items in your shopping list
+        </p>
     </div>
+
 
     {% for category, items in shopping_list.items %}
         <div class="card mb-3">

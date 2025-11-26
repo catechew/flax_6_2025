@@ -196,29 +196,31 @@ class ShoppingListView(LoginRequiredMixin, View):
         for category, items in shopping_list.items():
             organised_list[category] = self.consolidate_items(items)
         
+        ingredients_count = sum(len(items) for items in organised_list.values())
+
         return render(request, 'shopping_list.html', {
             'plan': plan,
             'shopping_list': organised_list,
-            'total_items': sum(len(items) for items in organised_list.values())
+            'ingredients_count': ingredients_count
         })
         
     def categorise_ingredient(self, ingredient):
         """Categorise ingredient by type"""
         ingredient_lower = ingredient.lower()
         
-        if any(word in ingredient_lower for word in ['chicken', ]):
+        if any(word in ingredient_lower for word in ['chicken', 'beef']):
             return '🥩 Meat & Poultry'
-        elif any(word in ingredient_lower for word in []):
+        elif any(word in ingredient_lower for word in ['salmon', 'tuna']):
             return '🐟 Seafood'
-        elif any(word in ingredient_lower for word in ['cheese', 'cheddar', 'butter', 'milk', 'egg']):
+        elif any(word in ingredient_lower for word in ['cheese', 'cheddar', 'butter', 'milk', 'egg', 'halloumi', 'tofu', 'bread']):
             return '🧀 Dairy & Eggs'
-        elif any(word in ingredient_lower for word in ['avacado', 'beans', 'onion', 'garlic', 'tomatoes', 'lemon', 'spinach', 'ginger', 'broccoli', 'bell pepper']):
+        elif any(word in ingredient_lower for word in ['avocado', 'onion', 'garlic', 'tomatoes', 'lemon', 'spinach', 'ginger', 'broccoli', 'bell pepper', 'mushrooms']):
             return '🥬 Vegetables'
-        elif any(word in ingredient_lower for word in []):
+        elif any(word in ingredient_lower for word in ['apple', 'banana', 'lemon', 'strawberries']):
             return '🍎 Fruits'
         elif any(word in ingredient_lower for word in ['rice', 'flour', 'penne', 'pasta']):
             return '🌾 Grains & Pasta'
-        elif any(word in ingredient_lower for word in ['black pepper', 'basil', 'leaves', 'cilantro']):
+        elif any(word in ingredient_lower for word in ['black pepper', 'basil', 'leaves', 'cilantro', 'chili']):
             return '🌶️ Spices & Herbs'
         elif any(word in ingredient_lower for word in ['oil', 'sugar', 'sauce', 'soy']):
             return '🧂 Condiments'

@@ -357,7 +357,6 @@ h3.profile-title {
   margin-top: 0.5rem !important;
 }
 
-
 .rating-input input[type="radio"] {
     display: none;
 }
@@ -381,36 +380,35 @@ h3.profile-title {
 }
 
  /* Meal plan - day headers */
-.meal-header-mon { background-color: #e8957d !important; }
-.meal-header-tue { background-color: #dc7060 !important; }
-.meal-header-wed { background-color: #d15a4f !important; }
-.meal-header-thu { background-color: #c8493e !important; color: #000 !important; }
-.meal-header-fri { background-color: #d9663d !important; }
-.meal-header-sat { background-color: #e8823d !important; }
-.meal-header-sun { background-color: #f09f3d !important; }
+.day-header {
+    background: #fafafa;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
 
 /*
  * Meal Plan Card UI
  */
 .meal-card {
   background: #ffffff;
-  border-radius: 20px !important;
-  padding: 0 !important;
-  border: 1px solid rgba(0,0,0,0.08) !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04) !important;
-  transition: 0.25s ease;
-  overflow: hidden;
+  border-radius: 14px !important;
+  border: 1px solid #eee !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
+  transition: 0.2s ease;
+}
+
+.meal-card .card-header {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
 }
 
 .meal-card .card-body {
-  padding: 18px 16px;
+  padding: 0.75rem;
 }
 
 .meal-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08) !important;
+  transform: translateY(-20px);
 }
-
 
 .meal-tag {
     display: inline-block;
@@ -483,7 +481,7 @@ h3.profile-title {
 .meal-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 day columns*/
-    gap: 24px;
+    gap: 10px;
 }
 
 /* Ajdust week layout for tablet view */
@@ -528,18 +526,12 @@ h3.profile-title {
 }
 
 .meal-thumb {
-    width: 150px;
-    height: 150px;
-    border-radius: 10px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
     object-fit: cover;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.meal-thumb:hover {
-    transform: scale(1.15);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    cursor: pointer;
+    box-shadow: none;
+    margin-right: 10px;
 }
 
 .btn-row .btn {
@@ -630,49 +622,6 @@ h3.profile-title {
 .edit-meal-wrapper .form-select:focus {
   border-color: var(--primary-colour);
   box-shadow: 0 0 0 3px rgba(241, 80, 52, 0.1);
-}
-
-/*
- * Statistics Card
- */
-.stats-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    margin-bottom: 24px;
-}
-
-.stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary-colour);
-    line-height: 1;
-    margin-bottom: 8px;
-}
-
-.stat-label {
-    font-size: 0.85rem;
-    color: #666;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stats-card .col-4 {
-    padding: 12px;
-}
-
-@media (max-width: 768px) {
-    .stats-card .col-4 {
-        flex: 0 0 50%;
-        max-width: 50%;
-        margin-bottom: 16px;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-    }
 }
 
 /*
