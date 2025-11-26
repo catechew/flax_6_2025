@@ -6,6 +6,14 @@
 <div class="container mt-4">
 
     <h1 class="mb-4">📅 Weekly Meal Plan</h1>
+
+    <!-- Action buttons -->
+    <div class="d-flex gap-2 mb-3 flex-wrap">
+        <a href="{% url 'shopping-list' plan.id %}" class="btn btn-success">
+            🛒 Shopping List
+        </a>
+    </div>
+
     <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
 
     <!-- Prev / Next buttons -->
