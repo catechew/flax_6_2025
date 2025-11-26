@@ -478,26 +478,68 @@ h3.profile-title {
   opacity: 0.85;
 }
 
+/* ========================================
+   HORIZONTAL SCROLLING MEAL GRID
+   ======================================== */
+
 .meal-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 day columns*/
-    gap: 10px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+    padding-bottom: 16px;
+    padding-left: 4px;
+    padding-right: 4px;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scroll-padding: 16px;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Ajdust week layout for tablet view */
-@media (max-width: 1200px) {
-    .meal-grid {
-        grid-template-columns: repeat(2, 1fr);
+/* Custom scrollbar styling */
+.meal-grid::-webkit-scrollbar {
+    height: 10px;
+}
+
+.meal-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+    margin: 0 10px;
+}
+
+.meal-grid::-webkit-scrollbar-thumb {
+    background: var(--primary-colour);
+    border-radius: 10px;
+}
+
+.meal-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-colour-darker);
+}
+
+/* Fixed width cards for horizontal layout */
+@media (min-width: 769px) {
+    .meal-card {
+        min-width: 280px;
+        max-width: 280px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
     }
 }
 
-/* Ajdust week layout for mobile view */
 @media (max-width: 768px) {
+    .meal-card {
+        min-width: 240px;
+        max-width: 240px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+    
     .meal-grid {
-        grid-template-columns: 1fr;
+        gap: 12px;
+        scroll-snap-type: x proximity;
     }
 }
-
 .slot-content {
     display: flex;
     flex-direction: column;
