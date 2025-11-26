@@ -206,20 +206,22 @@ class ShoppingListView(LoginRequiredMixin, View):
         """Categorise ingredient by type"""
         ingredient_lower = ingredient.lower()
         
-        if any(word in ingredient_lower for word in ['chicken', 'beef', 'lamb', 'meat']):
+        if any(word in ingredient_lower for word in ['chicken', ]):
             return '🥩 Meat & Poultry'
-        elif any(word in ingredient_lower for word in ['fish', 'salmon', 'tuna', 'seafood']):
+        elif any(word in ingredient_lower for word in []):
             return '🐟 Seafood'
-        elif any(word in ingredient_lower for word in ['milk', 'cheese', 'butter', 'cream', 'yogurt', 'egg']):
+        elif any(word in ingredient_lower for word in ['cheese', 'cheddar', 'butter', 'milk', 'egg']):
             return '🧀 Dairy & Eggs'
-        elif any(word in ingredient_lower for word in ['tomato', 'onion', 'pepper', 'lettuce', 'spinach', 'carrot']):
+        elif any(word in ingredient_lower for word in ['avacado', 'beans', 'onion', 'garlic', 'tomatoes', 'lemon', 'spinach', 'ginger', 'broccoli', 'bell pepper']):
             return '🥬 Vegetables'
-        elif any(word in ingredient_lower for word in ['apple', 'banana', 'orange', 'berry', 'lemon']):
+        elif any(word in ingredient_lower for word in []):
             return '🍎 Fruits'
-        elif any(word in ingredient_lower for word in ['pasta', 'rice', 'bread', 'flour']):
+        elif any(word in ingredient_lower for word in ['rice', 'flour', 'penne', 'pasta']):
             return '🌾 Grains & Pasta'
-        elif any(word in ingredient_lower for word in ['salt', 'pepper', 'spice', 'herb', 'cumin', 'garlic', 'basil']):
-            return '🧂 Spices & Herbs'
+        elif any(word in ingredient_lower for word in ['black pepper', 'basil', 'leaves', 'cilantro']):
+            return '🌶️ Spices & Herbs'
+        elif any(word in ingredient_lower for word in ['oil', 'sugar', 'sauce', 'soy']):
+            return '🧂 Condiments'
         else:
             return '🛒 Other Items'
     
