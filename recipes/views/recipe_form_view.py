@@ -25,10 +25,7 @@ def recipe_form_view(request, recipe_id=None):
 def handle_form_post(request, handler):
     """Handle form submission"""
     # Create form with instance (if available)
-    if handler.recipe and handler.is_owner:
-        form = RecipeForm(request.POST, request.FILES, instance=handler.recipe)
-    else:
-        form = RecipeForm(request.POST, request.FILES)
+    form = handler.create_form(request.POST, request.FILES)
 
     if not form.is_valid():
         context = handler.get_form_context(form)
@@ -49,13 +46,9 @@ def handle_form_get(request, handler):
     """Handle form display"""
     # Pre-populate form if coming back from tags page
     if 'form_data' in handler.session_data:
-        if handler.recipe and handler.is_owner:
-            form = RecipeForm(handler.session_data['form_data'], instance=handler.recipe)
-        else:
-            form = RecipeForm(handler.session_data['form_data'])
-
+        form = handler.create_form(handler.session_data['form_data'])
     else:
-        form = RecipeForm(instance=handler.recipe) if handler.recipe else RecipeForm()
+        form = handler.create_form()
 
     context = handler.get_form_context(form)
     return render(request, 'recipe_form.html', context)

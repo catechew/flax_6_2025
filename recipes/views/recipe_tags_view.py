@@ -111,10 +111,7 @@ def finalise_recipe(request, handler):
     )
 
     # Create form with instance (if available)
-    if handler.recipe and handler.is_owner:
-        form = RecipeForm(form_data, files, instance=handler.recipe)
-    else:
-        form = RecipeForm(form_data, files)
+    form = handler.create_form(form_data, files)
     
     if not form.is_valid():
         messages.error(request, 'There was an error with your recipe. Please check the form.')
