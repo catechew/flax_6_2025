@@ -40,20 +40,16 @@ def handle_tag_action(request, session_data, recipe_id):
 
 def save_recipe_with_tags(form, session_data, user, original_recipe, is_owner):
     """Save recipe with tags and handle image operations"""
-    print(f"DEBUG save_recipe_with_tags: original_recipe={original_recipe.id if original_recipe else None}, is_owner={is_owner}")
     recipe = form.save(commit=False)
-    print(f"DEBUG: After form.save(commit=False), recipe.id={recipe.id}, recipe.pk={recipe.pk}")
 
     # Set author for new recipes (create or non-owner copy)
     if original_recipe and not is_owner:
-        print(f"DEBUG: Non-owner copy - clearing ID")
         recipe.pk = None
         recipe.id = None
         recipe.author = user
 
         # Copy original image for non-owner modifications
         if original_recipe.image:
-            print(f"DEBUG: Copying original image")
             recipe.image.save(
                 original_recipe.image.name,
                 ContentFile(original_recipe.image.file.read()),
@@ -62,22 +58,18 @@ def save_recipe_with_tags(form, session_data, user, original_recipe, is_owner):
 
     # For create mode
     elif not original_recipe:
-        print(f"DEBUG: Create mode - setting author")
         recipe.author = user
     
     # Handle image deletion (owner only)
     if original_recipe and is_owner and session_data.get('image_clear'):
-        print(f"DEBUG: Owner deleting image")
         if recipe.image:
             recipe.image.delete(save=False)
             recipe.image = None
 
     # Apply tags
     apply_tags_to_recipe(recipe, session_data)
-    print(f"DEBUG: About to save recipe...")
 
     recipe.save()
-    print(f"DEBUG: Recipe saved! ID={recipe.id}")
     return recipe
 
 def cleanup_session(session_key, session_data, request):
@@ -101,9 +93,6 @@ def show_success_message(request, mode, is_owner, recipe, original_recipe):
 def finalise_recipe(request, session_data, session_key, recipe, is_owner, mode):
     """Create or update the recipe the form data and tags"""
 
-    print(f"\n=== FINALISE RECIPE ===")
-    print(f"Mode: {mode}, Recipe ID: {recipe.id if recipe else None}, is_owner: {is_owner}")
-
     # Recreate form with saved data
     form_data = QueryDict('', mutable=True)
     form_data.update(session_data['form_data'])
@@ -117,15 +106,11 @@ def finalise_recipe(request, session_data, session_key, recipe, is_owner, mode):
 
     # Create form with instance (if available)
     if recipe and is_owner:
-        print(f"DEBUG: Creating form WITH instance (owner)")
         form = RecipeForm(form_data, files, instance=recipe)
     else:
-        print(f"DEBUG: Creating form WITHOUT instance")
         form = RecipeForm(form_data, files)
-    print(f"DEBUG: Form valid? {form.is_valid()}")
     
     if not form.is_valid():
-        print(f"DEBUG: Form errors: {form.errors}")
         messages.error(request, 'There was an error with your recipe. Please check the form.')
         if mode == 'create':
             return redirect('create_recipe')
@@ -144,9 +129,6 @@ def finalise_recipe(request, session_data, session_key, recipe, is_owner, mode):
         return redirect('recipe_detail', recipe_id=saved_recipe.id)
     
     except Exception as e:
-        print(f"ERROR: {e}")
-        import traceback
-        traceback.print_exc()
         messages.error(request, f'Error saving recipe: {str(e)}')
         if mode == 'create':
             return redirect('create_recipe')
@@ -176,13 +158,6 @@ def recipe_tags_view(request, recipe_id=None):
     If recipe_id is None: create
     else: update
     """
-
-    print(f"\n=== RECIPE_TAGS_VIEW CALLED ===")
-    print(f"Method: {request.method}")
-    print(f"Recipe ID: {recipe_id}")
-    if request.method == 'POST':
-        print(f"POST keys: {list(request.POST.keys())}")
-        print(f"POST data: {dict(request.POST)}")
 
     # Determine if create or update
     mode = 'create' if recipe_id is None else 'update'
