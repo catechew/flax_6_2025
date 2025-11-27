@@ -76,6 +76,7 @@ class RecipeFormHandler:
         tag_data = get_tag_context(self.session_data)
         context.update(tag_data)
         context['has_image'] = 'temp_image_path' in self.session_data
+        return context
 
     def redirect_to_form_page(self):
         """Redirect to basic fields form page (step 1)"""
@@ -91,7 +92,7 @@ class RecipeFormHandler:
     
     def redirect_to_detail_page(self, recipe_id):
         """Redirect to recipe detail page"""
-        return redirect('recipe_detail', recipe_id=self.recipe_id)
+        return redirect('recipe_detail', recipe_id=recipe_id)
     
     def redirect_to_cancel_destination(self):
         """Redirect to appropriate page after cancellation"""
