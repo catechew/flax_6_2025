@@ -237,11 +237,11 @@ class ShoppingListView(LoginRequiredMixin, View):
             return '🥬 Vegetables'
         elif any(word in ingredient_lower for word in ['apple', 'banana', 'lemon', 'strawberries']):
             return '🍎 Fruits'
-        elif any(word in ingredient_lower for word in ['rice', 'flour', 'penne', 'pasta']):
+        elif any(word in ingredient_lower for word in ['rice', 'flour', 'penne', 'pasta', 'beans']):
             return '🌾 Grains & Pasta'
         elif any(word in ingredient_lower for word in ['black pepper', 'basil', 'leaves', 'cilantro', 'chili']):
             return '🌶️ Spices & Herbs'
-        elif any(word in ingredient_lower for word in ['oil', 'sugar', 'sauce', 'soy']):
+        elif any(word in ingredient_lower for word in ['oil', 'sugar', 'sauce', 'soy', 'salt']):
             return '🧂 Condiments'
         else:
             return '🛒 Other Items'
