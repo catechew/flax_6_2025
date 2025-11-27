@@ -82,7 +82,7 @@ class User(AbstractUser):
     )
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}"    # Shows every user's first and last name in admin panel
 
     class Meta:
         """Model options."""
