@@ -17,7 +17,7 @@
     </div>
 
     <!-- Prev / Next arrow buttons -->
-    <div class="week-nav d-flex justify-content-center align-items-center gap-3 mb-4 pt-2">
+    <div class="week-nav d-flex justify-content-center align-items-center gap-3 mb-4">
         <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
         class="btn btn-outline-primary btn-sm">
             ←
@@ -97,14 +97,22 @@
                         {% endwith %}
                     </div>
 
-                    <!-- Snack -->
-                    <div class="slot-line">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <strong class="meal-label">Snack</strong>
+                    <!-- Snack (collapsible)-->
+                    <div class="snack-collapsible">
+                        <a class="snack-toggle" data-bs-toggle="collapse" href="#snack-{{ day.day_code }}" role="button" aria-expanded="false">
+                            <span class="plus-icon">+</span> Add Notes / Snacks
+                        </a>
+                        
+                        <div class="collapse" id="snack-{{ day.day_code }}">
+                            <div class="slot-line mt-2">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <strong class="meal-label">Snack</strong>
+                                </div>
+                                {% with slot=day.slots.snack %}
+                                    {% include "partials/meal_slot.html" %}
+                                {% endwith %}
+                            </div>
                         </div>
-                        {% with slot=day.slots.snack %}
-                            {% include "partials/meal_slot.html" %}
-                        {% endwith %}
                     </div>
 
                 </div>

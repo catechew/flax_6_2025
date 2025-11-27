@@ -743,3 +743,44 @@ h3.profile-title {
     align-items: center;
     justify-content: center;
 }
+
+/* ========================================
+   EXPANDABLE SNACK SECTION
+   ======================================== */
+
+.snack-collapsible {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #e0e0e0;
+}
+
+.snack-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #888;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.snack-toggle .plus-icon {
+    font-size: 1.1rem;
+    color: #ccc;
+    transition: all 0.2s ease;
+}
+
+.snack-toggle:hover {
+    color: var(--primary-colour);
+}
+
+.snack-toggle:hover .plus-icon {
+    color: var(--primary-colour);
+    transform: rotate(90deg);
+}
+
+.snack-toggle[aria-expanded="true"] .plus-icon {
+    transform: rotate(45deg);
+}
