@@ -525,22 +525,32 @@ h3.profile-title {
     gap: 6px;
 }
 
+/* Recipe links with ellipsis */
 .recipe-link {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--primary-colour-darker);
+    color: var(--text-colour);
     text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.4;
     transition: color 0.2s ease;
+    
+    /* Limit to 2 lines with ellipsis */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .recipe-link:hover {
     color: var(--primary-colour);
+    text-decoration: underline;
 }
 
 .recipe-card:hover{
   color: var(--primary-colour);
 }
-
 
 .meal-thumb {
     width: 90px;
