@@ -84,7 +84,16 @@ class MealPlanDetailView(LoginRequiredMixin, View):
         # Calculate statistics 
         filled_slots = all_slots.filter(recipe__isnull=False).count()
         unique_recipes = all_slots.filter(recipe__isnull=False).values('recipe').distinct().count()
-        completion = round((filled_slots / 28) * 100) if filled_slots > 0 else 0
+        REQUIRED_MEALS = ["breakfast", "lunch", "dinner"]
+        required_slots = all_slots.filter(
+            meal_type__in=REQUIRED_MEALS
+        )
+
+        filled_slots = required_slots.filter(recipe__isnull=False).count()
+        total_required = required_slots.count()
+
+        completion = round((filled_slots / total_required) * 100) if total_required else 0
+
 
         return render(request, "meal_plan_detail.html", {
             "plan": plan,
