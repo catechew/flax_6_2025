@@ -735,3 +735,9 @@ h3.profile-title {
     font-size: 0.9rem;
     opacity: 0.85;
 }
+
+.day-date::before {
+    content: "•";
+    margin-right: 6px;
+    opacity: 0.5;
+}
