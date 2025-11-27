@@ -59,7 +59,7 @@ class User(AbstractUser):
         help_text='Type of avatar to display'
     )
 
-    # Profile picture upload (optional)
+    # Profile picture upload
     profile_picture = models.ImageField(
         upload_to='profile_pictures/',
         blank=True,
@@ -73,13 +73,16 @@ class User(AbstractUser):
         help_text='Seed for random avatar generation'
     )
 
-    # Following relationship
+    # Following relationship - many to many
     following = models.ManyToManyField(
         'self',
         symmetrical=False,
         related_name='followers',
         blank=True
     )
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
     class Meta:
         """Model options."""
