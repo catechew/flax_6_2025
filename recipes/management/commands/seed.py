@@ -287,7 +287,7 @@ class Command(BaseCommand):
         ]
 
         dairy = [
-            "Milk (1/2 cup)",
+            "Milk (1 cup)",
             "Butter (50g)",
             "Cheddar Cheese (1/4 cup)",
             "Yogurt (1/2 cup)",
