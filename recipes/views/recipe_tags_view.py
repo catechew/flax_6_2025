@@ -60,18 +60,20 @@ def handle_tag_action(request, handler):
 
     return handler.redirect_to_tags_page()
 
-def save_recipe_with_tags(form, session_data, user, original_recipe, is_owner):
-    """Save recipe with tags and handle image operations"""
-    recipe = form.save(commit=False)
-
-    # Set author for new recipes (create or non-owner copy)
+def _prepare_recipe_author(recipe, user, original_recipe, is_owner):
+    """Set appropriate author for recipe based on create/update mode"""
     if original_recipe and not is_owner:
+        # non-owner creating a modified version/copy
         recipe.pk = None
         recipe.id = None
         recipe.author = user
+    elif not original_recipe:
+        # create mode
+        recipe.author = user
 
-        # Copy original image for non-owner modifications
-        if original_recipe.image and not session_data.get('image_clear'):
+def _handle_image_copy(recipe, original_recipe):
+    """Copy image from original recipe for non-owner modification"""
+    if original_recipe.image:
             original_recipe.image.file.seek(0)
             recipe.image.save(
                 original_recipe.image.name,
@@ -80,15 +82,25 @@ def save_recipe_with_tags(form, session_data, user, original_recipe, is_owner):
             )
             original_recipe.image.file.seek(0) #reset for future use
 
-    # For create mode
-    elif not original_recipe:
-        recipe.author = user
-    
-    # Handle image deletion (owner only)
+def _handle_image_deletion(recipe, session_data, original_recipe, is_owner):
+    """Delete recipe image"""
     if original_recipe and is_owner and session_data.get('image_clear'):
         if recipe.image:
             recipe.image.delete(save=False)
             recipe.image = None
+    
+    
+def save_recipe_with_tags(form, session_data, user, original_recipe, is_owner):
+    """Save recipe with tags and handle image operations"""
+    recipe = form.save(commit=False)
+
+    # Set author 
+    _prepare_recipe_author(recipe, user, original_recipe, is_owner)
+
+    # Handle image operations
+    if original_recipe and not is_owner:
+        _handle_image_copy(recipe, original_recipe)
+    _handle_image_deletion(recipe, session_data, original_recipe, is_owner)
 
     # Apply tags
     apply_tags_to_recipe(recipe, session_data)
