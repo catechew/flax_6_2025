@@ -113,6 +113,12 @@ def apply_tags_to_recipe(recipe, session_data):
     recipe.cuisine_tags = ','.join(session_data.get('cuisine_tags', []))
     recipe.other_tags = ','.join(session_data.get('other_tags', []))
 
+def _get_temp_file_prefix(user_id, recipe_id=None):
+    """Generate consistent temp file prefix for image uploads"""
+    if recipe_id:
+        return f'temp_update_{user_id}_{recipe_id}_'
+    return f'temp_{user_id}_'
+
 def save_temp_image(uploaded_file, user_id, recipe_id=None):
     """
     Save uploaded image to temporary location
@@ -121,7 +127,7 @@ def save_temp_image(uploaded_file, user_id, recipe_id=None):
     if not uploaded_file:
         return None
     
-    prefix = f'temp_update_{user_id}_{recipe_id}_' if recipe_id else f'temp_{user_id}_'
+    prefix = _get_temp_file_prefix(user_id, recipe_id)
     temp_filename = f'{prefix}{uploaded_file.name}'
     temp_path = default_storage.save(f'temp/{temp_filename}', ContentFile(uploaded_file.read()))
     return temp_path
@@ -135,7 +141,7 @@ def load_temp_image(temp_path, user_id, recipe_id=None):
         return {}
     
     with default_storage.open(temp_path, 'rb') as f:
-        prefix = f'temp_update_{user_id}_{recipe_id}_' if recipe_id else f'temp_{user_id}_'
+        prefix = _get_temp_file_prefix(user_id, recipe_id)
         filename = os.path.basename(temp_path).replace(prefix, '')
         return {'image': SimpleUploadedFile(filename, f.read())}
     
