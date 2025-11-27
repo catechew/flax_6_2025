@@ -455,12 +455,6 @@ h3.profile-title {
   font-style: italic;
 }
 
-.slot-line {
-  margin-bottom: 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
 .slot-line strong {
     font-size: 1.2rem;
     font-weight: 500;
@@ -477,10 +471,6 @@ h3.profile-title {
   object-fit: contain;
   opacity: 0.85;
 }
-
-/* ========================================
-   HORIZONTAL SCROLLING MEAL GRID
-   ======================================== */
 
 .meal-grid {
     display: flex;
@@ -737,5 +727,12 @@ h3.profile-title {
     font-size: 0.9rem;
 }
 
-
+/* Clean empty slot indicator */
+.empty-meal-indicator {
+    color: #ddd;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 10px 0;
+    user-select: none;
+}
 
