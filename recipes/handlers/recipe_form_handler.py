@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from recipes.models import Recipe
 from recipes.helpers.recipe_form_helpers import get_session_key, initialise_tag_session, get_tag_context
+from recipes.forms.recipe_form import RecipeForm
 
 class RecipeFormHandler:
     """Handles recipe create/update workflow state and operations"""
@@ -77,6 +78,12 @@ class RecipeFormHandler:
         context.update(tag_data)
         context['has_image'] = 'temp_image_path' in self.session_data
         return context
+    
+    def create_form(self, data=None, files=None):
+        """Create RecipeForm with appropriate instance basedon mode and ownership"""
+        if self.recipe and self.is_owner:
+            return RecipeForm(data, files, instance=self.recipe)
+        return RecipeForm(data, files)
 
     def redirect_to_form_page(self):
         """Redirect to basic fields form page (step 1)"""
