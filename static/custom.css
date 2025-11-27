@@ -720,8 +720,10 @@ h3.profile-title {
     user-select: none;
 }
 
-.day-header {
-    padding: 14px 16px;
+.day-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
 }
 
 .day-title {
