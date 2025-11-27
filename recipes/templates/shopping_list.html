@@ -29,17 +29,25 @@
                     {% for item in items %}
                         <li class="list-group-item">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="item-{{ forloop.counter }}">
-                                <label class="form-check-label" for="item-{{ forloop.counter }}">
+                                <input class="form-check-input" type="checkbox" id="item-{{ category }}-{{ forloop.counter }}">
+                                <label class="form-check-label" for="item-{{ category }}-{{ forloop.counter }}">
                                     <strong>{{ item.item }}</strong>
                                     {% if item.count > 1 %}
                                         <span class="badge bg-primary">× {{ item.count }}</span>
                                     {% endif %}
                                 </label>
-                                <br>
-                                <small class="text-muted ms-4">
-                                    Used in: {{ item.recipes|join:", " }}
-                                </small>
+                                
+                                <!-- Collapsible details toggle -->
+                                <a class="used-in-toggle" data-bs-toggle="collapse" href="#details-{{ category }}-{{ forloop.counter }}" role="button" aria-expanded="false">
+                                    → Used in {{ item.recipes|length }} meal{{ item.recipes|length|pluralize }}
+                                </a>
+                                
+                                <!-- Hidden details -->
+                                <div class="collapse" id="details-{{ category }}-{{ forloop.counter }}">
+                                    <small class="text-muted d-block mt-2 ms-4">
+                                        {{ item.recipes|join:", " }}
+                                    </small>
+                                </div>
                             </div>
                         </li>
                     {% endfor %}
@@ -54,9 +62,32 @@
 </div>
 
 <style>
+.used-in-toggle {
+    font-size: 0.8rem;
+    color: #888;
+    text-decoration: none;
+    display: inline-block;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.used-in-toggle:hover {
+    color: var(--primary-colour);
+    text-decoration: underline;
+}
+
+.used-in-toggle[aria-expanded="true"]::before {
+    content: "↓ ";
+}
+
+.used-in-toggle[aria-expanded="false"]::before {
+    content: "→ ";
+}
+
 @media print {
-    .btn, nav { display: none !important; }
+    .btn, nav, .used-in-toggle { display: none !important; }
     .card { page-break-inside: avoid; }
+    .collapse { display: block !important; }
 }
 </style>
 {% endblock %}
