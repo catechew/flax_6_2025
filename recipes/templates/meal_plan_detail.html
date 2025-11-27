@@ -9,16 +9,23 @@
 
     <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
 
-    <!-- Prev / Next buttons -->
-    <div class="d-flex justify-content-between mb-3">
-        <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}" class="btn btn-outline-primary">
-            <i class="bi bi-arrow-left"></i> Previous Week
+    <!-- Prev / Next arrow buttons -->
+    <div class="week-nav d-flex justify-content-center align-items-center gap-3 mb-3">
+        <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
+        class="btn btn-outline-primary btn-sm">
+            ←
         </a>
 
-        <a href="{% url 'meal-plan-navigate' plan.id 'next' %}" class="btn btn-outline-primary">
-            Next Week <i class="bi bi-arrow-right"></i>
+        <span class="fw-semibold">
+            Week of {{ plan.week_start|date:"M j" }}
+        </span>
+
+        <a href="{% url 'meal-plan-navigate' plan.id 'next' %}"
+        class="btn btn-outline-primary btn-sm">
+            →
         </a>
     </div>
+
 
     <!-- Progress bar-->
     <div class="progress-container mb-3">
