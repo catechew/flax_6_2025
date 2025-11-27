@@ -54,17 +54,19 @@
                         </div>
 
                         <div class="btn-group btn-group-sm">
-                            <button type="button"
-                                    class="btn btn-light dropdown-toggle"
-                                    data-bs-toggle="dropdown">
+                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                                 ✏️ Edit
                             </button>
-                            
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.breakfast.id %}">Edit Breakfast</a></li>
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.lunch.id %}">Edit Lunch</a></li>
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.dinner.id %}">Edit Dinner</a></li>
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.snack.id %}">Edit Snack</a></li>
+                            </ul>
                         </div>
+
                     </div>
                 </div>
-
-
                 
                 <div class="card-body">
 
