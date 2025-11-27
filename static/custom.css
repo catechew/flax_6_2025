@@ -786,3 +786,14 @@ h3.profile-title {
     transform: rotate(45deg);
 }
 
+/* Style checked items */
+.shopping-list-item input[type="checkbox"]:checked + label {
+    text-decoration: line-through;
+    color: #999;
+    opacity: 0.6;
+}
+
+/* Keep strong tag visible even when struck through */
+.shopping-list-item input[type="checkbox"]:checked + label strong {
+    text-decoration: line-through;
+}
