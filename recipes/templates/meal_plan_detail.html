@@ -5,7 +5,17 @@
 {% block content %}
 <div class="container mt-4">
 
-    <h1 class="mb-4">📅 Weekly Meal Plan</h1>
+    <div class="d-flex align-items-center gap-3 mb-3">
+        <h1 class="mb-0">📅 Weekly Meal Plan</h1>
+
+        <div class="progress-ring"
+            style="background: conic-gradient(
+                #04ac2b {{ completion }}%, #eaeaea 0
+            );">
+            <span>{{ completion }}%</span>
+        </div>
+    </div>
+
 
     <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
 

@@ -724,6 +724,8 @@ h3.profile-title {
     display: flex;
     align-items: baseline;
     gap: 8px;
+    white-space: nowrap;
+    padding-right: 10px;
 }
 
 .day-title {
@@ -740,4 +742,25 @@ h3.profile-title {
     content: "•";
     margin-right: 6px;
     opacity: 0.5;
+}
+
+.progress-ring {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-ring span {
+    background: var(--bg-colour);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
