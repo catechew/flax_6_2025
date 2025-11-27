@@ -38,7 +38,7 @@
         {% csrf_token %}
         <div class="input-group">
             <input type="text" name="{{ category }}_tag_value" class="form-control" placeholder="Add custom {{ category }} tag">
-            <button type="submit" name="add_{{ category }}_tag_custom" class="btn {{ button_class|replace:'btn-outline-':''}}">
+            <button type="submit" name="add_{{ category }}_tag_custom" class="btn {{ button_class_solid }}">
                 Add
             </button>
         </div>

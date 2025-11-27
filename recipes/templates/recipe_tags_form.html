@@ -1,7 +1,7 @@
 {% extends 'base_content.html' %}
 
 {% block title %}
-{% if mode == 'create %}
+{% if mode == 'create' %}
     Create Recipe - Tags
 {% else %}
     Update Recipe Tags | Recipe #{{ recipe.id }}
@@ -25,19 +25,16 @@
                 </div>
                 <div class="card-body">
                     {# Course Tags #}
-                    {% include 'partials/tag_section.html' with category='course' title='Course Type(s)' selected_tags=course_tags available_options=course_options chip_class='tag-chip' button_class='btn-outline-primary' %}
+                    {% include 'partials/tag_section.html' with category='course' title='Course Type(s)' selected_tags=course_tags available_options=course_options chip_class='tag-chip' button_class='btn-outline-primary' button_class_solid='btn-primary' %}
                     
                     {# Cuisine Tags #}
-                    {% include 'partials/tag_section.html' with category='cuisine' title='Cuisine Type(s)' selected_tags=cuisine_tags available_options=cuisine_options chip_class='tag-chip' button_class='btn-outline-primary' %}
+                    {% include 'partials/tag_section.html' with category='cuisine' title='Cuisine Type(s)' selected_tags=cuisine_tags available_options=cuisine_options chip_class='tag-chip' button_class='btn-outline-info' button_class_solid='btn-info' %}
 
                     {# Dietary Tags #}
-                    {% include 'partials/tag_section.html' with category='dietary' title='Dietary Type(s)' selected_tags=dietary_tags available_options=dietary_options chip_class='tag-chip' button_class='btn-outline-primary' %}
+                    {% include 'partials/tag_section.html' with category='dietary' title='Dietary Type(s)' selected_tags=dietary_tags available_options=dietary_options chip_class='tag-chip' button_class='btn-outline-success' button_class_solid='btn-success' %}
 
                     {# Other Tags #}
-                    {% include 'partials/tag_section.html' with category='other' title='Other Type(s)' selected_tags=other_tags available_options=other_options chip_class='tag-chip' button_class='btn-outline-primary' %}
-
-
-                    
+                    {% include 'partials/tag_section.html' with category='other' title='Other Type(s)' selected_tags=other_tags available_options=other_options chip_class='tag-chip' button_class='btn-outline-warning' button_class_solid='btn-warning' %}
 
                     {# Final Actions #}
                     <div class="d-flex justify-content-between align-items-center mt-4">
@@ -52,20 +49,20 @@
                         {% endif %}
 
                         <form method="POST" style="display: inline;">
-                        {% csrf_token %}
-                        {% if mode == 'create' %}
-                            <button type="submit" name="create_recipe" class="btn btn-success btn-lg">
-                                <i class="bi bi-check-circle"></i> Create Recipe
-                            </button>
-                        {% elif is_owner %}
-                            <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
-                                <i class="bi bi-check-circle"></i> Update Recipe
-                            </button>
-                        {% else %}
-                            <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
-                                <i class="bi bi-plus-circle"></i> Create My Version
-                            </button>
-                        {% endif %}
+                            {% csrf_token %}
+                            {% if mode == 'create' %}
+                                <button type="submit" name="create_recipe" class="btn btn-success btn-lg">
+                                    <i class="bi bi-check-circle"></i> Create Recipe
+                                </button>
+                            {% elif is_owner %}
+                                <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
+                                    <i class="bi bi-check-circle"></i> Update Recipe
+                                </button>
+                            {% else %}
+                                <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
+                                    <i class="bi bi-plus-circle"></i> Create My Version
+                                </button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
