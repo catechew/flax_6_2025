@@ -238,4 +238,15 @@ class ShoppingListView(LoginRequiredMixin, View):
             consolidated[key]['recipes'].append(f"{item['day']} {item['meal']}: {item['recipe']}")
         
         return list(consolidated.values())
-   
+
+class MealSlotNotesView(LoginRequiredMixin, View):
+    """Update notes for a meal slot (for additional snacks/notes)"""
+    def post(self, request, slot_id):
+        slot = get_object_or_404(MealSlot, id=slot_id, meal_plan__user=request.user)
+        
+        notes = request.POST.get("notes", "")
+        slot.notes = notes
+        slot.save()
+        
+        messages.success(request, "Notes saved successfully!")
+        return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)    

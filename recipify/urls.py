@@ -63,6 +63,7 @@ from recipes.views.meal_plan_view import (
     MealPlanNavigateView,
     MealSlotClearView,
     ShoppingListView,
+    MealSlotNotesView,
 )
 
 urlpatterns = [
@@ -103,11 +104,11 @@ urlpatterns = [
     path('meal-plan/<int:plan_id>/shopping-list/', ShoppingListView.as_view(), name='shopping-list'),
 
     path('meal-slot/<int:slot_id>/update/', MealSlotUpdateView.as_view(), name='meal-slot-update'),
-    
+    path('meal-slot/<int:slot_id>/notes/', MealSlotNotesView.as_view(), name='meal-slot-notes'),  
+
     path("meal-plan/<int:plan_id>/<str:direction>/", MealPlanNavigateView.as_view(), name="meal-plan-navigate"),
     path("meal-slot/<int:slot_id>/clear/", MealSlotClearView.as_view(), name="meal-slot-clear"),
     
-
     path('recipe/<int:recipe_id>/save/', toggle_save_recipe, name='toggle_save_recipe'),
     path('saved_recipes/', saved_recipe_list, name='saved_recipe_list'),
 
