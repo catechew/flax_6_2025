@@ -14,3 +14,6 @@ from .my_recipes_view import *
 from .follow_view import *
 from .user_profile_view import *
 from .followers_list_view import *
+from .meal_plan_view import *
+from .decorators import *
+from .randomise_avatar_view import *

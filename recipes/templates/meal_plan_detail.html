@@ -1,65 +1,108 @@
 {% extends "base.html" %}
 {% load static %}
+{% load meal_extras %}
 
 {% block content %}
 <div class="container mt-4">
+
     <h1 class="mb-4">📅 Weekly Meal Plan</h1>
+
     <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
 
-    <!-- Previous and Next buttons -->
+    <!-- Prev / Next buttons -->
     <div class="d-flex justify-content-between mb-3">
+        <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Previous Week
+        </a>
 
-            <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}" 
-                class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Previous Week
-            </a>
+        <a href="{% url 'meal-plan-navigate' plan.id 'next' %}" class="btn btn-outline-primary">
+            Next Week <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
 
-            <a href="{% url 'meal-plan-navigate' plan.id 'next' %}" 
-                class="btn btn-outline-primary">
-                Next Week <i class="bi bi-arrow-right"></i>
-            </a>
-
+    <!-- Progress bar-->
+    <div class="progress-container mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="progress-text">Week Progress</span>
+            <span class="progress-percentage">{{ completion }}%</span>
         </div>
+        <div class="progress" style="height: 12px; border-radius: 10px;">
+            <div class="progress-bar bg-success" 
+                role="progressbar"
+                style="width: {{ completion }}%"
+                aria-valuenow="{{ completion }}"
+                aria-valuemin="0"
+                aria-valuemax="100">
+            </div>
+        </div>
+        <small class="text-muted mt-1 d-block">
+            {{ filled_slots }} of 28 meals planned
+        </small>
+    </div>
 
-    <div class="row">
+    <!-- Shopping list call to action -->
+     <div class="shopping-list-cta mt-5 mb-4">
+        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #04ac2b 0%, #04ac2b 100%);">
+            <div class="card-body text-center py-4">
+                <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
+                <p class="text-white mb-3">View your shopping list for this week's meal plan</p>
+                <a href="{% url 'shopping-list' plan.id %}" class="btn btn-light btn-lg px-5">
+                    <i class="bi bi-cart-check"></i> View Shopping List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meal grid -->
+    <div class="meal-grid">
+
         {% for day in schedule %}
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm border-0">
-            
-                <div class="card-header bg-primary text-white fw-bold text-center">
-                {{ day.day_name }}
-                </div>
+            <div class="card meal-card border-0">
 
+                <!-- Day header -->
+                <div class="card-header text-dark fw-bold text-center day-header meal-header-{{ day.day_code }}">
+                    {{ day.day_name }} • {{ day.day_date.day|ordinal }} {{ day.day_date|date:"M" }}
+                </div>
+                
                 <div class="card-body">
 
-                    <p><strong>🍳 Breakfast:</strong>
+                    <!-- Breakfast -->
+                    <div class="slot-line">
+                        <strong>Breakfast:</strong>
                         {% with slot=day.slots.breakfast %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
-                    </p>
+                    </div>
 
-                    <p><strong>🥗 Lunch:</strong>
+                    <!-- Lunch -->
+                    <div class="slot-line">
+                        <strong>Lunch:</strong>
                         {% with slot=day.slots.lunch %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
-                    </p>
+                    </div>
 
-                    <p><strong>🍝 Dinner:</strong>
+                    <!-- Dinner -->
+                    <div class="slot-line">
+                        <strong>Dinner:</strong>
                         {% with slot=day.slots.dinner %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
-                    </p>
+                    </div>
 
-                    <p><strong>🍿 Snack:</strong>
+                    <!-- Snack -->
+                    <div class="slot-line">
+                        <strong>Snack:</strong>
                         {% with slot=day.slots.snack %}
                             {% include "partials/meal_slot.html" %}
                         {% endwith %}
-                    </p>
+                    </div>
 
                 </div>
+
             </div>
-        </div>
         {% endfor %}
+
     </div>
 
     <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Back to Dashboard</a>

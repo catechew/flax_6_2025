@@ -2,8 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from recipes.models.recipe import Recipe
-from django.db.models import Q, F, Value
+from django.db.models import Q, F, Value, Count
 from django.db.models.functions import Concat
+from django.db.models import Avg
 
 ITEMS_PER_PAGE = 25
 
@@ -31,6 +32,9 @@ def all_recipes(request):
 
     # Start with all recipes
     recipes = Recipe.objects.all()
+
+    # Filter recipes by visibility
+    recipes = recipes.filter(private=False)
 
     # If there's a search query, filter recipes
     if search_query:
@@ -124,6 +128,18 @@ def all_recipes(request):
                             (F('prep_time_minutes') + F('cook_time_minutes'))
         )
         order_field = '-total_minutes'
+    elif sort_by == 'most_saves':
+        recipes = recipes.annotate(
+            save_count=Count('saved_by')
+        )
+        order_field = '-saved_by'
+    elif sort_by == 'rating_highest':
+        recipes = recipes.annotate(avg_rating=Avg('ratings__stars'))
+        recipes = recipes.order_by(
+            F('avg_rating').desc(nulls_last=True),
+            '-publication_date'
+        )
+        order_field = None
     elif sort_by == 'title_az':
         order_field = 'title'
     elif sort_by == 'title_za':
@@ -131,7 +147,8 @@ def all_recipes(request):
     else:
         order_field = '-publication_date'
 
-    recipes = recipes.order_by(order_field)
+    if order_field:
+        recipes = recipes.order_by(order_field)
 
     # Filter options
     course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
@@ -145,6 +162,9 @@ def all_recipes(request):
     page_object = paginator.get_page(page_number)
     
     total_count = recipes.count()
+
+    # Calculate total active filters
+    total_filters = len(course_filters) + len(dietary_filters) + len(cuisine_filters) + len(other_filters)
     
     context = {
         'user': current_user,
@@ -161,6 +181,7 @@ def all_recipes(request):
         'cuisine_filters': cuisine_filters,
         'other_filters': other_filters,
         'sort_by': sort_by,
+        'total_filters': total_filters,
     }
 
     return render(request, 'all_recipes.html', context)
