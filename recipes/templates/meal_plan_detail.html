@@ -58,10 +58,16 @@
         {% for day in schedule %}
             <div class="card meal-card border-0">
 
-                <!-- Day header with action buttons -->
-                <div class="card-header text-dark fw-bold day-header meal-header-{{ day.day_code }}">
+                <!-- Day header -->
+                <div class="card-header day-header meal-header-{{ day.day_code }}">
                     <div class="d-flex justify-content-between align-items-center">
-                        <span>{{ day.day_name }} • {{ day.day_date.day|ordinal }} {{ day.day_date|date:"M" }}</span>
+                        <div class="text-center">
+                            <div class="day-title">{{ day.day_name }}</div>
+                            <div class="day-date">
+                                {{ day.day_date.day|ordinal }} {{ day.day_date|date:"M" }}
+                            </div>
+                        </div>
+
                         <div class="btn-group btn-group-sm">
                             <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                                 ✏️ Edit
@@ -75,6 +81,7 @@
                         </div>
                     </div>
                 </div>
+
                 
                 <div class="card-body">
 

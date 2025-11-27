@@ -379,13 +379,6 @@ h3.profile-title {
     direction: rtl;
 }
 
- /* Meal plan - day headers */
-.day-header {
-    background: #fafafa;
-    color: #333;
-    border-bottom: 1px solid #eee;
-}
-
 /*
  * Meal Plan Card UI
  */
@@ -422,25 +415,16 @@ h3.profile-title {
 }
 
 .day-header {
-    padding: 12px 16px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: white;
-    text-align: center;
-}
-
-.day-title {
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.day-date {
-    font-size: 0.9rem;
-    font-weight: 400;
-    opacity: 0.9;
-    margin-top: 2px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 14px 16px;
     letter-spacing: 0.3px;
+}
+
+.day-header .day-date {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.85;
 }
 
 .meal-plan-wrapper {
@@ -736,3 +720,16 @@ h3.profile-title {
     user-select: none;
 }
 
+.day-header {
+    padding: 14px 16px;
+}
+
+.day-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.day-date {
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
