@@ -1,3 +1,8 @@
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
+import os
+
 """
 Helper functions for recipe create/update forms
 """
@@ -102,3 +107,34 @@ def apply_tags_to_recipe(recipe, session_data):
     recipe.dietary_tags = ','.join(session_data.get('dietary_tags', []))
     recipe.cuisine_tags = ','.join(session_data.get('cuisine_tags', []))
     recipe.other_tags = ','.join(session_data.get('other_tags', []))
+
+def save_temp_image(uploaded_file, user_id, recipe_id=None):
+    """
+    Save uploaded image to temporary location
+    Returns temp file path or None
+    """
+    if not uploaded_file:
+        return None
+    
+    prefix = f'temp_update_{user_id}_{recipe_id}_' if recipe_id else f'temp_{user_id}_'
+    temp_filename = f'{prefix}{uploaded_file.name}'
+    temp_path = default_storage.save(f'temp/{temp_filename}', ContentFile(uploaded_file.read()))
+    return temp_path
+
+def load_temp_image(temp_path, user_id, recipe_id=None):
+    """
+    Load temp image file and return as SimpleUploadedFile
+    Returns dict ready for form files parameter
+    """
+    if not temp_path or not default_storage.existsxists(temp_path):
+        return {}
+    
+    with default_storage.open(temp_path, 'rb') as f:
+        prefix = f'temp_update_{user_id}_{recipe_id}_' if recipe_id else f'temp_{user_id}_'
+        filename = os.path.basename(temp_path).replace(prefix, '')
+        return {'image': SimpleUploadedFile(filename, f.read())}
+    
+def cleanup_temp_image(temp_path):
+    """Delete temp image if exist"""
+    if temp_path and default_storage.exists(temp_path):
+        default_storage.delete(temp_path)
