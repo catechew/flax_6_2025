@@ -679,10 +679,6 @@ h3.profile-title {
     padding-bottom: 0 !important;
 }
 
-.recipe-link {
-    font-size: 0.9rem;
-}
-
 /* Clean empty slot indicator */
 .empty-meal-indicator {
     color: #ddd;
