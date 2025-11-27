@@ -4,11 +4,7 @@ from django.contrib import messages
 from recipes.models import Recipe
 from recipes.forms.recipe_form import RecipeForm
 from django.http import QueryDict
-from recipes.helpers.recipe_form_helpers import initialise_tag_session, save_temp_image, cleanup_temp_image
-
-def get_session_key(recipe_id=None):
-    """Generate session key for create or update mode"""
-    return 'recipe_form_data' if recipe_id is None else f'recipe_update_{recipe_id}'
+from recipes.helpers.recipe_form_helpers import initialise_tag_session, save_temp_image, get_session_key
 
 def initialise_session_data(request, recipe=None):
     """Initialise or retrieve session data for recipe form"""

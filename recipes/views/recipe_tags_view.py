@@ -12,12 +12,9 @@ from recipes.helpers.recipe_form_helpers import (
     get_tag_context, 
     apply_tags_to_recipe,
     load_temp_image,
-    cleanup_temp_image
+    cleanup_temp_image,
+    get_session_key
 )
-
-def get_session_key(recipe_id=None):
-    """Generate session key for create or update mode"""
-    return 'recipe_form_data' if recipe_id is None else f'recipe_update_{recipe_id}'
 
 def handle_tag_action(request, session_data, recipe_id):
     """

@@ -138,3 +138,15 @@ def cleanup_temp_image(temp_path):
     """Delete temp image if exist"""
     if temp_path and default_storage.exists(temp_path):
         default_storage.delete(temp_path)
+
+def get_session_key(recipe_id=None):
+    """Generate session key for create or update mode"""
+    return 'recipe_form_data' if recipe_id is None else f'recipe_update_{recipe_id}'
+
+def cleanup_session(session_key, session_data, request):
+    """Cleanup temporary files and session data"""
+    cleanup_temp_image(session_data.get('temp_image_path'))
+
+    if session_key in request.session:
+        del request.session[session_key]
+    request.session.modified = True
