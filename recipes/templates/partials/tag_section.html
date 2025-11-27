@@ -1,0 +1,46 @@
+<div class="mb-4 p-3 border rounded bg-light">
+    <h5 class="mb-3">{{ title }}</h5>
+
+    {# Display selected tags as chips #}
+    <div class="mb-3">
+        {% if selected_tags %}
+            {% for tag in selected_tags %}
+            <span class="{{ chip_class }}">
+                {{ tag }}
+                <form method="POST" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" name="remove_{{ category }}_tag" value="{{ tag }}" class="tag-remove">&times;</button>
+                </form>
+            </span>
+            {% endfor %}
+        {% else %}
+            <span class="text-muted">No {{ category }} tags selected</span>
+        {% endif %}
+    </div>
+
+    {# Predefined tag buttons #}
+    <div class="mb-2">
+        <strong>Quick select:</strong><br>
+        {% for option in available_options %}
+            {% if option not in selected_tags %}
+            <form method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" name="add_{{ category }}_tag" value="{{ option }}" class="btn btn-sm {{ button_class }} m-1">
+                    + {{ option }}
+                </button>
+            </form>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {# Custom tag input #}
+    <form method="POST" class="mt-2">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" name="{{ category }}_tag_value" class="form-control" placeholder="Add custom {{ category }} tag">
+            <button type="submit" name="add_{{ category }}_tag_custom" class="btn {{ button_class|replace:'btn-outline-':''}}">
+                Add
+            </button>
+        </div>
+    </form>
+</div>
