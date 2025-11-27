@@ -419,6 +419,7 @@ h3.profile-title {
     font-weight: 700;
     padding: 14px 16px;
     letter-spacing: 0.3px;
+    background: #f14f32;
 }
 
 .day-header .day-date {
