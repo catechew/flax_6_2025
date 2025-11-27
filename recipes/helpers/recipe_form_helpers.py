@@ -56,6 +56,11 @@ def handle_tag_operation(session_data, action, category, value):
 
     if not action or not category or not value:
         return False
+    
+    # strip whitespace and limit length to 50
+    value = value.strip()
+    if not value or len(value) > 50:
+        return False
 
     tag_key = f'{category}_tags'
     if tag_key not in session_data:

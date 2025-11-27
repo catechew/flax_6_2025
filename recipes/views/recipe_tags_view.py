@@ -71,12 +71,14 @@ def save_recipe_with_tags(form, session_data, user, original_recipe, is_owner):
         recipe.author = user
 
         # Copy original image for non-owner modifications
-        if original_recipe.image:
+        if original_recipe.image and not session_data.get('image_clear'):
+            original_recipe.image.file.seek(0)
             recipe.image.save(
                 original_recipe.image.name,
                 ContentFile(original_recipe.image.file.read()),
                 save=False
             )
+            original_recipe.image.file.seek(0) #reset for future use
 
     # For create mode
     elif not original_recipe:
