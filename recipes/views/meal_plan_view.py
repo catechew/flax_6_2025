@@ -195,12 +195,31 @@ class ShoppingListView(LoginRequiredMixin, View):
         organised_list = {}
         for category, items in shopping_list.items():
             organised_list[category] = self.consolidate_items(items)
-        
+    
+        # Define shopping flow order (matches typical grocery store layout)
+        category_order = [
+            '🥬 Vegetables',
+            '🍎 Fruits',
+            '🥩 Meat & Poultry',
+            '🐟 Seafood',
+            '🧀 Dairy & Eggs',
+            '🌾 Grains & Pasta',
+            '🧂 Condiments',
+            '🌶️ Spices & Herbs',
+            '🛒 Other Items',
+        ]
+    
+        # Sort categories by defined order
+        sorted_list = []
+        for category in category_order:
+            if category in organised_list:
+                sorted_list.append((category, organised_list[category]))
+    
         ingredients_count = sum(len(items) for items in organised_list.values())
 
         return render(request, 'shopping_list.html', {
             'plan': plan,
-            'shopping_list': organised_list,
+            'shopping_list': sorted_list,  # ← Changed from organised_list to sorted_list
             'ingredients_count': ingredients_count
         })
         
@@ -228,16 +247,46 @@ class ShoppingListView(LoginRequiredMixin, View):
             return '🛒 Other Items'
     
     def consolidate_items(self, items):
-        """Group identical items and count occurrences"""
-        consolidated = defaultdict(lambda: {'count': 0, 'recipes': []})
+        """Group identical items and calculate total quantities"""
+        from recipes.views.recipe_detail_view import scale_ingredient
+        
+        consolidated = defaultdict(lambda: {'count': 0, 'recipes': [], 'base_item': None})
         
         for item in items:
-            key = item['item'].lower()
+            # Extract base ingredient name (without quantity)
+            ingredient = item['item']
+            key = ingredient.lower()
+            
+            if consolidated[key]['base_item'] is None:
+                consolidated[key]['base_item'] = ingredient
+            
             consolidated[key]['count'] += 1
-            consolidated[key]['item'] = item['item']
             consolidated[key]['recipes'].append(f"{item['day']} {item['meal']}: {item['recipe']}")
+    
+        # Calculate scaled totals
+        result = []
+        for key, data in consolidated.items():
+            ingredient = data['base_item']
+            count = data['count']
+            
+            if count > 1:
+                # Scale the ingredient by the count
+                scaled_ingredient = scale_ingredient(ingredient, count)
+                result.append({
+                    'item': scaled_ingredient,
+                    'count': count,
+                    'original': ingredient,
+                    'recipes': data['recipes']
+                })
+            else:
+                result.append({
+                    'item': ingredient,
+                    'count': 1,
+                    'original': ingredient,
+                    'recipes': data['recipes']
+                })
         
-        return list(consolidated.values())
+        return result
 
 class MealSlotNotesView(LoginRequiredMixin, View):
     """Update notes for a meal slot (for additional snacks/notes)"""
