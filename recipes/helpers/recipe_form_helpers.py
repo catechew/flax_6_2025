@@ -126,7 +126,7 @@ def load_temp_image(temp_path, user_id, recipe_id=None):
     Load temp image file and return as SimpleUploadedFile
     Returns dict ready for form files parameter
     """
-    if not temp_path or not default_storage.existsxists(temp_path):
+    if not temp_path or not default_storage.exists(temp_path):
         return {}
     
     with default_storage.open(temp_path, 'rb') as f:
