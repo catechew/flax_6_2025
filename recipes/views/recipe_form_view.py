@@ -1,24 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from recipes.models import Recipe
 from recipes.forms.recipe_form import RecipeForm
-from django.http import QueryDict
-from recipes.helpers.recipe_form_helpers import initialise_tag_session, save_temp_image, get_session_key
-
-def initialise_session_data(request, recipe=None):
-    """Initialise or retrieve session data for recipe form"""
-    session_key = get_session_key(recipe.id if recipe else None)
-
-    if session_key not in request.session:
-        request.session[session_key] = {}
-        initialise_tag_session(request.session[session_key], recipe)
-
-        if recipe: #Update mode
-            request.session[session_key]['is_owner'] = recipe.author == request.user
-            request.session[session_key]['original_author'] = recipe.author.username
-        
-    return request.session[session_key], session_key
+from recipes.helpers.recipe_form_helpers import save_temp_image
+from recipes.handlers.recipe_form_handler import RecipeFormHandler
 
 @login_required
 def recipe_form_view(request, recipe_id=None):
@@ -27,58 +12,52 @@ def recipe_form_view(request, recipe_id=None):
     If recipe_id is None: Create
     else: Update
     """
-    # Determine if create or update
-    mode = 'create' if recipe_id is None else 'update'
-    recipe = get_object_or_404(Recipe, id=recipe_id) if recipe_id else None
 
-    # Initialise session
-    session_data, session_key = initialise_session_data(request, recipe)
-    is_owner = session_data.get('is_owner', True)
+    handler = RecipeFormHandler(request, recipe_id)
 
     # Handle POST - form submission
     if request.method == 'POST':
-        return handle_form_post(request, recipe, session_data, session_key, is_owner, mode)
+        return handle_form_post(request, handler)
     
     # Handle GET - display form
-    return handle_form_get(request, recipe, session_data, mode, is_owner)
+    return handle_form_get(request, handler)
 
-def handle_form_post(request, recipe, session_data, session_key, is_owner, mode):
+def handle_form_post(request, handler):
+    """Handle form submission"""
     # Create form with instance (if available)
-    if recipe and is_owner:
-        form = RecipeForm(request.POST, request.FILES, instance=recipe)
+    if handler.recipe and handler.is_owner:
+        form = RecipeForm(request.POST, request.FILES, instance=handler.recipe)
     else:
         form = RecipeForm(request.POST, request.FILES)
 
     if not form.is_valid():
-        context = build_form_context(form, recipe, mode, is_owner)
+        context = handler.get_form_context(form)
         return render(request, 'recipe_form.html', context)
 
     # Save form data to session
-    save_form_to_session(request, session_data)
+    save_form_to_session(request, handler.session_data)
 
     # Handle image upload
-    handle_image_in_session(request, session_data, recipe)
+    handle_image_in_session(request, handler.session_data, handler.recipe)
 
-    request.session.modified = True
+    handler.mark_session_modified()
 
     # Redirect to tags page
-    if mode == 'create':
-        return redirect('create_recipe_tags')
+    return handler.redirect_to_tags_page()
 
-    return redirect('update_recipe_tags', recipe_id=recipe.id)
-
-def handle_form_get(request, recipe, session_data, mode, is_owner):
+def handle_form_get(request, handler):
+    """Handle form display"""
     # Pre-populate form if coming back from tags page
-    if 'form_data' in session_data:
-        if recipe and is_owner:
-            form = RecipeForm(session_data['form_data'], instance=recipe)
+    if 'form_data' in handler.session_data:
+        if handler.recipe and handler.is_owner:
+            form = RecipeForm(handler.session_data['form_data'], instance=handler.recipe)
         else:
-            form = RecipeForm(session_data['form_data'])
+            form = RecipeForm(handler.session_data['form_data'])
 
     else:
-        form = RecipeForm(instance=recipe) if recipe else RecipeForm()
+        form = RecipeForm(instance=handler.recipe) if handler.recipe else RecipeForm()
 
-    context = build_form_context(form, recipe, mode, is_owner)
+    context = handler.get_form_context(form)
     return render(request, 'recipe_form.html', context)
 
 def save_form_to_session(request, session_data):
@@ -101,17 +80,4 @@ def handle_image_in_session(request, session_data, recipe):
         # non-owner updating
         session_data['copy_original_image'] = True
 
-def build_form_context(form, recipe, mode, is_owner):
-    """Build template context for recipe form"""
-    context = {
-        'form' : form,
-        'mode' : mode,
-        'is_owner' : is_owner
-    }
-    if recipe:
-        context['recipe'] = recipe
-        context['recipe_id'] = recipe.id
-        context['original_author'] = recipe.author.username
-
-    return context
 
