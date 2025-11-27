@@ -3,19 +3,21 @@
 {% block content %}
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>🛒 Shopping List</h1>
-        <a href="{% url 'meal-plan-detail' plan.id %}" class="btn btn-secondary">
-            ← Back to Meal Plan
-        </a>
+        <div>
+            <h1 class="mb-1">🛒 Shopping List</h1>
+            <p class="text-muted mb-0">Week of {{ plan.week_start|date:"M d, Y" }}</p>
+            <small class="text-muted">🛒 {{ ingredients_count }} items in your shopping list</small>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <a href="{% url 'meal-plan-detail' plan.id %}" class="btn btn-outline-secondary">
+                ← Back to Meal Plan
+            </a>
+            <button onclick="window.print()" class="btn btn-primary">
+                🖨️ Print
+            </button>
+        </div>
     </div>
-
-    <div class="alert alert-info">
-        <strong>Week of {{ plan.week_start|date:"M d, Y" }}</strong><br>
-        <p class="text-muted mb-0">
-            🛒 {{ ingredients_count }} items in your shopping list
-        </p>
-    </div>
-
 
     {% for category, items in shopping_list.items %}
         <div class="card mb-3">
@@ -49,17 +51,11 @@
             No meals planned yet. Add some recipes to generate your shopping list!
         </div>
     {% endfor %}
-
-    <div class="text-center mt-4">
-        <button onclick="window.print()" class="btn btn-outline-primary">
-            🖨️ Print Shopping List
-        </button>
-    </div>
 </div>
 
 <style>
 @media print {
-    .btn, nav, .alert-info { display: none !important; }
+    .btn, nav { display: none !important; }
     .card { page-break-inside: avoid; }
 }
 </style>
