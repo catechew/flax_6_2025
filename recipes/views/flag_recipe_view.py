@@ -11,7 +11,7 @@ def flag_recipe(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
 
     # Check if user already flagged this recipe
-    existing_flag = Flag.objects.filter(recipe=recipe, flagged_by=request.user).first()
+    existing_flag = Flag.objects.filter(recipe=recipe, user=request.user).first()
 
     if existing_flag:
         messages.warning(request, "You've already flagged this recipe.")
@@ -19,7 +19,7 @@ def flag_recipe(request, recipe_id):
         # Create flag
         Flag.objects.create(
             recipe=recipe,
-            flagged_by=request.user,
+            user=request.user,
         )
         messages.success(request, "Recipe has been flagged for review. Thank you for helping keep Recipify safe!")
 
