@@ -17,6 +17,7 @@ class Flag(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        related_name='flags_created',
         help_text="The user who flagged this recipe"
     )
 
