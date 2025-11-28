@@ -12,6 +12,7 @@ The members of the team are:
 The project is called `recipify`.  It currently consists of a single app `recipes`.
 
 ## Deployed version of the application
+The deployed version of the application can be found at [*https://hamed54.pythonanywhere.com/*](*https://hamed54.pythonanywhere.com/*).
 The deployed version of the application can be found at [*https://hamed54.pythonanywhere.com*](*https://hamed54.pythonanywhere.com*).
 
 ## Installation instructions

@@ -57,6 +57,7 @@ class MealSlot(models.Model):
         blank=True,
         on_delete=models.SET_NULL
     )
+    notes = models.TextField(blank=True, default='')
 
     class Meta:
         unique_together = ('meal_plan', 'day', 'meal_type')
