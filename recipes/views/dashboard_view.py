@@ -34,11 +34,21 @@ def dashboard(request):
         .order_by("-avg_rating", "-publication_date")[:3]
     )
 
+    # Recipes from users being followed
+    following_users = current_user.following.all()
+    followed_recipes = (
+        Recipe.objects.filter(
+            private=False,
+            author__in=following_users
+        ).order_by('-publication_date')[:3]
+    )
+
     context = {
         'user': current_user,
         'recent_recipes': recent_recipes,
         'most_saved_recipes': most_saved_recipes,
         "highest_rated_recipes": highest_rated_recipes,
+        "followed_recipes": followed_recipes,
     }
 
     return render(request, 'dashboard.html', context)
