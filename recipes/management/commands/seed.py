@@ -206,7 +206,7 @@ class Command(BaseCommand):
         dishes = [
             "Pesto pasta", "Buldak Ramen", "Stir-fry", "Fried Rice", 
             "Vegan Katsu Curry", "Tanghulu", "Salmon Rice Bowl", "Quesadilla", 
-            "Vegan Sausage Wrap", "Ceaser salad", "Tomato soup", "Tofu Thai Curry", "Omelette", 
+            "Vegan Sausage Wrap", "Caesar salad", "Tomato soup", "Tofu Thai Curry", "Omelette", 
             "Egg Benedicts", "Beans on Toast", "Jacket Potato", "Trending Acai Bowl",
             "Microwave Mug Cake", "Overnight Oats", "Smoothie Bowl",
             "Grilled Cheese", "Tuna Pasta", "Pizza Toast", "Chocolate Chip Muffins", 
