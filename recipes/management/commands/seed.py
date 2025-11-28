@@ -287,7 +287,7 @@ class Command(BaseCommand):
         ]
 
         dairy = [
-            "Milk (1/2 cup)",
+            "Milk (1 cup)",
             "Butter (50g)",
             "Cheddar Cheese (1/4 cup)",
             "Yogurt (1/2 cup)",
@@ -302,10 +302,10 @@ class Command(BaseCommand):
         ]
 
         herbs_spices = [
-            "Basil Leaves",
-            "Cilantro",
+            "Basil Leaves (1)",
+            "Cilantro (1)",
             "Ginger (1 inch)",
-            "Chili Flakes",
+            "Chili Flakes (10g)",
         ]
 
         # Pick a realistic mix

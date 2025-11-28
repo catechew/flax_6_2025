@@ -6,10 +6,8 @@ from .password_view import *
 from .profile_view import *
 from .sign_up_view import *
 from .all_recipes_view import *
-from .recipe_create_view import *
 from .recipe_delete_view import *
 from .recipe_detail_view import *
-from .recipe_update_view import *
 from .my_recipes_view import *
 from .follow_view import *
 from .user_profile_view import *
@@ -17,3 +15,6 @@ from .followers_list_view import *
 from .meal_plan_view import *
 from .decorators import *
 from .randomise_avatar_view import *
+from .recipe_form_view import *
+from .recipe_tags_view import *
+from .recipe_cancel_view import *

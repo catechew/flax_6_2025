@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-4">
 
-    <div class="d-flex align-items-center gap-3 mb-3">
+    <div class="d-flex align-items-center gap-3 mb-5">
         <h1 class="mb-0">📅 Weekly Meal Plan</h1>
 
         <div class="progress-ring"
@@ -16,11 +16,8 @@
         </div>
     </div>
 
-
-    <p class="text-muted"><strong>Week starting:</strong> {{ plan.week_start }}</p>
-
     <!-- Prev / Next arrow buttons -->
-    <div class="week-nav d-flex justify-content-center align-items-center gap-3 mb-3">
+    <div class="week-nav d-flex justify-content-center align-items-center gap-3 mb-4">
         <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
         class="btn btn-outline-primary btn-sm">
             ←
@@ -54,17 +51,18 @@
                         </div>
 
                         <div class="btn-group btn-group-sm">
-                            <button type="button"
-                                    class="btn btn-light dropdown-toggle"
-                                    data-bs-toggle="dropdown">
+                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                                 ✏️ Edit
                             </button>
-                            
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.breakfast.id %}">Edit Breakfast</a></li>
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.lunch.id %}">Edit Lunch</a></li>
+                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.dinner.id %}">Edit Dinner</a></li>
+                            </ul>
                         </div>
+
                     </div>
                 </div>
-
-
                 
                 <div class="card-body">
 
@@ -98,14 +96,28 @@
                         {% endwith %}
                     </div>
 
-                    <!-- Snack -->
-                    <div class="slot-line">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <strong class="meal-label">Snack</strong>
+                    <!-- Snack (collapsible)-->
+                    <div class="snack-collapsible">
+                        <a class="snack-toggle" data-bs-toggle="collapse" href="#snack-{{ day.day_code }}" role="button" aria-expanded="false">
+                            <span class="plus-icon">+</span> Add Snacks / Notes
+                        </a>
+                        
+                        <div class="collapse" id="snack-{{ day.day_code }}">
+                            <!-- Freeform notes area -->
+                            <div class="snack-notes-area mt-2">
+                                <form method="POST" action="{% url 'meal-slot-notes' day.slots.snack.id %}">
+                                    {% csrf_token %}
+                                    <textarea 
+                                        name="notes"
+                                        class="form-control snack-notes-input" 
+                                        rows="2" 
+                                        placeholder="e.g., coke, whey protein shake, trail nuts, salted crisps...">{{ day.slots.snack.notes }}</textarea>
+                                    <button type="submit" class="btn btn-sm btn-outline-primary mt-2">
+                                        💾 Save
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        {% with slot=day.slots.snack %}
-                            {% include "partials/meal_slot.html" %}
-                        {% endwith %}
                     </div>
 
                 </div>
@@ -115,8 +127,8 @@
 
     </div>
 
-        <!-- Shopping list call to action -->
-     <div class="shopping-list-cta mt-5 mb-4">
+    <!-- Shopping list call to action -->
+    <div class="shopping-list-cta mt-5 mb-4">
         <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #04ac2b 0%, #04ac2b 100%);">
             <div class="card-body text-center py-4">
                 <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
