@@ -172,6 +172,7 @@ def all_recipes(request):
     # Build search query
     recipes = build_search_query(search_query, recipes)
 
+    # Apply tag filters
     recipes = apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters)
 
     # Get sort parameters
