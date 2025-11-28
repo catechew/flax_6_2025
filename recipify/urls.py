@@ -84,7 +84,6 @@ urlpatterns = [
     path('update_recipe/<int:recipe_id>/tags/', recipe_tags_view, name='update_recipe_tags'),
     path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_operation, name='cancel_recipe_update'),
 
-
     path('user/<int:user_id>/', user_profile, name='user_profile'),
     path('user/<int:user_id>/follow/', follow_user, name='follow_user'),
     path('user/<int:user_id>/unfollow/', unfollow_user, name='unfollow_user'),
