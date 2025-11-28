@@ -7,35 +7,13 @@ from django.db.models.functions import Concat
 from django.db.models import Avg
 
 ITEMS_PER_PAGE = 25
+# Filter options
+COURSE_OPTIONS = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
+DIETARY_OPTIONS = ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free']
+CUISINE_OPTIONS = ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern']
+OTHER_OPTIONS = ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
 
-# Use Paginator to list 25 recipes at a time
-@login_required
-def all_recipes(request):
-    """
-    Display all recipes.
-    """
-    # Get all recipes
-    current_user = request.user
-
-    # Get search query from navbar
-    search_query = request.GET.get('q', '')
-    if search_query is not None:
-        search_query = search_query.strip()
-    else:
-        search_query = ''
-
-    # Get filter parameters
-    course_filters = request.GET.getlist('course', '')
-    dietary_filters = request.GET.getlist('dietary', '')
-    cuisine_filters = request.GET.getlist('cuisine', '')
-    other_filters = request.GET.getlist('other', '')
-
-    # Start with all recipes
-    recipes = Recipe.objects.all()
-
-    # Filter recipes by visibility
-    recipes = recipes.filter(private=False)
-
+def build_search_query(search_query, recipes):
     # If there's a search query, filter recipes
     if search_query:
         # Split search words into individual words
@@ -74,6 +52,37 @@ def all_recipes(request):
                 Q(author__last_name__icontains=search_query) |
                 Q(full_name__icontains=search_query) 
             )
+    return recipes
+
+# Use Paginator to list 25 recipes at a time
+@login_required
+def all_recipes(request):
+    """
+    Display all recipes.
+    """
+    # Get all recipes
+    current_user = request.user
+
+    # Get search query from navbar
+    search_query = request.GET.get('q', '')
+    if search_query is not None:
+        search_query = search_query.strip()
+    else:
+        search_query = ''
+
+    # Get filter parameters
+    course_filters = request.GET.getlist('course', '')
+    dietary_filters = request.GET.getlist('dietary', '')
+    cuisine_filters = request.GET.getlist('cuisine', '')
+    other_filters = request.GET.getlist('other', '')
+
+    # Start with all recipes
+    recipes = Recipe.objects.all()
+
+    # Filter recipes by visibility
+    recipes = recipes.filter(private=False)
+
+    recipes = build_search_query(search_query, recipes)
 
     # Apply tag filters
     if course_filters:
@@ -150,12 +159,6 @@ def all_recipes(request):
     if order_field:
         recipes = recipes.order_by(order_field)
 
-    # Filter options
-    course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
-    dietary_options = ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free']
-    cuisine_options = ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern']
-    other_options = ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
-
     # Paginate results 
     paginator = Paginator(recipes, ITEMS_PER_PAGE)
     page_number = request.GET.get('page')
@@ -172,10 +175,10 @@ def all_recipes(request):
         'page_object': page_object,
         'search_query': search_query,
         'total_count' : total_count,
-        'course_options': course_options,
-        'dietary_options': dietary_options,
-        'cuisine_options': cuisine_options,
-        'other_options': other_options,
+        'course_options': COURSE_OPTIONS,
+        'dietary_options': DIETARY_OPTIONS,
+        'cuisine_options': CUISINE_OPTIONS,
+        'other_options': OTHER_OPTIONS,
         'course_filters': course_filters,
         'dietary_filters': dietary_filters,
         'cuisine_filters': cuisine_filters,
