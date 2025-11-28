@@ -89,6 +89,18 @@ def _handle_image_deletion(recipe, session_data, original_recipe, is_owner):
             recipe.image.delete(save=False)
             recipe.image = None
     
+def _prepare_form_data(handler):
+    """Recreate form data from session"""
+    form_data = QueryDict('', mutable=True)
+    form_data.update(handler.session_data['form_data'])
+
+    # Handle image file
+    files = load_temp_image(
+        handler.session_data.get('temp_image_path'),
+        handler.request.user.id,
+        handler.recipe.id if handler.recipe else None
+    )
+    return form_data, files
     
 def save_recipe_with_tags(form, session_data, user, original_recipe, is_owner):
     """Save recipe with tags and handle image operations"""
@@ -111,18 +123,7 @@ def save_recipe_with_tags(form, session_data, user, original_recipe, is_owner):
 def finalise_recipe(request, handler):
     """Create or update the recipe the form data and tags"""
 
-    # Recreate form with saved data
-    form_data = QueryDict('', mutable=True)
-    form_data.update(handler.session_data['form_data'])
-
-    # Handle image file
-    files = load_temp_image(
-        handler.session_data.get('temp_image_path'),
-        request.user.id,
-        handler.recipe.id if handler.recipe else None
-    )
-
-    # Create form with instance (if available)
+    form_data, files = _prepare_form_data(handler)
     form = handler.create_form(form_data, files)
     
     if not form.is_valid():
