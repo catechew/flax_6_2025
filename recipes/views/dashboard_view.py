@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 from recipes.models.recipe import Recipe
 
 @login_required
@@ -20,13 +20,25 @@ def dashboard(request):
         Q(private=False) | Q(author=current_user)
     ).order_by('-publication_date')[:3]
 
-    # Get the user's saved recipes, limit to 3
-    saved_recipes = current_user.saved_recipes.all().order_by('-publication_date')[:3]
+    # --- Most Saved Recipes (global) ---
+    most_saved_recipes = (
+        Recipe.objects.filter(private=False)
+        .annotate(save_count=Count("saved_by"))
+        .order_by("-save_count", "-publication_date")[:3]
+    )
+
+    # Highest rated public recipes, ordered by average rating (descending)
+    highest_rated_recipes = (
+        Recipe.objects.filter(private=False)
+        .annotate(avg_rating=Avg("ratings__stars"))
+        .order_by("-avg_rating", "-publication_date")[:3]
+    )
 
     context = {
         'user': current_user,
         'recent_recipes': recent_recipes,
-        'saved_recipes': saved_recipes,
+        'most_saved_recipes': most_saved_recipes,
+        "highest_rated_recipes": highest_rated_recipes,
     }
 
     return render(request, 'dashboard.html', context)

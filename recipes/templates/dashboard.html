@@ -33,31 +33,60 @@
     {% endif %}
   </div>
 
+<hr class="mb-5">
+
+<!-- Highest Rated Recipes -->
+<div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <h2 style="font-weight: bolder">Highest Rated Recipes</h2>
+        <a href="{% url 'all_recipes' %}?sort=rating" class="btn btn-outline-primary btn-sm">
+            View All
+        </a>
+    </div>
+</div>
+
+<div class="row mb-5">
+    {% if highest_rated_recipes %}
+        {% for recipe in highest_rated_recipes %}
+            <div class="col-md-4 mb-4">
+                {% include "partials/recipe_card.html" with recipe=recipe show_save_button=True %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">No ratings yet — be the first to rate a recipe!</div>
+        </div>
+    {% endif %}
+</div>
+
   <hr class="mb-5">
 
-  <!-- Saved Recipes -->
-  <div class="row mb-3">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <h2 style="font-weight: bolder">Saved Recipes</h2>
-      <a href="{% url 'saved_recipe_list' %}" class="btn btn-outline-primary btn-sm">View Saved</a>
-    </div>
-  </div>
+  <hr class="mb-5">
 
-  <div class="row">
-    {% if saved_recipes %}
-      {% for recipe in saved_recipes %}
-        <div class="col-md-4 mb-4">
-            {% include "partials/recipe_card.html" with recipe=recipe show_save_button=True %}
-        </div>
-      {% endfor %}
+<!-- Most Saved Recipes -->
+<div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <h2 style="font-weight: bolder">Most Saved Recipes</h2>
+        <a href="{% url 'all_recipes' %}?sort=saved" class="btn btn-outline-primary btn-sm">View All</a>
+    </div>
+</div>
+
+<div class="row mb-5">
+    {% if most_saved_recipes %}
+        {% for recipe in most_saved_recipes %}
+            <div class="col-md-4 mb-4">
+                {% include "partials/recipe_card.html" with recipe=recipe show_save_button=True %}
+            </div>
+        {% endfor %}
     {% else %}
-      <div class="col-12">
-        <div class="alert alert-warning">
-            You haven't saved any recipes yet. <a href="{% url 'all_recipes' %}">Go explore!</a>
+        <div class="col-12">
+            <div class="alert alert-warning">
+                No recipes have been saved yet.
+            </div>
         </div>
-      </div>
     {% endif %}
-  </div>
+</div>
+
 
 </div>
 {% endblock %}
