@@ -1,0 +1,163 @@
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
+import os
+
+"""
+Helper functions for recipe create/update forms
+"""
+
+TAG_CATEGORIES = {
+    'course' : ['dessert', 'main', 'appetiser', 'breakfast', 'snack'],
+    'dietary' : ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free'],
+    'cuisine' : ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern'],
+    'other' : ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
+}
+
+def get_tag_action_from_request(request):
+    """
+    Parse POST request to determine tag action.
+    Returns tuple: (action_type, category, value)
+
+    action_type: 'add', 'remove', or None
+    category: 'course', 'dietary', 'cuisine', 'other', or None
+    value: tag value or None
+    """
+
+    if request.method != 'POST':
+        return None, None, None
+    
+    # Check for add actions (predefined)
+    for category in TAG_CATEGORIES.keys():
+        field_name = f'add_{category}_tag'
+        if field_name in request.POST:
+            return 'add', category, request.POST.get(field_name)
+        
+    # Check for add actions (custom)
+    for category in TAG_CATEGORIES.keys():
+        field_name = f'add_{category}_tag_custom'
+        if field_name in request.POST:
+            value_field = f'{category}_tag_value'
+            return 'add', category, request.POST.get(value_field)
+    
+    # Check for remove actions 
+    for category in TAG_CATEGORIES.keys():
+        field_name = f'remove_{category}_tag'
+        if field_name in request.POST:
+            return 'remove', category, request.POST.get(field_name)
+    
+    return None, None, None
+
+def handle_tag_operation(session_data, action, category, value):
+    """
+    Add or remove a tag from session data.
+    Returns True if operation was performed
+    """
+
+    if not action or not category or not value:
+        return False
+    
+    # strip whitespace and limit length to 50
+    value = value.strip()
+    if not value or len(value) > 50:
+        return False
+
+    tag_key = f'{category}_tags'
+    if tag_key not in session_data:
+        session_data[tag_key] = []
+
+    if action == 'add' and value not in session_data[tag_key]:
+        session_data[tag_key].append(value)
+        return True
+    
+    if action == 'remove' and value in session_data[tag_key]:
+        session_data[tag_key].remove(value)
+        return True
+    
+    return False
+
+def get_tag_context(session_data):
+    return {
+        'course_tags' : session_data.get('course_tags', []),
+        'dietary_tags': session_data.get('dietary_tags', []),
+        'cuisine_tags': session_data.get('cuisine_tags', []),
+        'other_tags': session_data.get('other_tags', []),
+        'course_options': TAG_CATEGORIES['course'],
+        'dietary_options': TAG_CATEGORIES['dietary'],
+        'cuisine_options': TAG_CATEGORIES['cuisine'],
+        'other_options': TAG_CATEGORIES['other'],
+    }
+
+def initialise_tag_session(session_data, recipe=None):
+    """
+    if recipe provided, populate from existing recipe tags.
+    (For update recipe form)
+    """
+
+    if recipe:
+        session_data['course_tags'] = recipe.get_course_tags_list()
+        session_data['dietary_tags'] = recipe.get_dietary_tags_list()
+        session_data['cuisine_tags'] = recipe.get_cuisine_tags_list()
+        session_data['other_tags'] = recipe.get_other_tags_list()
+    
+    else:
+        session_data['course_tags'] = []
+        session_data['dietary_tags'] = []
+        session_data['cuisine_tags'] = []
+        session_data['other_tags'] = []
+
+def apply_tags_to_recipe(recipe, session_data):
+    """Apply tags from session data to recipe instance"""
+    recipe.course_tags = ','.join(session_data.get('course_tags', []))
+    recipe.dietary_tags = ','.join(session_data.get('dietary_tags', []))
+    recipe.cuisine_tags = ','.join(session_data.get('cuisine_tags', []))
+    recipe.other_tags = ','.join(session_data.get('other_tags', []))
+
+def _get_temp_file_prefix(user_id, recipe_id=None):
+    """Generate consistent temp file prefix for image uploads"""
+    if recipe_id:
+        return f'temp_update_{user_id}_{recipe_id}_'
+    return f'temp_{user_id}_'
+
+def save_temp_image(uploaded_file, user_id, recipe_id=None):
+    """
+    Save uploaded image to temporary location
+    Returns temp file path or None
+    """
+    if not uploaded_file:
+        return None
+    
+    prefix = _get_temp_file_prefix(user_id, recipe_id)
+    temp_filename = f'{prefix}{uploaded_file.name}'
+    temp_path = default_storage.save(f'temp/{temp_filename}', ContentFile(uploaded_file.read()))
+    return temp_path
+
+def load_temp_image(temp_path, user_id, recipe_id=None):
+    """
+    Load temp image file and return as SimpleUploadedFile
+    Returns dict ready for form files parameter
+    """
+    if not temp_path or not default_storage.exists(temp_path):
+        return {}
+    
+    with default_storage.open(temp_path, 'rb') as f:
+        prefix = _get_temp_file_prefix(user_id, recipe_id)
+        filename = os.path.basename(temp_path).replace(prefix, '')
+        return {'image': SimpleUploadedFile(filename, f.read())}
+    
+def cleanup_temp_image(temp_path):
+    """Delete temp image if exist"""
+    if temp_path and default_storage.exists(temp_path):
+        default_storage.delete(temp_path)
+
+def get_session_key(recipe_id=None):
+    """Generate session key for create or update mode"""
+    return 'recipe_form_data' if recipe_id is None else f'recipe_update_{recipe_id}'
+
+def cleanup_session(session_key, session_data, request):
+    """Cleanup temporary files and session data"""
+    cleanup_temp_image(session_data.get('temp_image_path'))
+
+    if session_key in request.session:
+        del request.session[session_key]
+    request.session.modified = True

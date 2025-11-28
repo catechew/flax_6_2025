@@ -50,17 +50,9 @@ from recipes.views.saved_recipe_view import toggle_save_recipe, saved_recipe_lis
 
 from recipes.views.rating_view import rate_recipe
 
-from recipes.views.recipe_create_view import (
-    create_recipe,
-    create_recipe_tags,
-    cancel_recipe_creation
-)
-
-from recipes.views.recipe_update_view import (
-    recipe_update,
-    update_recipe_tags,
-    cancel_recipe_update
-)
+from recipes.views.recipe_form_view import recipe_form_view
+from recipes.views.recipe_tags_view import recipe_tags_view
+from recipes.views.recipe_cancel_view import cancel_recipe_operation
 
 # Meal plan views
 from recipes.views.meal_plan_view import (
@@ -70,6 +62,7 @@ from recipes.views.meal_plan_view import (
     MealPlanNavigateView,
     MealSlotClearView,
     ShoppingListView,
+    MealSlotNotesView,
 )
 >>>>>>> origin/main
 
@@ -91,13 +84,14 @@ urlpatterns = [
     path('delete_recipe/<int:recipe_id>', recipe_delete, name='delete_recipe'),
     path('my_recipes/', my_recipes, name='my_recipes'),
 
-    path('create_recipe/', create_recipe, name='create_recipe'),
-    path('create_recipe/tags/', create_recipe_tags, name='create_recipe_tags'),
-    path('create_recipe/cancel/', cancel_recipe_creation, name='cancel_recipe'),
+    path('create_recipe/', recipe_form_view, name='create_recipe'),
+    path('create_recipe/tags/', recipe_tags_view, name='create_recipe_tags'),
+    path('create_recipe/cancel/', cancel_recipe_operation, name='cancel_recipe'),
 
-    path('update_recipe/<int:recipe_id>', recipe_update, name='update_recipe'),
-    path('update_recipe/<int:recipe_id>/tags/', update_recipe_tags, name='update_recipe_tags'),
-    path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_update, name='cancel_recipe_update'),
+    path('update_recipe/<int:recipe_id>', recipe_form_view, name='update_recipe'),
+    path('update_recipe/<int:recipe_id>/tags/', recipe_tags_view, name='update_recipe_tags'),
+    path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_operation, name='cancel_recipe_update'),
+
 
 <<<<<<< HEAD
     path('ai_finder/', ai_recipe_finder_view, name='ai_recipe_finder'),
@@ -121,11 +115,11 @@ urlpatterns = [
     path('meal-plan/<int:plan_id>/shopping-list/', ShoppingListView.as_view(), name='shopping-list'),
 
     path('meal-slot/<int:slot_id>/update/', MealSlotUpdateView.as_view(), name='meal-slot-update'),
-    
+    path('meal-slot/<int:slot_id>/notes/', MealSlotNotesView.as_view(), name='meal-slot-notes'),  
+
     path("meal-plan/<int:plan_id>/<str:direction>/", MealPlanNavigateView.as_view(), name="meal-plan-navigate"),
     path("meal-slot/<int:slot_id>/clear/", MealSlotClearView.as_view(), name="meal-slot-clear"),
     
-
     path('recipe/<int:recipe_id>/save/', toggle_save_recipe, name='toggle_save_recipe'),
     path('saved_recipes/', saved_recipe_list, name='saved_recipe_list'),
 

@@ -1,0 +1,121 @@
+{% extends 'base_content.html' %}
+
+{% block title %}
+{% if mode == 'create' %}
+    Create Recipe - Tags
+{% else %}
+    Update Recipe Tags | Recipe #{{ recipe.id }}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        {% if mode == 'create' %}
+                            Create New Recipe - Step 2 of 2
+                        {% else %}
+                            Update Recipe - Step 2 of 2
+                        {% endif %}
+                    </h3>
+                    <small>Select Tags (Optional)</small>
+                </div>
+                <div class="card-body">
+                    {# Course Tags #}
+                    {% include 'partials/tag_section.html' with category='course' title='Course Type(s)' selected_tags=course_tags available_options=course_options chip_class='tag-chip' button_class='btn-outline-primary' button_class_solid='btn-primary' %}
+                    
+                    {# Cuisine Tags #}
+                    {% include 'partials/tag_section.html' with category='cuisine' title='Cuisine Type(s)' selected_tags=cuisine_tags available_options=cuisine_options chip_class='tag-chip' button_class='btn-outline-info' button_class_solid='btn-info' %}
+
+                    {# Dietary Tags #}
+                    {% include 'partials/tag_section.html' with category='dietary' title='Dietary Type(s)' selected_tags=dietary_tags available_options=dietary_options chip_class='tag-chip' button_class='btn-outline-success' button_class_solid='btn-success' %}
+
+                    {# Other Tags #}
+                    {% include 'partials/tag_section.html' with category='other' title='Other Type(s)' selected_tags=other_tags available_options=other_options chip_class='tag-chip' button_class='btn-outline-warning' button_class_solid='btn-warning' %}
+
+                    {# Final Actions #}
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        {% if mode == 'create' %}
+                            <a href="{% url 'create_recipe' %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                        {% else %}
+                            <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                        {% endif %}
+
+                        <form method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            {% if mode == 'create' %}
+                                <button type="submit" name="create_recipe" class="btn btn-success btn-lg">
+                                    <i class="bi bi-check-circle"></i> Create Recipe
+                                </button>
+                            {% elif is_owner %}
+                                <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
+                                    <i class="bi bi-check-circle"></i> Update Recipe
+                                </button>
+                            {% else %}
+                                <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
+                                    <i class="bi bi-plus-circle"></i> Create My Version
+                                </button>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.tag-chip {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    margin: 3px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.tag-chip-success {
+    background-color: #28a745;
+}
+
+.tag-chip-info {
+    background-color: #17a2b8;;
+}
+
+.tag-chip-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.tag-remove {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
+    padding: 0 5px;
+}
+
+.tag-chip-warning .tag-remove {
+    color: #000;
+}
+
+.tag-remove:hover {
+    color: #ffcccc;
+}
+
+.tag-chip-warning .tag-remove:hover {
+    color: #666;
+}
+</style>
+{% endblock %}

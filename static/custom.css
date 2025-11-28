@@ -192,6 +192,11 @@ h3.profile-title {
   color: var(--white-colour) !important;
 }
 
+.main-navbar .input-group {
+  width: 25vw;
+}
+
+
 /* Mobile Navbar */
 @media (max-width: 991.98px) {
   .navbar-collapse {
