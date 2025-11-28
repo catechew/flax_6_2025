@@ -54,6 +54,34 @@ def build_search_query(search_query, recipes):
             )
     return recipes
 
+def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters):
+    # Apply tag filters
+    if course_filters:
+        course_q = Q()
+        for course in course_filters:
+            course_q |= Q(course_tags__icontains=course)
+        recipes = recipes.filter(course_q)
+
+    if dietary_filters:
+        dietary_q = Q()
+        for dietary in dietary_filters:
+            dietary_q |= Q(dietary_tags__icontains=dietary)
+        recipes = recipes.filter(dietary_q)
+
+    if cuisine_filters:
+        cuisine_q = Q()
+        for cuisine in cuisine_filters:
+            cuisine_q |= Q(cuisine_tags__icontains=cuisine)
+        recipes = recipes.filter(cuisine_q)
+
+    if other_filters:
+        other_q = Q()
+        for other in other_filters:
+            other_q |= Q(other_tags__icontains=other)
+        recipes = recipes.filter(other_q)
+    
+    return recipes
+
 # Use Paginator to list 25 recipes at a time
 @login_required
 def all_recipes(request):
@@ -84,30 +112,7 @@ def all_recipes(request):
 
     recipes = build_search_query(search_query, recipes)
 
-    # Apply tag filters
-    if course_filters:
-        course_q = Q()
-        for course in course_filters:
-            course_q |= Q(course_tags__icontains=course)
-        recipes = recipes.filter(course_q)
-
-    if dietary_filters:
-        dietary_q = Q()
-        for dietary in dietary_filters:
-            dietary_q |= Q(dietary_tags__icontains=dietary)
-        recipes = recipes.filter(dietary_q)
-
-    if cuisine_filters:
-        cuisine_q = Q()
-        for cuisine in cuisine_filters:
-            cuisine_q |= Q(cuisine_tags__icontains=cuisine)
-        recipes = recipes.filter(cuisine_q)
-
-    if other_filters:
-        other_q = Q()
-        for other in other_filters:
-            other_q |= Q(other_tags__icontains=other)
-        recipes = recipes.filter(other_q)
+    recipes = apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters)
 
     # Get sort parameters
     sort_by = request.GET.get('sort', 'date_newest') # default to newest first
