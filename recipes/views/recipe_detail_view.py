@@ -53,8 +53,8 @@ def recipe_detail(request, recipe_id):
 
 # Scale ingredient quantities by the given factor
 def scale_ingredient(ingredient, factor):
-    # pattern to match numbers (including decimals and fractions)
-    pattern = r'(\d+\.?\d*|\d+/\d+)'
+    # Pattern to match numbers (including decimals and fractions)
+    pattern = r'(\d+/\d+|\d+\.?\d*)'
 
     def replace_number(match):
         number_str = match.group(1)
@@ -66,7 +66,7 @@ def scale_ingredient(ingredient, factor):
         else:
             number = float(number_str)
         
-        # scale the number
+        # Scale the number
         scaled = number * factor
 
         if scaled == int(scaled):
