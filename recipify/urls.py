@@ -106,6 +106,7 @@ urlpatterns = [
     path('saved_recipes/', saved_recipe_list, name='saved_recipe_list'),
 
     path("recipes/<int:recipe_id>/rate/", rate_recipe, name="rate_recipe"),
+    path("recipes/<int:recipe_id>/flag/", views.flag_recipe, name="flag_recipe"),
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
