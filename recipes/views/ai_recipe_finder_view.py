@@ -206,6 +206,11 @@ def ai_recipe_finder_view(request):
                 top_picks = ranking_data.get('top_picks', [])
                 search_explanation = ranking_data.get('search_explanation', '')
 
+                # Extract recipe IDs for "View Top Picks" button
+                # to be used in some_recipes view, where the recipes are quite 'random'
+                recipe_ids = [pick['recipe_id'] for pick in top_picks]
+                top_pick_ids = ','.join(map(str, recipe_ids))
+
                 # Build URL for when you click "View All Results" button
                 # append each parameter to the url
                 url_params = []
@@ -230,6 +235,7 @@ def ai_recipe_finder_view(request):
                     'search_params': search_params,
                     'search_explanation': search_explanation,
                     'top_picks': top_picks,
+                    'top_pick_ids': top_pick_ids,
                     'total_count': total_count,
                     'view_all_url': view_all_url,
                     'show_results': True

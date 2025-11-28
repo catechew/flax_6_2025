@@ -150,6 +150,15 @@
               <p class="text-muted">No specific recommendations available, but you can view all matching recipes below.</p>
             {% endif %}
 
+            <!-- View AI Top Picks -->
+            {% if top_picks %}
+            <div class="text-center mt-4">
+              <a href="{% url 'some_recipes' %}?ids={{ top_pick_ids }}" class="btn btn-info btn-lg">
+                <i class="bi bi-star-fill"></i> View Top {{ top_picks|length }} Picks
+              </a>
+            </div>
+            {% endif %}
+            
             <!-- View All Results that exactly match criteria.-->
             {% if total_count > 0 %}
             <div class="text-center mt-4">
