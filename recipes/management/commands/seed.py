@@ -302,10 +302,10 @@ class Command(BaseCommand):
         ]
 
         herbs_spices = [
-            "Basil Leaves",
-            "Cilantro",
+            "Basil Leaves (1)",
+            "Cilantro (1)",
             "Ginger (1 inch)",
-            "Chili Flakes",
+            "Chili Flakes (10g)",
         ]
 
         # Pick a realistic mix

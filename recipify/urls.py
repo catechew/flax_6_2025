@@ -43,17 +43,9 @@ from recipes.views.saved_recipe_view import toggle_save_recipe, saved_recipe_lis
 
 from recipes.views.rating_view import rate_recipe
 
-from recipes.views.recipe_create_view import (
-    create_recipe,
-    create_recipe_tags,
-    cancel_recipe_creation
-)
-
-from recipes.views.recipe_update_view import (
-    recipe_update,
-    update_recipe_tags,
-    cancel_recipe_update
-)
+from recipes.views.recipe_form_view import recipe_form_view
+from recipes.views.recipe_tags_view import recipe_tags_view
+from recipes.views.recipe_cancel_view import cancel_recipe_operation
 
 # Meal plan views
 from recipes.views.meal_plan_view import (
@@ -84,13 +76,14 @@ urlpatterns = [
     path('delete_recipe/<int:recipe_id>', recipe_delete, name='delete_recipe'),
     path('my_recipes/', my_recipes, name='my_recipes'),
 
-    path('create_recipe/', create_recipe, name='create_recipe'),
-    path('create_recipe/tags/', create_recipe_tags, name='create_recipe_tags'),
-    path('create_recipe/cancel/', cancel_recipe_creation, name='cancel_recipe'),
+    path('create_recipe/', recipe_form_view, name='create_recipe'),
+    path('create_recipe/tags/', recipe_tags_view, name='create_recipe_tags'),
+    path('create_recipe/cancel/', cancel_recipe_operation, name='cancel_recipe'),
 
-    path('update_recipe/<int:recipe_id>', recipe_update, name='update_recipe'),
-    path('update_recipe/<int:recipe_id>/tags/', update_recipe_tags, name='update_recipe_tags'),
-    path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_update, name='cancel_recipe_update'),
+    path('update_recipe/<int:recipe_id>', recipe_form_view, name='update_recipe'),
+    path('update_recipe/<int:recipe_id>/tags/', recipe_tags_view, name='update_recipe_tags'),
+    path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_operation, name='cancel_recipe_update'),
+
 
     path('user/<int:user_id>/', user_profile, name='user_profile'),
     path('user/<int:user_id>/follow/', follow_user, name='follow_user'),
