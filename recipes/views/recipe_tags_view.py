@@ -1,8 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from recipes.models import Recipe
-from recipes.forms.recipe_form import RecipeForm
 from django.http import QueryDict
 from django.core.files.base import ContentFile
 from recipes.helpers.recipe_form_helpers import (
