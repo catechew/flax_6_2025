@@ -5,7 +5,10 @@ from recipes.helpers.recipe_form_helpers import get_session_key, initialise_tag_
 from recipes.forms.recipe_form import RecipeForm
 
 class RecipeFormHandler:
-    """Handles recipe create/update workflow state and operations"""
+    """
+    Handles recipe create/update workflow state and operations
+    
+    """
 
     def __init__(self, request, recipe_id=None):
         self.request = request
@@ -81,7 +84,7 @@ class RecipeFormHandler:
     
     def create_form(self, data=None, files=None):
         """Create RecipeForm with appropriate instance basedon mode and ownership"""
-        if self.recipe and self.is_owner:
+        if self.recipe:
             return RecipeForm(data, files, instance=self.recipe)
         return RecipeForm(data, files)
 
