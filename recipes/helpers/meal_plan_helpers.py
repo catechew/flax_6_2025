@@ -3,7 +3,7 @@
 from datetime import timedelta
 
 def get_monday(date_obj):
-    """Return the Monday of the week for a given date."""
+    """ Return the Monday of the week for a given date. """
     return date_obj - timedelta(days=date_obj.weekday())
 
 def calculate_completion(plan):
