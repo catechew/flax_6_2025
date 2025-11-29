@@ -1,20 +1,16 @@
+{% load meal_extras %}
+
 <div class="card meal-card border-0">
 
   {% include "partials/meal_day_header.html" with day=day %}
 
   <div class="card-body">
 
-    {% include "partials/meal_section.html"
-       with label="Breakfast" slot=day.slots.breakfast %}
-
-    {% include "partials/meal_section.html"
-       with label="Lunch" slot=day.slots.lunch %}
-
-    {% include "partials/meal_section.html"
-       with label="Dinner" slot=day.slots.dinner %}
+    {% include "partials/meal_section.html" with label="Breakfast" slot=day.slots.breakfast %}
+    {% include "partials/meal_section.html" with label="Lunch" slot=day.slots.lunch %}
+    {% include "partials/meal_section.html" with label="Dinner" slot=day.slots.dinner %}
 
     {% include "partials/meal_snack.html" with day=day %}
 
   </div>
-
 </div>
