@@ -12,10 +12,7 @@
     <div class="d-flex align-items-center gap-3 mb-5">
         <h1 class="mb-0">📅 Weekly Meal Plan</h1>
 
-        <div class="progress-ring"
-            style="background: conic-gradient(
-                #04ac2b {{ completion }}%, #eaeaea 0
-            );">
+        <div class="progress-ring" style="--progress: {{ completion }}%;">
             <span>{{ completion }}%</span>
         </div>
     </div>
