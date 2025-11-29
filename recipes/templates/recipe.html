@@ -22,6 +22,19 @@ Recipes | Recipe #{{recipe.id}}
 
     <div class="mb-3">
 
+        {# Flagged form for logged-in users #}
+        {% if user.is_authenticated and recipe.author != user %}
+          <form action="{% url 'flag_recipe' recipe.id %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit"
+                    class="btn btn-link p-0 {% if user_has_flagged %}text-danger{% else %}text-muted{% endif %}"
+                    title="{% if user_has_flagged %}Already reported{% else %}Report this recipe{% endif %}"
+                    {% if user_has_flagged %}disabled{% endif %}>
+              <i class="bi bi-flag{% if user_has_flagged %}-fill{% endif %}"></i>
+            </button>
+          </form>
+        {% endif %}
+
         {# Rating form for logged-in users #}
         {% if user.is_authenticated %}
         <form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="d-flex align-items-center gap-3 mb-2">
