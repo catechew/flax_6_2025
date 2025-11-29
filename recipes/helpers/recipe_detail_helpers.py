@@ -1,7 +1,5 @@
 import re
-from fractions import Fraction
 from recipes.models import Rating, Flag
-
 
 def scale_ingredient(ingredient, factor):
     """
@@ -64,3 +62,24 @@ def has_user_flagged_recipe(recipe, user):
         return False
    
     return Flag.objects.filter(recipe=recipe, user=user).exists()
+
+def get_recipe_tag_display_context(recipe):
+    """
+    returns tag display context from recipe model
+    """
+    return {
+        'course_tags': recipe.get_course_tags_list(),
+        'dietary_tags': recipe.get_dietary_tags_list(),
+        'cuisine_tags': recipe.get_cuisine_tags_list(),
+        'other_tags': recipe.get_other_tags_list(),
+    }
+
+def get_recipe_time_display_context(recipe):
+    """
+    return recipe time display context from recipe model
+    """
+    return {
+        'prep_time_display': recipe.get_prep_time_display(),
+        'cook_time_display': recipe.get_cook_time_display(),
+        'total_time_display' : recipe.get_total_time_display(),
+    }
