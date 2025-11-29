@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
 from recipes.models import Recipe, User
+from recipes.models.rating import Rating
 
 class RecipeModelTestCase(TestCase):
     """Tests for the Recipe model, including the __str__ method."""
@@ -259,7 +260,7 @@ class RecipeModelTestCase(TestCase):
         self.recipe.saved_by.remove(user2)
         self.assertEqual(self.recipe.get_save_count(), 2)
 
-        def test_rating_count_initially_zero(self):
+    def test_rating_count_initially_zero(self):
         """Test that a new recipe has 0 ratings."""
         self.assertEqual(self.recipe.rating_count, 0)
 
