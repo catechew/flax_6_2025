@@ -2,6 +2,7 @@ from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
 from django.db.models import Avg
+import math
 
 
 """A Recipe can be posted by a user and later we will be able to do all CRUD operations on it.
@@ -218,7 +219,7 @@ class Recipe(models.Model):
 
     def average_rating_rounded(self):
         """Return average rating to the nearest whole star"""
-        return round(self.average_rating())
+        return math.floor(self.average_rating() + 0.5)
 
     def rating_count(self):
         """Return the number of ratings for this recipe"""

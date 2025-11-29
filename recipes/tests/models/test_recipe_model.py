@@ -262,18 +262,18 @@ class RecipeModelTestCase(TestCase):
 
     def test_rating_count_initially_zero(self):
         """Test that a new recipe has 0 ratings."""
-        self.assertEqual(self.recipe.rating_count, 0)
+        self.assertEqual(self.recipe.rating_count(), 0)
 
     def test_average_rating_with_no_ratings(self):
         """Test that average rating is 0 when no ratings exist."""
-        self.assertEqual(self.recipe.average_rating, 0)
+        self.assertEqual(self.recipe.average_rating(), 0)
 
     def test_add_single_rating(self):
         """Test rating_count and average_rating with one rating."""
         Rating.objects.create(recipe=self.recipe, user=self.user, stars=4)
-        self.assertEqual(self.recipe.rating_count, 1)
-        self.assertEqual(self.recipe.average_rating, 4)
-        self.assertEqual(self.recipe.average_rating_rounded, 4)
+        self.assertEqual(self.recipe.rating_count(), 1)
+        self.assertEqual(self.recipe.average_rating(), 4)
+        self.assertEqual(self.recipe.average_rating_rounded(), 4)
 
     def test_multiple_ratings(self):
         """Test that average rating is computed correctly."""
@@ -288,9 +288,9 @@ class RecipeModelTestCase(TestCase):
         Rating.objects.create(recipe=self.recipe, user=self.user, stars=5)
         Rating.objects.create(recipe=self.recipe, user=user2, stars=3)
 
-        self.assertEqual(self.recipe.rating_count, 2)
-        self.assertAlmostEqual(self.recipe.average_rating, 4.0)
-        self.assertEqual(self.recipe.average_rating_rounded, 4)
+        self.assertEqual(self.recipe.rating_count(), 2)
+        self.assertAlmostEqual(self.recipe.average_rating(), 4.0)
+        self.assertEqual(self.recipe.average_rating_rounded(), 4)
 
     def test_average_rating_rounding(self):
         """Test that rounding behaves as expected for display."""
@@ -306,5 +306,5 @@ class RecipeModelTestCase(TestCase):
         Rating.objects.create(recipe=self.recipe, user=user2, stars=4)
 
         # Average = 4.5 rounded to 5
-        self.assertAlmostEqual(self.recipe.average_rating, 4.5)
-        self.assertEqual(self.recipe.average_rating_rounded, 5)
+        self.assertAlmostEqual(self.recipe.average_rating(), 4.5)
+        self.assertEqual(self.recipe.average_rating_rounded(), 5)
