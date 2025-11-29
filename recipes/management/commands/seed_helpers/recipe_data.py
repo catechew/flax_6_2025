@@ -1,4 +1,4 @@
-""" Recipe data generation for database seeding """
+""" Recipe data generation for database seeding. """
 
 from random import randint, choice, sample 
 from django.utils import timezone
