@@ -124,7 +124,7 @@ class UserModelTestCase(TestCase):
 
 
     def test_full_name_must_be_correct(self):
-        full_name = self.user.full_name()
+        full_name = self.user.__str__()
         self.assertEqual(full_name, "John Doe")
 
     def test_default_avatar_url(self):
@@ -134,15 +134,18 @@ class UserModelTestCase(TestCase):
         self.assertEqual(actual_url, expected_url)
 
     def test_avatar_url_with_initials(self):
-        # User has default avatar_type='initials', so expect UI Avatars URL
+        # user has default avatar_type='initials', so expect UI Avatars URL
         expected_url = "https://ui-avatars.com/api/?name=John Doe&size=100&background=f15034&color=fff&bold=true&rounded=true"
         actual_url = self.user.avatar_url(size=100)
         self.assertEqual(actual_url, expected_url)
 
     def test_mini_gravatar(self):
-        actual_gravatar_url = self.user.mini_gravatar()
-        expected_gravatar_url = self._gravatar_url(size=60)
-        self.assertEqual(actual_gravatar_url, expected_gravatar_url)
+        # actual_gravatar_url = self.user.mini_gravatar()
+        # expected_gravatar_url = self._gravatar_url(size=60)
+        # self.assertEqual(actual_gravatar_url, expected_gravatar_url)
+        expected_url = "https://ui-avatars.com/api/?name=John Doe&size=60&background=f15034&color=fff&bold=true&rounded=true"
+        actual_url = self.user.mini_gravatar()
+        self.assertEqual(actual_url, expected_url)
 
     def _gravatar_url(self, size):
         gravatar_url = f"{UserModelTestCase.GRAVATAR_URL}?size={size}&default=mp"
