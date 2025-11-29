@@ -48,7 +48,7 @@ from recipes.views.recipe_tags_view import recipe_tags_view
 from recipes.views.recipe_cancel_view import cancel_recipe_operation
 
 from recipes.views.some_recipes_view import some_recipes
-from recipes.views.ai_recipe_finder_view import ai_recipe_finder_view
+from recipes.views.ai_recipe_finder_view import *
 
 
 # Meal plan views
@@ -112,7 +112,7 @@ urlpatterns = [
 
     path('some-recipes/', some_recipes, name='some_recipes'),
 
-    path('ai-recipe-finder/', ai_recipe_finder_view, name='ai_recipe_finder'),
+    path('ai-recipe-finder/', ai_recipe_generator_view, name='ai_recipe_finder'),
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
