@@ -22,17 +22,24 @@ Recipes | Recipe #{{recipe.id}}
 
     <div class="mb-3">
 
-        {# Flagged form for logged-in users #}
+        {# Flagging form for logged-in users #}
+        <!-- Flag/Unflag Toggle Button -->
         {% if user.is_authenticated and recipe.author != user %}
-          <form action="{% url 'flag_recipe' recipe.id %}" method="post" class="d-inline">
-            {% csrf_token %}
-            <button type="submit"
-                    class="btn btn-link p-0 {% if user_has_flagged %}text-danger{% else %}text-muted{% endif %}"
-                    title="{% if user_has_flagged %}Already reported{% else %}Report this recipe{% endif %}"
-                    {% if user_has_flagged %}disabled{% endif %}>
-              <i class="bi bi-flag{% if user_has_flagged %}-fill{% endif %}"></i>
-            </button>
-          </form>
+          {% if user_has_flagged %}
+            <form action="{% url 'unflag_recipe' recipe.id %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link text-danger p-0" title="Remove flag">
+                <i class="bi bi-flag-fill"></i>
+              </button>
+            </form>
+          {% else %}
+            <form action="{% url 'flag_recipe' recipe.id %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link text-muted p-0" title="Report this recipe">
+                <i class="bi bi-flag"></i>
+              </button>
+            </form>
+          {% endif %}
         {% endif %}
 
         {# Rating form for logged-in users #}
