@@ -9,139 +9,55 @@
 {% block content %}
 <div class="container mt-4">
 
-    <div class="d-flex align-items-center gap-3 mb-5">
-        <h1 class="mb-0">📅 Weekly Meal Plan</h1>
+  <div class="d-flex align-items-center gap-3 mb-5">
+    <h1 class="mb-0">📅 Weekly Meal Plan</h1>
 
-        <div class="progress-ring" style="--progress: {{ completion }}%;">
-            <span>{{ completion }}%</span>
-        </div>
+    <div class="progress-ring" style="--progress: {{ completion }}%;">
+      <span>{{ completion }}%</span>
     </div>
+  </div>
 
-    <!-- Prev / Next arrow buttons -->
-    <div class="week-nav d-flex justify-content-center align-items-center gap-3 mb-4">
-        <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
-        class="btn btn-outline-primary btn-sm">
-            ←
+  <div class="week-nav d-flex justify-content-center align-items-center gap-3 mb-4">
+    <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
+       class="btn btn-outline-primary btn-sm">
+      ←
+    </a>
+
+    <span class="fw-semibold">
+      Week of {{ plan.week_start|date:"M j" }}
+    </span>
+
+    <a href="{% url 'meal-plan-navigate' plan.id 'next' %}"
+       class="btn btn-outline-primary btn-sm">
+      →
+    </a>
+  </div>
+
+  <div class="meal-grid">
+    {% for day in schedule %}
+      {% include "partials/meal_day_card.html" with day=day %}
+    {% endfor %}
+  </div>
+
+  <div class="shopping-list-cta mt-5 mb-4">
+    <div class="card border-0 shadow-sm shopping-list-banner">
+      <div class="card-body text-center py-4">
+        <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
+        <p class="text-white mb-3">
+          View your shopping list for this week's meal plan
+        </p>
+        <a href="{% url 'shopping-list' plan.id %}"
+           class="btn btn-light btn-lg px-5">
+          <i class="bi bi-cart-check"></i> View Shopping List
         </a>
-
-        <span class="fw-semibold">
-            Week of {{ plan.week_start|date:"M j" }}
-        </span>
-
-        <a href="{% url 'meal-plan-navigate' plan.id 'next' %}"
-        class="btn btn-outline-primary btn-sm">
-            →
-        </a>
+      </div>
     </div>
+  </div>
 
-    <!-- Meal grid -->
-    <div class="meal-grid">
-
-        {% for day in schedule %}
-            <div class="card meal-card border-0">
-
-                <!-- Day header -->
-                <div class="card-header day-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        
-                        <div class="day-heading">
-                            <span class="day-name">{{ day.day_date|date:"D" }}</span>
-                            <span class="day-date">
-                                {{ day.day_date.day|ordinal }} {{ day.day_date|date:"M" }}
-                            </span>
-                        </div>
-
-                        <div class="btn-group btn-group-sm">
-                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                                ✏️ Edit
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.breakfast.id %}">Edit Breakfast</a></li>
-                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.lunch.id %}">Edit Lunch</a></li>
-                                <li><a class="dropdown-item" href="{% url 'meal-slot-update' day.slots.dinner.id %}">Edit Dinner</a></li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-                
-                <div class="card-body">
-
-                    <!-- Breakfast -->
-                    <div class="slot-line">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <strong class="meal-label">Breakfast</strong>
-                        </div>
-                        {% with slot=day.slots.breakfast %}
-                            {% include "partials/meal_slot.html" %}
-                        {% endwith %}
-                    </div>
-
-                    <!-- Lunch -->
-                    <div class="slot-line">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <strong class="meal-label">Lunch</strong>
-                        </div>
-                        {% with slot=day.slots.lunch %}
-                            {% include "partials/meal_slot.html" %}
-                        {% endwith %}
-                    </div>
-
-                    <!-- Dinner -->
-                    <div class="slot-line">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <strong class="meal-label">Dinner</strong>
-                        </div>
-                        {% with slot=day.slots.dinner %}
-                            {% include "partials/meal_slot.html" %}
-                        {% endwith %}
-                    </div>
-
-                    <!-- Snack (collapsible)-->
-                    <div class="snack-collapsible">
-                        <a class="snack-toggle" data-bs-toggle="collapse" href="#snack-{{ day.day_code }}" role="button" aria-expanded="false">
-                            <span class="plus-icon">+</span> Add Snacks / Notes
-                        </a>
-                        
-                        <div class="collapse" id="snack-{{ day.day_code }}">
-                            <!-- Freeform notes area -->
-                            <div class="snack-notes-area mt-2">
-                                <form method="POST" action="{% url 'meal-slot-notes' day.slots.snack.id %}">
-                                    {% csrf_token %}
-                                    <textarea 
-                                        name="notes"
-                                        class="form-control snack-notes-input" 
-                                        rows="2" 
-                                        placeholder="e.g., coke, whey protein shake, trail nuts, salted crisps...">{{ day.slots.snack.notes }}</textarea>
-                                    <button type="submit" class="btn btn-sm btn-outline-primary mt-2">
-                                        💾 Save
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-        {% endfor %}
-
-    </div>
-
-    <!-- Shopping list call to action -->
-    <div class="shopping-list-cta mt-5 mb-4">
-        <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #04ac2b 0%, #04ac2b 100%);">
-            <div class="card-body text-center py-4">
-                <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
-                <p class="text-white mb-3">View your shopping list for this week's meal plan</p>
-                <a href="{% url 'shopping-list' plan.id %}" class="btn btn-light btn-lg px-5">
-                    <i class="bi bi-cart-check"></i> View Shopping List
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Back to Dashboard</a>
+  <a href="{% url 'dashboard' %}"
+     class="btn btn-secondary mt-4">
+    ← Back to Dashboard
+  </a>
 
 </div>
 {% endblock %}

@@ -368,6 +368,10 @@
     text-decoration: line-through;
 }
 
+.shopping-list-banner {
+  background: linear-gradient(135deg, #04ac2b 0%, #04ac2b 100%);
+}
+
 /* Print styles */
 @media print {
   .btn,
