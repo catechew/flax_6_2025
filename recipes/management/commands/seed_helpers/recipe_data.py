@@ -101,3 +101,50 @@ FINISH_STEPS = [
     "Drizzle caramel sauce on top before serving",
     "Drizzle mayo and siracha on top"
 ]
+
+class RecipeDataGenerator:
+    """ Generates random recipe data for seeding. """
+
+    @staticmethod
+    def generate_title():
+        """ Generate a random recipe tite. """
+        if randint(0, 1):
+            return f"{choice(ADJECTIVES)} {choice(DISHES)}"
+        return choice(DISHES)
+    
+    @staticmethod
+    def generate_date():
+        """ Generate a random publication date within the last 2 years. """
+        days_ago = randint(0, 730)
+        return timezone.now().date() - timedelta(days=days_ago)
+    
+    @staticmethod
+    def generate_time_component():
+        """ Generate random hours and minutes for cooking time. """
+        return randint(0, 2), randint(1, 60)
+    
+    @staticmethod
+    def generate_ingredients():
+        """ Generate a realistic ingredient list. """
+        ingredients = (
+            sample(PROTEIN, randint(1, 2)) +
+            sample(VEGETABLES, randint(2, 3)) +
+            sample(GRAINS, randint(1, 2)) +
+            sample(DAIRY, randint(0, 2)) +
+            sample(FRUITS, randint(0, 1)) +
+            sample(PANTRY, randint(2, 3)) +
+            sample(HERBS_SPICES, randint(0, 2))
+        )
+        return '\n'.join(ingredients)
+    
+    @staticmethod
+    def generate_steps():
+        """ Generate realistic cooking steps. """
+        steps = (
+            sample(PREP_STEPS, randint(1, 2)) +
+            sample(COOK_STEPS, randint(2, 3)) +
+            sample(FINISH_STEPS, randint(1, 2))
+        )
+        if "Serve hot" not in steps:
+            steps.append("Serve hot")
+        return '\n'.join(steps)
