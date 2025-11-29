@@ -77,6 +77,8 @@ urlpatterns = [
 
     path('all_recipes/', all_recipes, name='all_recipes'),
     path('recipe/<int:recipe_id>', recipe_detail, name='recipe_detail'),
+    path('recipe/<int:recipe_id>/cost-estimate/', views.get_recipe_cost_estimate, name='recipe_cost_estimate'),
+
     path('delete_recipe/<int:recipe_id>', recipe_delete, name='delete_recipe'),
     path('my_recipes/', my_recipes, name='my_recipes'),
 
