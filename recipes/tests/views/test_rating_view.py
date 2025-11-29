@@ -107,6 +107,6 @@ class RatingViewTestCase(TestCase):
         Rating.objects.create(recipe=self.recipe, user=self.other_user, stars=4)
         Rating.objects.create(recipe=self.recipe, user=self.user, stars=3)  # manually add even though authors can't normally rate
 
-        self.assertEqual(self.recipe.rating_count, 2)
-        self.assertAlmostEqual(self.recipe.average_rating, 3.5)
-        self.assertEqual(self.recipe.average_rating_rounded, 4)  # rounded display value
+        self.assertEqual(self.recipe.rating_count(), 2)
+        self.assertAlmostEqual(self.recipe.average_rating(), 3.5)
+        self.assertEqual(self.recipe.average_rating_rounded(), 4)  # rounded display value
