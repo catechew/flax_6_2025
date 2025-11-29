@@ -2,6 +2,9 @@ from recipes.models.recipe import Recipe
 from django.http import Http404
 from django.shortcuts import render
 import re
+import openai
+import json
+from django.http import JsonResponse
 from recipes.models.rating import Rating
 
 def recipe_detail(request, recipe_id):
@@ -74,3 +77,70 @@ def scale_ingredient(ingredient, factor):
         else:
             return f"{scaled:.1f}"
     return re.sub(pattern, replace_number, ingredient)
+
+# Get AI cost estimate for recipe based on scaled ingredients
+def get_recipe_cost_estimate(request, recipe_id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Only POST requests allowed'}, status=405)
+    
+    try:
+        recipe = Recipe.objects.get(id=recipe_id)
+    except Recipe.DoesNotExist:
+        return JsonResponse({'error': 'Recipe not found'}, status=404)
+    
+    # Get servings from request
+    try:
+        desired_servings = int(request.POST.get('servings', recipe.servings))
+    except (ValueError, TypeError):
+        desired_servings = recipe.servings
+    
+    # Calculate scaling factor and scale ingredients
+    scaling_factor = desired_servings / recipe.servings
+    scaled_ingredients = []
+    for ingredient in recipe.get_ingredient_list():
+        scaled_ingredient = scale_ingredient(ingredient, scaling_factor)
+        scaled_ingredients.append(scaled_ingredient)
+    
+    # Prepare AI prompt
+    ingredients_text = '\n'.join(scaled_ingredients)
+    ai_prompt = f"""Estimate the total cost in GBP (£) for these ingredients for {desired_servings} servings:
+
+    {ingredients_text}
+
+    Provide response as JSON:
+    {{
+        "total_cost": <number>,
+        "cost_per_serving": <number>,
+        "currency": "GBP"
+    }}
+
+    Use typical UK supermarket prices. Return only JSON."""
+    
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Estimate recipe costs in GBP. Return only JSON."},
+                {"role": "user", "content": ai_prompt}
+            ],
+            temperature=0.3,
+            max_tokens=150,
+            timeout=30
+        )
+        
+        ai_response = response.choices[0].message.content.strip()
+        cost_data = json.loads(ai_response)
+        
+        return JsonResponse({
+            'success': True,
+            'total_cost': cost_data['total_cost'],
+            'cost_per_serving': cost_data['cost_per_serving'],
+            'servings': desired_servings
+        })
+        
+    except openai.error.OpenAIError as e:
+        return JsonResponse({'error': f'AI service error: {str(e)}'}, status=500)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Failed to parse AI response'}, status=500)
+    except Exception as e:
+        return JsonResponse({'error': f'Unexpected error: {str(e)}'}, status=500)
