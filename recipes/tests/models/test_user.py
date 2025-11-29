@@ -140,9 +140,6 @@ class UserModelTestCase(TestCase):
         self.assertEqual(actual_url, expected_url)
 
     def test_mini_gravatar(self):
-        # actual_gravatar_url = self.user.mini_gravatar()
-        # expected_gravatar_url = self._gravatar_url(size=60)
-        # self.assertEqual(actual_gravatar_url, expected_gravatar_url)
         expected_url = "https://ui-avatars.com/api/?name=John Doe&size=60&background=f15034&color=fff&bold=true&rounded=true"
         actual_url = self.user.mini_gravatar()
         self.assertEqual(actual_url, expected_url)
