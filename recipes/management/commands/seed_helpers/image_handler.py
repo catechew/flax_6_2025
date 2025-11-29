@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 
 DISH_TYPE_MAPPING = {
-    'pasta': [ 'pasta', 'spaghetti', 'macaroni', 'bolognese', 'penne', 'pasta bake', 
+    'pasta': ['pasta', 'spaghetti', 'macaroni', 'bolognese', 'penne', 'pasta bake', 
               'ramen', 'noodles', 'mee goreng'],
 
     'rice': ['rice', 'fried rice', 'rice bowl', 'egg fried rice', 'microwave rice', 'nasi lemak'],
