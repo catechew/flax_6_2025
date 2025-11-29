@@ -26,12 +26,15 @@ class RecipeFormTestCase(TestCase):
             'prep_time_minutes': 30,
             'cook_time_hours': 1,
             'cook_time_minutes': 15,
+            'private': False,
         }
 
     # Helper: assert form is valid with given field overrides
     def _assert_form_valid(self, **kwargs):
         data = {**self.form_data, **kwargs}
         form = RecipeForm(data=data)
+        if not form.is_valid():
+            print(f"Form errors: {form.errors}")
         self.assertTrue(form.is_valid())
 
     # Helper: assert form is invalid and field has error
@@ -146,6 +149,7 @@ class RecipeFormTestCase(TestCase):
         self._assert_form_valid(ingredients='Chicken breast (500g)')
 
     # Complex quantities in parentheses are accepted
+    # This fails, do we need it to pass?
     def test_form_accepts_ingredient_with_complex_quantity(self):
         self._assert_form_valid(ingredients='Milk (2 cups or 500ml)')
 
