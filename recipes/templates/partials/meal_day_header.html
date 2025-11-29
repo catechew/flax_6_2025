@@ -1,43 +1,38 @@
-{% load meal_extras %}
-
 <div class="card-header day-header">
-  <div class="d-flex justify-content-between align-items-center">
-    
-    <div class="day-heading">
-      <span class="day-name">{{ day.day_date|date:"D" }}</span>
-      <span class="day-date">
-        {{ day.day_date.day|ordinal }} {{ day.day_date|date:"M" }}
-      </span>
-    </div>
-
-    <div class="btn-group btn-group-sm">
-      <button type="button"
-              class="btn btn-light btn-sm dropdown-toggle"
-              data-bs-toggle="dropdown">
-        ✏️ Edit
-      </button>
-
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-          <a class="dropdown-item"
-             href="{% url 'meal-slot-update' day.slots.breakfast.id %}">
-            Edit Breakfast
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item"
-             href="{% url 'meal-slot-update' day.slots.lunch.id %}">
-            Edit Lunch
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item"
-             href="{% url 'meal-slot-update' day.slots.dinner.id %}">
-            Edit Dinner
-          </a>
-        </li>
-      </ul>
-    </div>
-
+ <div class="d-flex justify-content-between align-items-center">
+  
+  <div class="day-heading">
+   <span class="day-name">{{ day.day_date|date:"D" }}</span>
+   <span class="day-date">{{ day.day_date|date:"j M" }}</span>
   </div>
+
+  <div class="btn-group btn-group-sm">
+   <button class="btn btn-light btn-sm dropdown-toggle"
+           data-bs-toggle="dropdown">
+    ✏️ Edit
+   </button>
+
+   <ul class="dropdown-menu dropdown-menu-end">
+    <li>
+     <a class="dropdown-item"
+        href="{% url 'meal-slot-update' day.slots.breakfast.id %}">
+      Edit Breakfast
+     </a>
+    </li>
+    <li>
+     <a class="dropdown-item"
+        href="{% url 'meal-slot-update' day.slots.lunch.id %}">
+      Edit Lunch
+     </a>
+    </li>
+    <li>
+     <a class="dropdown-item"
+        href="{% url 'meal-slot-update' day.slots.dinner.id %}">
+      Edit Dinner
+     </a>
+    </li>
+   </ul>
+  </div>
+
+ </div>
 </div>
