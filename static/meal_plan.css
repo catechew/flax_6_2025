@@ -367,3 +367,19 @@
 .shopping-list-item input[type="checkbox"]:checked + label strong {
     text-decoration: line-through;
 }
+
+/* Print styles */
+@media print {
+  .btn,
+  nav {
+    display: none !important;
+  }
+
+  .card {
+    page-break-inside: avoid;
+  }
+
+  .text-muted {
+    display: none !important;
+  }
+}
