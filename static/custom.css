@@ -1,6 +1,4 @@
-/* 
- * Root Variables
- */
+/* Root Variables */
 :root {
   --primary-colour: #f14f32;
   --primary-colour-darker: #c53c32;
@@ -14,9 +12,7 @@
   --white-colour: #FAF9F5;
 }
 
-/*
- * Base
- */
+/* Base */
 body, button, input, textarea, select {
   font-family: Tahoma, sans-serif !important;
   color: var(--black-colour);
@@ -30,9 +26,7 @@ body {
   border-radius: 0;
 }
 
-/*
- * Layout Helpers
- */
+/* Layout Helpers */
 .content {
   padding-top: 10px;
 }
@@ -47,9 +41,7 @@ body {
   align-items: center;
 }
 
-/*
- * Welcome Page
- */
+/* Welcome Page */
 h1.cover-heading {
   color: var(--primary-colour);
   font-weight: bold;
@@ -67,9 +59,7 @@ p.cover-text {
   padding: 30px 50px;
 }
 
-/*
- * Forms
- */
+/* Form */
 .nolabel label {
   display: none;
 }
@@ -80,9 +70,7 @@ ul.errorlist {
   margin: 0;
 }
 
-/*
- * Typography
- */
+/* Typography */
 .low-key {
   color: #777;
   font-weight: 300;
@@ -92,9 +80,7 @@ ul.errorlist {
   margin: 10px 0 20px;
 }
 
-/*
- * Profile
- */
+/* Profile */
 .profile-image {
   width: 120px;
   float: left;
@@ -114,9 +100,7 @@ h3.profile-title {
   font-style: italic;
 }
 
-/*
- * Links
- */
+/* Links */
 .content a {
   text-decoration: none;
   color: var(--primary-colour-darkest);
@@ -126,9 +110,7 @@ h3.profile-title {
   color: var(--primary-colour-darkest);
 }
 
-/*
- * Buttons
- */
+/* Buttons */
 .btn-primary,
 .btn-secondary {
   background-color: var(--primary-colour) !important;
@@ -177,9 +159,7 @@ h3.profile-title {
   outline: none !important;
 }
 
-/*
- * Navbar
- */
+/* Navbar */
 .main-navbar {
   background-color: var(--primary-colour);
   color: var(--bg-colour);
@@ -192,7 +172,6 @@ h3.profile-title {
   color: var(--white-colour) !important;
 }
 
-/* Mobile Navbar */
 @media (max-width: 991.98px) {
   .navbar-collapse {
     text-align: left;
@@ -226,9 +205,6 @@ h3.profile-title {
   }
 }
 
-/*
- * Dropdown Menus
- */
 .dropdown-menu {
   border: none;
   border-radius: 2px;
@@ -264,9 +240,6 @@ h3.profile-title {
   margin: 2px;
 }
 
-/*
- * Filter Dropdowns
- */
 .dropdown-menu .form-check {
   padding: 4px 5px 4px 35px;
   border-radius: 4px;
@@ -306,9 +279,6 @@ h3.profile-title {
   }
 }
 
-/*
- * Recipe Cards
- */
 .recipe-card {
   background: var(--white-colour) !important;
   border: none !important;
@@ -358,9 +328,6 @@ h3.profile-title {
   margin-top: 0.5rem !important;
 }
 
-/*
- * Recipe Rating
- */
 .rating-input input[type="radio"] {
     display: none;
 }
@@ -383,9 +350,6 @@ h3.profile-title {
     direction: rtl;
 }
 
-/*
- * Heart Button (Saved Recipes)
- */
 .heart-btn {
     background: transparent !important;
     border: none;
