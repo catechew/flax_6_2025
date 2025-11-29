@@ -31,20 +31,7 @@ USER_FIXTURES = [
 ]
 
 class Command(BaseCommand):
-    """
-    Build automation command to seed the database with data.
-
-    This command inserts a small set of known users (``user_fixtures``) and then
-    repeatedly generates additional random users until ``USER_COUNT`` total users
-    exist in the database. Each generated user receives the same default password.
-
-    Attributes:
-        USER_COUNT (int): Target total number of users in the database.
-        RECIPE_COUNT (int): Target total numbers of recipes in the database. 
-        DEFAULT_PASSWORD (str): Default password assigned to all created users.
-        help (str): Short description shown in ``manage.py help``.
-        faker (Faker): Locale-specific Faker instance used for random data.
-    """
+    """ Remove seeded users and recipes from database. """
 
     USER_COUNT = 200
     RECIPE_COUNT = 500
