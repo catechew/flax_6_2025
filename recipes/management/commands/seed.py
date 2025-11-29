@@ -1,4 +1,4 @@
-"""Management command to seed the database with demo data."""
+""" Management command to seed the database with demo data. """
 
 from faker import Faker
 from random import choice
@@ -30,7 +30,7 @@ USER_FIXTURES = [
 ]
 
 class Command(BaseCommand):
-    """Seed database with users and recipes."""
+    """ Seed database with users and recipes. """
 
     USER_COUNT = 200
     RECIPE_COUNT = 500
