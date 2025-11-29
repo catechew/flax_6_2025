@@ -25,3 +25,20 @@ def flag_recipe(request, recipe_id):
 
     # Redirect back to recipe detail
     return redirect('recipe_detail', recipe_id=recipe.id)
+
+
+@login_required
+def unflag_recipe(request, recipe_id):
+    """Allow users to unflag/unreport a recipe."""
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+
+    # Try to find and delete the flag
+    deleted_count, _ = Flag.objects.filter(recipe=recipe, user=request.user).delete()
+
+    if deleted_count > 0:
+        messages.success(request, "Flag removed.")
+    else:
+        messages.warning(request, "You haven't flagged this recipe.")
+
+    # Redirect back to recipe detail
+    return redirect('recipe_detail', recipe_id=recipe.id)

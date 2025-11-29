@@ -24,18 +24,26 @@ def recipe_form_view(request, recipe_id=None):
 
 def handle_form_post(request, handler):
     """Handle form submission"""
+    # Handle image upload
+    image_uploaded = handle_image_in_session(request, handler.session_data, handler.recipe)
+    
+    # Only copy files if no image was uploaded to prevent corrupt files 
+    post_data = request.POST.copy()
+    files_data = request.FILES.copy() if not image_uploaded else {}
+    
     # Create form with instance (if available)
-    form = handler.create_form(request.POST, request.FILES)
+    form = handler.create_form(post_data, files_data)
 
     if not form.is_valid():
+        # Save form data to session to make sure image doesn't disappear when there's errors
+        save_form_to_session(request, handler.session_data)
+        handler.mark_session_modified()
+
         context = handler.get_form_context(form)
         return render(request, 'recipe_form.html', context)
 
     # Save form data to session
     save_form_to_session(request, handler.session_data)
-
-    # Handle image upload
-    handle_image_in_session(request, handler.session_data, handler.recipe)
 
     handler.mark_session_modified()
 
@@ -69,8 +77,10 @@ def handle_image_in_session(request, session_data, recipe):
         )
         if temp_path:
             session_data['temp_image_path'] = temp_path
+            return True
     elif recipe and not recipe.author == request.user and recipe.image:
         # non-owner updating
         session_data['copy_original_image'] = True
+    return False
 
 
