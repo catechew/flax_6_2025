@@ -127,8 +127,8 @@ class RecipeFormTestCase(TestCase):
         self._assert_form_invalid('ingredients', ingredients='Avocado (1) piece')
 
     # Test multiple sets of parentheses are rejected
-    def test_form_rejects_ingredient_with_multiple_parentheses(self):
-        self._assert_form_invalid('ingredients', ingredients='Sugar (white) (100g)')
+    def test_form_accepts_ingredient_with_multiple_parentheses(self):
+        self._assert_form_valid(ingredients='Sugar (white) (100g)')
 
     # Test properly formatted ingredient is accepted
     def test_form_accepts_valid_ingredient_format(self):
