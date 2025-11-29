@@ -58,26 +58,3 @@ def recipe_detail(request, recipe_id):
    
     return render(request, 'recipe.html', context)
 
-# Scale ingredient quantities by the given factor
-def scale_ingredient(ingredient, factor):
-    # Pattern to match numbers (including decimals and fractions)
-    pattern = r'(\d+/\d+|\d+\.?\d*)'
-
-    def replace_number(match):
-        number_str = match.group(1)
-
-        # Handle fractions
-        if '/' in number_str:
-            parts = number_str.split('/')
-            number = float(parts[0]) / float(parts[1])
-        else:
-            number = float(number_str)
-        
-        # Scale the number
-        scaled = number * factor
-
-        if scaled == int(scaled):
-            return str(int(scaled))
-        else:
-            return f"{scaled:.1f}"
-    return re.sub(pattern, replace_number, ingredient)

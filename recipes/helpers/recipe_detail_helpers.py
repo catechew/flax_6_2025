@@ -1,5 +1,6 @@
 import re
 from fractions import Fraction
+from recipes.models import Rating, Flag
 
 
 def scale_ingredient(ingredient, factor):
@@ -45,3 +46,21 @@ def get_scaled_ingredients_context(recipe, desired_servings):
         'desired_servings':desired_servings,
         'scaling_factor':scaling_factor,
     }
+
+def get_user_rating(recipe, user):
+    # Retrieve logged in user's rating for the recipe
+    if not user.is_authenticated:
+        return None
+    
+    try: 
+        return Rating.objects.filter(recipe=recipe, user=user).first()
+    except Rating.DoesNotExist:
+        return None
+     
+
+def has_user_flagged_recipe(recipe, user):
+    # Check if user has flagged a recipe
+    if not user.is_authenticated:
+        return False
+   
+    return Flag.objects.filter(recipe=recipe, user=user).exists()
