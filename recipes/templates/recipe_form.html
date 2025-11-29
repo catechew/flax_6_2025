@@ -70,6 +70,13 @@
                     {{ field.errors }}
                   </div>
                 {% endif %}
+                {% if field.name == 'image' %}
+                  {% if has_temp_image %}
+                  <small class="form-text text-success">
+                    <i class="bi bi-check-circle-fill"></i> Image uploaded
+                  </small>
+                  {% endif %}
+                {% endif %}
               </div>
               {% endif %}
             {% endfor %}
