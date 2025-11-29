@@ -1,22 +1,10 @@
-"""
-Management command to seed the database with demo data.
-
-This command creates a small set of named fixture users and then fills up
-to ``USER_COUNT`` total users using Faker-generated data. Existing records
-are left untouched—if a create fails (e.g., due to duplicates), the error
-is swallowed and generation continues.
-"""
+""" Management command to seed the database with demo data. """
 
 from faker import Faker
-from random import randint, random, choice, sample
+from random import choice
 from django.core.management.base import BaseCommand
 from recipes.models import User, Recipe
-from django.utils import timezone
-from datetime import timedelta
-import requests
-from django.core.files.base import ContentFile
-import os
-from django.conf import settings
+from .seed_helpers import RecipeDataGenerator, TagGenerator, ImageHandler
 
 
 user_fixtures = [
