@@ -3,6 +3,7 @@ from django.http import Http404
 from django.shortcuts import render
 import re
 from recipes.models.rating import Rating
+from recipes.models.flag import Flag
 
 def recipe_detail(request, recipe_id):
     try:
@@ -30,6 +31,11 @@ def recipe_detail(request, recipe_id):
     user_rating = None
     if request.user.is_authenticated:
         user_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
+
+    # Check if user has flagged a recipe
+    user_has_flagged = False
+    if request.user.is_authenticated:
+        user_has_flagged = Flag.objects.filter(recipe=recipe, user=request.user).exists()
     
     context = {
         'recipe': recipe,
@@ -46,6 +52,7 @@ def recipe_detail(request, recipe_id):
         'total_prep_minutes': recipe.get_total_prep_time_minutes(),
         'total_cook_minutes': recipe.get_total_cook_time_minutes(),
         'total_time_display' : recipe.get_total_time_display(),
+        'user_has_flagged': user_has_flagged,
         'is_owner': recipe.author == request.user,
     }
    
