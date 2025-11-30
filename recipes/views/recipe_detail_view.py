@@ -90,32 +90,10 @@ def scale_ingredient(ingredient, factor):
             return f"{scaled:.1f}"
     return re.sub(pattern, replace_number, ingredient)
 
-# Get AI cost estimate for recipe based on scaled ingredients
-def get_cost_estimate_data(request, recipe_id):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Only POST requests allowed'}, status=405)
-    
-    try:
-        recipe = Recipe.objects.get(id=recipe_id)
-    except Recipe.DoesNotExist:
-        return JsonResponse({'error': 'Recipe not found'}, status=404)
-    
-    # Get servings from request
-    try:
-        desired_servings = int(request.POST.get('servings', recipe.servings))
-    except (ValueError, TypeError):
-        desired_servings = recipe.servings
-    
-    # Calculate scaling factor and scale ingredients
-    scaling_factor = desired_servings / recipe.servings
-    scaled_ingredients = []
-    for ingredient in recipe.get_ingredient_list():
-        scaled_ingredient = scale_ingredient(ingredient, scaling_factor)
-        scaled_ingredients.append(scaled_ingredient)
-    
-    # Prepare AI prompt
+# Get cost estimate data from AI for given ingredients and servings
+def get_cost_estimate_data(scaled_ingredients, servings):
     ingredients_text = '\n'.join(scaled_ingredients)
-    ai_prompt = f"""Estimate the total cost in GBP (£) for these ingredients for {desired_servings} servings:
+    ai_prompt = f"""Estimate the total cost in GBP (£) for these ingredients for {servings} servings:
 
     {ingredients_text}
 
@@ -143,16 +121,11 @@ def get_cost_estimate_data(request, recipe_id):
         ai_response = response.choices[0].message.content.strip()
         cost_data = json.loads(ai_response)
         
-        return JsonResponse({
-            'success': True,
+        return {
             'total_cost': cost_data['total_cost'],
             'cost_per_serving': cost_data['cost_per_serving'],
-            'servings': desired_servings
-        })
+            'servings': servings
+        }
         
-    except openai.error.OpenAIError as e:
-        return JsonResponse({'error': f'AI service error: {str(e)}'}, status=500)
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Failed to parse AI response'}, status=500)
     except Exception as e:
-        return JsonResponse({'error': f'Unexpected error: {str(e)}'}, status=500)
+        raise Exception(f"Unexpected error: {str(e)}")
