@@ -38,7 +38,7 @@ class RatingViewTestCase(TestCase):
 
     def test_rate_recipe_url(self):
         """Test that the rate_recipe URL is correct."""
-        self.assertEqual(self.url, f"/recipe/{self.recipe.id}/rate/")
+        self.assertEqual(self.url, f"/recipes/{self.recipe.id}/rate/")
 
     def test_rating_requires_login(self):
         """Test that an unauthenticated user is redirected to login."""
