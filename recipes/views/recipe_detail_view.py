@@ -6,6 +6,7 @@ import openai
 import json
 from django.http import JsonResponse
 from recipes.models.rating import Rating
+from recipes.models.flag import Flag
 
 # Display recipe details with optional cost estimation
 def recipe_detail(request, recipe_id):
@@ -34,6 +35,11 @@ def recipe_detail(request, recipe_id):
     user_rating = None
     if request.user.is_authenticated:
         user_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
+
+    # Check if user has flagged a recipe
+    user_has_flagged = False
+    if request.user.is_authenticated:
+        user_has_flagged = Flag.objects.filter(recipe=recipe, user=request.user).exists()
     
     # Handle cost estimation if requested
     cost_estimate = None
@@ -58,7 +64,8 @@ def recipe_detail(request, recipe_id):
         'cook_time_display': recipe.get_cook_time_display(),
         'total_prep_minutes': recipe.get_total_prep_time_minutes(),
         'total_cook_minutes': recipe.get_total_cook_time_minutes(),
-        'total_time_display': recipe.get_total_time_display(),
+        'total_time_display' : recipe.get_total_time_display(),
+        'user_has_flagged': user_has_flagged,
         'is_owner': recipe.author == request.user,
         'cost_estimate': cost_estimate,
         'cost_error': cost_error,

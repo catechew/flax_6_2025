@@ -22,6 +22,26 @@ Recipes | Recipe #{{recipe.id}}
 
     <div class="mb-3">
 
+        {# Flagging form for logged-in users #}
+        <!-- Flag/Unflag Toggle Button -->
+        {% if user.is_authenticated and recipe.author != user %}
+          {% if user_has_flagged %}
+            <form action="{% url 'unflag_recipe' recipe.id %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link text-danger p-0" title="Remove flag">
+                <i class="bi bi-flag-fill"></i>
+              </button>
+            </form>
+          {% else %}
+            <form action="{% url 'flag_recipe' recipe.id %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-link text-muted p-0" title="Report this recipe">
+                <i class="bi bi-flag"></i>
+              </button>
+            </form>
+          {% endif %}
+        {% endif %}
+
         {# Rating form for logged-in users #}
         {% if user.is_authenticated %}
         <form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="d-flex align-items-center gap-3 mb-2">

@@ -2,263 +2,111 @@ import os
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q, F, Value
-from django.db.models.functions import Concat
 from dotenv import load_dotenv
 import json
 import openai
-
-from recipes.models.recipe import Recipe
-
-# Constants
-SORT_OPTIONS = {
-    'date_newest': '-publication_date',
-    'date_oldest': 'publication_date',
-    'prep_least': 'prep_time_hours',
-    'prep_most': '-prep_time_hours',
-    'cook_least': 'cook_time_hours',
-    'cook_most': '-cook_time_hours',
-    'title_az': 'title',
-    'title_za': '-title',
-}
+import re
 
 # Load .env file to get API key
 load_dotenv()
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
-#Call OpenAI to extract search parameters from user context.
-def get_search_params_from_ai(user_context):
-    ai_prompt = f"""Context: "{user_context}"
 
-        Extract search params as JSON:
-        {{
-        "search_query": "keywords",
-        "dietary_filters": ["vegetarian"/"vegan"/"halal"/"kosher"/"gluten-free"/"dairy-free"],
-        "cuisine_filters": ["Japanese"/"Italian"/"Chinese"/"Asian"/"Persian"/"Jamaican"/"Western"/"British"/"Lebanese"/"Middle-Eastern"],
-        "other_filters": ["high protein"/"low calorie"/"low carb"/"quick"/"budget"],
-        "sort_by": "total_least"/"total_most"/"date_newest"
-        }}
-        Only relevant filters. Empty arrays if none apply."""
-    
+def generate_recipe_with_ai(user_prompt):
+    """
+    Generate a complete recipe based on user's description/request.
+    Returns structured recipe data.
+    """
+    ai_prompt = f"""Based on this request: "{user_prompt}"
+
+Create a complete recipe. Return ONLY valid JSON with no markdown formatting:
+{{
+    "title": "Recipe Name",
+    "description": "Brief 1-2 sentence description",
+    "prep_time": "15 minutes",
+    "cook_time": "30 minutes",
+    "servings": 4,
+    "difficulty": "Easy/Medium/Hard",
+    "ingredients": [
+        "ingredient 1 with measurement",
+        "ingredient 2 with measurement"
+    ],
+    "steps": [
+        "Step 1 detailed instruction",
+        "Step 2 detailed instruction"
+    ],
+    "tips": ["Optional cooking tip 1", "Optional tip 2"],
+    "dietary_info": ["vegetarian", "gluten-free"] or []
+}}
+
+IMPORTANT: Return ONLY the JSON object, no markdown code blocks, no extra text."""
+
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "Extract recipe search params. Return only JSON."},
-            {"role": "user", "content": ai_prompt}
+            {
+                "role": "system",
+                "content": "You are a professional chef. Generate complete, practical recipes with precise measurements and clear instructions. Return ONLY valid JSON with no markdown formatting or code blocks."
+            },
+            {
+                "role": "user",
+                "content": ai_prompt
+            }
         ],
-        temperature=0.3,
-        max_tokens=150,
+        response_format={"type": "json_object"},  # Force JSON mode
+        temperature=0.7,
+        max_tokens=1000,
         timeout=30
     )
-    
+
     ai_response = response.choices[0].message.content.strip()
+
+    # Remove markdown code blocks if present (just in case)
+    ai_response = re.sub(r'^```json\s*', '', ai_response)
+    ai_response = re.sub(r'\s*```$', '', ai_response)
+    ai_response = ai_response.strip()
+
     return json.loads(ai_response)
 
-# Apply text search across recipe fields. searches for ANY word in the query (not ALL).
-def apply_search_query(recipes, search_query):
-    if not search_query:
-        return recipes
-    
-    search_words = search_query.split()
-    recipes = recipes.annotate(
-        full_name=Concat('author__first_name', Value(' '), 'author__last_name')
-    )
-    
-    combined_q = Q()
-    for word in search_words:
-        combined_q |= (
-            Q(title__icontains=word) |
-            Q(adjectives__icontains=word) |
-            Q(ingredients__icontains=word) |
-            Q(steps__icontains=word) |
-            Q(author__username__icontains=word) |
-            Q(author__first_name__icontains=word) |
-            Q(author__last_name__icontains=word) |
-            Q(full_name__icontains=word)
-        )
-    
-    return recipes.filter(combined_q)
 
-
-def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters):
-    """
-    Apply tag-based filters to recipes.
-    """
-    if course_filters:
-        course_q = Q()
-        for course in course_filters:
-            course_q |= Q(course_tags__icontains=course)
-        recipes = recipes.filter(course_q)
-    
-    if dietary_filters:
-        dietary_q = Q()
-        for dietary in dietary_filters:
-            dietary_q |= Q(dietary_tags__icontains=dietary)
-        recipes = recipes.filter(dietary_q)
-    
-    if cuisine_filters:
-        cuisine_q = Q()
-        for cuisine in cuisine_filters:
-            cuisine_q |= Q(cuisine_tags__icontains=cuisine)
-        recipes = recipes.filter(cuisine_q)
-    
-    if other_filters:
-        other_q = Q()
-        for other in other_filters:
-            other_q |= Q(other_tags__icontains=other)
-        recipes = recipes.filter(other_q)
-    
-    return recipes
-
-# Apply sorting to recipes based on sort_by parameter
-def apply_sorting(recipes, sort_by):
-    
-    # Simple field sorts
-    if sort_by in SORT_OPTIONS:
-        return recipes.order_by(SORT_OPTIONS[sort_by])
-    
-    # Complex sorts that need annotation
-    if sort_by in ['total_least', 'total_most']:
-        recipes = recipes.annotate(
-            total_minutes=(F('prep_time_hours') + F('cook_time_hours')) * 60 +
-                          (F('prep_time_minutes') + F('cook_time_minutes'))
-        )
-        return recipes.order_by('total_minutes' if sort_by == 'total_least' else '-total_minutes')
-    
-    # Default sort
-    return recipes.order_by('-publication_date')
-
-# Get AI to rank top recipes based on user context
-def get_ai_rankings(user_context, top_recipes):
-    recipe_list = [
-        {
-            'id': recipe.id,
-            'title': recipe.title,
-            'tags': f"{getattr(recipe, 'course_tags', '')} {getattr(recipe, 'dietary_tags', '')}".strip()
-        }
-        for recipe in top_recipes
-    ]
-    
-    ranking_prompt = f"""Context: "{user_context}"
-
-        Recipes:
-        {json.dumps(recipe_list, indent=2)}
-
-        Rank top 3 recipes. Return JSON:
-        {{
-        "top_picks": [{{"recipe_id": 123, "title": "Name", "reason": "Why it fits (1 sentence)"}}],
-        "search_explanation": "Search strategy (1 sentence)"
-        }}"""
-    
-    ranking_response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Rank recipes. Return only JSON."},
-            {"role": "user", "content": ranking_prompt}
-        ],
-        temperature=0.5,
-        max_tokens=300
-    )
-    
-    ranking_text = ranking_response.choices[0].message.content.strip()
-    return json.loads(ranking_text)
-
-# Build URL for "View All Results" button with all search parameters
-def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_filters, other_filters, sort_by):
-    url_params = []
-    
-    if search_query:
-        url_params.append(f'q={search_query}')
-    for course in course_filters:
-        url_params.append(f'course={course}')
-    for dietary in dietary_filters:
-        url_params.append(f'dietary={dietary}')
-    for cuisine in cuisine_filters:
-        url_params.append(f'cuisine={cuisine}')
-    for other in other_filters:
-        url_params.append(f'other={other}')
-    if sort_by:
-        url_params.append(f'sort={sort_by}')
-    
-    return '/all_recipes/?' + '&'.join(url_params)
-
-
-# Use AI to find recipes based on context that users input
 @login_required
-def ai_recipe_finder_view(request):
-    
+def ai_recipe_generator_view(request):
+    """
+    AI Recipe Generator - creates new recipes from user prompts
+    """
     if request.method != 'POST':
-        return render(request, 'ai_recipe_finder.html')
-    
-    user_context = request.POST.get('context', '').strip()
-    
-    if not user_context:
-        messages.error(request, 'Please describe your situation')
-        return render(request, 'ai_recipe_finder.html')
-    
+        return render(request, 'ai_recipe_generator.html')
+
+    user_prompt = request.POST.get('prompt', '').strip()
+
+    if not user_prompt:
+        messages.error(request, 'Please describe what you want to cook')
+        return render(request, 'ai_recipe_generator.html')
+
     try:
-        # Step 1: Get search parameters from AI
-        search_params = get_search_params_from_ai(user_context)
-        
-        # Step 2: Filter recipes using extracted parameters
-        recipes = Recipe.objects.all()
-        recipes = apply_search_query(recipes, search_params.get('search_query', '').strip())
-        recipes = apply_tag_filters(
-            recipes,
-            search_params.get('course_filters', []),
-            search_params.get('dietary_filters', []),
-            search_params.get('cuisine_filters', []),
-            search_params.get('other_filters', [])
-        )
-        recipes = apply_sorting(recipes, search_params.get('sort_by', 'date_newest'))
-        
-        total_count = recipes.count()
-        
-        # Step 3: Handle no results
-        if total_count == 0:
-            context = {
-                'user_context': user_context,
-                'search_params': search_params,
-                'no_results': True,
-                'show_results': True
-            }
-            return render(request, 'ai_recipe_finder.html', context)
-        
-        # Step 4: Get AI to rank top results
-        top_recipes = recipes[:10]
-        ranking_data = get_ai_rankings(user_context, top_recipes)
-        
-        top_picks = ranking_data.get('top_picks', [])
-        search_explanation = ranking_data.get('search_explanation', '')
-        
-        # Extract recipe IDs for "View Top Picks" button
-        recipe_ids = [pick['recipe_id'] for pick in top_picks]
-        top_pick_ids = ','.join(map(str, recipe_ids))
-        
-        # Build URL for "View All Results" button
-        view_all_url = build_view_all_url(
-            search_params.get('search_query', ''),
-            search_params.get('course_filters', []),
-            search_params.get('dietary_filters', []),
-            search_params.get('cuisine_filters', []),
-            search_params.get('other_filters', []),
-            search_params.get('sort_by', '')
-        )
-        
-        # Step 5: Render results
+        # Generate recipe using AI
+        recipe_data = generate_recipe_with_ai(user_prompt)
+
         context = {
-            'user_context': user_context,
-            'search_params': search_params,
-            'search_explanation': search_explanation,
-            'top_picks': top_picks,
-            'top_pick_ids': top_pick_ids,
-            'total_count': total_count,
-            'view_all_url': view_all_url,
+            'user_prompt': user_prompt,
+            'recipe': recipe_data,
             'show_results': True
         }
-        
-        return render(request, 'ai_recipe_finder.html', context)
-    
+
+        return render(request, 'ai_recipe_generator.html', context)
+
+    except json.JSONDecodeError as e:
+        messages.error(request, 'AI returned invalid format. Please try again.')
+        return render(request, 'ai_recipe_generator.html', {'user_prompt': user_prompt})
+
+    except openai.error.Timeout:
+        messages.error(request, 'Request timed out. Please try again.')
+        return render(request, 'ai_recipe_generator.html', {'user_prompt': user_prompt})
+
+    except openai.error.APIError as e:
+        messages.error(request, f'OpenAI API error: {str(e)}')
+        return render(request, 'ai_recipe_generator.html', {'user_prompt': user_prompt})
+
     except Exception as e:
         messages.error(request, f'An error occurred: {str(e)}')
-        return render(request, 'ai_recipe_finder.html', {'user_context': user_context})
+        return render(request, 'ai_recipe_generator.html', {'user_prompt': user_prompt})
