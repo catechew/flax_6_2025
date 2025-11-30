@@ -7,7 +7,7 @@
 
   --secondary-colour: #ff9a2d;
 
-  --black-colour: #1d1f1f;
+  --black-colour: #202323;
   --bg-colour: #f7f3eb;
   --white-colour: #FAF9F5;
 }
@@ -15,7 +15,7 @@
 /* Base */
 body, button, input, textarea, select {
   font-family: Tahoma, sans-serif !important;
-  color: var(--black-colour);
+  color: var(--black-colour) !important;
 }
 
 body {
