@@ -51,7 +51,7 @@ class AllRecipesViewTestCase(TestCase):
     def test_get_all_recipes(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'all_recipes.html')
+        self.assertTemplateUsed(response, 'recipes/all_recipes.html')
 
     def test_all_recipes_list_is_in_context(self):
         response = self.client.get(self.url)

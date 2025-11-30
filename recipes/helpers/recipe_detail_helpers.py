@@ -83,3 +83,47 @@ def get_recipe_time_display_context(recipe):
         'cook_time_display': recipe.get_cook_time_display(),
         'total_time_display' : recipe.get_total_time_display(),
     }
+
+
+def get_cost_estimate_data(scaled_ingredients, servings):
+    """Get cost estimate data from AI for given ingredients and servings"""
+    import openai
+    import json
+
+    ingredients_text = '\n'.join(scaled_ingredients)
+    ai_prompt = f"""Estimate the total cost in GBP (£) for these ingredients for {servings} servings:
+
+    {ingredients_text}
+
+    Provide response as JSON:
+    {{
+        "total_cost": <number>,
+        "cost_per_serving": <number>,
+        "currency": "GBP"
+    }}
+
+    Use typical UK supermarket prices. Return only JSON."""
+    
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Estimate recipe costs in GBP. Return only JSON."},
+                {"role": "user", "content": ai_prompt}
+            ],
+            temperature=0.3,
+            max_tokens=150,
+            timeout=30
+        )
+        
+        ai_response = response.choices[0].message.content.strip()
+        cost_data = json.loads(ai_response)
+        
+        return {
+            'total_cost': cost_data['total_cost'],
+            'cost_per_serving': cost_data['cost_per_serving'],
+            'servings': servings
+        }
+        
+    except Exception as e:
+        raise Exception(f"Unexpected error: {str(e)}")

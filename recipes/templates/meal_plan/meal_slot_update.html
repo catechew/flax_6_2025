@@ -1,0 +1,46 @@
+{% extends "base/base_content.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'meal_plan.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="edit-meal-wrapper">
+        <h2>📝 Update Meal</h2>
+        
+        <div class="meal-context mb-4">
+            <span class="badge bg-primary">{{ slot.get_day_display }}</span>
+            <span class="badge bg-secondary">{{ slot.get_meal_type_display }}</span>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label class="form-label fw-bold">Select Recipe:</label>
+                <select name="recipe_id" class="form-select form-select-lg">
+                    <option value="">-- Remove Meal --</option>
+                    {% for recipe in recipes %}
+                        <option value="{{ recipe.id }}" 
+                                {% if slot.recipe and recipe.id == slot.recipe.id %}selected{% endif %}>
+                            {{ recipe.title }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success btn-lg">
+                    💾 Save
+                </button>
+                <a href="{% url 'meal-plan-detail' slot.meal_plan.id %}" 
+                   class="btn btn-outline-secondary btn-lg">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

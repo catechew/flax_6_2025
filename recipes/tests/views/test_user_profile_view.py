@@ -56,7 +56,7 @@ class UserProfileViewTestCase(TestCase):
         """Test that the correct template is used."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'user_profile.html')
+        self.assertTemplateUsed(response, 'users/user_profile.html')
 
     def test_user_profile_shows_user_information(self):
         """Test that user's information is displayed."""

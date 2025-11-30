@@ -1,0 +1,25 @@
+{% extends 'base/base_content.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-6 offset-md-3">
+      <h1>Log in</h1>
+      <form action="{% url 'log_in' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% include 'partials/bootstrap_form.html' with form=form %}
+        <input type="submit" value="Log in" class="btn btn-primary">
+      </form>
+
+      {# Sign up link #}
+      <div class="mt-4 text-center">
+        <p class="text-muted">Don't have an account?</p>
+        <a href="{% url 'sign_up' %}" class="btn btn-outline-primary">
+          <i class="bi bi-person-plus"></i> Sign Up
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

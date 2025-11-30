@@ -8,34 +8,26 @@ from django.db.models import Avg
 
 ITEMS_PER_PAGE = 25
 
-# Use Paginator to list 25 recipes at a time
-@login_required
-def all_recipes(request):
-    """
-    Display all recipes.
-    """
-    # Get all recipes
-    current_user = request.user
+# Filter options 
+COURSE_OPTIONS = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
+DIETARY_OPTIONS = ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free']
+CUISINE_OPTIONS = ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern']
+OTHER_OPTIONS = ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
 
-    # Get search query from navbar
-    search_query = request.GET.get('q', '')
-    if search_query is not None:
-        search_query = search_query.strip()
-    else:
-        search_query = ''
+# Dictionary mapping sort options to model fields
+# Excludes complex sorts that need annotations (total_least etc)
+SORT_OPTIONS = {
+    'date_newest': '-publication_date',
+    'date_oldest': 'publication_date',
+    'prep_least': 'prep_time_hours',
+    'prep_most': '-prep_time_hours',
+    'cook_least': 'cook_time_hours',
+    'cook_most': '-cook_time_hours',
+    'title_az': 'title',
+    'title_za': '-title',
+}
 
-    # Get filter parameters
-    course_filters = request.GET.getlist('course', '')
-    dietary_filters = request.GET.getlist('dietary', '')
-    cuisine_filters = request.GET.getlist('cuisine', '')
-    other_filters = request.GET.getlist('other', '')
-
-    # Start with all recipes
-    recipes = Recipe.objects.all()
-
-    # Filter recipes by visibility
-    recipes = recipes.filter(private=False)
-
+def build_search_query(search_query, recipes):
     # If there's a search query, filter recipes
     if search_query:
         # Split search words into individual words
@@ -74,7 +66,9 @@ def all_recipes(request):
                 Q(author__last_name__icontains=search_query) |
                 Q(full_name__icontains=search_query) 
             )
+    return recipes
 
+def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters):
     # Apply tag filters
     if course_filters:
         course_q = Q()
@@ -99,24 +93,19 @@ def all_recipes(request):
         for other in other_filters:
             other_q |= Q(other_tags__icontains=other)
         recipes = recipes.filter(other_q)
+    
+    return recipes
 
-    # Get sort parameters
-    sort_by = request.GET.get('sort', 'date_newest') # default to newest first
+def apply_sorting(recipes, sort_by):
 
-    # Apply sorting
-    if sort_by == 'date_newest':
-        order_field = '-publication_date'
-    elif sort_by == 'date_oldest':
-        order_field = 'publication_date'
-    elif sort_by == 'prep_least':
-        order_field = 'prep_time_hours'
-    elif sort_by == 'prep_most':
-        order_field = '-prep_time_hours'
-    elif sort_by == 'cook_least':
-        order_field = 'cook_time_hours'
-    elif sort_by == 'cook_most':
-        order_field = '-cook_time_hours'
-    elif sort_by == 'total_least':
+    # Check if the field to sort by is in the SORT_OPTIONS dictionary
+    if sort_by in SORT_OPTIONS:
+        order_field = SORT_OPTIONS[sort_by]
+        recipes = recipes.order_by(order_field)
+        return recipes
+    
+    # If not, do more complex annotations
+    if sort_by == 'total_least':
       recipes = recipes.annotate(
           total_minutes=(F('prep_time_hours') + F('cook_time_hours')) * 60 +
                         (F('prep_time_minutes') + F('cook_time_minutes'))
@@ -149,12 +138,48 @@ def all_recipes(request):
 
     if order_field:
         recipes = recipes.order_by(order_field)
+    
+    return recipes
 
-    # Filter options
-    course_options = ['dessert', 'main', 'appetiser', 'breakfast', 'snack']
-    dietary_options = ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free']
-    cuisine_options = ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern']
-    other_options = ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
+# Use Paginator to list 25 recipes at a time
+@login_required
+def all_recipes(request):
+    """
+    Display all recipes.
+    """
+    # Get all recipes
+    current_user = request.user
+
+    # Get search query from navbar
+    search_query = request.GET.get('q', '')
+    if search_query is not None:
+        search_query = search_query.strip()
+    else:
+        search_query = ''
+
+    # Get filter parameters
+    course_filters = request.GET.getlist('course', '')
+    dietary_filters = request.GET.getlist('dietary', '')
+    cuisine_filters = request.GET.getlist('cuisine', '')
+    other_filters = request.GET.getlist('other', '')
+
+    # Start with all recipes
+    recipes = Recipe.objects.all()
+
+    # Filter recipes by visibility
+    recipes = recipes.filter(private=False)
+
+    # Build search query
+    recipes = build_search_query(search_query, recipes)
+
+    # Apply tag filters
+    recipes = apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters)
+
+    # Get sort parameters
+    sort_by = request.GET.get('sort', 'date_newest') # default to newest first
+
+    # Apply sorting
+    recipes = apply_sorting(recipes, sort_by)
 
     # Paginate results 
     paginator = Paginator(recipes, ITEMS_PER_PAGE)
@@ -172,10 +197,10 @@ def all_recipes(request):
         'page_object': page_object,
         'search_query': search_query,
         'total_count' : total_count,
-        'course_options': course_options,
-        'dietary_options': dietary_options,
-        'cuisine_options': cuisine_options,
-        'other_options': other_options,
+        'course_options': COURSE_OPTIONS,
+        'dietary_options': DIETARY_OPTIONS,
+        'cuisine_options': CUISINE_OPTIONS,
+        'other_options': OTHER_OPTIONS,
         'course_filters': course_filters,
         'dietary_filters': dietary_filters,
         'cuisine_filters': cuisine_filters,
@@ -184,4 +209,4 @@ def all_recipes(request):
         'total_filters': total_filters,
     }
 
-    return render(request, 'all_recipes.html', context)
+    return render(request, 'recipes/all_recipes.html', context)

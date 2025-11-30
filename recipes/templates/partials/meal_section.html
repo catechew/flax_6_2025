@@ -1,0 +1,7 @@
+<div class="slot-line">
+  <strong class="meal-label">{{ label }}</strong>
+
+  {% with slot=slot %}
+    {% include "partials/meal_slot.html" %}
+  {% endwith %}
+</div>

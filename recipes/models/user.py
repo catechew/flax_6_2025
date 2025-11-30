@@ -88,7 +88,7 @@ class User(AbstractUser):
         """Model options."""
         ordering = ['last_name', 'first_name']
 
-    def gravatar(self, size=120):
+    def avatar_url(self, size=120):
         """Return avatar URL based on user preference."""
 
         # 1. If user uploaded custom picture, use it (highest priority)
@@ -127,7 +127,7 @@ class User(AbstractUser):
     def mini_gravatar(self):
         """Return a URL to a miniature version of the user's gravatar."""
         
-        return self.gravatar(size=60)
+        return self.avatar_url(size=60)
 
     def follow(self, user):
         """Follow another user."""
