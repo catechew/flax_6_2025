@@ -6,6 +6,7 @@ from recipes.helpers.recipe_detail_helpers import (
     get_recipe_tag_display_context,
     get_recipe_time_display_context,
     get_scaled_ingredients_context,
+    get_cost_estimate_data,
 )
 
 class RecipeDetailHandler:
@@ -45,6 +46,22 @@ class RecipeDetailHandler:
             'user_rating': get_user_rating(self.recipe, self.request.user),
             'user_has_flagged': has_user_flagged_recipe(self.recipe, self.request.user),
         }
+    
+    def get_cost_context(self):
+        """return cost estimation context (cost estimate and cost error)"""
+        cost_estimate = None
+        cost_error = None
+
+        if self.request.GET.get('show_cost') == 'true':
+            try:
+                cost_estimate = get_cost_estimate_data(scaled_ingredients, self.desired_servings)
+            except Exception as e:
+                cost_error = str(e)
+        
+        return{
+            'cost_estimate' : cost_estimate,
+            'cost_error' : cost_error
+        }
 
     def get_context(self):
         """Create full context for recipe.html"""
@@ -59,7 +76,10 @@ class RecipeDetailHandler:
         #Add time display
         context.update(get_recipe_time_display_context(self.recipe))
         #Add scaled ingredients
-        context.update(get_scaled_ingredients_context(self.recipe, self.desired_servings))
+        scaling_context = get_scaled_ingredients_context(self.recipe, self.desired_servings)
+        context.update(scaling_context)
+        #Add cost estimation
+        context.update(self.get_cost_context(scaling_context['scaled_ingredients']))
         #Add user data
         context.update(self.get_user_context())
 
