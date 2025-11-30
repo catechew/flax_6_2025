@@ -98,7 +98,7 @@ def consolidate_ingredients(items):
     Returns:
         list: Consolidated ingredients with counts
     """
-    from recipes.views.recipe_detail_view import scale_ingredient
+    from recipes.helpers.recipe_detail_helpers import scale_ingredient
     
     consolidated = _build_consolidated_dict(items)
     return _format_consolidated_results(consolidated, scale_ingredient)
