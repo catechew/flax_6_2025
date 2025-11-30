@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.forms import PasswordForm
 from recipes.models import User
-from recipes.tests.helpers import reverse_with_next
+from recipes.tests.test_helpers_base import reverse_with_next
 
 class PasswordViewTest(TestCase):
     """Test suite for the password view."""

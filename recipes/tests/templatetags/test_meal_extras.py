@@ -10,10 +10,14 @@ from recipes.templatetags.meal_extras import ordinal
 class OrdinalFilterTests(SimpleTestCase):
  """ Tests for ordinal template filter. """
 
- def test_special_cases_11_12_13(self):
-  self.assertEqual(ordinal(11), "11th")
-  self.assertEqual(ordinal(12), "12th")
-  self.assertEqual(ordinal(13), "13th")
+ def test_string_special_cases(self):
+    self.assertEqual(ordinal("11"), "11th")
+    self.assertEqual(ordinal("12"), "12th")
+    self.assertEqual(ordinal("13"), "13th")
+
+ def test_large_number_suffixes(self):
+    self.assertEqual(ordinal(112), "112th")
+    self.assertEqual(ordinal(213), "213th")
 
  def test_standard_suffixes(self):
   self.assertEqual(ordinal(1), "1st")
