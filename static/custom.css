@@ -5,7 +5,7 @@
   --primary-colour-darkest: #5c0404;
   --primary-colour-lighter: #f7e0e0;
 
-  --secondary-colour: #0F607B;
+  --secondary-colour: #ff9a2d;
 
   --black-colour: #1d1f1f;
   --bg-colour: #f7f3eb;
@@ -375,4 +375,16 @@ h3.profile-title {
 
 .heart-btn.favourited:hover i {
     color: #ff4d88 !important;
+}
+
+/*
+* Dashboard
+*/
+.home-feature-icon {
+    color: var(--secondary-colour) !important;
+    text-shadow:
+        0.6px 0 0,
+        -0.6px 0 0,
+        0 0.6px 0,
+        0 -0.6px 0;
 }
