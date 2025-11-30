@@ -5,9 +5,9 @@
   --primary-colour-darkest: #5c0404;
   --primary-colour-lighter: #f7e0e0;
 
-  --secondary-colour: #0F607B;
+  --secondary-colour: #ff9a2d;
 
-  --black-colour: #1d1f1f;
+  --black-colour: #202323;
   --bg-colour: #f7f3eb;
   --white-colour: #FAF9F5;
 }
@@ -15,7 +15,7 @@
 /* Base */
 body, button, input, textarea, select {
   font-family: Tahoma, sans-serif !important;
-  color: var(--black-colour);
+  color: var(--black-colour) !important;
 }
 
 body {
@@ -375,4 +375,53 @@ h3.profile-title {
 
 .heart-btn.favourited:hover i {
     color: #ff4d88 !important;
+}
+
+/*
+* Dashboard
+*/
+.home-feature-icon {
+    color: var(--primary-colour) !important;
+    text-shadow:
+        0.6px 0 0,
+        -0.6px 0 0,
+        0 0.6px 0,
+        0 -0.6px 0;
+}
+
+.hero-section {
+    background-image:
+        linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)),
+        url('images/extra-images/home-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+    color: var(--bg-colour) !important;
+}
+
+.home-btn {
+    background-color: transparent;
+    border: 1px solid var(--bg-colour);;
+    box-shadow: 0 2px 0 var(--bg-colour);
+    color: var(--bg-colour) !important;
+    border-radius: 20px;
+
+    transition: all 0.25s ease;
+}
+
+.home-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: white;
+}
+
+.home-title {
+    font-size: 5rem;
+    font-weight: 800;
+    color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+
+    color: var(--bg-colour);
+    -webkit-text-stroke: 6px var(--bg-colour);   
 }
