@@ -1,16 +1,17 @@
 {% extends 'base/base_content.html' %}
 {% block content %}
 
-<section class="py-5 text-center" style="background: #F14F32; color: white;">
+<section class="py-5 text-center hero-section" style="color: white; background-size: cover; background-position: center; background-repeat: no-repeat;">
+
     <div class="container py-5">
-        <h1 class="display-3 fw-bold mb-3">Recipify</h1>
+        <h1 class="display-3 fw-bold mb-3">RECIPIFY</h1>
         <p class="lead fw-bold mb-4">A recipe-sharing and meal-planning app made <i>for students, by students</i>.</p>
 
         <div class="d-flex justify-content-center gap-3">
-            <a href="{% url 'sign_up' %}" class="btn btn-lg btn-light text-primary fw-bold px-4 py-2">
+            <a href="{% url 'sign_up' %}" class="btn home-btn text-primary fw-bold px-4 py-2">
                 Sign Up
             </a>
-            <a href="{% url 'log_in' %}" class="btn btn-lg btn-light text-primary fw-bold px-4 py-2">
+            <a href="{% url 'log_in' %}" class="btn home-btn text-primary fw-bold px-4 py-2">
                 Log In
             </a>
         </div>
