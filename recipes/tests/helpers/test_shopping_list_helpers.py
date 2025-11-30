@@ -69,6 +69,26 @@ class ExtractIngredientsTests(TestCase):
   self.assertIn("🥩 Meat & Poultry", shopping_list)
   self.assertIn("🌾 Grains & Pasta", shopping_list)
 
+ def test_empty_ingredient_lines_are_ignored(self):
+  recipe = Recipe.objects.create(
+   title="Empty Lines",
+   author=self.user,
+   publication_date=date.today(),
+   ingredients="\n  \nSalt\n",
+   steps="Cook",
+  )
+
+  MealSlot.objects.create(
+   meal_plan=self.plan,
+   day="tue",
+   meal_type="dinner",
+   recipe=recipe,
+  )
+
+  shopping_list = extract_ingredients(self.plan.entries.all())
+
+  self.assertEqual(len(shopping_list["🧂 Condiments"]), 1)
+
 
 class ConsolidateIngredientsTests(TestCase):
  """ Tests for consolidate_ingredients helper. """
