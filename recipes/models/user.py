@@ -59,7 +59,7 @@ class User(AbstractUser):
         help_text='Type of avatar to display'
     )
 
-    # Profile picture upload (optional)
+    # Profile picture upload
     profile_picture = models.ImageField(
         upload_to='profile_pictures/',
         blank=True,
@@ -73,7 +73,7 @@ class User(AbstractUser):
         help_text='Seed for random avatar generation'
     )
 
-    # Following relationship
+    # Following relationship - many to many
     following = models.ManyToManyField(
         'self',
         symmetrical=False,
@@ -81,11 +81,14 @@ class User(AbstractUser):
         blank=True
     )
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"    # Shows every user's first and last name in admin panel
+
     class Meta:
         """Model options."""
         ordering = ['last_name', 'first_name']
 
-    def gravatar(self, size=120):
+    def avatar_url(self, size=120):
         """Return avatar URL based on user preference."""
 
         # 1. If user uploaded custom picture, use it (highest priority)
@@ -124,7 +127,7 @@ class User(AbstractUser):
     def mini_gravatar(self):
         """Return a URL to a miniature version of the user's gravatar."""
         
-        return self.gravatar(size=60)
+        return self.avatar_url(size=60)
 
     def follow(self, user):
         """Follow another user."""

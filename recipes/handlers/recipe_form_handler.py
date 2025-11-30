@@ -72,6 +72,7 @@ class RecipeFormHandler:
         """Build context for recipe form template"""
         context = self.get_base_context()
         context['form'] = form
+        context['has_temp_image'] = 'temp_image_path' in self.session_data
         return context
     
     def get_tags_context(self):

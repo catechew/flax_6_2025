@@ -10,7 +10,7 @@ def randomise_avatar(request):
     user = request.user
 
     # Clear uploaded picture if any
-    if user.profile_picture:
+    if user.profile_picture and user.avatar_type != "ai":
         user.profile_picture.delete()
         user.profile_picture = None
 

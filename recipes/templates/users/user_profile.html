@@ -1,4 +1,5 @@
 {% extends 'base/base_content.html' %}
+{% load avatar_tags %}
 
 {% block content %}
 <div class="container mt-5">
@@ -6,7 +7,7 @@
         <div class="col-md-8">
             <!-- Profile Section -->
             <div class="text-center mb-5">
-                <img src="{{ profile_user.gravatar }}"
+                <img src="{% get_avatar_url profile_user 120 %}"
                      alt="{{ profile_user.get_full_name }}"
                      class="rounded-circle mb-3"
                      style="width: 120px; height: 120px; object-fit: cover;">
@@ -60,60 +61,150 @@
                 {% endif %}
             </div>
 
-            <!-- Recipes Section -->
-            <h3 class="mb-4">
-                {% if is_own_profile %}
-                    My Recipes
-                {% else %}
-                    {{ profile_user.get_full_name }}'s Recipes
-                {% endif %}
-            </h3>
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-tabs justify-content-center border-0 mb-4" id="profileTabs" role="tablist">
+                <li class="nav-item" role="presentation" style="flex: 1;">
+                    <button class="nav-link active w-100 py-3 text-dark fw-normal"
+                            id="recipes-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#recipes-content"
+                            type="button"
+                            role="tab"
+                            style="border-bottom: 3px solid transparent; font-size: 1.1rem;">
+                        <i class="bi bi-card-list me-2"></i>Recipes ({{ recipe_count }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation" style="flex: 1;">
+                    <button class="nav-link w-100 py-3 text-dark fw-normal"
+                            id="ratings-tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#ratings-content"
+                            type="button"
+                            role="tab"
+                            style="border-bottom: 3px solid transparent; font-size: 1.1rem;">
+                        <i class="bi bi-star-fill me-2"></i>Ratings ({{ ratings_count }})
+                    </button>
+                </li>
+            </ul>
 
-            {% if recipes %}
-                <div class="row">
-                    {% for recipe in recipes %}
-                    <div class="col-12 mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a>
-                                </h5>
-                                <p class="card-text text-muted small">{{ recipe.adjectives }}</p>
-                                <p class="card-text">
-                                    <small class="text-muted">
-                                        {{ recipe.publication_date|date:"M d, Y" }}
-                                    </small>
-                                </p>
+            <!-- Tab Content -->
+            <div class="tab-content mt-4" id="profileTabContent">
 
-                                <div class="d-flex gap-2">
-                                    <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-sm btn-primary">View</a>
+                <!-- Recipes Tab -->
+                <div class="tab-pane fade show active" id="recipes-content" role="tabpanel">
+                    {% if recipes %}
+                        <div class="row">
+                            {% for recipe in recipes %}
+                            <div class="col-12 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.title }}</a>
+                                        </h5>
+                                        <p class="card-text text-muted small">{{ recipe.adjectives }}</p>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                {{ recipe.publication_date|date:"M d, Y" }}
+                                            </small>
+                                        </p>
 
-                                    {% if is_own_profile %}
-                                        <!-- Only show 'edit'/'delete' on your own recipes -->
-                                        <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                        <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                                    {% endif %}
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-sm btn-primary">View</a>
+
+                                            {% if is_own_profile %}
+                                                <!-- Only show 'edit'/'delete' on your own recipes -->
+                                                <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                            {% endif %}
+
+                                            {% if user.is_staff and not is_own_profile %}
+                                                <!-- Admin delete button -->
+                                                <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-shield-fill-exclamation"></i> Admin Delete
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            {% endfor %}
                         </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center text-muted p-5">
-                    <div class="mb-4" style="font-size: 80px;">🧅</div>  <!-- ADD THIS LINE -->
-                    <p>
-                        {% if is_own_profile %}
-                            You haven't created any recipes yet.
-                        {% else %}
-                            {{ profile_user.get_full_name }} hasn't created any recipes yet.
-                        {% endif %}
-                    </p>
-                    {% if is_own_profile %}
-                        <a href="{% url 'create_recipe' %}" class="btn btn-primary">Create Your First Recipe</a>
+                    {% else %}
+                        <div class="text-center text-muted p-5">
+                            <div class="mb-4" style="font-size: 80px;">🧅</div>
+                            <p>
+                                {% if is_own_profile %}
+                                    You haven't created any recipes yet.
+                                {% else %}
+                                    {{ profile_user.get_full_name }} hasn't created any recipes yet.
+                                {% endif %}
+                            </p>
+                            {% if is_own_profile %}
+                                <a href="{% url 'create_recipe' %}" class="btn btn-primary">Create Your First Recipe</a>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </div>
-            {% endif %}
+
+                <!-- Ratings Tab -->
+                <div class="tab-pane fade" id="ratings-content" role="tabpanel">
+                    {% if user_ratings %}
+                        <div class="row">
+                            {% for rating in user_ratings %}
+                            <div class="col-12 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h5 class="card-title mb-1">
+                                                    <a href="{% url 'recipe_detail' rating.recipe.id %}">{{ rating.recipe.title }}</a>
+                                                </h5>
+                                                <p class="text-muted mb-2">
+                                                    by <a href="{% url 'user_profile' rating.recipe.author.id %}">{{ rating.recipe.author.get_full_name }}</a>
+                                                </p>
+
+                                                <!-- Star Rating Display -->
+                                                <div class="mb-2">
+                                                    {% for i in "12345" %}
+                                                        {% if forloop.counter <= rating.stars %}
+                                                            <i class="bi bi-star-fill text-warning"></i>
+                                                        {% else %}
+                                                            <i class="bi bi-star text-muted"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    <span class="ms-2 text-muted">{{ rating.stars }} star{% if rating.stars != 1 %}s{% endif %}</span>
+                                                </div>
+
+                                                <small class="text-muted">Rated {{ rating.created_at|timesince }} ago</small>
+                                            </div>
+
+                                            <div>
+                                                <a href="{% url 'recipe_detail' rating.recipe.id %}" class="btn btn-sm btn-outline-primary">View Recipe</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted p-5">
+                            <div class="mb-4" style="font-size: 80px;">⭐</div>
+                            <p>
+                                {% if is_own_profile %}
+                                    You haven't rated any recipes yet.
+                                {% else %}
+                                    {{ profile_user.get_full_name }} hasn't rated any recipes yet.
+                                {% endif %}
+                            </p>
+                            {% if is_own_profile %}
+                                <a href="{% url 'dashboard' %}" class="btn btn-primary">Discover Recipes</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
