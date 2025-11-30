@@ -30,6 +30,7 @@ TAG_OPTIONS = {
     ]
 }
 
+
 class TagGenerator:
     """ Generates random tags for recipes. """
 
