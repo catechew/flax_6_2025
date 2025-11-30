@@ -233,7 +233,7 @@ Recipes | Recipe #{{recipe.id}}
         <div class="list-group list-group-flush">
             {% for ingredient in scaled_ingredients %}
             <label class="list-group-item d-flex align-items-center" style="cursor: pointer;">
-                <input class="form-check-input me-3 ingredient-checkbox" type="checkbox" style="width: 1.5em; height: 1.5em;">
+                <input class="form-check-input checkbox-lg me-3 ingredient-checkbox" type="checkbox">
                 <span class="ingredient-text">{{ ingredient }}</span>
             </label>
             {% endfor %}
@@ -253,7 +253,7 @@ Recipes | Recipe #{{recipe.id}}
         <div class="list-group list-group-flush">
             {% for step in steps %}
             <label class="list-group-item d-flex align-items-start" style="cursor: pointer;">
-                <input class="form-check-input me-3 step-checkbox flex-shrink-0" type="checkbox" style="width: 1.5em; height: 1.5em; margin-top: 0.125rem;">
+                <input class="form-check-input checkbox-lg me-3 step-checkbox flex-shrink-0" type="checkbox">
                 <div class="flex-grow-1">
                     <strong class="me-2">{{ forloop.counter }}.</strong>
                     <span class="step-text">{{ step }}</span>

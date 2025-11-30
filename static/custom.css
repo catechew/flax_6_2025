@@ -425,3 +425,8 @@ h3.profile-title {
     color: var(--bg-colour);
     -webkit-text-stroke: 6px var(--bg-colour);   
 }
+
+.checkbox-lg {
+    width: 1.3em;
+    height: 1.3em;
+}
