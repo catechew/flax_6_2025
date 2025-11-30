@@ -1,0 +1,46 @@
+{% extends 'base/base_content.html' %}
+{% block content %}
+
+<section class="py-5 text-center hero-section" style="color: white; background-size: cover; background-position: center; background-repeat: no-repeat;">
+
+    <div class="container py-5">
+       <h1 class="home-title mb-3">RECIPIFY</h1>
+        <p class="lead fw-bold mb-4">A recipe-sharing and meal-planning app made <i>for students, by students</i>.</p>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'sign_up' %}" class="btn home-btn text-primary fw-bold px-4 py-2">
+                Sign Up
+            </a>
+            <a href="{% url 'log_in' %}" class="btn home-btn text-primary fw-bold px-4 py-2">
+                Log In
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="container py-4 text-uppercase fw-bold small" style="font-size: 0.8rem;">
+    <div class="row justify-content-center text-center">
+        <div class="col-6 col-sm-4 col-md-2 mb-4">
+            <i class="bi bi-plus-circle fs-1 home-feature-icon"></i>
+            <p>Create Recipes</p>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2 mb-4">
+            <i class="bi bi-star-fill fs-1 home-feature-icon"></i>
+            <p>Rate Recipes</p>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2 mb-4">
+            <i class="bi bi-heart fs-1 home-feature-icon"></i>
+            <p>Save Favourites</p>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2 mb-4">
+            <i class="bi bi-calendar-week fs-1 home-feature-icon"></i>
+            <p>Plan Meals</p>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2 mb-4">
+            <i class="bi bi-people fs-1 home-feature-icon"></i>
+            <p>Follow Others</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

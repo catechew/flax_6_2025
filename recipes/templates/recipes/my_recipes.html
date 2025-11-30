@@ -1,11 +1,11 @@
-{% extends 'base_content.html' %}
+{% extends 'base/base_content.html' %}
 {% block content %}
 
 <div class="container" style="max-width: 600px; margin-top: 50px;">
 
     <div class="text-center mb-4">
         <!-- profile picture using Gravatar -->
-        <img src="{{ user.gravatar }}"
+        <img src="{{ user.avatar_url }}"
              alt="Profile Picture"
              class="rounded-circle mb-3"
              style="width: 150px; height: 150px; border: 3px solid #dee2e6;">

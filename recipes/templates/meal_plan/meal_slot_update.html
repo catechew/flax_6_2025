@@ -1,5 +1,9 @@
-{% extends "base.html" %}
+{% extends "base/base_content.html" %}
 {% load static %}
+
+{% block extra_css %}
+<link href="{% static 'meal_plan.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
 <div class="container mt-4">

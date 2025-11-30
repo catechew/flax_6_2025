@@ -38,7 +38,7 @@ class RatingViewTestCase(TestCase):
 
     def test_rate_recipe_url(self):
         """Test that the rate_recipe URL is correct."""
-        self.assertEqual(self.url, f"/recipe/{self.recipe.id}/rate/")
+        self.assertEqual(self.url, f"/recipes/{self.recipe.id}/rate/")
 
     def test_rating_requires_login(self):
         """Test that an unauthenticated user is redirected to login."""
@@ -107,6 +107,6 @@ class RatingViewTestCase(TestCase):
         Rating.objects.create(recipe=self.recipe, user=self.other_user, stars=4)
         Rating.objects.create(recipe=self.recipe, user=self.user, stars=3)  # manually add even though authors can't normally rate
 
-        self.assertEqual(self.recipe.rating_count, 2)
-        self.assertAlmostEqual(self.recipe.average_rating, 3.5)
-        self.assertEqual(self.recipe.average_rating_rounded, 4)  # rounded display value
+        self.assertEqual(self.recipe.rating_count(), 2)
+        self.assertAlmostEqual(self.recipe.average_rating(), 3.5)
+        self.assertEqual(self.recipe.average_rating_rounded(), 4)  # rounded display value

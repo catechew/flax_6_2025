@@ -1,4 +1,4 @@
-{% extends 'base_content.html' %}
+{% extends 'base/base_content.html' %}
 
 {% block title %}
 Recipes | Recipe #{{recipe.id}}
@@ -185,6 +185,40 @@ Recipes | Recipe #{{recipe.id}}
             Ingredients scaled by {{ scaling_factor|floatformat:2 }}x
             </div>
         {% endif %}
+        </div>
+    </div>
+
+    {# Cost Estimate #}
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                <i class="bi bi-currency-pound"></i> Cost Estimate
+            </h4>
+        </div>
+        <div class="card-body">
+            <form method="GET" class="d-inline">
+                <input type="hidden" name="servings" value="{{ desired_servings }}">
+                <input type="hidden" name="show_cost" value="true">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-calculator"></i> Get Cost Estimate
+                </button>
+            </form>
+            
+            <div class="mt-3" style="min-height: 60px;">
+                {% if cost_estimate %}
+                    <div class="alert alert-success mb-0">
+                        <strong>Total Cost:</strong> £{{ cost_estimate.total_cost|floatformat:2 }}<br>
+                        <strong>Cost per Serving:</strong> £{{ cost_estimate.cost_per_serving|floatformat:2 }}
+                        <small class="text-muted d-block mt-1">(for {{ cost_estimate.servings }} servings)</small>
+                    </div>
+                {% elif cost_error %}
+                    <div class="alert alert-danger mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> {{ cost_error }}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">Click the button to estimate the cost for {{ desired_servings }} servings</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 

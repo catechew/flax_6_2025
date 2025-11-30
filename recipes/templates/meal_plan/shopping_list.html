@@ -1,4 +1,9 @@
-{% extends "base.html" %}
+{% extends "base/base_content.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'meal_plan.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
@@ -53,12 +58,4 @@
         </div>
     {% endfor %}
 </div>
-
-<style>
-@media print {
-    .btn, nav { display: none !important; }
-    .card { page-break-inside: avoid; }
-    .text-muted { display: none !important; }
-}
-</style>
 {% endblock %}

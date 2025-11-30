@@ -140,7 +140,8 @@ class RecipeForm(forms.ModelForm):
 
         # Pattern: ingredient name followed by quantity in parentheses
         # Must have exactly one set of parentheses at the end
-        pattern = r'^[^()]+\([^()]+\)$'
+        # pattern = r'^[^()]+\([^()]+\)$'
+        pattern = r'^[^(]+\(.+\)$'
 
         for i, line in enumerate(lines, 1):
             # Check if line matches the pattern

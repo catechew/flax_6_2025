@@ -42,13 +42,13 @@ class UserAvatarTestCase(TestCase):
 
     def test_initials_avatar_url(self):
         """Test that initials avatar returns correct URL."""
-        avatar_url = self.user_initials.gravatar()
+        avatar_url = self.user_initials.avatar_url()
         self.assertIn('ui-avatars.com', avatar_url)
         self.assertIn('background=f15034', avatar_url)
 
     def test_ai_avatar_url_female(self):
         """Test that AI avatar for female returns women portrait."""
-        avatar_url = self.user_ai.gravatar()
+        avatar_url = self.user_ai.avatar_url()
         self.assertIn('randomuser.me', avatar_url)
         self.assertIn('women', avatar_url)
 
@@ -56,13 +56,13 @@ class UserAvatarTestCase(TestCase):
         """Test that AI avatar for male returns men portrait."""
         self.user_ai.gender = 'M'
         self.user_ai.save()
-        avatar_url = self.user_ai.gravatar()
+        avatar_url = self.user_ai.avatar_url()
         self.assertIn('randomuser.me', avatar_url)
         self.assertIn('men', avatar_url)
 
     def test_random_avatar_url(self):
         """Test that random avatar returns DiceBear URL with seed."""
-        avatar_url = self.user_random.gravatar()
+        avatar_url = self.user_random.avatar_url()
         self.assertIn('dicebear.com', avatar_url)
         self.assertIn('test-seed-123', avatar_url)
 
@@ -83,7 +83,7 @@ class UserAvatarTestCase(TestCase):
         self.user_initials.profile_picture = uploaded_file
         self.user_initials.save()
 
-        avatar_url = self.user_initials.gravatar()
+        avatar_url = self.user_initials.avatar_url()
         self.assertIn('/media/profile_pictures/', avatar_url)
 
     def test_mini_gravatar_uses_smaller_size(self):
@@ -96,12 +96,12 @@ class UserAvatarTestCase(TestCase):
         # Young age range
         self.user_ai.age_range = 'young'
         self.user_ai.save()
-        young_url = self.user_ai.gravatar()
+        young_url = self.user_ai.avatar_url()
 
         # Senior age range
         self.user_ai.age_range = 'senior'
         self.user_ai.save()
-        senior_url = self.user_ai.gravatar()
+        senior_url = self.user_ai.avatar_url()
 
         # URLs should be different
         self.assertNotEqual(young_url, senior_url)

@@ -1,0 +1,24 @@
+<div class="snack-collapsible">
+ <a class="snack-toggle"
+    data-bs-toggle="collapse"
+    href="#snack-{{ day.day_code }}">
+  <span class="plus-icon">+</span> Add Snacks / Notes
+ </a>
+
+ <div class="collapse" id="snack-{{ day.day_code }}">
+  <div class="snack-notes-area mt-2">
+   <form method="POST"
+         action="{% url 'meal-slot-notes' day.slots.snack.id %}">
+    {% csrf_token %}
+    <textarea name="notes"
+              class="form-control snack-notes-input"
+              rows="2"
+              placeholder="e.g., coke, whey protein shake, trail nuts, salted crisps..."
+    >{{ day.slots.snack.notes }}</textarea>
+    <button class="btn btn-sm btn-outline-primary mt-2">
+     💾 Save
+    </button>
+   </form>
+  </div>
+ </div>
+</div>

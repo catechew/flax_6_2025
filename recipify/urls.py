@@ -48,8 +48,9 @@ from recipes.views.recipe_tags_view import recipe_tags_view
 from recipes.views.recipe_cancel_view import cancel_recipe_operation
 
 from recipes.views.some_recipes_view import some_recipes
-from recipes.views.ai_recipe_finder_view import *
+from recipes.views.ai_stub_view import ai_recipe_generator_view
 
+#from recipes.views.ai_recipe_finder_view import *
 
 # Meal plan views
 from recipes.views.meal_plan_view import (
@@ -77,6 +78,7 @@ urlpatterns = [
 
     path('all_recipes/', all_recipes, name='all_recipes'),
     path('recipe/<int:recipe_id>', recipe_detail, name='recipe_detail'),
+
     path('delete_recipe/<int:recipe_id>', recipe_delete, name='delete_recipe'),
     path('my_recipes/', my_recipes, name='my_recipes'),
 
@@ -116,6 +118,7 @@ urlpatterns = [
     path('some-recipes/', some_recipes, name='some_recipes'),
 
     path('ai-recipe-finder/', ai_recipe_generator_view, name='ai_recipe_finder'),
+
 
 ] 
 

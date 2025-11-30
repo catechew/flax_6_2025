@@ -64,7 +64,7 @@ class ImageHandler:
             print(f"Error loading placeholder image: {e}")
             return None, None
 
-    @st aticmethod
+    @staticmethod
     def _load_image_file(dish_type):
         """ Load image file from static directory. """
         image_path = f'static/images/food_placeholders/{dish_type}.jpg'
