@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load meal_extras %}
 
 {% block extra_css %}
 <link href="{% static 'meal_plan.css' %}" rel="stylesheet">
@@ -9,55 +8,37 @@
 {% block content %}
 <div class="container mt-4">
 
-  <div class="d-flex align-items-center gap-3 mb-5">
-    <h1 class="mb-0">📅 Weekly Meal Plan</h1>
-
-    <div class="progress-ring" style="--progress: {{ completion }}%;">
-      <span>{{ completion }}%</span>
-    </div>
+ <div class="d-flex align-items-center gap-3 mb-5">
+  <h1 class="mb-0">📅 Weekly Meal Plan</h1>
+  <div class="progress-ring" style="--progress: {{ completion }}%;">
+   <span>{{ completion }}%</span>
   </div>
+ </div>
 
-  <div class="week-nav d-flex justify-content-center align-items-center gap-3 mb-4">
-    <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
-       class="btn btn-outline-primary btn-sm">
-      ←
-    </a>
+ <div class="week-nav d-flex justify-content-center gap-3 mb-4">
+  <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
+     class="btn btn-outline-primary btn-sm">←</a>
 
-    <span class="fw-semibold">
-      Week of {{ plan.week_start|date:"M j" }}
-    </span>
+  <span class="fw-semibold">
+   Week of {{ plan.week_start|date:"M j" }}
+  </span>
 
-    <a href="{% url 'meal-plan-navigate' plan.id 'next' %}"
-       class="btn btn-outline-primary btn-sm">
-      →
-    </a>
-  </div>
+  <a href="{% url 'meal-plan-navigate' plan.id 'next' %}"
+     class="btn btn-outline-primary btn-sm">→</a>
+ </div>
 
-  <div class="meal-grid">
-    {% for day in schedule %}
-      {% include "partials/meal_day_card.html" with day=day %}
-    {% endfor %}
-  </div>
+ <div class="meal-grid">
+  {% for day in schedule %}
+   {% include "partials/meal_day_card.html" with day=day %}
+  {% endfor %}
+ </div>
 
-  <div class="shopping-list-cta mt-5 mb-4">
-    <div class="card border-0 shadow-sm shopping-list-banner">
-      <div class="card-body text-center py-4">
-        <h3 class="text-white mb-2">🛒 Ready to Shop?</h3>
-        <p class="text-white mb-3">
-          View your shopping list for this week's meal plan
-        </p>
-        <a href="{% url 'shopping-list' plan.id %}"
-           class="btn btn-light btn-lg px-5">
-          <i class="bi bi-cart-check"></i> View Shopping List
-        </a>
-      </div>
-    </div>
-  </div>
+ {% include "partials/shopping_cta.html" %}
 
-  <a href="{% url 'dashboard' %}"
-     class="btn btn-secondary mt-4">
-    ← Back to Dashboard
-  </a>
+ <a href="{% url 'dashboard' %}"
+    class="btn btn-secondary mt-4">
+  ← Back to Dashboard
+ </a>
 
 </div>
 {% endblock %}

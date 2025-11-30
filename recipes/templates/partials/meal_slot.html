@@ -1,18 +1,18 @@
 <div class="slot-content">
-  {% if slot.recipe %}
-    <div class="d-flex align-items-center gap-2">
-      {% if slot.recipe.image %}
-        <img src="{{ slot.recipe.image.url }}"
-             class="meal-thumb"
-             alt="{{ slot.recipe.title }}">
-      {% endif %}
+ {% if slot.recipe %}
+  <div class="d-flex align-items-center gap-2">
+   {% if slot.recipe.image %}
+    <img src="{{ slot.recipe.image.url }}"
+         class="meal-thumb"
+         alt="{{ slot.recipe.title }}">
+   {% endif %}
 
-      <a href="{% url 'recipe_detail' slot.recipe.id %}"
-         class="recipe-link">
-        {{ slot.recipe.title }}
-      </a>
-    </div>
-  {% else %}
-    <span class="empty-meal-indicator">–</span>
-  {% endif %}
+   <a href="{% url 'recipe_detail' slot.recipe.id %}"
+      class="recipe-link">
+    {{ slot.recipe.title }}
+   </a>
+  </div>
+ {% else %}
+  <span class="empty-meal-indicator">–</span>
+ {% endif %}
 </div>
