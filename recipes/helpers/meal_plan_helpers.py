@@ -95,25 +95,3 @@ def create_meal_slots(plan):
                 recipe=None
             )
 
-def calculate_statistics(plan):
-    """
-    Calculate meal plan statistics.
-    
-    Args:
-        plan: MealPlan instance
-        
-    Returns:
-        dict: Statistics including filled slots and unique recipes
-    """
-    filled_slots = plan.entries.filter(
-        recipe__isnull=False
-    ).count()
-    
-    unique_recipes = plan.entries.filter(
-        recipe__isnull=False
-    ).values('recipe').distinct().count()
-    
-    return {
-        'filled_slots': filled_slots,
-        'unique_recipes': unique_recipes
-    }
