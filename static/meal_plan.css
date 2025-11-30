@@ -307,10 +307,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background: conic-gradient(
+        #04ac2b var(--progress, 0%),
+        #eaeaea 0
+    );
 }
 
 .progress-ring span {
-    background: var(--bg-colour);
+    background: #faf8f5; /* fallback instead of var(--bg-colour) */
     width: 40px;
     height: 40px;
     border-radius: 50%;
