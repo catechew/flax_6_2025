@@ -111,3 +111,50 @@
     text-decoration: line-through;
     opacity: 0.6;
 }
+
+/* Recipe tags */ 
+.tag-chip {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    margin: 3px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.tag-chip-success {
+    background-color: #28a745;
+}
+
+.tag-chip-info {
+    background-color: #17a2b8;;
+}
+
+.tag-chip-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.tag-remove {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
+    padding: 0 5px;
+}
+
+.tag-chip-warning .tag-remove {
+    color: #000;
+}
+
+.tag-remove:hover {
+    color: #ffcccc;
+}
+
+.tag-chip-warning .tag-remove:hover {
+    color: #666;
+}
