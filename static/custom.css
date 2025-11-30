@@ -112,36 +112,7 @@ h3.profile-title {
   color: var(--primary-colour-darkest);
 }
 
-/* Buttons */
-.btn-primary {
-  background-color: var(--primary-colour) !important;
-  border-color: var(--primary-colour) !important;
-  color: var(--bg-colour) !important;
-}
-
-.btn-primary:hover {
-  background-color: var(--primary-colour-darker) !important;
-  border-color: var(--primary-colour-darker) !important;
-}
-
-.btn-outline-primary {
-  color: var(--primary-colour) !important;
-  border-color: var(--primary-colour) !important;
-  background: transparent !important;
-  box-shadow: 0 2px 0 var(--primary-colour);
-}
-
-.btn-outline-primary:hover {
-  background-color: var(--primary-colour) !important;
-  color: var(--bg-colour) !important;
-}
-
-.btn-light.text-primary,
-.btn-light.text-primary:hover {
-  color: var(--primary-colour) !important;
-  border-color: var(--primary-colour) !important;
-}
-
+/* BUTTONS */
 .btn {
   transition: transform 0.08s ease;
 }
@@ -155,6 +126,31 @@ h3.profile-title {
 .btn:active:focus {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
   outline: none !important;
+}
+
+/* Solid buttons */
+.btn-primary {
+  background-color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-colour-darker) !important;
+  border-color: var(--primary-colour-darker) !important;
+}
+
+/* Transparent buttons with outline */
+.btn-outline-primary {
+  color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
+  background: transparent !important;
+  box-shadow: 0 2px 0 var(--primary-colour);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
 }
 
 /* Navbar */
