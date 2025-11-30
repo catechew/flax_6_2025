@@ -10,7 +10,7 @@ from recipes.models.meal_plan import MealPlan, MealSlot
 from recipes.models.recipe import Recipe
 from recipes.helpers.meal_plan_helpers import (
     get_monday, calculate_completion, build_week_schedule,
-    create_meal_slots, calculate_statistics
+    create_meal_slots
 )
 from recipes.helpers.shopping_list_helpers import (
     extract_ingredients, organise_shopping_list
@@ -52,13 +52,10 @@ class MealPlanDetailView(LoginRequiredMixin, View):
         """ Build template context data. """
         schedule = build_week_schedule(plan)
         completion = calculate_completion(plan)
-        stats = calculate_statistics(plan)
         
         return {
             "plan": plan,
             "schedule": schedule,
-            "filled_slots": stats['filled_slots'],
-            "unique_recipes": stats['unique_recipes'],
             "completion": completion,
         }
 

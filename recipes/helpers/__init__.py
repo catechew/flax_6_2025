@@ -19,7 +19,6 @@ from .meal_plan_helpers import (
     calculate_completion,
     build_week_schedule,
     create_meal_slots,
-    calculate_statistics,
 )
 
 from .shopping_list_helpers import (
@@ -47,7 +46,6 @@ __all__ = [
     'calculate_completion',
     'build_week_schedule',
     'create_meal_slots',
-    'calculate_statistics',
     'categorise_ingredient',
     'extract_ingredients',
     'consolidate_ingredients',
