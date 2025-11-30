@@ -16,5 +16,5 @@ Delete Recipe
 	{% csrf_token %}
 	<button type="submit">Yes, delete</button>
 </form>
-<p><a href="/all_recipes">Return list of recipes without change</a></p>
+<p><a href="{% url 'all_recipes' %}">Return list of recipes without change</a></p>
 {% endblock %}
