@@ -112,7 +112,7 @@ class MealSlotUpdateView(LoginRequiredMixin, View):
         )
         recipes = Recipe.objects.all()
         
-        return render(request, "meal_plan/meal_slot_update.html", {
+        return render(request, 'meal_plan/meal_slot_update.html', {
             "slot": slot,
             "recipes": recipes,
         })
