@@ -6,8 +6,8 @@ Recipes | Recipe #{{recipe.id}}
 
 {% block content %}
 <div class="container mt-4">
-<div class="row">
-    <div class="col-md-8">
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
     {# Recipe Header #}
     <div class="card shadow mb-4">
         {% if recipe.image %}
@@ -243,41 +243,6 @@ Recipes | Recipe #{{recipe.id}}
         <i class="bi bi-trash"></i> Delete this recipe
         </a>
     </div>
-    </div>
-
-    {# Sidebar #}
-    <div class="col-md-4">
-    <div class="card shadow mb-4">
-        <div class="card-header bg-warning text-dark">
-        <h5 class="mb-0">
-            <i class="bi bi-info-circle"></i> Recipe Info
-        </h5>
-        </div>
-        <div class="card-body">
-        <ul class="list-unstyled mb-0">
-            <li class="mb-2">
-            <strong><i class="bi bi-people"></i> Servings:</strong> {{ recipe.servings }}
-            </li>
-            <li class="mb-2">
-                {% include 'partials/recipe_time_display.html' with layout='vertical' %}
-            </li>
-            <li class="mb-2">
-            <strong><i class="bi bi-person"></i> Author:</strong> {{ recipe.author.username }}
-            </li>
-            <li class="mb-2">
-            <strong><i class="bi bi-calendar"></i> Published:</strong> {{ recipe.publication_date|date:"M. j, Y" }}
-            </li>
-
-            {% if course_tags or cuisine_tags or dietary_tags or other_tags %}
-            <li class="mb-0">
-                <strong><i class="bi bi-tags"></i> Tags:</strong>
-                <div class="mt-2">
-                    {% include 'partials/recipe_tags_display.html' %}
-                </div>
-            </li>
-            {% endif %}
-        </ul>
-        </div>
     </div>
     </div>
 </div>

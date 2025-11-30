@@ -1,5 +1,7 @@
 import re
 from recipes.models import Rating, Flag
+import openai
+import json
 
 def scale_ingredient(ingredient, factor):
     """
@@ -89,8 +91,6 @@ def get_recipe_time_display_context(recipe):
 
 def get_cost_estimate_data(scaled_ingredients, servings):
     """Get cost estimate data from AI for given ingredients and servings"""
-    import openai
-    import json
 
     ingredients_text = '\n'.join(scaled_ingredients)
     ai_prompt = f"""Estimate the total cost in GBP (£) for these ingredients for {servings} servings:
