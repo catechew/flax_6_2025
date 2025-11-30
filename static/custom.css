@@ -5,10 +5,10 @@
   --primary-colour-darkest: #5c0404;
   --primary-colour-lighter: #f7e0e0;
 
-  --colour-1: #ff9b0f;
-  --colour-2: #0b788b;
-  --colour-3: #3f9c01;
-  --colour-4: #5854c5;
+  --colour-1: #bd8e00;
+  --colour-2: #008ca8;
+  --colour-3: #198754;
+  --colour-4: #a7355b;
   --heart: #ff4d88;
 
   --black-colour: #202323;
@@ -244,7 +244,7 @@ h3.profile-title {
 }
 
 .dropdown-menu .form-check:hover {
-  background: #eef1f5;
+  background: var(--primary-colour-lighter);
 }
 
 .form-check-input:checked {
@@ -339,11 +339,11 @@ h3.profile-title {
 
 .rating-input label:hover,
 .rating-input label:hover ~ label {
-    color: #f0ad4e !important;
+    color: var(--colour-1) !important;
 }
 
 .rating-input input[type="radio"]:checked ~ label {
-    color: #f0ad4e !important;
+    color: var(--colour-1) !important;
 }
 
 .rating-input {
@@ -420,9 +420,7 @@ h3.profile-title {
     margin-top: 0.125rem;
 }
 
-
 /* Tag Chips */
-
 .tag-chip {
     display: inline-flex;
     align-items: center;
@@ -451,4 +449,54 @@ h3.profile-title {
 
 .tag-remove:hover {
     opacity: 0.7;
+}
+
+/* new buttons */
+.btn-course {
+  background-color: var(--colour-1) !important;
+  border-color: var(--colour-1) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-cuisine {
+  background-color: var(--colour-2) !important;
+  border-color: var(--colour-2) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-dietary {
+  background-color: var(--colour-3) !important;
+  border-color: var(--colour-3) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-other {
+  background-color: var(--colour-4) !important;
+  border-color: var(--colour-4) !important;
+  color: var(--bg-colour) !important;
+}
+
+
+.btn-outline-course {
+  background: transparent !important;
+  color: var(--colour-1) !important;
+  border-color: var(--colour-1) !important;
+}
+
+.btn-outline-cuisine {
+  background: transparent !important;
+  color: var(--colour-2) !important;
+  border-color: var(--colour-2) !important;
+}
+
+.btn-outline-dietary {
+  background: transparent !important;
+  color: var(--colour-3) !important;
+  border-color: var(--colour-3) !important;
+}
+
+.btn-outline-other {
+  background: transparent !important;
+  color: var(--colour-4) !important;
+  border-color: var(--colour-4) !important;
 }

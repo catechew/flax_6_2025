@@ -50,7 +50,7 @@
 
                 {# Course Filter #}
                 <div class="dropdown">
-                  <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="courseDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                  <button class="btn btn-outline-course btn-sm dropdown-toggle" type="button" id="courseDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                     Course {% if course_filters %}({{ course_filters|length }}){% endif %}
                   </button>
                   <div class="dropdown-menu filter-dropdown-menu">
@@ -68,7 +68,7 @@
 
                 {# Dietary Filter #}
                 <div class="dropdown">
-                <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" id="dietaryDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                <button class="btn btn-outline-dietary btn-sm dropdown-toggle" type="button" id="dietaryDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                   Dietary {% if dietary_filters %}({{ dietary_filters|length }}){% endif %}
                 </button>
                 <div class="dropdown-menu p-2" style="min-width: 200px;">
@@ -87,7 +87,7 @@
 
                 {# Cuisine Filter #}
                 <div class="dropdown">
-                <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button" id="cuisineDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                <button class="btn btn-outline-cuisine btn-sm dropdown-toggle" type="button" id="cuisineDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                   Cuisine {% if cuisine_filters %}({{ cuisine_filters|length }}){% endif %}
                 </button>
                 <div class="dropdown-menu p-2" style="min-width: 200px;">
@@ -106,7 +106,7 @@
 
                 {# Other Filter #}
                 <div class="dropdown">
-                <button class="btn btn-outline-warning btn-sm dropdown-toggle" type="button" id="otherDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                <button class="btn btn-outline-other btn-sm dropdown-toggle" type="button" id="otherDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                   Other {% if other_filters %}({{ other_filters|length }}){% endif %}
                 </button>
                 <div class="dropdown-menu p-2" style="min-width: 200px;">
