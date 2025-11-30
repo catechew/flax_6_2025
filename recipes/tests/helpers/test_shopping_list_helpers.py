@@ -21,7 +21,7 @@ User = get_user_model()
 
 
 class CategoriseIngredientTests(TestCase):
-    """Tests for categorise_ingredient helper."""
+    """ Tests for categorise_ingredient helper. """
 
     def test_known_meat_category(self):
         category = categorise_ingredient("Chicken breast")
@@ -30,10 +30,10 @@ class CategoriseIngredientTests(TestCase):
     def test_unknown_ingredient_returns_other(self):
         category = categorise_ingredient("Protein powder")
         self.assertEqual(category, "🛒 Other Items")
-
+    
 
 class ExtractIngredientsTests(TestCase):
-    """Tests for extract_ingredients helper."""
+    """ Tests for extract_ingredients helper. """
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -87,7 +87,7 @@ class ExtractIngredientsTests(TestCase):
 
 
 class ConsolidateIngredientsTests(TestCase):
-    """Tests for consolidate_ingredients helper."""
+    """ Tests for consolidate_ingredients helper. """
 
     def test_duplicate_items_are_grouped(self):
         items = [
@@ -109,6 +109,23 @@ class ConsolidateIngredientsTests(TestCase):
 
         self.assertEqual(consolidated[0]["count"], 1)
         self.assertEqual(consolidated[0]["item"], "Salt")
+    
+    def test_consolidate_single_item_does_not_scale(self):
+        items = [{
+            "item": "Salt",
+            "day": "Monday",
+            "meal": "Dinner",
+            "recipe": "Test Recipe",
+        }]
+
+        result = consolidate_ingredients(items)
+
+        self.assertEqual(result[0]["count"], 1)
+        self.assertEqual(result[0]["item"], "Salt")
+    
+    def test_consolidate_empty_list_returns_empty(self):
+        result = consolidate_ingredients([])
+        self.assertEqual(result, [])
 
 
 class OrganiseShoppingListTests(TestCase):
