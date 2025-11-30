@@ -5,7 +5,7 @@
     <div class="mb-3">
         {% if selected_tags %}
             {% for tag in selected_tags %}
-            <span class="{{ chip_class }}">
+            <span class="tag-chip tag-chip-{{ category }}">
                 {{ tag }}
                 <form method="POST" style="display: inline;">
                     {% csrf_token %}

@@ -115,16 +115,16 @@ Recipes | Recipe #{{recipe.id}}
         <div class="mb-3">
             <h6 class="mb-2"><i class="bi bi-tags"></i> Tags:</h6>
             {% for tag in course_tags %}
-            <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
+            <span class="tag-chip tag-chip-course">{{ tag }}</span>
             {% endfor %}
             {% for tag in cuisine_tags %}
-            <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+            <span class="tag-chip tag-chip-cuisine">{{ tag }}</span>
             {% endfor %}
             {% for tag in dietary_tags %}
-            <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+            <span class="tag-chip tag-chip-dietary">{{ tag }}</span>
             {% endfor %}
             {% for tag in other_tags %}
-            <span class="badge bg-warning text-dark me-1 mb-1">{{ tag }}</span>
+            <span class="tag-chip tag-chip-other">{{ tag }}</span>
             {% endfor %}
         </div>
         {% endif %}
@@ -199,7 +199,7 @@ Recipes | Recipe #{{recipe.id}}
             <form method="GET" class="d-inline">
                 <input type="hidden" name="servings" value="{{ desired_servings }}">
                 <input type="hidden" name="show_cost" value="true">
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="btn btn-dietary">
                     <i class="bi bi-calculator"></i> Get Cost Estimate
                 </button>
             </form>
@@ -233,7 +233,7 @@ Recipes | Recipe #{{recipe.id}}
         <div class="list-group list-group-flush">
             {% for ingredient in scaled_ingredients %}
             <label class="list-group-item d-flex align-items-center" style="cursor: pointer;">
-                <input class="form-check-input me-3 ingredient-checkbox" type="checkbox" style="width: 1.5em; height: 1.5em;">
+                <input class="form-check-input checkbox-lg me-3 ingredient-checkbox" type="checkbox">
                 <span class="ingredient-text">{{ ingredient }}</span>
             </label>
             {% endfor %}
@@ -253,7 +253,7 @@ Recipes | Recipe #{{recipe.id}}
         <div class="list-group list-group-flush">
             {% for step in steps %}
             <label class="list-group-item d-flex align-items-start" style="cursor: pointer;">
-                <input class="form-check-input me-3 step-checkbox flex-shrink-0" type="checkbox" style="width: 1.5em; height: 1.5em; margin-top: 0.125rem;">
+                <input class="form-check-input checkbox-lg me-3 step-checkbox flex-shrink-0" type="checkbox">
                 <div class="flex-grow-1">
                     <strong class="me-2">{{ forloop.counter }}.</strong>
                     <span class="step-text">{{ step }}</span>
@@ -266,7 +266,7 @@ Recipes | Recipe #{{recipe.id}}
 
     {# Action Buttons #}
     <div class="mb-4">
-        <a href="{% url 'home' %}" class="btn btn-lg btn-secondary">
+        <a href="{% url 'home' %}" class="btn btn-lg btn-primary">
         <i class="bi bi-arrow-left"></i> Go back home
         </a>
         <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-primary">
@@ -327,16 +327,16 @@ Recipes | Recipe #{{recipe.id}}
             <strong><i class="bi bi-tags"></i> Tags:</strong><br>
             <div class="mt-2">
                 {% for tag in course_tags %}
-                <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
+                <span class="tag-chip tag-chip-course">{{ tag }}</span>
                 {% endfor %}
                 {% for tag in cuisine_tags %}
-                <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+                <span class="tag-chip tag-chip-cuisine">{{ tag }}</span>
                 {% endfor %}
                 {% for tag in dietary_tags %}
-                <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+                <span class="tag-chip tag-chip-dietary">{{ tag }}</span>
                 {% endfor %}
                 {% for tag in other_tags %}
-                <span class="badge bg-warning text-dark me-1 mb-1">{{ tag }}</span>
+                <span class="tag-chip tag-chip-other">{{ tag }}</span>
                 {% endfor %}
             </div>
             </li>
