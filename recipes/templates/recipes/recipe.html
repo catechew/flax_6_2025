@@ -11,7 +11,7 @@ Recipes | Recipe #{{recipe.id}}
     {# Recipe Header #}
     <div class="card shadow mb-4">
         {% if recipe.image %}
-        <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}" style="max-height: 400px; object-fit: cover;">
+        <img src="{{ recipe.image.url }}" class="card-img-top recipe_detail_image" alt="{{ recipe.title }}">
         {% endif %}
         <div class="card-body">
         <h1 class="card-title">{{ recipe.title }}</h1>
@@ -89,11 +89,11 @@ Recipes | Recipe #{{recipe.id}}
             </span>
 
             {% if recipe.rating_count > 0 %}
-                <span class="text-muted" style="font-size: 0.9rem;">
+                <span class="text-muted rating-count-text">
                     ({{ recipe.rating_count }} rating{% if recipe.rating_count != 1 %}s{% endif %})
                 </span>
             {% else %}
-                <span class="text-muted" style="font-size: 0.9rem;">
+                <span class="text-muted rating-count-text">
                     (No ratings yet)
                 </span>
             {% endif %}
@@ -132,10 +132,9 @@ Recipes | Recipe #{{recipe.id}}
             <div class="col-auto">
             <input type="number" 
                     name="servings" 
-                    class="form-control" 
+                    class="form-control servings-input" 
                     value="{{ desired_servings }}" 
-                    min="1" 
-                    style="width: 100px;">
+                    min="1" >
             </div>
             <div class="col-auto">
             <button type="submit" class="btn btn-primary">
@@ -168,7 +167,7 @@ Recipes | Recipe #{{recipe.id}}
                 </button>
             </form>
             
-            <div class="mt-3" style="min-height: 60px;">
+            <div class="mt-3 cost-estimate-container">
                 {% if cost_estimate %}
                     <div class="alert alert-success mb-0">
                         <strong>Total Cost:</strong> £{{ cost_estimate.total_cost|floatformat:2 }}<br>
@@ -196,8 +195,8 @@ Recipes | Recipe #{{recipe.id}}
         <div class="card-body">
         <div class="list-group list-group-flush">
             {% for ingredient in scaled_ingredients %}
-            <label class="list-group-item d-flex align-items-center" style="cursor: pointer;">
-                <input class="form-check-input me-3 ingredient-checkbox" type="checkbox" style="width: 1.5em; height: 1.5em;">
+            <label class="list-group-item d-flex align-items-center checkable-list-item">
+                <input class="form-check-input me-3 ingredient-checkbox large-checkbox" type="checkbox">
                 <span class="ingredient-text">{{ ingredient }}</span>
             </label>
             {% endfor %}
@@ -216,8 +215,8 @@ Recipes | Recipe #{{recipe.id}}
         <div class="card-body">
         <div class="list-group list-group-flush">
             {% for step in steps %}
-            <label class="list-group-item d-flex align-items-start" style="cursor: pointer;">
-                <input class="form-check-input me-3 step-checkbox flex-shrink-0" type="checkbox" style="width: 1.5em; height: 1.5em; margin-top: 0.125rem;">
+            <label class="list-group-item d-flex align-items-start checkable-list-item">
+                <input class="form-check-input me-3 step-checkbox flex-shrink-0 large-checkbox" type="checkbox">
                 <div class="flex-grow-1">
                     <strong class="me-2">{{ forloop.counter }}.</strong>
                     <span class="step-text">{{ step }}</span>
