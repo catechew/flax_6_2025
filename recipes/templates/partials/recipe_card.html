@@ -4,7 +4,7 @@
     <img src="{{ recipe.image.url }}" class="card-img-top recipe-card-img" alt="{{ recipe.title }}">
     {% else %}
     <div class="card-img-top recipe-card-img d-flex align-items-center justify-content-center bg-secondary">
-        <i class="bi bi-image text-light" style="font-size: 3rem;"></i>
+        <i class="bi bi-image text-light recipe-card-placeholder-icon"></i>
     </div>
     {% endif %}
 
@@ -13,7 +13,7 @@
 
         <div class="small mb-2 d-flex align-items-center gap-1">
             {% include 'partials/recipe_rating_display.html' with rating=recipe.average_rating_rounded %}
-            <span class="text-muted" style="font-size: 0.9rem;">
+            <span class="text-muted rating-count-text">
                 ({{ recipe.rating_count }})
             </span>
         </div>
@@ -48,21 +48,11 @@
         </p>
         {% endif %}
 
-        {% if recipe.get_total_prep_time_minutes > 0 or recipe.get_total_cook_time_minutes > 0 %}
         <p class="card-text mb-3">
             <small class="text-muted">
-                {% if recipe.get_total_prep_time_minutes > 0 %}
-                <i class="bi bi-clock"></i> Prep: {{ recipe.get_prep_time_display }}
-                {% endif %}
-                {% if recipe.get_total_prep_time_minutes > 0 and recipe.get_total_cook_time_minutes > 0 %}
-                <span class="mx-1">|</span>
-                {% endif %}
-                {% if recipe.get_total_cook_time_minutes > 0 %}
-                <i class="bi bi-clock"></i> Cook: {{ recipe.get_cook_time_display }}
-                {% endif %}
+                {% include 'partials/recipe_time_display.html' with total_prep_minutes=recipe.get_total_prep_time_minutes total_cook_minutes=recipe.get_total_cook_time_minutes prep_time_display=recipe.get_prep_time_display cook_time_display=recipe.get_cook_time_display total_time_display=recipe.get_total_time_display %}
             </small>
         </p>
-        {% endif %}
 
         <div class="mt-auto d-flex gap-2">
             <a href="{% url 'recipe_detail' recipe.id %}" class="btn btn-primary flex-grow-1">

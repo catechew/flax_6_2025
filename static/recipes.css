@@ -197,3 +197,8 @@
 .step-checkbox-spacing {
     margin-top: 0.125rem;
 }
+
+ /* Recipe card placeholder icon */
+.recipe-card-placeholder-icon {
+    font-size: 3rem;
+}
