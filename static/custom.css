@@ -381,7 +381,7 @@ h3.profile-title {
 * Dashboard
 */
 .home-feature-icon {
-    color: var(--secondary-colour) !important;
+    color: var(--primary-colour) !important;
     text-shadow:
         0.6px 0 0,
         -0.6px 0 0,
@@ -397,6 +397,7 @@ h3.profile-title {
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 10px;
+    color: var(--bg-colour) !important;
 }
 
 .home-btn {
@@ -410,6 +411,17 @@ h3.profile-title {
 }
 
 .home-btn:hover {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.2);
     border-color: white;
+}
+
+.home-title {
+    font-size: 5rem;
+    font-weight: 800;
+    color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+
+    color: var(--bg-colour);
+    -webkit-text-stroke: 6px var(--bg-colour);   
 }
