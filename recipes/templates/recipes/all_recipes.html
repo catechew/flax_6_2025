@@ -161,10 +161,10 @@
   {% if course_filters or dietary_filters or cuisine_filters or other_filters %}
     <div class="alert alert-info mt-3">
       <strong>Active Filters:</strong>
-      {% for filter in course_filters %}<span class="badge bg-primary me-1">{% if filter %} Course: {{ filter }} {% endif %}</span>{% endfor %}
-      {% for filter in dietary_filters %}<span class="badge bg-success me-1">{% if filter %} Dietary: {{ filter }} {% endif %}</span>{% endfor %}
-      {% for filter in cuisine_filters %}<span class="badge bg-info me-1">{% if filter %} Cuisine: {{ filter }} {% endif %}</span>{% endfor %}
-      {% for filter in other_filters %}<span class="badge bg-warning text-dark me-1">{% if filter %} Other: {{ filter }} {% endif %}</span>{% endfor %}
+      {% for filter in course_filters %}<span class="tag-chip tag-chip-course">{% if filter %} Course: {{ filter }} {% endif %}</span>{% endfor %}
+      {% for filter in dietary_filters %}<span class="tag-chip tag-chip-dietary">{% if filter %} Dietary: {{ filter }} {% endif %}</span>{% endfor %}
+      {% for filter in cuisine_filters %}<span class="tag-chip tag-chip-cuisine">{% if filter %} Cuisine: {{ filter }} {% endif %}</span>{% endfor %}
+      {% for filter in other_filters %}<span class="tag-chip tag-chip-other">{% if filter %} Other: {{ filter }} {% endif %}</span>{% endfor %}
     </div>
   {% endif %}
 

@@ -5,7 +5,10 @@
   --primary-colour-darkest: #5c0404;
   --primary-colour-lighter: #f7e0e0;
 
-  --secondary-colour: #ff9a2d;
+  --colour-1: #ff9b0f;
+  --colour-2: #0b788b;
+  --colour-3: #3f9c01;
+  --colour-4: #5854c5;
 
   --black-colour: #202323;
   --bg-colour: #f7f3eb;
@@ -429,4 +432,38 @@ h3.profile-title {
 .checkbox-lg {
     width: 1.3em;
     height: 1.3em;
+    margin-top: 0.125rem;
+}
+
+
+/* Tag Chips */
+
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    margin: 3px;
+    color: var(--bg-colour);
+    cursor: default;
+    gap: 4px;
+}
+
+.tag-chip-course   { background-color: var(--colour-1); } 
+.tag-chip-cuisine  { background-color: var(--colour-2); } 
+.tag-chip-dietary  { background-color: var(--colour-3); }
+.tag-chip-other    { background-color: var(--colour-4); } 
+
+.tag-remove {
+    background: none;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 2px;
+    line-height: 1;
+}
+
+.tag-remove:hover {
+    opacity: 0.7;
 }

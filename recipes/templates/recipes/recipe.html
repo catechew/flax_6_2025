@@ -115,16 +115,16 @@ Recipes | Recipe #{{recipe.id}}
         <div class="mb-3">
             <h6 class="mb-2"><i class="bi bi-tags"></i> Tags:</h6>
             {% for tag in course_tags %}
-            <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
+            <span class="tag-chip tag-chip-course">{{ tag }}</span>
             {% endfor %}
             {% for tag in cuisine_tags %}
-            <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+            <span class="tag-chip tag-chip-cuisine">{{ tag }}</span>
             {% endfor %}
             {% for tag in dietary_tags %}
-            <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+            <span class="tag-chip tag-chip-dietary">{{ tag }}</span>
             {% endfor %}
             {% for tag in other_tags %}
-            <span class="badge bg-warning text-dark me-1 mb-1">{{ tag }}</span>
+            <span class="tag-chip tag-chip-other">{{ tag }}</span>
             {% endfor %}
         </div>
         {% endif %}
@@ -327,16 +327,16 @@ Recipes | Recipe #{{recipe.id}}
             <strong><i class="bi bi-tags"></i> Tags:</strong><br>
             <div class="mt-2">
                 {% for tag in course_tags %}
-                <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
+                <span class="tag-chip tag-chip-course">{{ tag }}</span>
                 {% endfor %}
                 {% for tag in cuisine_tags %}
-                <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+                <span class="tag-chip tag-chip-cuisine">{{ tag }}</span>
                 {% endfor %}
                 {% for tag in dietary_tags %}
-                <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+                <span class="tag-chip tag-chip-dietary">{{ tag }}</span>
                 {% endfor %}
                 {% for tag in other_tags %}
-                <span class="badge bg-warning text-dark me-1 mb-1">{{ tag }}</span>
+                <span class="tag-chip tag-chip-other">{{ tag }}</span>
                 {% endfor %}
             </div>
             </li>
