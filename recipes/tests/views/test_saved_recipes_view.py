@@ -45,7 +45,7 @@ class SavedRecipesViewTestCase(TestCase):
         """Test that logged-in users can access the saved recipes page."""
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'saved_recipes.html')
+        self.assertTemplateUsed(response, 'recipes/saved_recipes.html')
 
     def test_saved_recipes_list_is_empty_initially(self):
         """Test that the list is empty when no recipes are saved."""

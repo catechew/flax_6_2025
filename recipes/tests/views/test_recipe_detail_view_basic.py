@@ -31,7 +31,7 @@ class RecipeDetailViewTestCase(TestCase):
 
     def test_recipe_detail_template(self):
         response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'recipe.html')
+        self.assertTemplateUsed(response, 'recipes/recipe.html')
 
     # Test recipe object is passed in context
     def test_recipe_detail_context(self):

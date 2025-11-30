@@ -41,7 +41,7 @@ class RecipeCreateViewTestCase(TestCase):
     def test_get_create_recipe_page(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'recipe_form.html')
+        self.assertTemplateUsed(response, 'partials/recipe_form.html')
 
     # Test that form is passed to template context
     def test_create_recipe_form_in_context(self):
@@ -406,7 +406,7 @@ class RecipeCreateViewTestCase(TestCase):
         # Access page 2
         response = self.client.get(reverse('create_recipe_tags'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'recipe_tags_form.html')
+        self.assertTemplateUsed(response, 'recipes/recipe_tags_form.html')
 
     def test_create_recipe_tags_context(self):
         """Test that page 2 has required context variables"""

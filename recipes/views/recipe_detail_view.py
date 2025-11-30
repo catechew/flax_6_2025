@@ -2,7 +2,6 @@ from recipes.models.recipe import Recipe
 from django.http import Http404
 from django.shortcuts import render
 import re
-import openai
 import json
 from django.http import JsonResponse
 from recipes.models.rating import Rating
@@ -99,6 +98,8 @@ def scale_ingredient(ingredient, factor):
 
 # Get cost estimate data from AI for given ingredients and servings
 def get_cost_estimate_data(scaled_ingredients, servings):
+    import openai
+
     ingredients_text = '\n'.join(scaled_ingredients)
     ai_prompt = f"""Estimate the total cost in GBP (£) for these ingredients for {servings} servings:
 
