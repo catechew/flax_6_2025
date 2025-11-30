@@ -66,3 +66,9 @@ class MealSlotUpdateViewTests(TestCase):
   url = reverse("meal-slot-update", args=[self.slot.id])
   response = self.client.get(url)
   self.assertEqual(response.status_code, 302)
+
+  def test_post_with_no_recipe_does_not_crash(self):
+    url = reverse("meal-slot-update", args=[self.slot.id])
+    self.client.post(url, {})
+    self.slot.refresh_from_db()
+    self.assertIsNone(self.slot.recipe)
