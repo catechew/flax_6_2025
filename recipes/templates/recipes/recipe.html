@@ -81,15 +81,7 @@ Recipes | Recipe #{{recipe.id}}
             <strong>Average Rating:</strong>
 
             <span>
-                {% with avg=recipe.average_rating_rounded %}
-                    {% for i in "12345" %}
-                        {% if forloop.counter <= avg %}
-                            <i class="bi bi-star-fill text-warning"></i>
-                        {% else %}
-                            <i class="bi bi-star text-warning"></i>
-                        {% endif %}
-                    {% endfor %}
-                {% endwith %}
+                {% include 'partials/recipe_rating_display.html' with rating=recipe.average_rating_rounded %}
             </span>
 
             <span class="text-muted">
@@ -116,10 +108,11 @@ Recipes | Recipe #{{recipe.id}}
             {% include 'partials/recipe_tags_display.html' %}
         </div>
         {% endif %}
-    
 
         {# Display Times #}
-        {% include 'partials/recipe_time_display.html' %}
+        <div class="d-flex gap-3">
+            {% include 'partials/recipe_time_display.html' %}
+        </div>
         </div>
     </div>
 
@@ -266,13 +259,9 @@ Recipes | Recipe #{{recipe.id}}
             <li class="mb-2">
             <strong><i class="bi bi-people"></i> Servings:</strong> {{ recipe.servings }}
             </li>
-
-            {% if total_prep_minutes > 0 or total_cook_minutes > 0 %}
             <li class="mb-2">
-                {% include 'partials/recipe_time_display.html' %}
+                {% include 'partials/recipe_time_display.html' with layout='vertical' %}
             </li>
-            {% endif %}
-
             <li class="mb-2">
             <strong><i class="bi bi-person"></i> Author:</strong> {{ recipe.author.username }}
             </li>

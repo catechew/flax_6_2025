@@ -12,16 +12,7 @@
         <h5 class="card-title">{{ recipe.title }}</h5>
 
         <div class="small mb-2 d-flex align-items-center gap-1">
-            {% with avg=recipe.average_rating_rounded %}
-                {% for i in "12345" %}
-                    {% if forloop.counter <= avg %}
-                        <i class="bi bi-star-fill text-warning"></i>
-                    {% else %}
-                        <i class="bi bi-star text-warning"></i>
-                    {% endif %}
-                {% endfor %}
-            {% endwith %}
-            
+            {% include 'partials/recipe_rating_display.html' with rating=recipe.average_rating_rounded %}
             <span class="text-muted" style="font-size: 0.9rem;">
                 ({{ recipe.rating_count }})
             </span>

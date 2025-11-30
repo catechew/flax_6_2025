@@ -82,6 +82,8 @@ def get_recipe_time_display_context(recipe):
         'prep_time_display': recipe.get_prep_time_display(),
         'cook_time_display': recipe.get_cook_time_display(),
         'total_time_display' : recipe.get_total_time_display(),
+        'total_cook_minutes' : recipe.get_total_cook_time_minutes(),
+        'total_prep_minutes' : recipe.get_total_prep_time_minutes(),
     }
 
 
