@@ -172,11 +172,11 @@ class MyRecipesViewTestCase(TestCase):
         self.assertEqual(recipes[0].title, 'Test Recipe One') #has publication date as 17th
         self.assertEqual(recipes[1].title, 'Test Recipe Two') #has publication date as 16th
 
-    def test_my_recipes_displays_gravatar(self):
-        """Test that user's Gravatar is displayed."""
+    def test_my_recipes_displays_avatar(self):
+        """Test that user's avatar is displayed."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
-        self.assertContains(response, 'gravatar')
+        self.assertContains(response, 'avatar')
 
     def test_my_recipes_pluralization(self):
         """Test that recipe/recipes text is pluralized correctly."""
