@@ -47,7 +47,7 @@ class RecipeDetailHandler:
             'user_has_flagged': has_user_flagged_recipe(self.recipe, self.request.user),
         }
     
-    def get_cost_context(self):
+    def get_cost_context(self, scaled_ingredients):
         """return cost estimation context (cost estimate and cost error)"""
         cost_estimate = None
         cost_error = None
