@@ -127,6 +127,16 @@ h3.profile-title {
 }
 
 /*
+ * Background
+ */
+.bg-primary,
+.bg-secondary {
+  background-color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
+}
+
+/*
  * Buttons
  */
 .btn-primary,
@@ -797,3 +807,30 @@ h3.profile-title {
 .shopping-list-item input[type="checkbox"]:checked + label strong {
     text-decoration: line-through;
 }
+
+/* Profile Tabs Styling */
+
+#profileTabs .nav-link {
+    color: #6c757d !important;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+#profileTabs .nav-link:hover {
+    color: #212529 !important;
+    border-bottom-color: #dee2e6;
+}
+
+#profileTabs .nav-link.active {
+    color: #212529 !important;
+    background: transparent;
+    border-bottom-color: var(--primary-colour, #f15034) !important;
+    font-weight: 500;
+}
+
+#profileTabs .nav-item {
+    margin: 0 10px;
+}
+</style>
