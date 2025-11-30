@@ -1,4 +1,4 @@
-<div class="recipe-card card shadow-sm">
+<div class="recipe-card card shadow-sm clickable-card" data-recipe-url="{% url 'recipe_detail' recipe.id %}">
 
     {% if recipe.image %}
     <img src="{{ recipe.image.url }}" class="card-img-top recipe-card-img" alt="{{ recipe.title }}">
