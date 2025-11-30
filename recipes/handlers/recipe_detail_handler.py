@@ -11,7 +11,7 @@ from recipes.helpers.recipe_detail_helpers import (
 
 class RecipeDetailHandler:
     """
-    Handles recipe deail view workflow and context building
+    Handles recipe detail view workflow and context building
     """
 
     def __init__(self, request, recipe_id):
