@@ -7,6 +7,7 @@ import json
 from django.http import JsonResponse
 from recipes.models.rating import Rating
 
+# Display recipe details with optional cost estimation
 def recipe_detail(request, recipe_id):
     try:
         recipe = Recipe.objects.get(id=recipe_id)
@@ -23,7 +24,7 @@ def recipe_detail(request, recipe_id):
     # Calculate scaling factor
     scaling_factor = desired_servings / recipe.servings
 
-    # scale ingredients if needed
+    # Scale ingredients if needed
     scaled_ingredients = []
     for ingredient in recipe.get_ingredient_list():
         scaled_ingredient = scale_ingredient(ingredient, scaling_factor)
@@ -34,12 +35,21 @@ def recipe_detail(request, recipe_id):
     if request.user.is_authenticated:
         user_rating = Rating.objects.filter(recipe=recipe, user=request.user).first()
     
+    # Handle cost estimation if requested
+    cost_estimate = None
+    cost_error = None
+    if request.GET.get('show_cost') == 'true':
+        try:
+            cost_estimate = get_cost_estimate_data(scaled_ingredients, desired_servings)
+        except Exception as e:
+            cost_error = str(e)
+    
     context = {
         'recipe': recipe,
         'scaled_ingredients': scaled_ingredients,
         'desired_servings': desired_servings,
         'scaling_factor': scaling_factor,
-        'steps' : recipe.get_step_list(),
+        'steps': recipe.get_step_list(),
         'course_tags': recipe.get_course_tags_list(),
         'dietary_tags': recipe.get_dietary_tags_list(),
         'cuisine_tags': recipe.get_cuisine_tags_list(),
@@ -48,8 +58,10 @@ def recipe_detail(request, recipe_id):
         'cook_time_display': recipe.get_cook_time_display(),
         'total_prep_minutes': recipe.get_total_prep_time_minutes(),
         'total_cook_minutes': recipe.get_total_cook_time_minutes(),
-        'total_time_display' : recipe.get_total_time_display(),
+        'total_time_display': recipe.get_total_time_display(),
         'is_owner': recipe.author == request.user,
+        'cost_estimate': cost_estimate,
+        'cost_error': cost_error,
     }
    
     return render(request, 'recipe.html', context)
@@ -79,7 +91,7 @@ def scale_ingredient(ingredient, factor):
     return re.sub(pattern, replace_number, ingredient)
 
 # Get AI cost estimate for recipe based on scaled ingredients
-def get_recipe_cost_estimate(request, recipe_id):
+def get_cost_estimate_data(request, recipe_id):
     if request.method != 'POST':
         return JsonResponse({'error': 'Only POST requests allowed'}, status=405)
     
