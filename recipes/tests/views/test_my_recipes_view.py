@@ -73,7 +73,7 @@ class MyRecipesViewTestCase(TestCase):
         """Test that the correct template is used."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
-        self.assertTemplateUsed(response, 'user_profile.html')
+        self.assertTemplateUsed(response, 'users/user_profile.html')
 
     def test_my_recipes_shows_only_user_recipes(self):
         """Test that users only see their own recipes, not others'."""

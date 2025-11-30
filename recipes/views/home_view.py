@@ -5,4 +5,4 @@ from recipes.views.decorators import login_prohibited
 def home(request):
     """Display the application's start/home screen."""
 
-    return render(request, 'home.html')
+    return render(request, 'users/home.html')

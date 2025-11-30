@@ -51,4 +51,4 @@ def dashboard(request):
         "followed_recipes": followed_recipes,
     }
 
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard/dashboard.html', context)
