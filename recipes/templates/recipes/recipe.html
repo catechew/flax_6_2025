@@ -104,7 +104,7 @@ Recipes | Recipe #{{recipe.id}}
         {# Display Tags as Chips #}
         {% if course_tags or cuisine_tags or dietary_tags or other_tags %}
         <div class="mb-3">
-            <h6 class="mb-2"><i class="bi bi-tags"></i> Tags:</h6>
+            <i class="bi bi-tags"></i><strong> Tags:</strong> 
             {% include 'partials/recipe_tags_display.html' %}
         </div>
         {% endif %}
@@ -232,17 +232,16 @@ Recipes | Recipe #{{recipe.id}}
         <a href="{% url 'home' %}" class="btn btn-lg btn-secondary">
         <i class="bi bi-arrow-left"></i> Go back home
         </a>
-        <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-primary">
+        <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-lg btn-success">
             {% if is_owner %}
                 <i class="bi bi-pencil"></i> Update this recipe
             {% else %}
                 <i class="bi bi-plus-circle"></i> Create My Version
             {% endif %}
         </a>
-        <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-danger">
+        <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-lg btn-warning">
         <i class="bi bi-trash"></i> Delete this recipe
         </a>
-    </div>
     </div>
     </div>
 </div>

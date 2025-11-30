@@ -1,0 +1,119 @@
+/* Navbar */
+.main-navbar {
+  background-color: var(--primary-colour);
+  color: var(--bg-colour);
+}
+
+.navbar-brand-centered {
+  margin: 0 auto;
+  font-weight: 900;
+  font-size: 28px;
+  color: var(--white-colour) !important;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    text-align: left;
+    padding: 1rem 0;
+  }
+
+  .navbar-nav.me-auto {
+    margin-bottom: 1rem;
+  }
+
+  .d-flex.align-items-center.ms-auto {
+    flex-direction: column;
+    width: 100%;
+    gap: 15px !important;
+    align-items: flex-start !important;
+  }
+
+  .navbar form.d-flex,
+  .navbar form .input-group {
+    width: 100%;
+  }
+}
+
+/* Desktop Navbar */
+@media (min-width: 992px) {
+  .navbar-brand-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.dropdown-menu {
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  padding: 2px;
+  background: var(--white-colour);
+}
+
+.dropdown-item {
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: var(--primary-colour-darker);
+  font-weight: 600;
+  transition: 0.1s ease-in-out;
+  font-size: 0.9rem;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: var(--primary-colour-lighter);
+  color: var(--primary-colour);
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background: var(--primary-colour);
+  color: var(--white-colour);
+}
+
+.dropdown-divider {
+  border-top: 1px solid var(--primary-colour);
+  opacity: 0.7;
+  margin: 2px;
+}
+
+.dropdown-menu .form-check {
+  padding: 4px 5px 4px 35px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+
+.dropdown-menu .form-check:hover {
+  background: #eef1f5;
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-colour);
+  border-color: var(--primary-colour);
+}
+
+.filter-dropdown-menu {
+  min-width: 220px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Desktop fade animation */
+@media (min-width: 992px) {
+  .dropdown-menu {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}

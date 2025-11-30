@@ -51,15 +51,15 @@
                         <form method="POST" style="display: inline;">
                             {% csrf_token %}
                             {% if mode == 'create' %}
-                                <button type="submit" name="create_recipe" class="btn btn-success btn-lg">
+                                <button type="submit" name="create_recipe" class="btn btn-secondary btn-lg">
                                     <i class="bi bi-check-circle"></i> Create Recipe
                                 </button>
                             {% elif is_owner %}
-                                <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
+                                <button type="submit" name="update_recipe" class="btn btn-secondary btn-lg">
                                     <i class="bi bi-check-circle"></i> Update Recipe
                                 </button>
                             {% else %}
-                                <button type="submit" name="update_recipe" class="btn btn-success btn-lg">
+                                <button type="submit" name="update_recipe" class="btn btn-secondary btn-lg">
                                     <i class="bi bi-plus-circle"></i> Create My Version
                                 </button>
                             {% endif %}
