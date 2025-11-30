@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from recipes.models.meal_plan import MealPlan
+from recipes.helpers.meal_plan_helpers import get_monday
 
 User = get_user_model()
 
@@ -34,13 +35,17 @@ class MealPlanCreateViewTests(TestCase):
   self.assertEqual(response.status_code, 302)
 
  def test_creates_meal_plan_on_get(self):
-  self.client.get(self.url)
+  response = self.client.get(self.url)
+
+  self.assertEqual(response.status_code, 302)
   self.assertEqual(MealPlan.objects.count(), 1)
 
  def test_does_not_create_duplicate_plan(self):
+  week_start = get_monday(date.today())
+
   MealPlan.objects.create(
    user=self.user,
-   week_start=date.today(),
+   week_start=week_start,
   )
 
   self.client.get(self.url)
