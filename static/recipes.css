@@ -1,0 +1,113 @@
+/* Recipe Cards*/
+.recipe-card {
+  background: var(--white-colour) !important;
+  border: none !important;
+  border-radius: 2px;
+  padding: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0px 10px var(--black-colour);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-4px);
+  color: var(--primary-colour);
+}
+
+.recipe-card i.bi-tag,
+.recipe-card i.bi-people {
+  color: var(--primary-colour) !important;
+  text-shadow:
+    0.2px 0 0 var(--primary-colour),
+    -0.2px 0 0 var(--primary-colour),
+    0 0.2px 0 var(--primary-colour),
+    0 -0.2px 0 var(--primary-colour);
+}
+
+.recipe-card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.recipe-card .card-body {
+  padding: 0.5rem 0.75rem;
+}
+
+.recipe-card .card-title {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.recipe-card .card-text {
+  line-height: 1.2;
+}
+
+.recipe-card .mt-auto {
+  margin-top: 0.5rem !important;
+}
+
+
+/* Rating input */ 
+.rating-input input[type="radio"] {
+    display: none;
+}
+
+.rating-input label {
+    cursor: pointer;
+    color: var(--primary-colour-darker);
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label {
+    color: #f0ad4e !important;
+}
+
+.rating-input input[type="radio"]:checked ~ label {
+    color: #f0ad4e !important;
+}
+
+.rating-input {
+    direction: rtl;
+}
+
+/* Favourites heart */
+.heart-btn {
+    background: transparent !important;
+    border: none;
+    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.heart-btn i {
+    font-size: 1.3rem;
+    color: var(--black-colour); 
+}
+
+.heart-btn:hover i {
+    content: "\f415"; 
+    color: var(--primary-colour);
+}
+
+.heart-btn.favourited i {
+    color: #ff4d88 !important;
+}
+
+.heart-btn.favourited:hover i {
+    color: #ff4d88 !important;
+}
+
+/* Recipe detail checkbox strikethrough */
+.ingredient-checkbox:checked ~ .ingredient-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.step-checkbox:checked ~ div .step-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
