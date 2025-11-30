@@ -146,11 +146,11 @@
             {# Form Buttons #}
             <div class="d-flex justify-content-between align-items-center mt-4">
                 {% if mode == 'create' %}
-                    <a href="{% url 'cancel_recipe' %}" class="btn btn-secondary btn-lg">
+                    <a href="{% url 'cancel_recipe' %}" class="btn btn-primary btn-lg">
                         <i class="bi bi-x-circle"></i> Cancel
                     </a>
                 {% else %}
-                    <a href="{% url 'cancel_recipe_update' recipe.id %}" class="btn btn-secondary btn-lg">
+                    <a href="{% url 'cancel_recipe_update' recipe.id %}" class="btn btn-primary btn-lg">
                         <i class="bi bi-x-circle"></i> Cancel
                     </a>
                 {% endif %}
