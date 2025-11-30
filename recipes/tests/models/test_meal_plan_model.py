@@ -47,6 +47,7 @@ class MealPlanModelTests(TestCase):
   def test_same_week_allowed_for_different_users(self):
     other_user = User.objects.create_user(
       username="@otheruser",
+      email="other@example.com",
       password="Password123",
     )
 
