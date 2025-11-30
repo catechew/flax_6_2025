@@ -39,11 +39,11 @@
                     {# Final Actions #}
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         {% if mode == 'create' %}
-                            <a href="{% url 'create_recipe' %}" class="btn btn-secondary btn-lg">
+                            <a href="{% url 'create_recipe' %}" class="btn btn-primary btn-lg">
                                 <i class="bi bi-arrow-left"></i> Back
                             </a>
                         {% else %}
-                            <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-secondary btn-lg">
+                            <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-primary btn-lg">
                                 <i class="bi bi-arrow-left"></i> Back
                             </a>
                         {% endif %}

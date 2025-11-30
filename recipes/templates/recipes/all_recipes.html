@@ -30,13 +30,13 @@
 
         {# Mobile: Icon buttons that toggle collapse #}
         <div class="d-md-none d-flex gap-2 mb-2">
-          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersSection" aria-expanded="false">
+          <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersSection" aria-expanded="false">
             <i class="bi bi-funnel"></i>
             {% if total_filters > 0 %}
               <span class="ms-1">({{ total_filters }})</span>
             {% endif %}
           </button>
-          <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#sortSection" aria-expanded="false">
+          <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#sortSection" aria-expanded="false">
             <i class="bi bi-sort-down"></i>
           </button>
         </div>
@@ -124,7 +124,7 @@
               <button type="submit" class="btn btn-primary btn-sm">
                   <i class="bi bi-search"></i> Apply
               </button>
-              <a href="{% url 'all_recipes' %}" class="btn btn-secondary btn-sm">
+              <a href="{% url 'all_recipes' %}" class="btn btn-primary btn-sm">
                 <i class="bi bi-x-circle"></i> Clear
               </a>
             </div>

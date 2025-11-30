@@ -113,29 +113,25 @@ h3.profile-title {
 }
 
 /* Buttons */
-.btn-primary,
-.btn-secondary {
+.btn-primary {
   background-color: var(--primary-colour) !important;
   border-color: var(--primary-colour) !important;
   color: var(--bg-colour) !important;
 }
 
-.btn-primary:hover,
-.btn-secondary:hover {
+.btn-primary:hover {
   background-color: var(--primary-colour-darker) !important;
   border-color: var(--primary-colour-darker) !important;
 }
 
-.btn-outline-primary,
-.btn-outline-secondary {
+.btn-outline-primary {
   color: var(--primary-colour) !important;
   border-color: var(--primary-colour) !important;
   background: transparent !important;
   box-shadow: 0 2px 0 var(--primary-colour);
 }
 
-.btn-outline-primary:hover,
-.btn-outline-secondary:hover {
+.btn-outline-primary:hover {
   background-color: var(--primary-colour) !important;
   color: var(--bg-colour) !important;
 }

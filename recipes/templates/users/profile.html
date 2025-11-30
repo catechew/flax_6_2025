@@ -18,7 +18,7 @@
         <div class="d-flex gap-2 justify-content-center">
           <form action="{% url 'randomise_avatar' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-outline-secondary btn-sm">
+            <button type="submit" class="btn btn-outline-primary btn-sm">
               <i class="bi bi-shuffle"></i> Get Random Avatar
             </button>
           </form>
