@@ -9,6 +9,7 @@
   --colour-2: #0b788b;
   --colour-3: #3f9c01;
   --colour-4: #5854c5;
+  --heart: #ff4d88;
 
   --black-colour: #202323;
   --bg-colour: #f7f3eb;
@@ -119,13 +120,13 @@ h3.profile-title {
 
 .btn:active {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 var(--primary-colour);
+  box-shadow: none !important;
 }
 
 .btn:focus,
 .btn:active:focus {
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
   outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Solid buttons */
@@ -153,7 +154,7 @@ h3.profile-title {
   color: var(--bg-colour) !important;
 }
 
-/* Navbar */
+/* NAVBAR */
 .main-navbar {
   background-color: var(--primary-colour);
   color: var(--bg-colour);
@@ -199,6 +200,7 @@ h3.profile-title {
   }
 }
 
+/* DROPDOWNS */
 .dropdown-menu {
   border: none;
   border-radius: 2px;
@@ -273,6 +275,9 @@ h3.profile-title {
   }
 }
 
+/*
+* RECIPE CARD
+*/
 .recipe-card {
   background: var(--white-colour) !important;
   border: none !important;
@@ -322,6 +327,7 @@ h3.profile-title {
   margin-top: 0.5rem !important;
 }
 
+/* Ratings */
 .rating-input input[type="radio"] {
     display: none;
 }
@@ -344,6 +350,7 @@ h3.profile-title {
     direction: rtl;
 }
 
+/* Heart button */
 .heart-btn {
     background: transparent !important;
     border: none;
@@ -356,20 +363,6 @@ h3.profile-title {
 
 .heart-btn i {
     font-size: 1.3rem;
-    color: var(--black-colour); 
-}
-
-.heart-btn:hover i {
-    content: "\f415"; 
-    color: var(--primary-colour);
-}
-
-.heart-btn.favourited i {
-    color: #ff4d88 !important;
-}
-
-.heart-btn.favourited:hover i {
-    color: #ff4d88 !important;
 }
 
 /*
