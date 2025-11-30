@@ -119,25 +119,7 @@ Recipes | Recipe #{{recipe.id}}
     
 
         {# Display Times #}
-        {% if total_prep_minutes > 0 or total_cook_minutes > 0 %}
-        <div class="d-flex gap-3">
-            {% if total_prep_minutes > 0 %}
-            <div>
-                <i class="bi bi-clock"></i> <strong>Prep:</strong> {{ prep_time_display }}
-            </div>
-            {% endif %}
-            {% if total_cook_minutes > 0 %}
-            <div>
-                <i class="bi bi-fire"></i> <strong>Cook:</strong> {{ cook_time_display }}
-            </div>
-            {% endif %}
-            {% if total_time_display %}
-            <div>
-                <i class="bi bi-hourglass-split"></i> <strong>Total:</strong> {{ total_time_display }}
-            </div>
-            {% endif %}
-        </div>
-        {% endif %}
+        {% include 'partials/recipe_time_display.html' %}
         </div>
     </div>
 
@@ -285,24 +267,11 @@ Recipes | Recipe #{{recipe.id}}
             <strong><i class="bi bi-people"></i> Servings:</strong> {{ recipe.servings }}
             </li>
 
-            {% if total_prep_minutes > 0 %}
+            {% if total_prep_minutes > 0 or total_cook_minutes > 0 %}
             <li class="mb-2">
-            <strong><i class="bi bi-clock"></i> Prep Time:</strong> {{ prep_time_display }}
+                {% include 'partials/recipe_time_display.html' %}
             </li>
             {% endif %}
-
-            {% if total_cook_minutes > 0 %}
-            <li class="mb-2">
-            <strong><i class="bi bi-clock"></i> Cook Time:</strong> {{ cook_time_display }}
-            </li>
-            {% endif %}
-
-            {% if total_time_display %}
-            <li class="mb-2">
-            <strong><i class="bi bi-hourglass-split"></i> Total Time:</strong> {{ total_time_display }}
-            </li>
-            {% endif %}
-
 
             <li class="mb-2">
             <strong><i class="bi bi-person"></i> Author:</strong> {{ recipe.author.username }}

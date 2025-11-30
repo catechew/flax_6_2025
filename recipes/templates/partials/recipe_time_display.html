@@ -1,0 +1,20 @@
+{# Display Times #}
+{% if total_prep_minutes > 0 or total_cook_minutes > 0 %}
+<div class="d-flex gap-3">
+    {% if total_prep_minutes > 0 %}
+    <div>
+        <i class="bi bi-clock"></i> <strong>Prep:</strong> {{ prep_time_display }}
+    </div>
+    {% endif %}
+    {% if total_cook_minutes > 0 %}
+    <div>
+        <i class="bi bi-fire"></i> <strong>Cook:</strong> {{ cook_time_display }}
+    </div>
+    {% endif %}
+    {% if total_time_display %}
+    <div>
+        <i class="bi bi-hourglass-split"></i> <strong>Total:</strong> {{ total_time_display }}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
