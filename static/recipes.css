@@ -112,52 +112,44 @@
     opacity: 0.6;
 }
 
+.checkbox-lg {
+    width: 1.3em;
+    height: 1.3em;
+    margin-top: 0.125rem;
+}
+
 /* Recipe tags */ 
+/* Tag Chips */
 .tag-chip {
-    display: inline-block;
-    background-color: #007bff;
-    color: white;
-    padding: 5px 10px;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 0.8rem;
     margin: 3px;
-    border-radius: 15px;
-    font-size: 14px;
+    color: var(--bg-colour);
+    cursor: default;
+    gap: 4px;
 }
 
-.tag-chip-success {
-    background-color: #28a745;
-}
-
-.tag-chip-info {
-    background-color: #17a2b8;;
-}
-
-.tag-chip-warning {
-    background-color: #ffc107;
-    color: #000;
-}
+.tag-chip-course   { background-color: var(--colour-1); } 
+.tag-chip-cuisine  { background-color: var(--colour-2); } 
+.tag-chip-dietary  { background-color: var(--colour-3); }
+.tag-chip-other    { background-color: var(--colour-4); } 
 
 .tag-remove {
     background: none;
     border: none;
-    color: white;
-    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    margin-left: 5px;
-    padding: 0 5px;
-}
-
-.tag-chip-warning .tag-remove {
-    color: #000;
+    padding: 0 2px;
+    line-height: 1;
 }
 
 .tag-remove:hover {
-    color: #ffcccc;
+    opacity: 0.7;
 }
 
-.tag-chip-warning .tag-remove:hover {
-    color: #666;
-}
 
 /* Recipe detail page styles */
 

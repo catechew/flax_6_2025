@@ -1,15 +1,15 @@
 {# Display Tags as Chips #}
 {% if course_tags or cuisine_tags or dietary_tags or other_tags %}
     {% for tag in course_tags %}
-    <span class="badge bg-primary me-1 mb-1">{{ tag }}</span>
+    <span class="tag-chip tag-chip-course">{{ tag }}</span>
     {% endfor %}
     {% for tag in cuisine_tags %}
-    <span class="badge bg-info me-1 mb-1">{{ tag }}</span>
+    <span class="tag-chip tag-chip-cuisine">{{ tag }}</span>
     {% endfor %}
     {% for tag in dietary_tags %}
-    <span class="badge bg-success me-1 mb-1">{{ tag }}</span>
+    <span class="tag-chip tag-chip-dietary">{{ tag }}</span>
     {% endfor %}
     {% for tag in other_tags %}
-    <span class="badge bg-warning text-dark me-1 mb-1">{{ tag }}</span>
+    <span class="tag-chip tag-chip-other">{{ tag }}</span>
     {% endfor %}
 {% endif %}

@@ -116,3 +116,52 @@
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
   outline: none !important;
 }
+
+/* Tag buttons */
+.btn-course {
+  background-color: var(--colour-1) !important;
+  border-color: var(--colour-1) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-cuisine {
+  background-color: var(--colour-2) !important;
+  border-color: var(--colour-2) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-dietary {
+  background-color: var(--colour-3) !important;
+  border-color: var(--colour-3) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-other {
+  background-color: var(--colour-4) !important;
+  border-color: var(--colour-4) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-outline-course {
+  background: transparent !important;
+  color: var(--colour-1) !important;
+  border-color: var(--colour-1) !important;
+}
+
+.btn-outline-cuisine {
+  background: transparent !important;
+  color: var(--colour-2) !important;
+  border-color: var(--colour-2) !important;
+}
+
+.btn-outline-dietary {
+  background: transparent !important;
+  color: var(--colour-3) !important;
+  border-color: var(--colour-3) !important;
+}
+
+.btn-outline-other {
+  background: transparent !important;
+  color: var(--colour-4) !important;
+  border-color: var(--colour-4) !important;
+}
