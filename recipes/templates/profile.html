@@ -14,7 +14,7 @@
              class="rounded-circle mb-3"
              style="width: 150px; height: 150px; object-fit: cover; border: 3px solid var(--primary-colour);">
 
-        <!-- Action buttons (no status text) -->
+        <!-- Action buttons -->
         <div class="d-flex gap-2 justify-content-center">
           <form action="{% url 'randomise_avatar' %}" method="post">
             {% csrf_token %}

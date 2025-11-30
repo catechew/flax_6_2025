@@ -47,6 +47,10 @@ from recipes.views.recipe_form_view import recipe_form_view
 from recipes.views.recipe_tags_view import recipe_tags_view
 from recipes.views.recipe_cancel_view import cancel_recipe_operation
 
+from recipes.views.some_recipes_view import some_recipes
+from recipes.views.ai_recipe_finder_view import *
+
+
 # Meal plan views
 from recipes.views.meal_plan_view import (
     MealPlanCreateView,
@@ -84,7 +88,6 @@ urlpatterns = [
     path('update_recipe/<int:recipe_id>/tags/', recipe_tags_view, name='update_recipe_tags'),
     path('update_recipe/<int:recipe_id>/cancel/', cancel_recipe_operation, name='cancel_recipe_update'),
 
-
     path('user/<int:user_id>/', user_profile, name='user_profile'),
     path('user/<int:user_id>/follow/', follow_user, name='follow_user'),
     path('user/<int:user_id>/unfollow/', unfollow_user, name='unfollow_user'),
@@ -105,8 +108,15 @@ urlpatterns = [
     path('recipe/<int:recipe_id>/save/', toggle_save_recipe, name='toggle_save_recipe'),
     path('saved_recipes/', saved_recipe_list, name='saved_recipe_list'),
 
-    path("recipe/<int:recipe_id>/rate/", rate_recipe, name="rate_recipe"),
-    path("recipe/<int:recipe_id>/flag/", views.flag_recipe, name="flag_recipe"),
+    path("recipes/<int:recipe_id>/rate/", rate_recipe, name="rate_recipe"),
+
+    path("recipes/<int:recipe_id>/flag/", views.flag_recipe, name="flag_recipe"),
+    path('recipe/<int:recipe_id>/unflag/', views.unflag_recipe, name='unflag_recipe'),
+
+    path('some-recipes/', some_recipes, name='some_recipes'),
+
+    path('ai-recipe-finder/', ai_recipe_generator_view, name='ai_recipe_finder'),
+
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
