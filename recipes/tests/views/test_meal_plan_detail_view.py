@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from recipes.models.meal_plan import MealPlan
+from recipes.helpers.meal_plan_helpers import create_meal_slots
 
 User = get_user_model()
 
@@ -26,6 +27,9 @@ class MealPlanDetailViewTests(TestCase):
       user=self.user,
       week_start=date(2025, 11, 24),
     )
+
+    create_meal_slots(self.plan)
+    
     self.url = reverse(
       "meal-plan-detail",
       args=[self.plan.id],
