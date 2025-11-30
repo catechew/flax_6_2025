@@ -46,7 +46,7 @@ class MealPlanDetailView(LoginRequiredMixin, View):
         )
         
         context = self._build_context(plan)
-        return render(request, "meal_plan_detail.html", context)
+        return render(request, "meal_plan/meal_plan_detail.html", context)
     
     def _build_context(self, plan):
         """ Build template context data. """
@@ -112,7 +112,7 @@ class MealSlotUpdateView(LoginRequiredMixin, View):
         )
         recipes = Recipe.objects.all()
         
-        return render(request, "meal_slot_update.html", {
+        return render(request, "meal_plan/meal_slot_update.html", {
             "slot": slot,
             "recipes": recipes,
         })
@@ -164,7 +164,7 @@ class ShoppingListView(LoginRequiredMixin, View):
         )
         
         context = self._build_shopping_context(plan)
-        return render(request, 'shopping_list.html', context)
+        return render(request, 'meal_plan/shopping_list.html', context)
     
     def _build_shopping_context(self, plan):
         """ Build shopping list context data. """

@@ -18,4 +18,4 @@ def recipe_delete(request, recipe_id):
 		path = reverse('all_recipes')
 		return HttpResponseRedirect(path)
 	else:
-		return render(request, 'delete_recipe.html', {'recipe': recipe})
+		return render(request, 'recipes/delete_recipe.html', {'recipe': recipe})

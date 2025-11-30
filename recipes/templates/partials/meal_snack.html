@@ -12,7 +12,9 @@
     {% csrf_token %}
     <textarea name="notes"
               class="form-control snack-notes-input"
-              rows="2">{{ day.slots.snack.notes }}</textarea>
+              rows="2"
+              placeholder="e.g., coke, whey protein shake, trail nuts, salted crisps..."
+    >{{ day.slots.snack.notes }}</textarea>
     <button class="btn btn-sm btn-outline-primary mt-2">
      💾 Save
     </button>

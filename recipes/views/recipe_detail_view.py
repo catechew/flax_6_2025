@@ -49,7 +49,7 @@ def recipe_detail(request, recipe_id):
         'is_owner': recipe.author == request.user,
     }
    
-    return render(request, 'recipe.html', context)
+    return render(request, 'recipes/recipe.html', context)
 
 # Scale ingredient quantities by the given factor
 def scale_ingredient(ingredient, factor):

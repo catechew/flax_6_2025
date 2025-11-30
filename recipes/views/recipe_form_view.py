@@ -29,7 +29,7 @@ def handle_form_post(request, handler):
 
     if not form.is_valid():
         context = handler.get_form_context(form)
-        return render(request, 'recipe_form.html', context)
+        return render(request, 'partials/recipe_form.html', context)
 
     # Save form data to session
     save_form_to_session(request, handler.session_data)
@@ -51,7 +51,7 @@ def handle_form_get(request, handler):
         form = handler.create_form()
 
     context = handler.get_form_context(form)
-    return render(request, 'recipe_form.html', context)
+    return render(request, 'partials/recipe_form.html', context)
 
 def save_form_to_session(request, session_data):
     """Save form data to session""" 

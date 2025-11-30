@@ -184,4 +184,4 @@ def all_recipes(request):
         'total_filters': total_filters,
     }
 
-    return render(request, 'all_recipes.html', context)
+    return render(request, 'recipes/all_recipes.html', context)

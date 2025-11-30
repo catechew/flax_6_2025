@@ -13,7 +13,7 @@ def user_profile(request, user_id):
     is_own_profile = request.user == profile_user
     is_following = request.user.is_following(profile_user) if not is_own_profile else False
 
-    return render(request, 'user_profile.html', {
+    return render(request, 'users/user_profile.html', {
         'profile_user': profile_user,
         'recipes': user_recipes,
         'recipe_count': user_recipes.count(),
