@@ -1,4 +1,4 @@
-/* Root Variables */
+/* ROOT VARIABLES */
 :root {
   --primary-colour: #f14f32;
   --primary-colour-darker: #c53c32;
@@ -16,7 +16,7 @@
   --white-colour: #FAF9F5;
 }
 
-/* Base */
+/* BASE */
 body, button, input, textarea, select {
   font-family: Tahoma, sans-serif !important;
   color: var(--black-colour) !important;
@@ -30,40 +30,12 @@ body {
   border-radius: 0;
 }
 
-/* Layout Helpers */
+/* LAYOUTT */
 .content {
   padding-top: 10px;
 }
 
-.h-100 {
-  min-height: 100vh;
-  height: 100vh;
-}
-
-.vcenter-item {
-  display: flex;
-  align-items: center;
-}
-
-/* Welcome Page */
-h1.cover-heading {
-  color: var(--primary-colour);
-  font-weight: bold;
-  font-size: 4rem;
-}
-
-p.cover-text {
-  font-size: 1.4rem;
-}
-
-.cover-card {
-  background: transparent;
-  border: none;
-  max-width: 30rem;
-  padding: 30px 50px;
-}
-
-/* Form */
+/* FORMS */
 .nolabel label {
   display: none;
 }
@@ -74,36 +46,7 @@ ul.errorlist {
   margin: 0;
 }
 
-/* Typography */
-.low-key {
-  color: #777;
-  font-weight: 300;
-}
-
-.list-title {
-  margin: 10px 0 20px;
-}
-
-.profile-image {
-  width: 120px;
-  float: left;
-}
-
-.profile-text {
-  overflow: hidden;
-  padding-left: 20px;
-}
-
-h3.profile-title {
-  margin-bottom: 0;
-}
-
-.profile-username {
-  font-weight: 300;
-  font-style: italic;
-}
-
-/* Links */
+/* LINKS */
 .content a {
   text-decoration: none;
   color: var(--primary-colour-darkest);
@@ -111,6 +54,7 @@ h3.profile-title {
 
 .content a:hover {
   color: var(--primary-colour-darkest);
+  text-decoration: underline;
 }
 
 /* BUTTONS */
