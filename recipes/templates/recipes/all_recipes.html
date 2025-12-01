@@ -1,29 +1,209 @@
-{% extends "base/base_content.html" %}
+{% extends 'base/base_content.html' %}
 
 {% block content %}
 <div class="container mt-4">
 
+  <!-- Header -->
   {% if search_query %}
-    <h2>Search results for “{{ search_query }}”</h2>
+    <h2>Search results for "{{ search_query }}"</h2>
     <p class="text-muted">
-      Found {{ page_object.paginator.count }} recipe(s)
+      Found {% if total_count %}{{ total_count }}{% elif page_object.paginator %}{{ page_object.paginator.count }}{% else %}{{ recipes.count }}{% endif %} recipe(s)
     </p>
   {% else %}
     <h2>All Recipes</h2>
   {% endif %}
 
-  {% include "partials/recipe_filters.html" %}
-  {% include "partials/recipe_active_filters.html" %}
+  <!-- Filter and Sort Form -->
+  <div class="mb-4">
+    <form method="GET" action="{% url 'all_recipes' %}" id="filterForm">
+      {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
 
-  <div class="row mt-4">
-    {% for recipe in page_object %}
-      <div class="col-md-4 mb-4">
-        {% include "partials/recipe_card.html" with recipe=recipe show_save_button=True %}
+      <!-- Mobile toggle buttons -->
+      <div class="d-md-none d-flex gap-2 mb-2">
+        <button class="btn btn-outline-primary btn-sm" type="button" 
+                data-bs-toggle="collapse" data-bs-target="#filtersSection">
+          <i class="bi bi-funnel"></i>{% if total_filters > 0 %} ({{ total_filters }}){% endif %}
+        </button>
+        <button class="btn btn-outline-primary btn-sm" type="button" 
+                data-bs-toggle="collapse" data-bs-target="#sortSection">
+          <i class="bi bi-sort-down"></i>
+        </button>
       </div>
-    {% endfor %}
+      
+      <div class="row g-2">
+        <!-- Filters Section -->
+        <div class="col-12 col-md-auto">
+          <div class="collapse d-md-block mb-3 mb-md-0" id="filtersSection">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <i class="bi bi-funnel d-none d-md-inline"></i>
+
+              <!-- Course Filter -->
+              <div class="dropdown">
+                <button class="btn btn-outline-course btn-sm dropdown-toggle" type="button" 
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                  Course{% if course_filters %} ({{ course_filters|length }}){% endif %}
+                </button>
+                <div class="dropdown-menu p-2" style="min-width: 200px;">
+                  {% for option in course_options %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="course" value="{{ option }}" 
+                           id="course_{{ forloop.counter }}" {% if option in course_filters %}checked{% endif %}>
+                    <label class="form-check-label" for="course_{{ forloop.counter }}">{{ option|title }}</label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Dietary Filter -->
+              <div class="dropdown">
+                <button class="btn btn-outline-dietary btn-sm dropdown-toggle" type="button" 
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                  Dietary{% if dietary_filters %} ({{ dietary_filters|length }}){% endif %}
+                </button>
+                <div class="dropdown-menu p-2" style="min-width: 200px;">
+                  {% for option in dietary_options %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="dietary" value="{{ option }}" 
+                           id="dietary_{{ forloop.counter }}" {% if option in dietary_filters %}checked{% endif %}>
+                    <label class="form-check-label" for="dietary_{{ forloop.counter }}">{{ option|title }}</label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Cuisine Filter -->
+              <div class="dropdown">
+                <button class="btn btn-outline-cuisine btn-sm dropdown-toggle" type="button" 
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                  Cuisine{% if cuisine_filters %} ({{ cuisine_filters|length }}){% endif %}
+                </button>
+                <div class="dropdown-menu p-2" style="min-width: 200px;">
+                  {% for option in cuisine_options %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="cuisine" value="{{ option }}" 
+                           id="cuisine_{{ forloop.counter }}" {% if option in cuisine_filters %}checked{% endif %}>
+                    <label class="form-check-label" for="cuisine_{{ forloop.counter }}">{{ option }}</label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Other Filter -->
+              <div class="dropdown">
+                <button class="btn btn-outline-other btn-sm dropdown-toggle" type="button" 
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                  Other{% if other_filters %} ({{ other_filters|length }}){% endif %}
+                </button>
+                <div class="dropdown-menu p-2" style="min-width: 200px;">
+                  {% for option in other_options %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="other" value="{{ option }}" 
+                           id="other_{{ forloop.counter }}" {% if option in other_filters %}checked{% endif %}>
+                    <label class="form-check-label" for="other_{{ forloop.counter }}">{{ option|title }}</label>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-sm">
+                <i class="bi bi-search"></i> Apply
+              </button>
+              <a href="{% url 'all_recipes' %}" class="btn btn-primary btn-sm">
+                <i class="bi bi-x-circle"></i> Clear
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sort Section -->
+        <div class="col-12 col-md-auto ms-md-auto">
+          <div class="collapse d-md-block" id="sortSection">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-sort-down d-none d-md-inline"></i>
+              <select name="sort" class="form-select form-select-sm" style="max-width: 250px;" 
+                      onchange="this.form.submit()">
+                <option value="date_newest" {% if sort_by == 'date_newest' %}selected{% endif %}>Newest First</option>
+                <option value="date_oldest" {% if sort_by == 'date_oldest' %}selected{% endif %}>Oldest First</option>
+                <option value="prep_least" {% if sort_by == 'prep_least' %}selected{% endif %}>Prep (Least)</option>
+                <option value="prep_most" {% if sort_by == 'prep_most' %}selected{% endif %}>Prep (Most)</option>
+                <option value="cook_least" {% if sort_by == 'cook_least' %}selected{% endif %}>Cook (Least)</option>
+                <option value="cook_most" {% if sort_by == 'cook_most' %}selected{% endif %}>Cook (Most)</option>
+                <option value="total_least" {% if sort_by == 'total_least' %}selected{% endif %}>Total (Least)</option>
+                <option value="total_most" {% if sort_by == 'total_most' %}selected{% endif %}>Total (Most)</option>
+                <option value="most_saves" {% if sort_by == 'most_saves' %}selected{% endif %}>Most Saved</option>
+                <option value="rating_highest" {% if sort_by == 'rating_highest' %}selected{% endif %}>Highest Rated</option>
+                <option value="title_az" {% if sort_by == 'title_az' %}selected{% endif %}>A-Z</option>
+                <option value="title_za" {% if sort_by == 'title_za' %}selected{% endif %}>Z-A</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 
-  {% include "partials/recipe_pagination.html" %}
+  <!-- Active Filters -->
+  {% if course_filters or dietary_filters or cuisine_filters or other_filters %}
+    <div class="alert alert-info mt-3">
+      <strong>Active Filters:</strong>
+      {% for filter in course_filters %}<span class="tag-chip tag-chip-course">Course: {{ filter }}</span>{% endfor %}
+      {% for filter in dietary_filters %}<span class="tag-chip tag-chip-dietary">Dietary: {{ filter }}</span>{% endfor %}
+      {% for filter in cuisine_filters %}<span class="tag-chip tag-chip-cuisine">Cuisine: {{ filter }}</span>{% endfor %}
+      {% for filter in other_filters %}<span class="tag-chip tag-chip-other">Other: {{ filter }}</span>{% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Recipe Grid -->
+  {% if recipes %}
+    <div class="row mt-4">
+      {% for recipe in page_object %}
+        <div class="col-md-4 mb-4">
+          {% include "partials/recipe_card.html" with recipe=recipe show_save_button=True %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_object.paginator %}
+      <nav aria-label="Recipe results pages">
+        <ul class="pagination justify-content-center mt-4">
+          {% if page_object.has_previous %}
+            <li class="page-item">
+              <a class="page-link" 
+                 href="?q={{ search_query }}{% for c in course_filters %}&course={{ c }}{% endfor %}{% for d in dietary_filters %}&dietary={{ d }}{% endfor %}{% for cu in cuisine_filters %}&cuisine={{ cu }}{% endfor %}{% for o in other_filters %}&other={{ o }}{% endfor %}&sort={{ sort_by }}&page={{ page_object.previous_page_number }}">
+                Previous
+              </a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+          {% endif %}
+
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ page_object.number }} of {{ page_object.paginator.num_pages }}</span>
+          </li>
+
+          {% if page_object.has_next %}
+            <li class="page-item">
+              <a class="page-link" 
+                 href="?q={{ search_query }}{% for c in course_filters %}&course={{ c }}{% endfor %}{% for d in dietary_filters %}&dietary={{ d }}{% endfor %}{% for cu in cuisine_filters %}&cuisine={{ cu }}{% endfor %}{% for o in other_filters %}&other={{ o }}{% endfor %}&sort={{ sort_by }}&page={{ page_object.next_page_number }}">
+                Next
+              </a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="alert alert-info mt-4">
+      {% if search_query %}
+        No recipes found matching "{{ search_query }}". Try a different search term.
+      {% else %}
+        No recipes available.
+      {% endif %}
+    </div>
+  {% endif %}
 
 </div>
 {% endblock %}
