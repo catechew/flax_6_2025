@@ -302,6 +302,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: translateY(2px);
+    transform: translateX(10px);
     background: conic-gradient(
         #04ac2b var(--progress, 0%),
         #eaeaea 0
