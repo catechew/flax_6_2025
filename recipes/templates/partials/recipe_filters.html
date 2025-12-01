@@ -1,0 +1,77 @@
+<form method="GET"
+      action="{% url 'all_recipes' %}"
+      id="filterForm"
+      class="mb-4">
+
+  {% if search_query %}
+    <input type="hidden" name="q" value="{{ search_query }}">
+  {% endif %}
+
+  <div class="row g-2 align-items-center">
+
+    <div class="col-12 col-md-auto">
+      <div class="d-flex gap-2 flex-wrap align-items-center">
+
+        <i class="bi bi-funnel"></i>
+
+        {% include "partials/recipe_filter_dropdown.html" with
+          label="Course"
+          name="course"
+          options=course_options
+          selected=filters.course
+          style="course"
+        %}
+
+        {% include "partials/recipe_filter_dropdown.html" with
+          label="Dietary"
+          name="dietary"
+          options=dietary_options
+          selected=filters.dietary
+          style="dietary"
+        %}
+
+        {% include "partials/recipe_filter_dropdown.html" with
+          label="Cuisine"
+          name="cuisine"
+          options=cuisine_options
+          selected=filters.cuisine
+          style="cuisine"
+        %}
+
+        {% include "partials/recipe_filter_dropdown.html" with
+          label="Other"
+          name="other"
+          options=other_options
+          selected=filters.other
+          style="other"
+        %}
+
+        <button type="submit" class="btn btn-primary btn-sm">
+          Apply
+        </button>
+
+        <a href="{% url 'all_recipes' %}"
+           class="btn btn-secondary btn-sm">
+          Clear
+        </a>
+
+      </div>
+    </div>
+
+    <div class="col-md-auto ms-md-auto">
+      <select name="sort"
+              class="form-select form-select-sm"
+              onchange="document.getElementById('filterForm').submit()">
+
+        {% for value, label in sort_options.items %}
+          <option value="{{ value }}"
+                  {% if sort_by == value %}selected{% endif %}>
+            {{ label }}
+          </option>
+        {% endfor %}
+
+      </select>
+    </div>
+
+  </div>
+</form>

@@ -2,16 +2,22 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 import os
+from recipes.helpers.recipe_filter_options import (
+ COURSE_OPTIONS,
+ DIETARY_OPTIONS,
+ CUISINE_OPTIONS,
+ OTHER_OPTIONS,
+)
 
 """
 Helper functions for recipe create/update forms
 """
 
 TAG_CATEGORIES = {
-    'course' : ['dessert', 'main', 'appetiser', 'breakfast', 'snack'],
-    'dietary' : ['vegetarian', 'vegan', 'halal', 'kosher', 'gluten-free', 'dairy-free'],
-    'cuisine' : ['Japanese', 'Italian', 'Chinese', 'Asian', 'Persian', 'Jamaican', 'Western', 'British', 'Lebanese','Middle-Eastern'],
-    'other' : ['high protein', 'low calorie', 'low carb', 'quick', 'budget']
+    'course' : COURSE_OPTIONS,
+    'dietary' : DIETARY_OPTIONS,
+    'cuisine' : CUISINE_OPTIONS,
+    'other' : OTHER_OPTIONS
 }
 
 def get_tag_action_from_request(request):
@@ -161,3 +167,4 @@ def cleanup_session(session_key, session_data, request):
     if session_key in request.session:
         del request.session[session_key]
     request.session.modified = True
+
