@@ -199,7 +199,7 @@ class MealSlotNotesView(LoginRequiredMixin, View):
         return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
     
 
-class MealPlanReuseLastWeek(LoginRequiredMixin, View):
+class MealPlanReuseLastWeekView(LoginRequiredMixin, View):
     """ Reuse meals from previous week's meal plan. """
     
     def post(self, request, plan_id):
