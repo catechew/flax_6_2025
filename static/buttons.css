@@ -128,22 +128,38 @@
 }
 
 .btn-orange {
- background-color: #f36c3d;
+ background-color: #f14f32;
  color: #ffffff;
  border: none;
- border-radius: 6px;  
- padding: 10px 18px; 
+ border-radius: 6px;
+
+ padding: 10px 18px;
  font-size: 0.9rem;
  font-weight: 600;
+
  display: inline-flex;
  align-items: center;
  gap: 6px;
+
  cursor: pointer;
- transition: background-color 0.2s ease, transform 0.15s ease;
+ transition: background-color 0.2s ease;
+}
+
+.btn-orange-lg {
+ padding: 12px 24px;
+ font-size: 0.95rem;
 }
 
 .btn-orange:hover {
- background-color: #e85a2c;
+ background-color: #fc4406;
  color: #ffffff;
- transform: translateY(-1px);
+}
+
+.btn-orange i {
+ font-size: 1rem;
+ transition: transform 0.2s ease;
+}
+
+.btn-orange:hover i {
+ transform: translateX(3px);
 }
