@@ -84,7 +84,7 @@ class UserProfileViewTestCase(TestCase):
         """ Test that follow button appears on other users' profiles. """
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url)
-        self.assertContains(response, 'Follow')     # Should show follow button
+        self.assertContains(response, 'Follow')     
         self.assertNotContains(response, 'Edit Profile')
 
     def test_user_profile_shows_edit_button_for_own_profile(self):
