@@ -54,6 +54,8 @@ class MealPlanDetailView(LoginRequiredMixin, View):
 
     def _build_context(self, plan):
         """ Build template context data. """
+        meals_logged, total_meals = calculate_meals_logged(plan)
+        
         return {
             "plan": plan,
             "schedule": build_week_schedule(plan),

@@ -12,7 +12,14 @@
  <div class="d-flex justify-content-between align-items-center mb-5">
 
   <div class="d-flex align-items-center gap-3">
-   <h1 class="mb-0">📅 Weekly Meal Plan</h1>
+   <div>
+    <h1 class="mb-0">📅 Weekly Meal Plan</h1>
+
+    <p class="text-muted fw-semibold mb-0 mt-1">
+     Meals Logged: {{ meals_logged }} / {{ total_meals }}
+    </p>
+   </div>
+
    <div class="progress-ring" style="--progress: {{ completion }}%;">
     <span>{{ completion }}%</span>
    </div>
@@ -22,7 +29,7 @@
         action="{% url 'meal-plan-reuse-last-week' plan.id %}">
    {% csrf_token %}
    <button class="btn-orange btn-orange-lg">
-      ╰┈➤ Reuse Last Week
+    ╰┈➤ Reuse Last Week
    </button>
   </form>
 
