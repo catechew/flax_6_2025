@@ -1,0 +1,21 @@
+{% if filters.course or filters.dietary or filters.cuisine or filters.other %}
+  <div class="alert alert-info">
+    <strong>Active Filters:</strong>
+
+    {% for f in filters.course %}
+      <span class="badge bg-secondary">Course: {{ f }}</span>
+    {% endfor %}
+
+    {% for f in filters.dietary %}
+      <span class="badge bg-success">Dietary: {{ f }}</span>
+    {% endfor %}
+
+    {% for f in filters.cuisine %}
+      <span class="badge bg-warning text-dark">Cuisine: {{ f }}</span>
+    {% endfor %}
+
+    {% for f in filters.other %}
+      <span class="badge bg-info text-dark">Other: {{ f }}</span>
+    {% endfor %}
+  </div>
+{% endif %}
