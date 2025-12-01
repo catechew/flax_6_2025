@@ -71,10 +71,10 @@ def _build_ingredient_query(words):
 def apply_filters(recipes, filters):
  """ Apply tag filters to queryset. """
  tag_map = {
-  "course": "course_tags",
-  "dietary": "dietary_tags",
-  "cuisine": "cuisine_tags",
-  "other": "other_tags",
+  "course_filters": "course_tags",
+  "dietary_filters": "dietary_tags",
+  "cuisine_filters": "cuisine_tags",
+  "other_filters": "other_tags",
  }
 
  for key, field in tag_map.items():

@@ -41,13 +41,13 @@
               <div class="dropdown">
                 <button class="btn btn-outline-course btn-sm dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                  Course{% if course_filters %} ({{ course_filters|length }}){% endif %}
+                  Course{% if filters.course_filters %} ({{ filters.course_filters|length }}){% endif %}
                 </button>
                 <div class="dropdown-menu p-2" style="min-width: 200px;">
                   {% for option in course_options %}
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="course" value="{{ option }}" 
-                           id="course_{{ forloop.counter }}" {% if option in course_filters %}checked{% endif %}>
+                           id="course_{{ forloop.counter }}" {% if option in filters.course_filters %}checked{% endif %}>
                     <label class="form-check-label" for="course_{{ forloop.counter }}">{{ option|title }}</label>
                   </div>
                   {% endfor %}
@@ -58,13 +58,13 @@
               <div class="dropdown">
                 <button class="btn btn-outline-dietary btn-sm dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                  Dietary{% if dietary_filters %} ({{ dietary_filters|length }}){% endif %}
+                  Dietary{% if filters.dietary_filters %} ({{ filters.dietary_filters|length }}){% endif %}
                 </button>
                 <div class="dropdown-menu p-2" style="min-width: 200px;">
                   {% for option in dietary_options %}
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="dietary" value="{{ option }}" 
-                           id="dietary_{{ forloop.counter }}" {% if option in dietary_filters %}checked{% endif %}>
+                           id="dietary_{{ forloop.counter }}" {% if option in filters.dietary_filters %}checked{% endif %}>
                     <label class="form-check-label" for="dietary_{{ forloop.counter }}">{{ option|title }}</label>
                   </div>
                   {% endfor %}
@@ -75,13 +75,13 @@
               <div class="dropdown">
                 <button class="btn btn-outline-cuisine btn-sm dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                  Cuisine{% if cuisine_filters %} ({{ cuisine_filters|length }}){% endif %}
+                  Cuisine{% if filters.cuisine_filters %} ({{ filters.cuisine_filters|length }}){% endif %}
                 </button>
                 <div class="dropdown-menu p-2" style="min-width: 200px;">
                   {% for option in cuisine_options %}
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="cuisine" value="{{ option }}" 
-                           id="cuisine_{{ forloop.counter }}" {% if option in cuisine_filters %}checked{% endif %}>
+                           id="cuisine_{{ forloop.counter }}" {% if option in filters.cuisine_filters %}checked{% endif %}>
                     <label class="form-check-label" for="cuisine_{{ forloop.counter }}">{{ option }}</label>
                   </div>
                   {% endfor %}
@@ -92,13 +92,13 @@
               <div class="dropdown">
                 <button class="btn btn-outline-other btn-sm dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                  Other{% if other_filters %} ({{ other_filters|length }}){% endif %}
+                  Other{% if filters.other_filters %} ({{ filters.other_filters|length }}){% endif %}
                 </button>
                 <div class="dropdown-menu p-2" style="min-width: 200px;">
                   {% for option in other_options %}
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="other" value="{{ option }}" 
-                           id="other_{{ forloop.counter }}" {% if option in other_filters %}checked{% endif %}>
+                           id="other_{{ forloop.counter }}" {% if option in filters.other_filters %}checked{% endif %}>
                     <label class="form-check-label" for="other_{{ forloop.counter }}">{{ option|title }}</label>
                   </div>
                   {% endfor %}
@@ -124,16 +124,16 @@
                       onchange="this.form.submit()">
                 <option value="date_newest" {% if sort_by == 'date_newest' %}selected{% endif %}>Newest First</option>
                 <option value="date_oldest" {% if sort_by == 'date_oldest' %}selected{% endif %}>Oldest First</option>
-                <option value="prep_least" {% if sort_by == 'prep_least' %}selected{% endif %}>Prep (Least)</option>
-                <option value="prep_most" {% if sort_by == 'prep_most' %}selected{% endif %}>Prep (Most)</option>
-                <option value="cook_least" {% if sort_by == 'cook_least' %}selected{% endif %}>Cook (Least)</option>
-                <option value="cook_most" {% if sort_by == 'cook_most' %}selected{% endif %}>Cook (Most)</option>
-                <option value="total_least" {% if sort_by == 'total_least' %}selected{% endif %}>Total (Least)</option>
-                <option value="total_most" {% if sort_by == 'total_most' %}selected{% endif %}>Total (Most)</option>
+                <option value="prep_least" {% if sort_by == 'prep_least' %}selected{% endif %}>Prep Time (Least)</option>
+                <option value="prep_most" {% if sort_by == 'prep_most' %}selected{% endif %}>Prep Time (Most)</option>
+                <option value="cook_least" {% if sort_by == 'cook_least' %}selected{% endif %}>Cook Time (Least)</option>
+                <option value="cook_most" {% if sort_by == 'cook_most' %}selected{% endif %}>Cook Time (Most)</option>
+                <option value="total_least" {% if sort_by == 'total_least' %}selected{% endif %}>Total Time (Least)</option>
+                <option value="total_most" {% if sort_by == 'total_most' %}selected{% endif %}>Total Time (Most)</option>
                 <option value="most_saves" {% if sort_by == 'most_saves' %}selected{% endif %}>Most Saved</option>
                 <option value="rating_highest" {% if sort_by == 'rating_highest' %}selected{% endif %}>Highest Rated</option>
-                <option value="title_az" {% if sort_by == 'title_az' %}selected{% endif %}>A-Z</option>
-                <option value="title_za" {% if sort_by == 'title_za' %}selected{% endif %}>Z-A</option>
+                <option value="title_az" {% if sort_by == 'title_az' %}selected{% endif %}>Title (A-Z)</option>
+                <option value="title_za" {% if sort_by == 'title_za' %}selected{% endif %}>Title (Z-A)</option>
               </select>
             </div>
           </div>
@@ -143,13 +143,13 @@
   </div>
 
   <!-- Active Filters -->
-  {% if filters %}
+  {% if filters.course_filters or filters.dietary_filters or filters.cuisine_filters or filters.other_filters %}
     <div class="alert alert-info mt-3">
       <strong>Active Filters:</strong>
-      {% for filter in course_filters %}<span class="tag-chip tag-chip-course">Course: {{ filter }}</span>{% endfor %}
-      {% for filter in dietary_filters %}<span class="tag-chip tag-chip-dietary">Dietary: {{ filter }}</span>{% endfor %}
-      {% for filter in cuisine_filters %}<span class="tag-chip tag-chip-cuisine">Cuisine: {{ filter }}</span>{% endfor %}
-      {% for filter in other_filters %}<span class="tag-chip tag-chip-other">Other: {{ filter }}</span>{% endfor %}
+      {% for filter in filters.course_filters %}<span class="tag-chip tag-chip-course">Course: {{ filter }}</span>{% endfor %}
+      {% for filter in filters.dietary_filters %}<span class="tag-chip tag-chip-dietary">Dietary: {{ filter }}</span>{% endfor %}
+      {% for filter in filters.cuisine_filters %}<span class="tag-chip tag-chip-cuisine">Cuisine: {{ filter }}</span>{% endfor %}
+      {% for filter in filters.other_filters %}<span class="tag-chip tag-chip-other">Other: {{ filter }}</span>{% endfor %}
     </div>
   {% endif %}
 
