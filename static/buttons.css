@@ -126,3 +126,24 @@
   color: var(--colour-4) !important;
   border-color: var(--colour-4) !important;
 }
+
+.btn-orange {
+ background-color: #f36c3d;
+ color: #ffffff;
+ border: none;
+ border-radius: 6px;  
+ padding: 10px 18px; 
+ font-size: 0.9rem;
+ font-weight: 600;
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ cursor: pointer;
+ transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-orange:hover {
+ background-color: #e85a2c;
+ color: #ffffff;
+ transform: translateY(-1px);
+}
