@@ -11,7 +11,7 @@ ITEMS_PER_PAGE = 25
 
 
 def get_search_query(request):
- """Return cleaned search term from request."""
+ """ Return cleaned search term from request. """
  return request.GET.get("q", "").strip()
 
 
@@ -26,7 +26,7 @@ def get_filter_params(request):
 
 
 def apply_search(recipes, search_query):
- """Apply free-text search on multiple recipe fields."""
+ """ Apply free-text search on multiple recipe fields. """
  if not search_query:
   return recipes
 
@@ -53,7 +53,7 @@ def apply_search(recipes, search_query):
 
 
 def _build_ingredient_query(words):
- """Build AND-based ingredient filter."""
+ """ Build AND-based ingredient filter. """
  query = Q()
  for word in words:
   query &= Q(ingredients__icontains=word)
@@ -61,7 +61,7 @@ def _build_ingredient_query(words):
 
 
 def apply_filters(recipes, filters):
- """Apply tag filters to queryset."""
+ """ Apply tag filters to queryset. """
  tag_map = {
   "course": "course_tags",
   "dietary": "dietary_tags",
@@ -78,7 +78,7 @@ def apply_filters(recipes, filters):
 
 
 def _build_tag_query(field, values):
- """Build OR-based tag query."""
+ """ Build OR-based tag query. """
  query = Q()
  for value in values:
   query |= Q(**{f"{field}__icontains": value})
@@ -86,7 +86,7 @@ def _build_tag_query(field, values):
 
 
 def apply_sort(recipes, sort_by):
- """Apply ordering based on sort parameter."""
+ """ Apply ordering based on sort parameter. """
  if sort_by == "rating_highest":
   return recipes.annotate(
    avg_rating=Avg("ratings__stars")
@@ -96,7 +96,7 @@ def apply_sort(recipes, sort_by):
 
 
 def paginate(recipes, request):
- """Return paginated recipe page."""
+ """ Return paginated recipe page. """
  paginator = Paginator(recipes, ITEMS_PER_PAGE)
  page_number = request.GET.get("page")
  return paginator.get_page(page_number)
