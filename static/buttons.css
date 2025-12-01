@@ -1,0 +1,128 @@
+/* Buttons */
+.btn-primary {
+  background-color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-colour-darker) !important;
+  border-color: var(--primary-colour-darker) !important;
+}
+
+.btn-warning {
+  background-color: var(--primary-colour-darkest) !important;
+  border-color: var(--primary-colour-darkest) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-warning:hover {
+  background-color: var(--primary-colour-darker) !important;
+  border-color: var(--primary-colour-darker) !important;
+
+}
+
+.btn-outline-warning {
+  border-color: var(--primary-colour-darkest) !important;
+  color: var(--primary-colour-darkest) !important;
+  background: transparent !important;
+  box-shadow: 0 2px 0 var(--primary-colour-darkest);
+}
+
+.btn-outline-warning:hover{
+  background-color: var(--primary-colour-darkest) !important;
+  color: var(--white-colour) !important;
+}
+
+.btn-success{
+  background-color: var(--primary-colour-darker) !important;
+  border-color: var(--primary-colour-darker);
+  color: var(--bg-colour) !important;
+}
+
+.btn-success:hover{
+  background-color: var(--primary-colour-darkest) !important;
+  border-color: var(--primary-colour-darkest) !important;
+}
+
+.btn-outline-primary {
+  color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
+  background: transparent !important;
+  box-shadow: 0 2px 0 var(--primary-colour);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-light.text-primary,
+.btn-light.text-primary:hover {
+  color: var(--primary-colour) !important;
+  border-color: var(--primary-colour) !important;
+}
+
+.btn {
+  transition: transform 0.08s ease;
+}
+
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--primary-colour);
+}
+
+.btn:focus,
+.btn:active:focus {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  outline: none !important;
+}
+
+/* Tag buttons */
+.btn-course {
+  background-color: var(--colour-1) !important;
+  border-color: var(--colour-1) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-cuisine {
+  background-color: var(--colour-2) !important;
+  border-color: var(--colour-2) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-dietary {
+  background-color: var(--colour-3) !important;
+  border-color: var(--colour-3) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-other {
+  background-color: var(--colour-4) !important;
+  border-color: var(--colour-4) !important;
+  color: var(--bg-colour) !important;
+}
+
+.btn-outline-course {
+  background: transparent !important;
+  color: var(--colour-1) !important;
+  border-color: var(--colour-1) !important;
+}
+
+.btn-outline-cuisine {
+  background: transparent !important;
+  color: var(--colour-2) !important;
+  border-color: var(--colour-2) !important;
+}
+
+.btn-outline-dietary {
+  background: transparent !important;
+  color: var(--colour-3) !important;
+  border-color: var(--colour-3) !important;
+}
+
+.btn-outline-other {
+  background: transparent !important;
+  color: var(--colour-4) !important;
+  border-color: var(--colour-4) !important;
+}

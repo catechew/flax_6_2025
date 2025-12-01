@@ -14,10 +14,10 @@ class RecipeFormHandler:
         self.request = request
         self.recipe_id = recipe_id
         self.mode = 'create' if recipe_id is None else 'update'
-        self.recipe = self._get_recipe()
+        self.recipe = self.get_recipe()
         self.session_key = get_session_key(recipe_id)
-        self.session_data = self._get_or_create_session_data()
-        self.is_owner = self._determine_ownership()
+        self.session_data = self.get_or_create_session_data()
+        self.is_owner = self.determine_ownership()
 
     @property
     def is_create_mode(self):
@@ -27,13 +27,13 @@ class RecipeFormHandler:
     def is_update_mode(self):
         return self.mode == 'update'
     
-    def _get_recipe(self):
+    def get_recipe(self):
         """Get recipe instance if update mode"""
         if self.recipe_id:
             return get_object_or_404(Recipe, id=self.recipe_id)
         return None
     
-    def _get_or_create_session_data(self):
+    def get_or_create_session_data(self):
         """Get or initialise session data"""
         if self.session_key not in self.request.session:
             self.request.session[self.session_key] = {}
@@ -49,7 +49,7 @@ class RecipeFormHandler:
         
         return self.request.session[self.session_key]
     
-    def _determine_ownership(self):
+    def determine_ownership(self):
         """Determine if current user is the recipe owner"""
         return self.session_data.get('is_owner', True)
     

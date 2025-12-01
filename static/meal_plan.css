@@ -269,11 +269,16 @@
 }
 
 .empty-meal-indicator {
-    color: #ddd;
-    font-size: 1.5rem;
-    text-align: center;
-    padding: 10px 0;
-    user-select: none;
+  color: #fffefe;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 14px 0;
+  font-style: italic;
+  user-select: none;
+}
+
+.slot-content:hover .empty-meal-indicator {
+  color: var(--primary-colour);
 }
 
 .day-heading {
@@ -373,8 +378,9 @@
 }
 
 .shopping-list-banner {
-  background: linear-gradient(135deg, #04ac2b 0%, #04ac2b 100%);
+  background: #02661a;
 }
+
 
 /* Print styles */
 @media print {

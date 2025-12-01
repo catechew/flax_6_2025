@@ -114,7 +114,7 @@
                                             {% if is_own_profile %}
                                                 <!-- Only show 'edit'/'delete' on your own recipes -->
                                                 <a href="{% url 'update_recipe' recipe.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                                <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                                <a href="{% url 'delete_recipe' recipe.id %}" class="btn btn-sm btn-outline-warning">Delete</a>
                                             {% endif %}
 
                                             {% if user.is_staff and not is_own_profile %}

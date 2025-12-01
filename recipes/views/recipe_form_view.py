@@ -40,7 +40,7 @@ def handle_form_post(request, handler):
         handler.mark_session_modified()
 
         context = handler.get_form_context(form)
-        return render(request, 'partials/recipe_form.html', context)
+        return render(request, 'recipes/recipe_form.html', context)
 
     # Save form data to session
     save_form_to_session(request, handler.session_data)
@@ -59,7 +59,7 @@ def handle_form_get(request, handler):
         form = handler.create_form()
 
     context = handler.get_form_context(form)
-    return render(request, 'partials/recipe_form.html', context)
+    return render(request, 'recipes/recipe_form.html', context)
 
 def save_form_to_session(request, session_data):
     """Save form data to session""" 
