@@ -1,0 +1,10 @@
+{# Display star rating #}
+{% with rating_value=rating|default:0 %}
+    {% for i in "12345" %}
+        {% if forloop.counter <= rating_value %}
+            <i class="bi bi-star-fill text-warning"></i>
+        {% else %}
+            <i class="bi bi-star text-warning"></i>
+        {% endif %}
+    {% endfor %}
+{% endwith %}
