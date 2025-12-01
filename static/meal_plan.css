@@ -383,25 +383,18 @@
 }
 
 .tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.7rem;
+  padding: 1px 7px;
+  font-size: 0.6rem;
+  border-radius: 8px;
   font-weight: 600;
-  line-height: 1.4;
-}
-
-.tag-vegan {
-  background-color: #22c55e;
-  color: #ffffff;
 }
 
 .tag-vegetarian {
-  background-color: #16a34a;
-  color: #ffffff;
+  background-color: #dcfce7;
+  color: #166534;
 }
 
 .tag-protein {
-  background-color: #2563eb;
-  color: #ffffff;
+  background-color: #dbeafe;
+  color: #1e40af;
 }

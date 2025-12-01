@@ -21,32 +21,29 @@
           {{ slot.recipe.title }}
         </a>
 
-        <div class="d-flex align-items-center gap-2 small text-muted mt-1">
+        <div class="small text-muted mt-1">
 
           {% if slot.recipe.get_total_prep_time_minutes > 0 %}
-            <span>⏱ Prep: {{ slot.recipe.get_prep_time_display }}</span>
+            <div>⏱ Prep: {{ slot.recipe.get_prep_time_display }}</div>
           {% endif %}
 
-          <!-- Dietary tags -->
-          {% if "vegan" in slot.recipe.get_dietary_tags_list %}
-            <span class="tag tag-vegan">Vegan</span>
-          {% elif "vegetarian" in slot.recipe.get_dietary_tags_list %}
-            <span class="tag tag-vegetarian">Vegetarian</span>
-          {% endif %}
+          <div class="d-flex gap-1 mt-1">
 
-          <!-- Protein tag -->
-          {% if "high protein" in slot.recipe.get_other_tags_list %}
-            <span class="tag tag-protein">High Protein</span>
-          {% endif %}
+            {% if "vegetarian" in slot.recipe.get_dietary_tags_list %}
+              <span class="tag tag-vegetarian">Vegetarian</span>
+            {% endif %}
+
+            {% if "high protein" in slot.recipe.get_other_tags_list %}
+              <span class="tag tag-protein">High Protein</span>
+            {% endif %}
+
+          </div>
 
         </div>
 
       </div>
+
     </div>
-
-  {% else %}
-
-    <span class="empty-meal-indicator">No meal planned</span>
 
   {% endif %}
 
