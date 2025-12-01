@@ -15,6 +15,7 @@ from recipes.helpers.recipe_filter_options import (
  DIETARY_OPTIONS,
  CUISINE_OPTIONS,
  OTHER_OPTIONS,
+ SORT_OPTIONS,
 )
 
 
@@ -48,6 +49,7 @@ def all_recipes(request):
   "dietary_options": DIETARY_OPTIONS,
   "cuisine_options": CUISINE_OPTIONS,
   "other_options": OTHER_OPTIONS,
+  "sort_options": SORT_OPTIONS,
  }
 
  return render(request, "recipes/all_recipes.html", context)
