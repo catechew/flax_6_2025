@@ -7,7 +7,19 @@ from django.db.models.functions import Concat
 from django.db.models import Value
 from django.core.paginator import Paginator
 
+
 ITEMS_PER_PAGE = 25
+
+SORT_FIELD_MAP = {
+    "date_newest": "-publication_date",
+    "date_oldest": "publication_date",
+    "title_az": "title",
+    "title_za": "-title",
+    "prep_least": "prep_time_hours",
+    "prep_most": "-prep_time_hours",
+    "cook_least": "cook_time_hours",
+    "cook_most": "-cook_time_hours",
+}
 
 
 def get_search_query(request):
