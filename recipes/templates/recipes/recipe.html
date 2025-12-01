@@ -11,7 +11,7 @@ Recipes | Recipe #{{recipe.id}}
     {# Recipe Header #}
     <div class="card shadow mb-4">
         {% if recipe.image %}
-        <img src="{{ recipe.image.url }}" class="card-img-top recipe_detail_image" alt="{{ recipe.title }}">
+        <img src="{{ recipe.image.url }}" class="card-img-top recipe-detail-image" alt="{{ recipe.title }}">
         {% endif %}
         <div class="card-body">
         <h1 class="card-title">{{ recipe.title }}</h1>

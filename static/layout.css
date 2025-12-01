@@ -8,10 +8,6 @@ body {
   background-color: var(--bg-colour);
 }
 
-.alert {
-  border-radius: 0;
-}
-
 /* Layout Helpers */
 .content {
   padding-top: 10px;
