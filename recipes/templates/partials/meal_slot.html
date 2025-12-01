@@ -27,7 +27,7 @@
             <div>⏱ Prep: {{ slot.recipe.get_prep_time_display }}</div>
           {% endif %}
 
-          <div class="d-flex gap-1 mt-1">
+          <div class="d-flex gap-1 mt-1 flex-wrap">
 
             {% if "vegetarian" in slot.recipe.get_dietary_tags_list %}
               <span class="tag tag-vegetarian">Vegetarian</span>
