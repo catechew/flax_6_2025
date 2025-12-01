@@ -2,10 +2,10 @@
 Helper functions for searching, filtering, sorting and paginating recipes.
 """
 
-from django.core.paginator import Paginator
-from django.db.models import Q, Avg
+from django.db.models import Q, Avg, Count, F
 from django.db.models.functions import Concat
 from django.db.models import Value
+from django.core.paginator import Paginator
 
 ITEMS_PER_PAGE = 25
 
@@ -16,7 +16,7 @@ def get_search_query(request):
 
 
 def get_filter_params(request):
- """Extract tag-based filters from request."""
+ """ Extract tag-based filters from request. """
  return {
   "course": request.GET.getlist("course", []),
   "dietary": request.GET.getlist("dietary", []),
