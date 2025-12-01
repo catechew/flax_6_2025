@@ -14,6 +14,7 @@ from recipes.helpers.meal_plan_helpers import (
     build_week_schedule,
     create_meal_slots,
     reuse_prev_week,
+    calculate_meals_logged
 )
 from recipes.helpers.shopping_list_helpers import (
     extract_ingredients, organise_shopping_list
@@ -57,8 +58,9 @@ class MealPlanDetailView(LoginRequiredMixin, View):
             "plan": plan,
             "schedule": build_week_schedule(plan),
             "completion": calculate_completion(plan),
+            "meals_logged": meals_logged,
+            "total_meals": total_meals,
         }
-
 
 class MealPlanNavigateView(LoginRequiredMixin, View):
     """ Navigate to previous or next week's meal plan. """
