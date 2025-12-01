@@ -149,16 +149,6 @@
 .recipe-link {
     color: var(--black-colour);
     text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem;
-    line-height: 1.4;
-    transition: color 0.2s ease;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
 }
 
 .recipe-link:hover {
@@ -306,28 +296,40 @@
 }
 
 .progress-ring {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: conic-gradient(
-        #04ac2b var(--progress, 0%),
-        #eaeaea 0
-    );
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(
+    #04ac2b var(--progress, 0%),
+    #eaeaea 0
+  );
 }
 
 .progress-ring span {
-    background: #faf8f5; /* fallback instead of var(--bg-colour) */
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: #faf8f5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring-lg {
+  width: 110px;
+  height: 110px;
+}
+
+.progress-ring-lg span {
+  width: 78px;
+  height: 78px;
+  font-size: 1.25rem;
+  font-weight: 800;
 }
 
 .snack-collapsible {
@@ -346,12 +348,6 @@
     font-weight: 500;
     transition: all 0.2s ease;
     cursor: pointer;
-}
-
-.snack-toggle .plus-icon {
-    font-size: 1.1rem;
-    color: #ccc;
-    transition: all 0.2s ease;
 }
 
 .snack-toggle:hover {
@@ -381,8 +377,6 @@
   background: #02661a;
 }
 
-
-/* Print styles */
 @media print {
   .btn,
   nav {
@@ -396,4 +390,21 @@
   .text-muted {
     display: none !important;
   }
+}
+
+.tag {
+  padding: 1px 7px;
+  font-size: 0.6rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.tag-vegetarian {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.tag-protein {
+  background-color: #dbeafe;
+  color: #1e40af;
 }
