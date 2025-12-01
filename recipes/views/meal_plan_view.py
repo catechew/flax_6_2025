@@ -54,8 +54,11 @@ class MealPlanDetailView(LoginRequiredMixin, View):
 
     def _build_context(self, plan):
         """ Build template context data. """
+        
         meals_logged, total_meals = calculate_meals_logged(plan)
-        percentage = (meals_logged / total_meals) * 100 if total_meals else 0
+        meals_logged_pct = round(
+            (meals_logged / total_meals) * 100
+        ) if total_meals else 0
         
         return {
             "plan": plan,
@@ -63,6 +66,7 @@ class MealPlanDetailView(LoginRequiredMixin, View):
             "completion": calculate_completion(plan),
             "meals_logged": meals_logged,
             "total_meals": total_meals,
+            "meals_logged_pct": meals_logged_pct,
         }
 
 class MealPlanNavigateView(LoginRequiredMixin, View):
