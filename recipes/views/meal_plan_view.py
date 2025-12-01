@@ -15,6 +15,7 @@ from recipes.helpers.meal_plan_helpers import (
 from recipes.helpers.shopping_list_helpers import (
     extract_ingredients, organise_shopping_list
 )
+from recipes.helper.meal_plan_helpers import reuse_prev_week
 
 
 class MealPlanCreateView(LoginRequiredMixin, View):
