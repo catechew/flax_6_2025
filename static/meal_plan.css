@@ -373,8 +373,9 @@
 }
 
 .shopping-list-banner {
-  background: linear-gradient(135deg, #0f7427 0%, #c45a19 100%);
+  background: #02661a;
 }
+
 
 /* Print styles */
 @media print {
