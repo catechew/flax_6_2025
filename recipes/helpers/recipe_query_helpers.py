@@ -98,13 +98,41 @@ def _build_tag_query(field, values):
 
 
 def apply_sort(recipes, sort_by):
- """ Apply ordering based on sort parameter. """
- if sort_by == "rating_highest":
-  return recipes.annotate(
-   avg_rating=Avg("ratings__stars")
-  ).order_by("-avg_rating", "-publication_date")
+    """ Apply sorting based on selected option. """
 
- return recipes.order_by("-publication_date")
+    # Simple DB field sorts
+    if sort_by in SORT_FIELD_MAP:
+        return recipes.order_by(SORT_FIELD_MAP[sort_by])
+
+    # Total Time (prep + cook)
+    if sort_by in ["total_least", "total_most"]:
+        recipes = recipes.annotate(
+            total_minutes=(
+                (F("prep_time_hours") * 60 + F("prep_time_minutes")) +
+                (F("cook_time_hours") * 60 + F("cook_time_minutes"))
+            )
+        )
+        return recipes.order_by(
+            "total_minutes" if sort_by == "total_least" else "-total_minutes"
+        )
+
+    # Most saved
+    if sort_by == "most_saved":
+        return recipes.annotate(
+            save_count=Count("saved_by")
+        ).order_by("-save_count", "-publication_date")
+
+    # Highest rated
+    if sort_by == "rating_highest":
+        return recipes.annotate(
+            avg_rating=Avg("ratings__stars")
+        ).order_by(
+            F("avg_rating").desc(nulls_last=True),
+            "-publication_date"
+        )
+
+    # Fallback
+    return recipes.order_by("-publication_date")
 
 
 def paginate(recipes, request):
