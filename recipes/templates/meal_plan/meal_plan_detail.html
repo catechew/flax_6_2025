@@ -14,14 +14,15 @@
     <div class="d-flex align-items-center gap-3">
 
       <div>
-        <h1 class="mb-0">📅 Weekly Meal Plan</h1>
+        <h1 class="mb-2">📅 Weekly Meal Plan</h1>
 
-        <p class="text-muted fw-semibold mb-1">
-          Meals Logged: {{ meals_logged}} / {{total_meals }}
-        </p>
+         <p class="fw-semibold text-dark fs-5 mb-3">
+         Meals Logged: {{ meals_logged }} / {{ total_meals }}
+         </p>
 
-        <div class="progress mb-0" style="height: 6px; max-width: 220px;">
-          <div class="progress-bar bg-success"
+        <!-- Meals logged progress bar  -->
+        <div class="progress mb-1" style="height: 10px; max-width: 240px;">
+          <div class="progress-bar bg-success opacity-75"
                role="progressbar"
                style="width: {{ meals_logged_pct }}%;"
                aria-valuenow="{{ meals_logged }}"
@@ -31,13 +32,13 @@
         </div>
       </div>
 
-      <!-- Progress ring -->
+      <!-- Completion ring -->
       <div class="progress-ring" style="--progress: {{ completion }}%;">
         <span>{{ completion }}%</span>
       </div>
     </div>
 
-    <!-- Reuse Last Week Button -->
+    <!-- Reuse button -->
     <form method="POST"
           action="{% url 'meal-plan-reuse-last-week' plan.id %}">
       {% csrf_token %}
@@ -48,6 +49,7 @@
 
   </div>
 
+  <!-- Week navigation -->
   <div class="week-nav d-flex justify-content-center gap-3 mb-4">
     <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
        class="btn btn-outline-primary btn-sm">←</a>
@@ -60,6 +62,7 @@
        class="btn btn-outline-primary btn-sm">→</a>
   </div>
 
+  <!-- Meal grid -->
   <div class="meal-grid">
     {% for day in schedule %}
       {% include "partials/meal_day_card.html" with day=day %}
