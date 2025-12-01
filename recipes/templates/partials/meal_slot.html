@@ -1,18 +1,29 @@
 <div class="slot-content">
- {% if slot.recipe %}
-  <div class="d-flex align-items-center gap-2">
-   {% if slot.recipe.image %}
-    <img src="{{ slot.recipe.image.url }}"
-         class="meal-thumb"
-         alt="{{ slot.recipe.title }}">
-   {% endif %}
+  {% if slot.recipe %}
+    <div class="d-flex align-items-start gap-2">
 
-   <a href="{% url 'recipe_detail' slot.recipe.id %}"
-      class="recipe-link">
-    {{ slot.recipe.title }}
-   </a>
-  </div>
- {% else %}
-  <span class="empty-meal-indicator">No meal planned</span>
- {% endif %}
+      {% if slot.recipe.image %}
+        <img src="{{ slot.recipe.image.url }}"
+             class="meal-thumb"
+             alt="{{ slot.recipe.title }}">
+      {% endif %}
+
+      <div class="d-flex flex-column">
+        <a href="{% url 'recipe_detail' slot.recipe.id %}"
+           class="recipe-link">
+          {{ slot.recipe.title }}
+        </a>
+
+        {% if slot.recipe.get_total_prep_time_minutes > 0 %}
+          <small class="text-muted mt-1">
+            <i class="bi bi-clock"></i>
+            Prep: {{ slot.recipe.get_prep_time_display }}
+          </small>
+        {% endif %}
+      </div>
+
+    </div>
+  {% else %}
+    <span class="empty-meal-indicator">No meal planned</span>
+  {% endif %}
 </div>
