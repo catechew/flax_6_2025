@@ -197,3 +197,21 @@ class MealSlotNotesView(LoginRequiredMixin, View):
         
         messages.success(request, "Notes saved successfully!")
         return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
+    
+
+class MealPlanReuseLastWeek(LoginRequiredMixin, View):
+    """ Reuse meals from previous week's meal plan. """
+    
+    def post(self, request, plan_id):
+        plan = get_object_or_404(
+            MealPlan,
+            id=plan_id,
+            user=request.user
+        )
+
+        success = reuse_prev_week(plan)
+
+        if not success:
+            messages.warning(request, "No meals from last week available to reuse.")
+        
+        return redirect("meal-plan-detail", plan_id=plan.id)
