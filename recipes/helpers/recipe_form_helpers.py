@@ -167,3 +167,4 @@ def cleanup_session(session_key, session_data, request):
     if session_key in request.session:
         del request.session[session_key]
     request.session.modified = True
+
