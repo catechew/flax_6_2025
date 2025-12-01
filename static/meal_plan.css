@@ -381,3 +381,27 @@
     display: none !important;
   }
 }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.tag-vegan {
+  background-color: #22c55e;
+  color: #ffffff;
+}
+
+.tag-vegetarian {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+.tag-protein {
+  background-color: #2563eb;
+  color: #ffffff;
+}
