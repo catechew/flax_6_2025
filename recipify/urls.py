@@ -61,6 +61,7 @@ from recipes.views.meal_plan_view import (
     MealSlotClearView,
     ShoppingListView,
     MealSlotNotesView,
+    MealPlanReuseLastWeek
 )
 
 urlpatterns = [
@@ -106,6 +107,8 @@ urlpatterns = [
 
     path("meal-plan/<int:plan_id>/<str:direction>/", MealPlanNavigateView.as_view(), name="meal-plan-navigate"),
     path("meal-slot/<int:slot_id>/clear/", MealSlotClearView.as_view(), name="meal-slot-clear"),
+
+    path("meal-plan/<int:plan_id>/reuse-last-week/", MealPlanReuseLastWeekView.as_view(), name="meal-plan-reuse-last-week"),
     
     path('recipe/<int:recipe_id>/save/', toggle_save_recipe, name='toggle_save_recipe'),
     path('saved_recipes/', saved_recipe_list, name='saved_recipe_list'),
