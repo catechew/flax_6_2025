@@ -1,9 +1,14 @@
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import UpdateView
 from django.urls import reverse
+from django.views.generic.edit import UpdateView
+
 from recipes.forms import UserForm
+
+
+User = get_user_model()
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -15,32 +20,21 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     logged-in users via `LoginRequiredMixin`.
     """
 
-    model = UserForm
-    template_name = "users/profile.html"
+    model = User
     form_class = UserForm
+    template_name = "users/profile.html"
 
     def get_object(self):
         """
-        Retrieve the user object to be edited.
+        Return the authenticated user.
 
-        This ensures that users can only update their own profile, rather
-        than any other user’s data.
-
-        Returns:
-            User: The currently authenticated user instance.
+        Ensures users can only update their own profile.
         """
-        user = self.request.user
-        return user
+        return self.request.user
 
     def get_success_url(self):
         """
-        Determine the redirect URL after a successful profile update.
-
-        Also adds a success message to inform the user that their profile
-        was successfully updated.
-
-        Returns:
-            str: The URL to redirect to (typically the dashboard or user home).
+        Redirect user after successful profile update.
         """
         messages.add_message(self.request, messages.SUCCESS, "Profile updated!")
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
