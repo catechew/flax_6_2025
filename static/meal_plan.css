@@ -296,30 +296,40 @@
 }
 
 .progress-ring {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(2px);
-    transform: translateX(10px);
-    background: conic-gradient(
-        #04ac2b var(--progress, 0%),
-        #eaeaea 0
-    );
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(
+    #04ac2b var(--progress, 0%),
+    #eaeaea 0
+  );
 }
 
 .progress-ring span {
-    background: #faf8f5;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background: #faf8f5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-ring-lg {
+  width: 110px;
+  height: 110px;
+}
+
+.progress-ring-lg span {
+  width: 78px;
+  height: 78px;
+  font-size: 1.25rem;
+  font-weight: 800;
 }
 
 .snack-collapsible {
