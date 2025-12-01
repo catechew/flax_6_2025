@@ -154,3 +154,7 @@ class ReusePrevWeekHelperTests(TestCase):
   )
 
   self.assertFalse(reuse_prev_week(new_plan))
+
+ def test_returns_monday_for_midweek_date(self):
+    print(">>> MEAL PLAN TEST IS RUNNING <<<")
+    self.assertEqual(1, 2)
