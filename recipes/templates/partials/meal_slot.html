@@ -1,18 +1,50 @@
 <div class="slot-content">
- {% if slot.recipe %}
-  <div class="d-flex align-items-center gap-2">
-   {% if slot.recipe.image %}
-    <img src="{{ slot.recipe.image.url }}"
-         class="meal-thumb"
-         alt="{{ slot.recipe.title }}">
-   {% endif %}
 
-   <a href="{% url 'recipe_detail' slot.recipe.id %}"
-      class="recipe-link">
-    {{ slot.recipe.title }}
-   </a>
-  </div>
- {% else %}
-  <span class="empty-meal-indicator">No meal planned</span>
- {% endif %}
+  {% if slot.recipe %}
+
+    <div class="d-flex align-items-start gap-2">
+
+      {% if slot.recipe.image %}
+        <img
+          src="{{ slot.recipe.image.url }}"
+          class="meal-thumb"
+          alt="{{ slot.recipe.title }}"
+        >
+      {% endif %}
+
+      <div class="flex-grow-1">
+
+        <a
+          href="{% url 'recipe_detail' slot.recipe.id %}"
+          class="recipe-link fw-semibold d-block"
+        >
+          {{ slot.recipe.title }}
+        </a>
+
+        <div class="small text-muted mt-1">
+
+          {% if slot.recipe.get_total_prep_time_minutes > 0 %}
+            <div>⏱ Prep: {{ slot.recipe.get_prep_time_display }}</div>
+          {% endif %}
+
+          <div class="d-flex gap-1 mt-1 flex-wrap">
+
+            {% if "vegetarian" in slot.recipe.get_dietary_tags_list %}
+              <span class="tag tag-vegetarian">Vegetarian</span>
+            {% endif %}
+
+            {% if "high protein" in slot.recipe.get_other_tags_list %}
+              <span class="tag tag-protein">High Protein</span>
+            {% endif %}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  {% endif %}
+
 </div>
