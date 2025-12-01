@@ -15,10 +15,6 @@ SORT_FIELD_MAP = {
     "date_oldest": "publication_date",
     "title_az": "title",
     "title_za": "-title",
-    "prep_least": "prep_time_hours",
-    "prep_most": "-prep_time_hours",
-    "cook_least": "cook_time_hours",
-    "cook_most": "-cook_time_hours",
 }
 
 
@@ -30,10 +26,10 @@ def get_search_query(request):
 def get_filter_params(request):
  """ Extract tag-based filters from request. """
  return {
-  "course": request.GET.getlist("course", []),
-  "dietary": request.GET.getlist("dietary", []),
-  "cuisine": request.GET.getlist("cuisine", []),
-  "other": request.GET.getlist("other", []),
+  "course_filters": request.GET.getlist("course", []),
+  "dietary_filters": request.GET.getlist("dietary", []),
+  "cuisine_filters": request.GET.getlist("cuisine", []),
+  "other_filters": request.GET.getlist("other", []),
  }
 
 
@@ -115,6 +111,24 @@ def apply_sort(recipes, sort_by):
         return recipes.order_by(
             "total_minutes" if sort_by == "total_least" else "-total_minutes"
         )
+    
+    # Prep Time 
+    if sort_by in ["prep_least", "prep_most"]:
+      recipes = recipes.annotate(
+        prep_minutes = F("prep_time_hours") * 60 + F("prep_time_minutes")
+      )
+      return recipes.order_by(
+        "prep_minutes" if sort_by == "prep_least" else "-prep_minutes"
+      )
+    
+    # Cook Time
+    if sort_by in ["cook_least", "cook_most"]:
+      recipes = recipes.annotate(
+        cook_minutes = F("cook_time_hours") * 60 + F("cook_time_minutes")
+      )
+      return recipes.order_by(
+        "cook_minutes" if sort_by == "cook_least" else "-cook_minutes"
+      )
 
     # Most saved
     if sort_by == "most_saved":
