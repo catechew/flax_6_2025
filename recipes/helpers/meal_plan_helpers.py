@@ -95,3 +95,25 @@ def create_meal_slots(plan):
                 recipe=None
             )
 
+def reuse_prev_week(plan):
+ """
+ Copy meals from previous week's plan into this plan.
+ """
+ prev_week = plan.week_start - timedelta(days=7)
+
+ try:
+  prev_plan = plan.user.meal_plans.get(week_start=prev_week)
+ except plan.user.meal_plans.model.DoesNotExist:
+  return False
+
+ for slot in plan.entries.all():
+  prev_slot = prev_plan.entries.filter(
+   day=slot.day,
+   meal_type=slot.meal_type
+  ).first()
+
+  slot.recipe = prev_slot.recipe if prev_slot else None
+  slot.notes = prev_slot.notes if prev_slot else ''
+  slot.save()
+
+ return True
