@@ -61,7 +61,7 @@ from recipes.views.meal_plan_view import (
     MealSlotClearView,
     ShoppingListView,
     MealSlotNotesView,
-    MealPlanReuseLastWeek
+    MealPlanReuseLastWeekView
 )
 
 urlpatterns = [
