@@ -41,7 +41,7 @@ class RecipeCreateViewTestCase(TestCase):
     def test_get_create_recipe_page(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'partials/recipe_form.html')
+        self.assertTemplateUsed(response, 'recipes/recipe_form.html')
 
     # Test that form is passed to template context
     def test_create_recipe_form_in_context(self):
