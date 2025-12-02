@@ -1,0 +1,189 @@
+/*
+AI Chat
+*/
+
+/* Welcome Section */
+.welcome-section {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 6rem 1rem;
+}
+
+.welcome-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--black-colour);
+    margin-bottom: 1rem;
+}
+
+.welcome-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+/* Messages */
+.messages-wrapper {
+    max-width: 850px;
+    margin: 0 auto 1rem auto;
+}
+
+.message-bubble {
+    max-width: 850px;
+    margin: 1rem auto;
+}
+
+/* User Message */
+.user-message {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-message .message-content {
+    background-color: var(--primary-colour);
+    color: var(--white-colour);
+    padding: 1rem 1.5rem;
+    border-radius: 20px 20px 4px 20px;
+    max-width: 80%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* AI Response */
+.ai-message .message-content {
+    background-color: var(--white-colour);
+    border: 1px solid #dee2e6;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Loading */
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.loading-subtext {
+    margin: 0.5rem 0 0 0;
+    color: #6c757d;
+}
+
+/* Recipe Stats Grid */
+.recipe-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.recipe-stat {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.recipe-stat i {
+    display: block;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-colour);
+}
+
+.stat-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    color: #6c757d;
+}
+
+/* Recipe Content */
+.recipe-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.recipe-description {
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.recipe-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.recipe-section-title i {
+    margin-right: 0.5rem;
+    color: var(--primary-colour);
+}
+
+.ingredient-list,
+.instruction-list,
+.tips-list {
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.instruction-list li {
+    margin-bottom: 1rem;
+}
+
+.dietary-info {
+    margin-bottom: 2rem;
+}
+
+.dietary-info .badge {
+    margin-left: 0.5rem;
+}
+
+.recipe-actions {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* Chat Input */
+.chat-textarea {
+    flex: 1;
+    border-radius: 24px;
+    padding: 1rem 1.5rem;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    resize: none;
+    min-height: 56px;
+}
+
+.chat-textarea:focus {
+    outline: none;
+    border-color: var(--primary-colour);
+    box-shadow: 0 0 0 3px rgba(241, 80, 52, 0.1);
+}
+
+.input-helper-text {
+    display: block;
+    text-align: center;
+    margin-top: 0.75rem;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 2rem;
+    }
+
+    .recipe-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .user-message .message-content {
+        max-width: 85%;
+    }
+}
