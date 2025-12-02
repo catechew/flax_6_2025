@@ -1,12 +1,8 @@
 from django.test import TestCase
 from recipes.forms.recipe_form import RecipeForm
-from recipes.models import User
 from django.utils import timezone
 from datetime import timedelta
-from django.core.files.uploadedfile import SimpleUploadedFile
-from PIL import Image
-from io import BytesIO
-from recipes.tests.utils import create_test_user, create_test_form_data
+from recipes.tests.utils import create_test_user, create_test_form_data, create_test_image
 
 
 class RecipeFormTestCase(TestCase):
@@ -15,7 +11,7 @@ class RecipeFormTestCase(TestCase):
     fixtures = ['recipes/tests/fixtures/default_user.json']
 
     def setUp(self):
-        self.user = create_test_user(),
+        self.user = create_test_user()
         self.form_data = create_test_form_data()
         
 
@@ -203,16 +199,7 @@ class RecipeFormTestCase(TestCase):
 
     # Valid image file is accepted
     def test_form_accepts_valid_image(self):
-        image = Image.new('RGB', (100, 100), color='red')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         form = RecipeForm(data=self.form_data, files={'image': uploaded_file})
         self.assertTrue(form.is_valid())
