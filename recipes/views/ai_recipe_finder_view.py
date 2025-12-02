@@ -75,13 +75,13 @@ def ai_recipe_generator_view(request):
     AI Recipe Generator - creates new recipes from user prompts
     """
     if request.method != 'POST':
-        return render(request, 'ai_recipe_generator.html')
+        return render(request, 'ai/ai_recipe_generator.html')
 
     user_prompt = request.POST.get('prompt', '').strip()
 
     if not user_prompt:
         messages.error(request, 'Please describe what you want to cook')
-        return render(request, 'ai_recipe_generator.html')
+        return render(request, 'ai/ai_recipe_generator.html')
 
     try:
         # Generate recipe using AI
@@ -93,20 +93,20 @@ def ai_recipe_generator_view(request):
             'show_results': True
         }
 
-        return render(request, 'ai_recipe_generator.html', context)
+        return render(request, 'ai/ai_recipe_generator.html', context)
 
     except json.JSONDecodeError as e:
         messages.error(request, 'AI returned invalid format. Please try again.')
-        return render(request, 'ai_recipe_generator.html', {'user_prompt': user_prompt})
+        return render(request, 'ai/ai_recipe_generator.html', {'user_prompt': user_prompt})
 
     except openai.error.Timeout:
         messages.error(request, 'Request timed out. Please try again.')
-        return render(request, 'ai_recipe_generator.html', {'user_prompt': user_prompt})
+        return render(request, 'ai/ai_recipe_generator.html', {'user_prompt': user_prompt})
 
     except openai.error.APIError as e:
         messages.error(request, f'OpenAI API error: {str(e)}')
-        return render(request, 'ai_recipe_generator.html', {'user_prompt': user_prompt})
+        return render(request, 'ai/ai_recipe_generator.html', {'user_prompt': user_prompt})
 
     except Exception as e:
         messages.error(request, f'An error occurred: {str(e)}')
-        return render(request, 'ai_recipe_generator.html', {'user_prompt': user_prompt})
+        return render(request, 'ai/ai_recipe_generator.html', {'user_prompt': user_prompt})
