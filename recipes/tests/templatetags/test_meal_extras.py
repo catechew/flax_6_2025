@@ -5,7 +5,7 @@ Tests for meal_extras template filters.
 from django.test import SimpleTestCase
 
 from recipes.templatetags.meal_extras import ordinal
-
+from recipes.templatetags.meal_plan_filters import get_item, get_slot
 
 class OrdinalFilterTests(SimpleTestCase):
  """ Tests for ordinal template filter. """
@@ -30,3 +30,29 @@ class OrdinalFilterTests(SimpleTestCase):
 
  def test_string_input_is_converted(self):
   self.assertEqual(ordinal("21"), "21st")
+  
+
+class GetItemFilterTests(SimpleTestCase):
+    def test_returns_value_for_valid_key(self):
+        data = {"a": 1, "b": 2}
+        self.assertEqual(get_item(data, "a"), 1)
+
+    def test_returns_none_for_invalid_dict(self):
+        self.assertIsNone(get_item(None, "a"))
+
+    def test_returns_none_for_missing_key(self):
+        data = {"a": 1}
+        self.assertIsNone(get_item(data, "b"))  
+
+
+class GetSlotFilterTests(SimpleTestCase):
+    def test_returns_value_for_valid_meal(self):
+        day = {"breakfast": "Eggs", "dinner": "Pasta"}
+        self.assertEqual(get_slot(day, "dinner"), "Pasta")
+
+    def test_returns_none_for_invalid_dict(self):
+        self.assertIsNone(get_slot(None, "lunch"))
+
+    def test_returns_none_for_missing_meal_type(self):
+        day = {"breakfast": "Eggs"}
+        self.assertIsNone(get_slot(day, "dinner"))  
