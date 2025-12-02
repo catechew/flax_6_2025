@@ -3,6 +3,7 @@ from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone 
 from unittest.mock import patch
+from recipes.tests.utils import create_test_user, create_test_recipe
 
 class RecipeDetailViewTestCase(TestCase):
     """Tests for the recipe detail view."""
@@ -12,13 +13,11 @@ class RecipeDetailViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
+        self.user = create_test_user
         self.client.login(username='@johndoe', password='Password123')
 
-        self.recipe = Recipe.objects.create(
-            author=self.user,
+        self.recipe = create_test_recipe(
             title="Korean Noodles",                        
-            publication_date=timezone.now().date(),
             ingredients="test (1)",
             steps="test"
         )
@@ -92,13 +91,8 @@ class RecipeDetailViewTestCase(TestCase):
     
     def test_recipe_with_multiple_ingredients(self):
         """Test recipe with multiple ingredients displays all correctly"""
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Complex Recipe",
-            publication_date=timezone.now().date(),
-            servings=4,
-            ingredients="Flour (500g)\nSugar (200g)\nEggs (3)\nMilk (250ml)\nButter (100g)",
-            steps="Mix everything"
+        recipe = create_test_recipe(
+            ingredients="Flour (500g)\nSugar (200g)\nEggs (3)\nMilk (250ml)\nButter (100g)"
         )
 
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
@@ -117,11 +111,6 @@ class RecipeDetailViewTestCase(TestCase):
     def test_recipe_with_multiple_steps(self):
         """Test recipe with multiple steps displays all in order"""
         recipe = Recipe.objects.create(
-            author=self.user,
-            title="Multi-Step Recipe",
-            publication_date=timezone.now().date(),
-            servings=2,
-            ingredients="Water (1L)",
             steps="Boil water\nAdd salt\nReduce heat\nSimmer for 10 minutes\nServe hot"
         )
 
