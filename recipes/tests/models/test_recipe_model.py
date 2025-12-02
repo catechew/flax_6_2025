@@ -10,10 +10,9 @@ class RecipeModelTestCase(TestCase):
     def setUp(self):
         self.user = create_test_user(username='@testuser')
 
-        self.recipe = Recipe.objects.create(
+        self.recipe = create_test_recipe(
             author=self.user,
             title="Korean Noodles",
-            publication_date=timezone.now().date(),
             ingredients= "Garlic (5 cloves)\nSoy sauce (2 tbsp)",
             steps="Mix everything together\nFry the mixture",
         )
@@ -178,8 +177,7 @@ class RecipeModelTestCase(TestCase):
         self.assertEqual(display, "1 hr 40 min")
 
     def test_adjectives_auto_populated_from_tags(self):
-        """Test that adjectives field is auto-populated from tag fields on 
-    save"""
+        """Test that adjectives field is auto-populated from tag fields on save"""
         self.recipe.course_tags = "breakfast,main"
         self.recipe.dietary_tags = "vegan"
         self.recipe.cuisine_tags = "Italian"
@@ -225,20 +223,8 @@ class RecipeModelTestCase(TestCase):
         """Test that get_save_count returns correct number of saves"""
 
         # Create additional users
-        user2 = User.objects.create_user(
-            username='@testuser2',
-            first_name='Test2',
-            last_name='User2',
-            email='test2@example.com',
-            password='Password123'
-        )
-        user3 = User.objects.create_user(
-            username='@testuser3',
-            first_name='Test3',
-            last_name='User3',
-            email='test3@example.com',
-            password='Password123'
-        )
+        user2 = create_test_user(username='@testuser2')
+        user3 = create_test_user(username='@testuser3')
 
         # Initially should be 0
         self.assertEqual(self.recipe.get_save_count(), 0)
@@ -272,13 +258,7 @@ class RecipeModelTestCase(TestCase):
 
     def test_multiple_ratings(self):
         """Test that average rating is computed correctly."""
-        user2 = User.objects.create_user(
-            username='@testuser2',
-            first_name='Another',
-            last_name='User',
-            email='another@example.com',
-            password='Password123'
-        )
+        user2 = create_test_user(username='@testuser2', first_name='Another')
 
         Rating.objects.create(recipe=self.recipe, user=self.user, stars=5)
         Rating.objects.create(recipe=self.recipe, user=user2, stars=3)
@@ -289,13 +269,7 @@ class RecipeModelTestCase(TestCase):
 
     def test_average_rating_rounding(self):
         """Test that rounding behaves as expected for display."""
-        user2 = User.objects.create_user(
-            username='@testuser2',
-            first_name='Another',
-            last_name='User',
-            email='another@example.com',
-            password='Password123'
-        )
+        user2 = create_test_user(username='@testuser2', first_name='Another')
 
         Rating.objects.create(recipe=self.recipe, user=self.user, stars=5)
         Rating.objects.create(recipe=self.recipe, user=user2, stars=4)
