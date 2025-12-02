@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from recipes.models import Recipe
+from django.shortcuts import render
 from django.http import QueryDict
 from django.core.files.base import ContentFile
 from recipes.helpers.recipe_form_helpers import (
@@ -11,6 +12,7 @@ from recipes.helpers.recipe_form_helpers import (
     handle_tag_operation, 
     apply_tags_to_recipe,
     load_temp_image,
+    save_temp_image,
     cleanup_session
 )
 from recipes.forms.recipe_form import RecipeForm
@@ -250,3 +252,63 @@ class RecipeFormHandler:
             messages.error(self.request, f'Error saving recipe: {str(e)}')
             return self.redirect_to_form_page()
 
+    def handle_form_post(self):
+        """Handle form submission"""
+        # Handle image upload
+        image_uploaded = self.handle_image_in_session()
+        
+        # Only copy files if no image was uploaded to prevent corrupt files 
+        post_data = self.request.POST.copy()
+        files_data = self.request.FILES.copy() if not image_uploaded else {}
+        
+        # Create form with instance (if available)
+        form = self.create_form(post_data, files_data)
+
+        if not form.is_valid():
+            # Save form data to session to make sure image doesn't disappear when there's errors
+            self.save_form_to_session()
+            self.mark_session_modified()
+
+            context = self.get_form_context(form)
+            return render(self.request, 'recipes/recipe_form.html', context)
+
+        # Save form data to session
+        self.save_form_to_session()
+
+        self.mark_session_modified()
+
+        # Redirect to tags page
+        return self.redirect_to_tags_page()
+
+    def handle_form_get(self):
+        """Handle form display"""
+        # Pre-populate form if coming back from tags page
+        if 'form_data' in self.session_data:
+            form = self.create_form(self.session_data['form_data'])
+        else:
+            form = self.create_form()
+
+        context = self.get_form_context(form)
+        return render(self.request, 'recipes/recipe_form.html', context)
+
+    def save_form_to_session(self):
+        """Save form data to session""" 
+        form_dict = {key: value for key, value in self.request.POST.items()}
+        self.session_data['form_data'] = form_dict
+        self.session_data['image_clear'] = self.request.POST.get('image-clear', False)
+
+    def handle_image_in_session(self):
+        """Handle image upload and save to temp location"""
+        if self.request.FILES.get('image'):
+            temp_path = save_temp_image(
+                self.request.FILES['image'],
+                self.request.user.id,
+                self.recipe.id if self.recipe else None
+            )
+            if temp_path:
+                self.session_data['temp_image_path'] = temp_path
+                return True
+        elif self.recipe and not self.recipe.author == self.request.user and self.recipe.image:
+            # non-owner updating
+            self.session_data['copy_original_image'] = True
+        return False
