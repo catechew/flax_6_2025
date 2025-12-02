@@ -3,6 +3,7 @@ from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
 from datetime import timedelta
+from recipes.tests.utils import create_test_recipes, get_default_user
 
 class AllRecipesViewTestCase(TestCase):
     """Tests for the all recipes view."""
@@ -12,39 +13,18 @@ class AllRecipesViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
+        self.user = get_default_user()
         self.url = reverse('all_recipes')
 
         # Log user in 
         self.client.login(username='@johndoe', password='Password123')
 
         # Create recipes
-        self.recipe1 = Recipe.objects.create(
-            author=self.user,
-            title="Overnight Oats",
-            publication_date=timezone.now().date(),
-            ingredients="Oats (1 cup)\nGreek Yoghurt (300g)",
-            steps="Mix ingredients together\nPut it in the fridge overnight",
-            other_tags='healthy'
+        self.recipe1, self.recipe2, self.recipe3 = create_test_recipes(
+            count=3,
+            author=self.user
         )
-
-        self.recipe2 = Recipe.objects.create(
-            author=self.user,
-            title="One Pot Chicken and Rice",
-            publication_date=timezone.now().date(),
-            other_tags='healthy',
-            ingredients="Chicken (1lb)\nRice (1 cup)",
-            steps="Fry the rice for one minute\nAdd water to the rice\nPut the chicken on top of the rice\nCover pot with a lid and boil under low heat for 20min"
-        )
-
-        self.recipe3 = Recipe.objects.create(
-            author=self.user,
-            title="Spaghetti Carbonara",
-            publication_date=timezone.now().date(),
-            ingredients="Spaghetti (200g)\nEggs (2)\nCheese (200g)",
-            steps="Cook the spaghetti in salted water for 9 min\nDrain the water and mix the eggs and cheese in while still hot"
-        )
-
+        
     def test_all_recipes_url(self):
         self.assertEqual(self.url, '/all_recipes/')
 
