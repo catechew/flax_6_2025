@@ -3,8 +3,7 @@ from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
 from datetime import timedelta
-from django.core.files.uploadedfile import SimpleUploadedFile
-from recipes.tests.utils import create_test_image
+from recipes.tests.utils import create_test_image, create_test_form_data
 
 class RecipeCreateViewTestCase(TestCase):
     """ Tests for the create recipe view """
@@ -19,18 +18,8 @@ class RecipeCreateViewTestCase(TestCase):
         self.client.login(username='@johndoe', password='Password123')
         self.url = reverse('create_recipe')
 
-        self.form_data = {
-            'title' : 'Test Recipe',
-            'publication_date' : timezone.now().date(),
-            'servings' : 4,
-            'ingredients' : "test (1)",
-            'steps' : "test",
-            'prep_time_hours': 0,
-            'prep_time_minutes': 30,
-            'cook_time_hours': 1,
-            'cook_time_minutes': 15,
-            'private': False,
-        }
+        self.form_data = create_test_form_data()
+        self.form_data['private'] = False
     
     # Test that the create recipe url is correct
     def test_create_recipe_url(self):
