@@ -145,7 +145,6 @@ class AllRecipesViewTestCase(TestCase):
     # Test searching recipes by title
     def test_search_by_title(self):
         response = self.client.get(self.url, {'q': 'Oats'})
-        print(f"\nContext keys: {response.context.keys()}")
         self.assertEqual(response.status_code, 200)
         recipes = list(response.context['recipes'])
         self.assertIn(self.recipe1, recipes)
