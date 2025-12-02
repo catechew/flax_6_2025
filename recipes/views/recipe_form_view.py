@@ -13,10 +13,10 @@ def recipe_form_view(request, recipe_id=None):
 
     # Handle POST - form submission
     if request.method == 'POST':
-        return handler.handle_form_post(request, handler)
+        return handler.handle_form_post()
     
     # Handle GET - display form
-    return handler.handle_form_get(request, handler)
+    return handler.handle_form_get()
 
 
 
