@@ -9,49 +9,72 @@
 {% block content %}
 <div class="container mt-4">
 
- <div class="d-flex justify-content-between align-items-center mb-5">
+  <div class="d-flex justify-content-between align-items-start mb-5">
 
-  <div class="d-flex align-items-center gap-3">
-   <h1 class="mb-0">📅 Weekly Meal Plan</h1>
-   <div class="progress-ring" style="--progress: {{ completion }}%;">
-    <span>{{ completion }}%</span>
-   </div>
+    <div class="d-flex align-items-center gap-4">
+
+      <!-- Progress ring -->
+      <div class="progress-ring progress-ring-lg"
+           style="--progress: {{ completion }}%;">
+        <span>{{ completion }}%</span>
+      </div>
+
+      <div>
+        <h1 class="mb-1">Weekly Meal Plan</h1>
+
+        <p class="fw-bold text-dark fs-5 mb-2">
+          Meals Logged: {{ meals_logged }} / {{ total_meals }}
+        </p>
+
+        <div class="progress" style="height: 8px; max-width: 240px;">
+          <div class="progress-bar bg-success opacity-75"
+               role="progressbar"
+               style="width: {{ meals_logged_pct }}%;"
+               aria-valuenow="{{ meals_logged }}"
+               aria-valuemin="0"
+               aria-valuemax="{{ total_meals }}">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Reuse button -->
+    <form method="POST"
+          action="{% url 'meal-plan-reuse-last-week' plan.id %}">
+      {% csrf_token %}
+      <button class="btn-orange btn-orange-lg">
+        ╰┈➤ Reuse Last Week
+      </button>
+    </form>
+
   </div>
 
-  <form method="POST"
-        action="{% url 'meal-plan-reuse-last-week' plan.id %}">
-   {% csrf_token %}
-   <button class="btn btn-outline-primary btn-sm">
-    ↺ Reuse Last Week
-   </button>
-  </form>
+  <!-- Week navigation -->
+  <div class="week-nav d-flex justify-content-center gap-3 mb-4">
+    <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
+       class="btn btn-outline-primary btn-sm">←</a>
 
- </div>
+    <span class="fw-semibold">
+      Week of {{ plan.week_start|date:"M j" }}
+    </span>
 
- <div class="week-nav d-flex justify-content-center gap-3 mb-4">
-  <a href="{% url 'meal-plan-navigate' plan.id 'prev' %}"
-     class="btn btn-outline-primary btn-sm">←</a>
+    <a href="{% url 'meal-plan-navigate' plan.id 'next' %}"
+       class="btn btn-outline-primary btn-sm">→</a>
+  </div>
 
-  <span class="fw-semibold">
-   Week of {{ plan.week_start|date:"M j" }}
-  </span>
+  <div class="meal-grid">
+    {% for day in schedule %}
+      {% include "partials/meal_day_card.html" with day=day %}
+    {% endfor %}
+  </div>
 
-  <a href="{% url 'meal-plan-navigate' plan.id 'next' %}"
-     class="btn btn-outline-primary btn-sm">→</a>
- </div>
+  {% include "partials/shopping_cta.html" %}
 
- <div class="meal-grid">
-  {% for day in schedule %}
-   {% include "partials/meal_day_card.html" with day=day %}
-  {% endfor %}
- </div>
-
- {% include "partials/shopping_cta.html" %}
-
- <a href="{% url 'dashboard' %}"
-    class="btn btn-primary mt-4">
-  ← Back to Dashboard
- </a>
+  <a href="{% url 'dashboard' %}"
+     class="btn btn-primary mt-4 mb-3">
+    ← Back to Dashboard
+  </a>
 
 </div>
 {% endblock %}

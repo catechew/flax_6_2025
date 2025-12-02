@@ -117,3 +117,19 @@ def reuse_prev_week(plan):
   slot.save()
 
  return True
+
+def calculate_meals_logged(plan):
+   """
+   Calculate how many meals have been logged for the week.
+   Only breakfast, lunch and dinner are counted.
+   """
+   meal_types = ["breakfast", "lunch", "dinner"]
+
+   logged = plan.entries.filter(
+      meal_type__in=meal_types,
+      recipe__isnull=False
+   ).count()
+
+   total = 7 * len(meal_types)
+
+   return logged, total 
