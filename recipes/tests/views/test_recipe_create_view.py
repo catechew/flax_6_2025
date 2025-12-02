@@ -19,8 +19,7 @@ class RecipeCreateViewTestCase(TestCase):
         self.url = reverse('create_recipe')
 
         self.form_data = create_test_form_data()
-        self.form_data['private'] = False
-    
+
     # Test that the create recipe url is correct
     def test_create_recipe_url(self):
         self.assertEqual(self.url, '/create_recipe/')

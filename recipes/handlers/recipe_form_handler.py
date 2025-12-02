@@ -266,7 +266,7 @@ class RecipeFormHandler:
         if not form.is_valid():
             # Save form data to session to make sure image doesn't disappear when there's errors
             self.save_form_to_session()
-            self.handler.mark_session_modified()
+            self.mark_session_modified()
 
             context = self.get_form_context(form)
             return render(self.request, 'recipes/recipe_form.html', context)

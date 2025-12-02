@@ -226,5 +226,5 @@ class RecipeFormTestCase(TestCase):
         self.assertEqual(recipe.title, 'Test Recipe')
         self.assertEqual(recipe.author, self.user)
         self.assertEqual(recipe.servings, 4)
-        self.assertEqual(recipe.ingredients, 'test (1)')
-        self.assertEqual(recipe.steps, 'test')
+        self.assertEqual(recipe.ingredients, 'test ingredient (1 cup)')
+        self.assertEqual(recipe.steps, 'test step 1')

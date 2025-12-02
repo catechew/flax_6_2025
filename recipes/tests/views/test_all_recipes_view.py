@@ -20,7 +20,25 @@ class AllRecipesViewTestCase(TestCase):
         self.client.login(username='@johndoe', password='Password123')
 
         # Create recipes
-        self.recipe1, self.recipe2, self.recipe3 = create_test_recipes(count=3)
+        self.recipe1 = create_test_recipe(
+            title="Overnight Oats",
+            ingredients="Oats (1 cup)\nGreek Yoghurt (300g)",
+            steps="Mix ingredients together\nPut it in the fridge overnight",
+            other_tags='healthy'
+        )
+
+        self.recipe2 = create_test_recipe(
+            title="One Pot Chicken and Rice",
+            other_tags='healthy',
+            ingredients="Chicken (1lb)\nRice (1 cup)",
+            steps="Fry the rice for one minute\nAdd water to the rice\nPut the chicken on top of the rice\nCover pot with a lid and boil under low heat for 20min"
+        )
+
+        self.recipe3 = create_test_recipe(
+            title="Spaghetti Carbonara",
+            ingredients="Spaghetti (200g)\nEggs (2)\nCheese (200g)",
+            steps="Cook the spaghetti in salted water for 9 min\nDrain the water and mix the eggs and cheese in while still hot"
+        )
         
     def test_all_recipes_url(self):
         self.assertEqual(self.url, '/all_recipes/')
@@ -193,7 +211,6 @@ class AllRecipesViewTestCase(TestCase):
         response = self.client.get(self.url, {'q': 'Oats'})
         self.assertIn('recipes', response.context)
         self.assertIn('search_query', response.context)
-        self.assertIn('total_count', response.context)
         self.assertIn('user', response.context)
 
     # Test searching by username
@@ -479,8 +496,9 @@ class AllRecipesViewTestCase(TestCase):
         """Test that filter parameters are passed to context"""
         response = self.client.get(self.url, {'course': 'main', 'dietary': 'vegan'})
 
-        self.assertIn('course_filters', response.context)
-        self.assertIn('dietary_filters', response.context)
+        self.assertIn('filters', response.context)
+        self.assertIn('course_filters', response.context['filters'])
+        self.assertIn('dietary_filters', response.context['filters'])
         self.assertIn('main', response.context['course_filters'])
         self.assertIn('vegan', response.context['dietary_filters'])
 

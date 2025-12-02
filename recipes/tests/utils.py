@@ -4,6 +4,7 @@ from recipes.models import Recipe
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 from io import BytesIO
+import uuid
 
 """
 Utility functions for creating test data in tests
@@ -11,7 +12,7 @@ Utility functions for creating test data in tests
 
 User = get_user_model()
 
-def create_test_user(username='@testuser', password='Password123', **kwargs):
+def create_test_user(username=None, password='Password123', **kwargs):
     """
     Create test user with default values
 
@@ -22,10 +23,13 @@ def create_test_user(username='@testuser', password='Password123', **kwargs):
     returns user instance
     """
 
+    if username is None:
+        username = f'@testuser_{uuid.uuid4().hex[:8]}'
+
     defaults = {
         'first_name':'Test',
         'last_name': 'User',
-        'email': f'{username}@test.com'
+        'email': f'{username.strip("@")}@test.com'
     }
 
     defaults.update(kwargs)
@@ -93,6 +97,7 @@ def create_test_form_data(**kwargs):
         'prep_time_minutes': 30,
         'cook_time_hours': 1,
         'cook_time_minutes': 0,
+        'private' : False,
     }
     defaults.update(kwargs)
     return defaults
