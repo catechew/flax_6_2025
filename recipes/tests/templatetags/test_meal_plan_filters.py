@@ -21,4 +21,3 @@ class MealPlanFiltersTests(TestCase):
 
     def test_get_slot_returns_none_for_non_dict(self):
         self.assertIsNone(get_slot("not a dict", "breakfast"))
-
