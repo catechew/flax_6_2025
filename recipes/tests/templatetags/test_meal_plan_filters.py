@@ -1,23 +1,36 @@
 """
 Tests for meal_plan_filters template filters.
+Forces module import so coverage tracks execution.
 """
 
-from django.test import TestCase
-from recipes.templatetags.meal_plan_filters import get_item, get_slot
+from django.test import SimpleTestCase
+
+# ✅ CRUCIAL: import the module itself
+import recipes.templatetags.meal_plan_filters as filters
 
 
-class MealPlanFiltersTests(TestCase):
+class MealPlanFiltersTests(SimpleTestCase):
+    """Tests for meal plan template filters."""
 
-    def test_get_item_returns_value_for_dict(self):
-        data = {"a": 1}
-        self.assertEqual(get_item(data, "a"), 1)
+    def test_get_item_valid_dict(self):
+        self.assertEqual(filters.get_item({"a": 1}, "a"), 1)
 
-    def test_get_item_returns_none_for_non_dict(self):
-        self.assertIsNone(get_item("not a dict", "a"))
+    def test_get_item_missing_key(self):
+        self.assertIsNone(filters.get_item({"a": 1}, "b"))
 
-    def test_get_slot_returns_value_for_dict(self):
-        day = {"breakfast": "eggs"}
-        self.assertEqual(get_slot(day, "breakfast"), "eggs")
+    def test_get_item_non_dict(self):
+        self.assertIsNone(filters.get_item("not-a-dict", "a"))
 
-    def test_get_slot_returns_none_for_non_dict(self):
-        self.assertIsNone(get_slot("not a dict", "breakfast"))
+    def test_get_slot_valid_dict(self):
+        self.assertEqual(
+            filters.get_slot({"breakfast": "Eggs"}, "breakfast"),
+            "Eggs"
+        )
+
+    def test_get_slot_missing_key(self):
+        self.assertIsNone(
+            filters.get_slot({"breakfast": "Eggs"}, "dinner")
+        )
+
+    def test_get_slot_non_dict(self):
+        self.assertIsNone(filters.get_slot(None, "lunch"))
