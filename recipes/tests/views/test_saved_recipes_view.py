@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
+from recipes.tests.utils import create_test_recipe, create_test_user
 
 class SavedRecipesViewTestCase(TestCase):
     """Tests for the saved recipes functionality."""
@@ -12,16 +13,15 @@ class SavedRecipesViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
-        self.other_user = User.objects.get(username='@janedoe')
+        self.user = create_test_user()
+        self.other_user = create_test_user(username='@janedoe')
         
         self.client.login(username='@johndoe', password='Password123')
 
         # Create a recipe by the other user
-        self.recipe = Recipe.objects.create(
+        self.recipe = create_test_recipe(
             author=self.other_user,
             title="Delicious Pasta",
-            publication_date=timezone.now().date(),
             ingredients="Pasta (500g)\nSauce (1 jar)",
             steps="Boil pasta\nAdd sauce",
             course_tags="main"
@@ -112,13 +112,7 @@ class SavedRecipesViewTestCase(TestCase):
     def test_saved_recipes_does_not_show_unsaved_ones(self):
         """Test that the list only shows explicitly saved recipes."""
         # Create a second recipe
-        recipe2 = Recipe.objects.create(
-            author=self.other_user,
-            title="Unsaved Soup",
-            publication_date=timezone.now().date(),
-            ingredients="Water (1L)",
-            steps="Boil"
-        )
+        recipe2 = create_test_recipe(author=self.other_user)
 
         # Save only the first recipe
         self.recipe.saved_by.add(self.user)
@@ -131,13 +125,7 @@ class SavedRecipesViewTestCase(TestCase):
 
     def test_saving_own_recipe(self):
         """Test that a user can save their own recipe."""
-        my_recipe = Recipe.objects.create(
-            author=self.user,
-            title="My Own Cake",
-            publication_date=timezone.now().date(),
-            ingredients="Flour",
-            steps="Bake"
-        )
+        my_recipe = create_test_recipe()
         
         url = reverse('toggle_save_recipe', kwargs={'recipe_id': my_recipe.id})
         self.client.post(url)
