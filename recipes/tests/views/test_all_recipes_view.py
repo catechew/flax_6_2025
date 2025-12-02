@@ -3,7 +3,7 @@ from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
 from datetime import timedelta
-from recipes.tests.utils import create_test_recipes, get_default_user
+from recipes.tests.utils import create_test_recipes, get_default_user, create_test_recipe
 
 class AllRecipesViewTestCase(TestCase):
     """Tests for the all recipes view."""
@@ -20,10 +20,7 @@ class AllRecipesViewTestCase(TestCase):
         self.client.login(username='@johndoe', password='Password123')
 
         # Create recipes
-        self.recipe1, self.recipe2, self.recipe3 = create_test_recipes(
-            count=3,
-            author=self.user
-        )
+        self.recipe1, self.recipe2, self.recipe3 = create_test_recipes(count=3)
         
     def test_all_recipes_url(self):
         self.assertEqual(self.url, '/all_recipes/')
@@ -47,48 +44,24 @@ class AllRecipesViewTestCase(TestCase):
 
     def test_all_recipes_with_exactly_25_recipes(self):
         Recipe.objects.all().delete()
-        for i in range(25):
-            Recipe.objects.create(
-            author=self.user,
-            title=f"Recipe {i}",
-            publication_date=timezone.now().date(),
-            ingredients="test(1)",
-            steps="test"
-        )
+        create_test_recipes(count=25)
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_object'].paginator.num_pages, 1)
         self.assertFalse(response.context['page_object'].has_other_pages())
 
     def test_all_recipes_with_26_recipes(self):
         Recipe.objects.all().delete()
-        for i in range(26):
-            Recipe.objects.create(
-                author=self.user,
-                title=f"Recipe {i}",
-                publication_date=timezone.now().date(),
-                ingredients="test(1)",
-                steps="test"
-            )
+        create_test_recipes(count=26)
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_object'].paginator.num_pages, 2)
 
     def test_all_recipes_ordering(self):
         """Test that recipes are ordered by publication date (newest first)"""
         Recipe.objects.all().delete()
-        old_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Old Recipe",
+        old_recipe = create_test_recipe(
             publication_date = timezone.now().date() - timedelta(days=10),
-            ingredients="test(1)",
-            steps="test"
         )
-        new_recipe = Recipe.objects.create(
-            author=self.user,
-            title="New Recipe",
-            publication_date=timezone.now().date(),
-            ingredients="test(1)",
-            steps="test"
-        )
+        new_recipe = create_test_recipe()     
         response = self.client.get(self.url)
         recipes = response.context['recipes']
         self.assertEqual(recipes[0], new_recipe)  # Newest first
@@ -97,16 +70,8 @@ class AllRecipesViewTestCase(TestCase):
     def test_pagination_works(self):
     # Clear existing recipes first
         Recipe.objects.all().delete()
+        create_test_recipes(count=55)
     
-        # Create exactly 55 recipes (3 pages)
-        for i in range(55):
-            Recipe.objects.create(
-                author=self.user,
-                title=f"Recipe {i}",
-                publication_date=timezone.now().date(),
-                ingredients="test(1)",
-                steps="test"
-            )
         response = self.client.get(self.url)
         self.assertEqual(response.context['page_object'].paginator.num_pages, 3)
         self.assertEqual(response.context['page_object'].paginator.count, 55)
@@ -270,12 +235,8 @@ class AllRecipesViewTestCase(TestCase):
         from recipes.models import User
         jane = User.objects.get(username='@janedoe')
 
-        jane_recipe = Recipe.objects.create(
+        jane_recipe = create_test_recipe(
             author=jane,
-            title="Jane's Special Dish",
-            publication_date=timezone.now().date(),
-            ingredients="Sugar (100g)",
-            steps="Mix it"
         )
 
         response = self.client.get(self.url, {'q': 'Jane Doe'})
@@ -289,30 +250,18 @@ class AllRecipesViewTestCase(TestCase):
         Recipe.objects.all().delete()
 
         # Recipe with both avocado and garlic
-        recipe_both = Recipe.objects.create(
-            author=self.user,
-            title="Guacamole",
-            publication_date=timezone.now().date(),
+        recipe_both = create_test_recipe(
             ingredients="Avocado (2)\nGarlic (1 clove)\nLime (1)",
-            steps="Mash together"
         )
 
         # Recipe with only avocado
-        recipe_avocado_only = Recipe.objects.create(
-            author=self.user,
-            title="Avocado Toast",
-            publication_date=timezone.now().date(),
+        recipe_avocado_only = create_test_recipe(
             ingredients="Avocado (1)\nBread (2 slices)",
-            steps="Toast and spread"
         )
 
         # Recipe with only garlic
-        recipe_garlic_only = Recipe.objects.create(
-            author=self.user,
-            title="Garlic Bread",
-            publication_date=timezone.now().date(),
+        recipe_garlic_only = create_test_recipe(
             ingredients="Garlic (3 cloves)\nBread (1 loaf)\nButter (50g)",
-            steps="Mix and bake"
         )
 
         # Search for both ingredients
@@ -329,12 +278,8 @@ class AllRecipesViewTestCase(TestCase):
         """Test multiple ingredient search works regardless of order"""
         Recipe.objects.all().delete()
 
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Chicken Rice Dish",
-            publication_date=timezone.now().date(),
+        recipe = create_test_recipe(
             ingredients="Chicken (500g)\nRice (200g)\nOnion (1)",
-            steps="Cook together"
         )
 
         # Search in different order
@@ -352,20 +297,12 @@ class AllRecipesViewTestCase(TestCase):
         """Test searching with three ingredients"""
         Recipe.objects.all().delete()
 
-        recipe_all_three = Recipe.objects.create(
-            author=self.user,
-            title="Complex Dish",
-            publication_date=timezone.now().date(),
+        recipe_all_three = create_test_recipe(
             ingredients="Tomato (2)\nOnion (1)\nGarlic (3 cloves)\nPasta (200g)",
-            steps="Cook all"
         )
 
-        recipe_two_only = Recipe.objects.create(
-            author=self.user,
-            title="Simple Dish",
-            publication_date=timezone.now().date(),
+        recipe_two_only = create_test_recipe(
             ingredients="Tomato (1)\nOnion (1)",
-            steps="Mix"
         )
 
         response = self.client.get(self.url, {'q': 'Tomato Onion Garlic'})
@@ -380,12 +317,9 @@ class AllRecipesViewTestCase(TestCase):
         Recipe.objects.all().delete()
 
         # Recipe with multi-word title
-        recipe_title = Recipe.objects.create(
-            author=self.user,
+        recipe_title = create_test_recipe(
             title="Spicy Korean Noodles",
-            publication_date=timezone.now().date(),
             ingredients="Noodles (200g)",
-            steps="Cook"
         )
 
         response = self.client.get(self.url, {'q': 'Korean Noodles'})
@@ -398,12 +332,8 @@ class AllRecipesViewTestCase(TestCase):
         """Test that multi-word search is case insensitive"""
         Recipe.objects.all().delete()
 
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Test Recipe",
-            publication_date=timezone.now().date(),
+        recipe = create_test_recipe(
             ingredients="Chicken (500g)\nRice (200g)",
-            steps="Cook"
         )
 
         # Try different cases
@@ -424,27 +354,15 @@ class AllRecipesViewTestCase(TestCase):
         """Test that single word search still uses OR logic across fields"""
         Recipe.objects.all().delete()
 
-        recipe1 = Recipe.objects.create(
-            author=self.user,
+        recipe1 = create_test_recipe(
             title="Chicken Soup",
-            publication_date=timezone.now().date(),
-            ingredients="Water (1L)",
-            steps="Boil"
         )
 
-        recipe2 = Recipe.objects.create(
-            author=self.user,
-            title="Pasta",
-            publication_date=timezone.now().date(),
+        recipe2 = create_test_recipe(
             ingredients="Chicken (300g)\nPasta (200g)",
-            steps="Cook"
         )
 
-        recipe3 = Recipe.objects.create(
-            author=self.user,
-            title="Rice",
-            publication_date=timezone.now().date(),
-            ingredients="Rice (200g)",
+        recipe3 = create_test_recipe(
             steps="Fry the chicken pieces"
         )
 
@@ -467,20 +385,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_filter_by_course_tag(self):
         """Test filtering recipes by course tag"""
         Recipe.objects.all().delete()
-        breakfast_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Pancakes",
-            publication_date=timezone.now().date(),
-            ingredients="Flour (200g)",
-            steps="Mix and cook",
+        breakfast_recipe = create_test_recipe(
             course_tags="breakfast"
         )
-        dinner_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Steak",
-            publication_date=timezone.now().date(),
-            ingredients="Beef (500g)",
-            steps="Grill steak",
+    
+        dinner_recipe = create_test_recipe(
             course_tags="main"
         )
 
@@ -494,20 +403,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_filter_by_dietary_tag(self):
         """Test filtering recipes by dietary tag"""
         Recipe.objects.all().delete()
-        vegan_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Tofu Stir Fry",
-            publication_date=timezone.now().date(),
-            ingredients="Tofu (200g)",
-            steps="Stir fry",
+        vegan_recipe = create_test_recipe(
             dietary_tags="vegan"
         )
-        non_vegan_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Chicken",
-            publication_date=timezone.now().date(),
-            ingredients="Chicken (500g)",
-            steps="Cook chicken",
+        
+        non_vegan_recipe = create_test_recipe(
             dietary_tags=""
         )
 
@@ -521,20 +421,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_filter_by_cuisine_tag(self):
         """Test filtering recipes by cuisine tag"""
         Recipe.objects.all().delete()
-        italian_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Pasta",
-            publication_date=timezone.now().date(),
-            ingredients="Pasta (200g)",
-            steps="Boil pasta",
+        italian_recipe = create_test_recipe(
             cuisine_tags="Italian"
         )
-        japanese_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Sushi",
-            publication_date=timezone.now().date(),
-            ingredients="Rice (300g)",
-            steps="Make sushi",
+    
+        japanese_recipe = create_test_recipe(
             cuisine_tags="Japanese"
         )
 
@@ -548,20 +439,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_filter_by_other_tag(self):
         """Test filtering recipes by other tag"""
         Recipe.objects.all().delete()
-        quick_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Quick Meal",
-            publication_date=timezone.now().date(),
-            ingredients="Bread (2 slices)",
-            steps="Toast bread",
+        quick_recipe = create_test_recipe(
             other_tags="quick"
         )
-        slow_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Slow Roast",
-            publication_date=timezone.now().date(),
-            ingredients="Beef (1kg)",
-            steps="Slow roast for 4 hours",
+
+        slow_recipe = create_test_recipe(
             other_tags=""
         )
 
@@ -575,28 +457,13 @@ class AllRecipesViewTestCase(TestCase):
     def test_filter_multiple_tags_same_category(self):
         """Test filtering with multiple tags from same category"""
         Recipe.objects.all().delete()
-        breakfast_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Pancakes",
-            publication_date=timezone.now().date(),
-            ingredients="Flour (200g)",
-            steps="Cook",
+        breakfast_recipe = create_test_recipe(
             course_tags="breakfast"
         )
-        dessert_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Cake",
-            publication_date=timezone.now().date(),
-            ingredients="Sugar (300g)",
-            steps="Bake",
+        dessert_recipe = create_test_recipe(
             course_tags="dessert"
         )
-        main_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Steak",
-            publication_date=timezone.now().date(),
-            ingredients="Beef (500g)",
-            steps="Grill",
+        main_recipe = create_test_recipe(
             course_tags="main"
         )
 
@@ -630,20 +497,10 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_date_newest(self):
         """Test sorting by newest date first (default)"""
         Recipe.objects.all().delete()
-        old_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Old",
+        old_recipe = create_test_recipe(
             publication_date=timezone.now().date() - timedelta(days=5),
-            ingredients="test (1)",
-            steps="test"
         )
-        new_recipe = Recipe.objects.create(
-            author=self.user,
-            title="New",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
-        )
+        new_recipe = create_test_recipe()        
 
         response = self.client.get(self.url, {'sort': 'date_newest'})
         recipes = list(response.context['recipes'])
@@ -654,20 +511,10 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_date_oldest(self):
         """Test sorting by oldest date first"""
         Recipe.objects.all().delete()
-        old_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Old",
+        old_recipe = create_test_recipe(
             publication_date=timezone.now().date() - timedelta(days=5),
-            ingredients="test (1)",
-            steps="test"
         )
-        new_recipe = Recipe.objects.create(
-            author=self.user,
-            title="New",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
-        )
+        new_recipe = create_test_recipe()
 
         response = self.client.get(self.url, {'sort': 'date_oldest'})
         recipes = list(response.context['recipes'])
@@ -678,21 +525,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_prep_time_least(self):
         """Test sorting by least prep time"""
         Recipe.objects.all().delete()
-        quick_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Quick",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        quick_recipe = create_test_recipe(
             prep_time_hours=0,
             prep_time_minutes=10
         )
-        slow_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Slow",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        slow_recipe = create_test_recipe(
             prep_time_hours=2,
             prep_time_minutes=0
         )
@@ -706,19 +543,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_title_az(self):
         """Test sorting by title A-Z"""
         Recipe.objects.all().delete()
-        recipe_z = Recipe.objects.create(
-            author=self.user,
+        recipe_z = create_test_recipe(
             title="Zebra Cake",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
         )
-        recipe_a = Recipe.objects.create(
-            author=self.user,
+        recipe_a = create_test_recipe(
             title="Apple Pie",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
         )
 
         response = self.client.get(self.url, {'sort': 'title_az'})
@@ -743,20 +572,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_filters_and_sort_work_together(self):
         """Test that filtering and sorting work together"""
         Recipe.objects.all().delete()
-        old_vegan = Recipe.objects.create(
-            author=self.user,
-            title="Old Vegan",
+        old_vegan = create_test_recipe(
             publication_date=timezone.now().date() - timedelta(days=5),
-            ingredients="test (1)",
-            steps="test",
             dietary_tags="vegan"
         )
-        new_vegan = Recipe.objects.create(
-            author=self.user,
-            title="New Vegan",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        new_vegan = create_test_recipe(
             dietary_tags="vegan"
         )
 
@@ -771,21 +591,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_prep_most(self):
         """Test sorting by most prep time"""
         Recipe.objects.all().delete()
-        quick_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Quick",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        quick_recipe = create_test_recipe(
             prep_time_hours=0,
             prep_time_minutes=10
         )
-        slow_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Slow",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        slow_recipe = create_test_recipe(
             prep_time_hours=2,
             prep_time_minutes=0
         )
@@ -799,21 +609,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_cook_least(self):
         """Test sorting by least cook time"""
         Recipe.objects.all().delete()
-        quick_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Quick",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        quick_recipe = create_test_recipe(
             cook_time_hours=0,
             cook_time_minutes=15
         )
-        slow_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Slow",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        slow_recipe = create_test_recipe(
             cook_time_hours=3,
             cook_time_minutes=0
         )
@@ -827,21 +627,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_cook_most(self):
         """Test sorting by most cook time"""
         Recipe.objects.all().delete()
-        quick_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Quick",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        quick_recipe = create_test_recipe(
             cook_time_hours=0,
             cook_time_minutes=15
         )
-        slow_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Slow",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        slow_recipe = create_test_recipe(
             cook_time_hours=3,
             cook_time_minutes=0
         )
@@ -855,23 +645,13 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_total_most(self):
         """Test sorting by most total time"""
         Recipe.objects.all().delete()
-        quick_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Quick",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        quick_recipe = create_test_recipe(
             prep_time_hours=0,
             prep_time_minutes=10,
             cook_time_hours=0,
             cook_time_minutes=15
         )
-        slow_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Slow",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test",
+        slow_recipe = create_test_recipe(
             prep_time_hours=2,
             prep_time_minutes=30,
             cook_time_hours=3,
@@ -887,19 +667,11 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_title_za(self):
         """Test sorting by title Z-A"""
         Recipe.objects.all().delete()
-        recipe_z = Recipe.objects.create(
-            author=self.user,
+        recipe_z = create_test_recipe(
             title="Zebra Cake",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
         )
-        recipe_a = Recipe.objects.create(
-            author=self.user,
+        recipe_a = create_test_recipe(
             title="Apple Pie",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
         )
 
         response = self.client.get(self.url, {'sort': 'title_za'})
@@ -911,20 +683,10 @@ class AllRecipesViewTestCase(TestCase):
     def test_sort_by_invalid_defaults_to_newest(self):
         """Test that invalid sort parameter defaults to newest"""
         Recipe.objects.all().delete()
-        old_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Old",
+        old_recipe = create_test_recipe(
             publication_date=timezone.now().date() - timedelta(days=5),
-            ingredients="test (1)",
-            steps="test"
         )
-        new_recipe = Recipe.objects.create(
-            author=self.user,
-            title="New",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
-        )
+        new_recipe =create_test_recipe()
 
         response = self.client.get(self.url, {'sort': 'invalid_sort_option'})
         recipes = list(response.context['recipes'])
@@ -942,20 +704,8 @@ class AllRecipesViewTestCase(TestCase):
         user3 = User.objects.get(username='@petrapickles')
 
         # Create recipes
-        popular_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Popular Recipe",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
-        )
-        unpopular_recipe = Recipe.objects.create(
-            author=self.user,
-            title="Unpopular Recipe",
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
-        )
+        popular_recipe = create_test_recipe()
+        unpopular_recipe = create_test_recipe()
 
         # Add saves
         popular_recipe.saved_by.add(self.user, user2, user3)
