@@ -18,7 +18,7 @@ class RatingViewTestCase(TestCase):
         """Set up a test user and a recipe."""
         self.user = User.objects.get(username='@johndoe')
 
-        # Create a second user for testing non-author rating
+        # Create a second user for testing non author rating
         self.other_user = User.objects.create_user(
             username='@janedoe',
             email='jane@example.org',
@@ -64,7 +64,7 @@ class RatingViewTestCase(TestCase):
         """Test that rating an already-rated recipe updates the rating."""
         self.client.login(username='@janedoe', password='Password123')
 
-        # Create an initial rating
+        # Create initial rating
         Rating.objects.create(recipe=self.recipe, user=self.other_user, stars=2)
 
         # Update rating to 5
@@ -79,7 +79,7 @@ class RatingViewTestCase(TestCase):
 
         response = self.client.post(self.url, {'stars': 5}, follow=True)
 
-        # Rating must NOT have been created
+        # Rating must not have been created
         self.assertFalse(Rating.objects.filter(recipe=self.recipe, user=self.user).exists())
 
         # Should redirect back to detail page
@@ -110,3 +110,16 @@ class RatingViewTestCase(TestCase):
         self.assertEqual(self.recipe.rating_count(), 2)
         self.assertAlmostEqual(self.recipe.average_rating(), 3.5)
         self.assertEqual(self.recipe.average_rating_rounded(), 4)  # rounded display value
+
+    def test_get_request_does_not_create_rating(self):
+        """Test that a GET request does not process a rating."""
+        self.client.login(username='@janedoe', password='Password123')
+
+        response = self.client.get(self.url)
+
+        # No rating should be created
+        self.assertFalse(Rating.objects.filter(recipe=self.recipe, user=self.other_user).exists())
+
+        # Should redirect back to detail page
+        detail_url = reverse('recipe_detail', kwargs={'recipe_id': self.recipe.id})
+        self.assertRedirects(response, detail_url)
