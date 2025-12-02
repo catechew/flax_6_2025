@@ -4,8 +4,7 @@ from recipes.models import Recipe, User
 from django.utils import timezone
 from datetime import timedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
-from PIL import Image
-from io import BytesIO
+from recipes.tests.utils import create_test_image
 
 class RecipeCreateViewTestCase(TestCase):
     """ Tests for the create recipe view """
@@ -316,17 +315,7 @@ class RecipeCreateViewTestCase(TestCase):
     def test_create_recipe_with_image_upload_succeeds(self):
         initial_recipe_count = Recipe.objects.count()
 
-        # Create a real valid image file
-        image = Image.new('RGB', (100, 100), color='red')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         data = self.form_data.copy()
         data['image'] = uploaded_file
