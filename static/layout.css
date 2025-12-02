@@ -90,3 +90,36 @@ h3.profile-title {
 .content a:hover {
   color: var(--primary-colour-darkest);
 }
+
+/* AI Chat Layout */
+.ai-chat-container {
+    min-height: calc(100vh - 56px);
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 2rem 1rem 200px 1rem;
+    overflow-y: auto;
+}
+
+.chat-input-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem 1rem;
+    background: transparent;
+}
+
+.chat-input-wrapper {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.input-group-chat {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
