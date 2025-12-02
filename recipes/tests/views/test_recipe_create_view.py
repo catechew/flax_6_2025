@@ -590,20 +590,8 @@ class RecipeCreateViewTestCase(TestCase):
 
     def test_temp_image_deleted_after_creation(self):
         """Test that temporary image is deleted after recipe creation"""
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from PIL import Image
-        from io import BytesIO
 
-        image = Image.new('RGB', (100, 100), color='red')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         data = self.form_data.copy()
         data['image'] = uploaded_file
@@ -650,20 +638,7 @@ class RecipeCreateViewTestCase(TestCase):
 
     def test_cancel_deletes_temp_image(self):
         """Test that cancelling deletes temporary image"""
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from PIL import Image
-        from io import BytesIO
-
-        image = Image.new('RGB', (100, 100), color='blue')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='cancel_test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         data = self.form_data.copy()
         data['image'] = uploaded_file
@@ -684,20 +659,7 @@ class RecipeCreateViewTestCase(TestCase):
 
     def test_has_image_context_variable(self):
         """Test that has_image context variable is set correctly"""
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from PIL import Image
-        from io import BytesIO
-
-        image = Image.new('RGB', (100, 100), color='green')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='context_test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         data = self.form_data.copy()
         data['image'] = uploaded_file

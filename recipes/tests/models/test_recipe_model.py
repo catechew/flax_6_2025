@@ -2,18 +2,13 @@ from django.test import TestCase
 from django.utils import timezone
 from recipes.models import Recipe, User
 from recipes.models.rating import Rating
+from recipes.tests.utils import create_test_user, create_test_recipe
 
 class RecipeModelTestCase(TestCase):
     """Tests for the Recipe model, including the __str__ method."""
 
     def setUp(self):
-        self.user = User.objects.create_user(
-            username='@testuser',
-            first_name='Test',
-            last_name='User',
-            email='test@example.com',
-            password='Password123'
-        )
+        self.user = create_test_user(username='@testuser')
 
         self.recipe = Recipe.objects.create(
             author=self.user,
