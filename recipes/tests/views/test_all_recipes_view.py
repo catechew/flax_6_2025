@@ -257,37 +257,8 @@ class AllRecipesViewTestCase(TestCase):
     # Test searching by username
     def test_search_by_username(self):
         """Test searching recipes by author username"""
-        # First, verify recipes exist
-        print(f"\nTotal recipes in DB: {Recipe.objects.count()}")
-        print(f"Recipe1 author: {self.recipe1.author.username}")
-        print(f"Recipe2 author: {self.recipe2.author.username}")
-        print(f"Recipe3 author: {self.recipe3.author.username}")
 
-        # Try different search terms to see what works
-        print("\n=== Testing different search terms ===")
-        
-        # Try with @
-        response1 = self.client.get(self.url, {'q': '@johndoe'})
-        print(f"Search '@johndoe': {len(list(response1.context['recipes']))} recipes")
-        
-        # Try without @
-        response2 = self.client.get(self.url, {'q': 'johndoe'})
-        print(f"Search 'johndoe': {len(list(response2.context['recipes']))} recipes")
-        
-        # Try first/last name
-        response3 = self.client.get(self.url, {'q': 'John'})
-        print(f"Search 'John': {len(list(response3.context['recipes']))} recipes")
-        
-        response4 = self.client.get(self.url, {'q': 'Doe'})
-        print(f"Search 'Doe': {len(list(response4.context['recipes']))} recipes")
-        
-        # Try recipe title
-        response5 = self.client.get(self.url, {'q': 'Oats'})
-        print(f"Search 'Oats': {len(list(response5.context['recipes']))} recipes")
-
-        response = self.client.get(self.url, {'q': '@johndoe'})
-        print(f"\nContext keys: {response.context.keys()}")
-        print(f"Recipes in context: {response.context['recipes']}")
+        response = self.client.get(self.url, {'q': 'John'})
         recipes = list(response.context['recipes'])
         # All test recipes are by @johndoe
         self.assertEqual(len(recipes), 3)
