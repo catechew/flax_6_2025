@@ -12,6 +12,7 @@ from recipes.helpers.recipe_form_helpers import (
     handle_tag_operation, 
     apply_tags_to_recipe,
     load_temp_image,
+    save_temp_image,
     cleanup_session
 )
 from recipes.forms.recipe_form import RecipeForm
@@ -266,7 +267,7 @@ class RecipeFormHandler:
         if not form.is_valid():
             # Save form data to session to make sure image doesn't disappear when there's errors
             self.save_form_to_session()
-            self.handler.mark_session_modified()
+            self.mark_session_modified()
 
             context = self.get_form_context(form)
             return render(self.request, 'recipes/recipe_form.html', context)
@@ -299,7 +300,7 @@ class RecipeFormHandler:
     def handle_image_in_session(self):
         """Handle image upload and save to temp location"""
         if self.request.FILES.get('image'):
-            temp_path = self.save_temp_image(
+            temp_path = save_temp_image(
                 self.request.FILES['image'],
                 self.request.user.id,
                 self.recipe.id if self.recipe else None
