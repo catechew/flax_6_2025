@@ -79,3 +79,25 @@ class MealPlanReuseLastWeekViewTests(TestCase):
     def test_reuse_last_week_button_post(self):
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 302)
+        
+    def test_reuse_last_week_with_previous_plan(self):
+        # Create previous week's plan
+        prev_plan = MealPlan.objects.create(
+            user=self.user,
+            week_start=date(2025, 11, 17),
+        )
+
+        create_meal_slots(prev_plan)
+
+        # Add some data to previous plan
+        slot = prev_plan.entries.first()
+        slot.notes = "Copied note"
+        slot.save()
+
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 302)
+
+        # Confirm notes were copied
+        new_slot = self.plan.entries.first()
+        self.assertEqual(new_slot.notes, "Copied note")
