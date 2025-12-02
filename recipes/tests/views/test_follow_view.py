@@ -7,15 +7,13 @@ from recipes.models import User
 
 
 class FollowViewTestCase(TestCase):
-    """Tests for follow and unfollow views."""
+    """ Tests for follow and unfollow views. """
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 
     def setUp(self):
-        """Set up test data before each test."""
         self.user = User.objects.get(username='@johndoe')
-
-        # Create another default user to follow
+        
         self.other_user = User.objects.create_user(
             username='@janedoe',
             email='jane@example.org',
@@ -28,7 +26,7 @@ class FollowViewTestCase(TestCase):
         self.unfollow_url = reverse('unfollow_user', kwargs={'user_id': self.other_user.id})
 
     def test_follow_url(self):
-        """Test that the 'follow' URL is correct."""
+        """ Test that the 'follow' URL is correct."""
         self.assertEqual(self.follow_url, f'/user/{self.other_user.id}/follow/')
 
     def test_unfollow_url(self):
