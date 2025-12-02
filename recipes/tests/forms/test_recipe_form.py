@@ -6,6 +6,7 @@ from datetime import timedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 from io import BytesIO
+from recipes.tests.utils import create_test_user, create_test_form_data
 
 
 class RecipeFormTestCase(TestCase):
@@ -14,20 +15,9 @@ class RecipeFormTestCase(TestCase):
     fixtures = ['recipes/tests/fixtures/default_user.json']
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
-        self.client.login(username='@johndoe', password='Password123')
-        self.form_data = {
-            'title': 'Test Recipe',
-            'publication_date': timezone.now().date(),
-            'servings': 4,
-            'ingredients': "test (1)",
-            'steps': "test",
-            'prep_time_hours': 0,
-            'prep_time_minutes': 30,
-            'cook_time_hours': 1,
-            'cook_time_minutes': 15,
-            'private': False,
-        }
+        self.user = create_test_user(),
+        self.form_data = create_test_form_data()
+        
 
     # Helper: assert form is valid with given field overrides
     def _assert_form_valid(self, **kwargs):
