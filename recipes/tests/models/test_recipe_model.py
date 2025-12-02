@@ -8,7 +8,7 @@ class RecipeModelTestCase(TestCase):
     """Tests for the Recipe model, including the __str__ method."""
 
     def setUp(self):
-        self.user = create_test_user(username='@testuser')
+        self.user = create_test_user()
 
         self.recipe = create_test_recipe(
             author=self.user,

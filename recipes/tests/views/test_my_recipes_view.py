@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.models import User, Recipe
 from datetime import date
-from recipes.tests.utils import create_test_user, create_test_recipe, create_test_recipes
+from recipes.tests.utils import get_default_user, create_test_user, create_test_recipe, create_test_recipes
 
 
 class MyRecipesViewTestCase(TestCase):
@@ -16,7 +16,7 @@ class MyRecipesViewTestCase(TestCase):
     def setUp(self):
         """Set up test data before each test."""
         self.url = reverse('my_recipes')
-        self.user = create_test_user()
+        self.user = get_default_user()
         self.recipe1 = create_test_recipe(
             title='Test Recipe One',
             publication_date=date(2025, 11, 17),

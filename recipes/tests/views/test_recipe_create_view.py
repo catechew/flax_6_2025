@@ -3,7 +3,7 @@ from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
 from datetime import timedelta
-from recipes.tests.utils import create_test_image, create_test_form_data
+from recipes.tests.utils import get_default_user, create_test_image, create_test_form_data
 
 class RecipeCreateViewTestCase(TestCase):
     """ Tests for the create recipe view """
@@ -14,7 +14,7 @@ class RecipeCreateViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
+        self.user = get_default_user()
         self.client.login(username='@johndoe', password='Password123')
         self.url = reverse('create_recipe')
 

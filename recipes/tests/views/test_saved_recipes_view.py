@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
-from recipes.tests.utils import create_test_recipe, create_test_user
+from recipes.tests.utils import create_test_recipe, create_test_user, get_default_user
 
 class SavedRecipesViewTestCase(TestCase):
     """Tests for the saved recipes functionality."""
@@ -13,7 +13,7 @@ class SavedRecipesViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.user = create_test_user()
+        self.user = get_default_user()
         self.other_user = create_test_user(username='@janedoe')
         
         self.client.login(username='@johndoe', password='Password123')

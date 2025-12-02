@@ -3,7 +3,7 @@ from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone 
 from unittest.mock import patch
-from recipes.tests.utils import create_test_user, create_test_recipe
+from recipes.tests.utils import create_test_recipe, get_default_user
 
 class RecipeDetailViewTestCase(TestCase):
     """Tests for the recipe detail view."""
@@ -13,7 +13,7 @@ class RecipeDetailViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.user = create_test_user
+        self.user = get_default_user()
         self.client.login(username='@johndoe', password='Password123')
 
         self.recipe = create_test_recipe(
