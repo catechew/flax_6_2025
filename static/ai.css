@@ -57,18 +57,6 @@ AI Chat
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Loading */
-.loading-indicator {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.loading-subtext {
-    margin: 0.5rem 0 0 0;
-    color: #6c757d;
-}
-
 /* Recipe Stats Grid */
 .recipe-stats-grid {
     display: grid;
