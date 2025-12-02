@@ -88,7 +88,7 @@ class User(AbstractUser):
         """Model options."""
         ordering = ['last_name', 'first_name']
 
-    def gravatar(self, size=120):
+    def avatar_url(self, size=120):
         """Return avatar URL based on user preference."""
 
         # 1. If user uploaded custom picture, use it (highest priority)
