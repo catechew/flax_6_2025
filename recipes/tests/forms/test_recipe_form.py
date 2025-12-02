@@ -228,3 +228,34 @@ class RecipeFormTestCase(TestCase):
         self.assertEqual(recipe.servings, 4)
         self.assertEqual(recipe.ingredients, 'test ingredient (1 cup)')
         self.assertEqual(recipe.steps, 'test step 1')
+
+
+    # Test ingredient with multiple parentheses sets (not at end) is rejected
+    def test_form_rejects_ingredient_with_multiple_parentheses_not_at_end(self):
+        errors = self._assert_form_invalid('ingredients', 
+            ingredients='Salt (table) and pepper (1 tsp) extra')
+        error_msg = str(errors)
+        self.assertIn('Line 1', error_msg)
+        self.assertIn('parentheses', error_msg.lower())
+
+    # Test ingredient with only opening parenthesis is rejected
+    def test_form_rejects_ingredient_with_only_opening_parenthesis(self):
+        errors = self._assert_form_invalid('ingredients', 
+            ingredients='Flour (500g')
+        error_msg = str(errors)
+        self.assertIn('Line 1', error_msg)
+
+    # Test ingredient with only closing parenthesis is rejected
+    def test_form_rejects_ingredient_with_only_closing_parenthesis(self):
+        errors = self._assert_form_invalid('ingredients', 
+            ingredients='Flour 500g)')
+        error_msg = str(errors)
+        self.assertIn('Line 1', error_msg)
+
+    # Test ingredient that doesn't match any specific error case
+    def test_form_rejects_ingredient_with_generic_format_error(self):
+        errors = self._assert_form_invalid('ingredients', 
+            ingredients='InvalidFormatHere')
+        error_msg = str(errors)
+        self.assertIn('Line 1', error_msg)
+        self.assertIn('Ingredient name (quantity)', error_msg)
