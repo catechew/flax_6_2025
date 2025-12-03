@@ -166,6 +166,26 @@ def paginate(recipes, request):
  page_number = request.GET.get("page")
  return paginator.get_page(page_number)
 
+def build_filter_params_string(filters, sort_by):
+  """Build URL parameter string for filters"""
+  params = []
+  for course in filters.get('course_filters', []):
+      params.append(f"&course={course}")
+
+  for dietary in filters.get('dietary_filters', []):
+      params.append(f"&dietary={dietary}")
+
+  for cuisine in filters.get('cuisine_filters', []):
+      params.append(f"&cuisine={cuisine}")
+
+  for other in filters.get('other_filters', []):
+      params.append(f"&other={other}")
+
+  params.append(f"&sort={sort_by}")
+
+  return "".join(params)
+
+
 def get_recipes_context(request, search_query):
   """Create context for recipes tab"""
   base_queryset = Recipe.objects.filter(private=False)
@@ -194,4 +214,5 @@ def get_recipes_context(request, search_query):
     "sort_options": SORT_OPTIONS,
     "recipe_count": page_object.paginator.count,
     "user_count" : user_count, 
+    "pagination_extra_params": build_filter_params_string(filter_params, sort_by)
   }
