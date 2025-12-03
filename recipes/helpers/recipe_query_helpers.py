@@ -6,6 +6,16 @@ from django.db.models import Q, Avg, Count, F
 from django.db.models.functions import Concat
 from django.db.models import Value
 from django.core.paginator import Paginator
+from recipes.models.recipe import Recipe 
+from recipes.models.user import User
+from recipes.helpers.user_query_helpers import apply_user_search
+from recipes.helpers.recipe_filter_options import (
+ COURSE_OPTIONS,
+ DIETARY_OPTIONS,
+ CUISINE_OPTIONS,
+ OTHER_OPTIONS,
+ SORT_OPTIONS,
+)
 
 
 ITEMS_PER_PAGE = 25
@@ -155,3 +165,31 @@ def paginate(recipes, request):
  paginator = Paginator(recipes, ITEMS_PER_PAGE)
  page_number = request.GET.get("page")
  return paginator.get_page(page_number)
+
+def get_recipes_context(request, search_query):
+  """Create context for recipes tab"""
+  base_queryset = Recipe.objects.filter(private=False)
+  filter_params = get_filter_params(request)
+  sort_by = request.GET.get("sort", "date_newest")
+
+  filtered_recipes = apply_search(base_queryset, search_query)
+  filtered_recipes = apply_filters(filtered_recipes, filter_params)
+  filtered_recipes = apply_sort(filtered_recipes, sort_by)
+
+  page_object = paginate(filtered_recipes, request)
+
+  user_count = apply_user_search(User.objects.all(), search_query).count()
+
+  return {
+    "recipes": page_object,
+    "page_object": page_object,
+    "search_query": search_query,
+    "filters": filter_params,
+    "total_filters": sum(len(v) for v in filter_params.values()),
+    "sort_by": sort_by,
+    "course_options": COURSE_OPTIONS,
+    "dietary_options": DIETARY_OPTIONS,
+    "cuisine_options": CUISINE_OPTIONS,
+    "other_options": OTHER_OPTIONS,
+    "sort_options": SORT_OPTIONS,
+  }

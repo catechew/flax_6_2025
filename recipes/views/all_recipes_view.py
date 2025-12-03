@@ -10,13 +10,7 @@ from recipes.helpers.recipe_query_helpers import (
  apply_sort,
  paginate,
 )
-from recipes.helpers.recipe_filter_options import (
- COURSE_OPTIONS,
- DIETARY_OPTIONS,
- CUISINE_OPTIONS,
- OTHER_OPTIONS,
- SORT_OPTIONS,
-)
+from recipes.helpers.user_query_helpers import apply_user_search, paginate_users
 
 
 @login_required
