@@ -4,7 +4,9 @@ import openai
 import json
 
 def scale_ingredient(ingredient, factor):
-    """ Scale ingredient quantities by the given factor """
+    """
+    Scale ingredient quantities by the given factor
+    """
 
     # Pattern to match numbers (including decimals and fractions)
     pattern = r'(\d+/\d+|\d+\.?\d*)'
