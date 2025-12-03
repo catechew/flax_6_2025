@@ -17,7 +17,3 @@ def recipe_form_view(request, recipe_id=None):
     
     # Handle GET - display form
     return handler.handle_form_get()
-
-
-
-
