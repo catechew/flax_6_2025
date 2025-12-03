@@ -78,6 +78,9 @@
   outline: none !important;
 }
 
+.btn-margin {
+  margin-bottom: 5px;
+}
 /* Tag buttons */
 .btn-course {
   background-color: var(--colour-1) !important;
