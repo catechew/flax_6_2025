@@ -147,13 +147,17 @@ class RecipeForm(forms.ModelForm):
             "title": forms.TextInput(attrs={"class": "form-control"}),
         }
 
-    def clean_publication_date(self):
-        """ Prevent future publication dates. """
-        
-        date = self.cleaned_data.get("publication_date")
-        if date and date > timezone.now().date():
-            raise ValidationError("Publication date cannot be in the future.")
-        return date
+    def clean_ingredients(self):
+        """ Validate ingredient format: Ingredient name (quantity). """
+        ingredients = self.cleaned_data.get("ingredients")
+        if not ingredients:
+            raise ValidationError("Ingredients are required.")
+
+        errors = self._find_ingredient_errors(ingredients)
+        if errors:
+            raise ValidationError(self._format_ingredient_errors(errors))
+
+        return ingredients
 
     def clean_ingredients(self):
         """ Validate ingredient format: Ingredient (quantity). """
