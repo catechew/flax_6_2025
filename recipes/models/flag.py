@@ -21,8 +21,9 @@ class Flag(models.Model):
         help_text="The user who flagged this recipe"
     )
 
-    # Ensures each user can only flag a recipe once
+
     class Meta:
+        # Ensures each user can only flag a recipe once
         unique_together = ("recipe", "user")
 
     def __str__(self):
