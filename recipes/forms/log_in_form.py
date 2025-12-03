@@ -13,7 +13,12 @@ class LogInForm(forms.Form):
     )
 
     def get_user(self):
-        """ Return authenticated user or None. """
+        """
+        Return authenticated user or None.
+        Safe to call even if form is invalid.
+        """
+        if not self.is_valid():
+            return None
 
         return authenticate(
             username=self.cleaned_data.get("username"),
