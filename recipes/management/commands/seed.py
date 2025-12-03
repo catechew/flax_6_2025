@@ -2,12 +2,18 @@
 Management command to seed the database with demo data. 
 """
 
-
-from faker import Faker
 from random import choice
 from django.core.management.base import BaseCommand
 from recipes.models import User, Recipe
-from .seed_helpers import RecipeDataGenerator, TagGenerator, ImageHandler
+from .seed_helpers import (
+    RecipeDataGenerator,
+    TagGenerator,
+    ImageHandler,
+)
+from .seed_helpers.user_data import (
+    create_random_user_payload,
+    create_fixture_user_payload,
+)
 
 USER_FIXTURES = [
     {
@@ -16,12 +22,14 @@ USER_FIXTURES = [
         'first_name': 'John',
         'last_name': 'Doe'
     },
+
     {
         'username': '@janedoe',
         'email': 'jane.doe@example.org',
         'first_name': 'Jane',
         'last_name': 'Doe'
     },
+
     {
         'username': '@charlie',
         'email': 'charlie.johnson@example.org',
@@ -30,11 +38,8 @@ USER_FIXTURES = [
     }
 ]
 
-
 class Command(BaseCommand):
-    """ 
-    Seed database with users and recipes. 
-    """
+    """ Seed database with users and recipes. """
 
     USER_COUNT = 200
     RECIPE_COUNT = 500
@@ -52,10 +57,12 @@ class Command(BaseCommand):
         self._seed_recipes()
 
     def _seed_users(self):
+        """ Create fixture and random users. """
         self._create_fixture_users()
         self._create_random_users()
 
     def _create_fixture_users(self):
+        """ Create predefined fixture users. """
         for user_data in USER_FIXTURES:
             if user_data['username'] == '@johndoe':
                 self._create_admin_user(user_data)
@@ -63,6 +70,7 @@ class Command(BaseCommand):
                 self._try_create_user(user_data)
 
     def _create_admin_user(self, user_data):
+        """ Create admin superuser. """
         try:
             user = User.objects.create_superuser(
                 username=user_data['username'],
@@ -85,6 +93,7 @@ class Command(BaseCommand):
         print("User seeding complete.      ")
 
     def _generate_user(self):
+        """ Generate single random user. """
         first_name = self.faker.first_name()
         last_name = self.faker.last_name()
         user_data = {
@@ -96,6 +105,7 @@ class Command(BaseCommand):
         self._try_create_user(user_data)
 
     def _try_create_user(self, user_data):
+        """ Attempt user creation, ignore failures. """
         try:
             User.objects.create_user(
                 username=user_data['username'],
@@ -109,7 +119,6 @@ class Command(BaseCommand):
 
     def _seed_recipes(self):
         """ Generate recipes up to target count. """
-        
         users = list(User.objects.all())
         if not users:
             print("No users found. Cannot create recipes.")
@@ -175,7 +184,9 @@ class Command(BaseCommand):
             print(f"Error creating recipe: {e}")
 
 def _create_username(first_name, last_name):
+    """ Create username from first and last names. """
     return f"@{first_name.lower()}{last_name.lower()}"
 
 def _create_email(first_name, last_name):
+    """ Create email from first and last names. """
     return f"{first_name}.{last_name}@example.org"
