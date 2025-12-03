@@ -20,7 +20,7 @@ class RecipeForm(forms.ModelForm):
                 'max': timezone.now().date().isoformat(),
             }
         ),
-        help_text='Select the publication date (today or earlier)'
+        help_text='Select publication date (today or earlier)'
     )
 
     image = forms.ImageField(
