@@ -81,7 +81,11 @@ class RecipeFormHandler:
         if not form.is_valid():
             return render(self.request, "recipes/recipe_form.html", {"form": form})
 
-        save_form_to_session(self.session_data, self.request.POST)
+        save_form_to_session(
+            self.session_data,
+            self.request.POST,
+            self.request.FILES,
+        )
         self.request.session.modified = True
         return redirect_to_tags(self)
 
