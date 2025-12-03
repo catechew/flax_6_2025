@@ -72,7 +72,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertIn('Please describe what you want to cook', str(messages[0]))
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_successful_recipe_generation(self, mock_openai):
         """Test successful AI recipe generation."""
         self.client.login(username='@testuser', password='Password123')
@@ -93,7 +93,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         self.assertContains(response, 'Test Pasta Recipe')
         self.assertContains(response, 'A delicious test pasta')
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_ai_receives_correct_prompt(self, mock_openai):
         """Test that AI receives the user's prompt correctly."""
         self.client.login(username='@testuser', password='Password123')
@@ -115,7 +115,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         user_message = messages[1]['content']
         self.assertIn(user_prompt, user_message)
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_invalid_json_response_shows_error(self, mock_openai):
         """Test that invalid JSON from AI shows error message."""
         self.client.login(username='@testuser', password='Password123')
@@ -134,7 +134,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertIn('invalid format', str(messages[0]).lower())
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_api_timeout_shows_error(self, mock_openai):
         """Test that API timeout shows appropriate error."""
         self.client.login(username='@testuser', password='Password123')
@@ -151,7 +151,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertIn('timed out', str(messages[0]).lower())
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_api_error_shows_error(self, mock_openai):
         """Test that API errors show appropriate message."""
         self.client.login(username='@testuser', password='Password123')
@@ -168,7 +168,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertIn('api error', str(messages[0]).lower())
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_recipe_displays_all_fields(self, mock_openai):
         """Test that all recipe fields are displayed correctly."""
         self.client.login(username='@testuser', password='Password123')
@@ -194,7 +194,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         self.assertContains(response, 'Use fresh garlic')
         self.assertContains(response, 'vegetarian')
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_user_prompt_preserved_on_error(self, mock_openai):
         """Test that user's prompt is preserved when there's an error."""
         self.client.login(username='@testuser', password='Password123')
@@ -210,7 +210,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         # User prompt should still be in context
         self.assertEqual(response.context['user_prompt'], user_prompt)
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_recipe_with_no_tips(self, mock_openai):
         """Test recipe generation with no tips."""
         self.client.login(username='@testuser', password='Password123')
@@ -231,7 +231,7 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['show_results'])
 
-    @patch('recipes.views.ai_recipe_finder_view.openai.ChatCompletion.create')
+    @patch('recipes.views.ai_recipe_generator_view.openai.ChatCompletion.create')
     def test_recipe_with_no_dietary_info(self, mock_openai):
         """Test recipe generation with no dietary info."""
         self.client.login(username='@testuser', password='Password123')
@@ -266,7 +266,7 @@ class AIRecipeGeneratorIntegrationTestCase(TestCase):
             password='Password123'
         )
         self.client = Client()
-        self.url = reverse('ai_recipe_finder')
+        self.url = reverse('ai_recipe_generator')
 
     @patch.dict('os.environ', {'OPENAI_API_KEY': 'test-key'})
     def test_api_key_loaded_from_environment(self):
