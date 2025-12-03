@@ -54,7 +54,7 @@
 
 
 /* Alerts */
-.alert{
+.alert {
   border-radius: 0;
 }
 
@@ -63,4 +63,3 @@
   border-color: var(--primary-colour) !important;
   color: var(--primary-colour-darkest) !important;
 }
-

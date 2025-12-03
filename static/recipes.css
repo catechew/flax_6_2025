@@ -83,6 +83,10 @@
     cursor: pointer;
 }
 
+.heart-btn:focus {
+    box-shadow: none !important;
+}
+
 .heart-btn i {
     font-size: 1.3rem;
     color: var(--black-colour); 
@@ -113,7 +117,6 @@
 }
 
 /* Recipe tags */ 
-/* Tag Chips */
 .tag-chip {
     display: inline-flex;
     align-items: center;
@@ -146,44 +149,36 @@
 
 /* Recipe detail page styles */
 
-/* Recipe header image */
 .recipe-detail-image {
     max-height: 400px;
     object-fit: cover;
 }
 
-/* Rating count text */
 .rating-count-text {
     font-size: 0.9rem;
 }
 
-/* Servings input */
 .servings-input {
     width: 100px;
 }
 
-/* Cost estimate container */
 .cost-estimate-container {
     min-height: 60px;
 }
 
-/* Checkable list items */
 .checkable-list-item {
     cursor: pointer;
 }
 
-/* Large checkbox styling */
 .large-checkbox {
     width: 1.5em;
     height: 1.5em;
 }
 
-/* Step checkbox spacing */
 .step-checkbox-spacing {
     margin-top: 0.125rem;
 }
 
- /* Recipe card placeholder icon */
 .recipe-card-placeholder-icon {
     font-size: 3rem;
 }
