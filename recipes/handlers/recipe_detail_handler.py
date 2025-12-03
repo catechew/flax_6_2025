@@ -9,9 +9,10 @@ from recipes.helpers.recipe_detail_helpers import (
     get_cost_estimate_data,
 )
 
+
 class RecipeDetailHandler:
     """
-    Handles recipe detail view workflow and context building
+    Handles recipe detail view workflow and context building.
     """
 
     def __init__(self, request, recipe_id):
@@ -21,66 +22,59 @@ class RecipeDetailHandler:
         self.desired_servings = self.parse_servings_param()
         self.is_owner = self.determine_ownership()
 
-    def get_recipe(self):
-        """Retrieve recipe or raise 404"""
-        return get_object_or_404(Recipe, id=self.recipe_id)
+    def _get_recipe(self, recipe_id):
+        return get_object_or_404(Recipe, id=recipe_id)
     
-    def parse_servings_param(self):
-        """Parse servings from GET parameter, default to recipe servings"""
-        servings_input = self.request.GET.get('servings', self.recipe.servings)
+    def _parse_servings_param(self):
+        value = self.request.GET.get("servings", self.recipe.servings)
         try:
-            servings = int(servings_input)
+            servings = int(value)
             return servings if servings > 0 else self.recipe.servings
-        except (ValueError, TypeError):
+        except (TypeError, ValueError):
             return self.recipe.servings
         
-    def determine_ownership(self):
-        """Check if current user owns the recipe"""
-        if not self.request.user.is_authenticated:
-            return False
-        return self.recipe.author == self.request.user
+    def _determine_ownership(self):
+        user = self.request.user
+        return user.is_authenticated and self.recipe.author == user
     
-    def get_user_context(self):
-        """Build user-specific context (ratings, flags)"""
+    def _user_context(self):
+        """ Build user-specific context (ratings, flags). """
         return {
-            'user_rating': get_user_rating(self.recipe, self.request.user),
-            'user_has_flagged': has_user_flagged_recipe(self.recipe, self.request.user),
+            "user_rating": get_user_rating(self.recipe, self.request.user),
+            "user_has_flagged": has_user_flagged_recipe(
+                self.recipe, self.request.user
+            ),
         }
     
-    def get_cost_context(self, scaled_ingredients):
-        """return cost estimation context (cost estimate and cost error)"""
-        cost_estimate = None
-        cost_error = None
+    def _cost_context(self, scaled_ingredients):
+        if self.request.GET.get("show_cost") != "true":
+            return {"cost_estimate": None, "cost_error": None}
 
-        if self.request.GET.get('show_cost') == 'true':
-            try:
-                cost_estimate = get_cost_estimate_data(scaled_ingredients, self.desired_servings)
-            except Exception as e:
-                cost_error = str(e)
-        
-        return{
-            'cost_estimate' : cost_estimate,
-            'cost_error' : cost_error
-        }
+        try:
+            return {
+                "cost_estimate": get_cost_estimate_data(
+                    scaled_ingredients, self.desired_servings
+                ),
+                "cost_error": None,
+            }
+        except Exception as exc:
+            return {"cost_estimate": None, "cost_error": str(exc)}
 
     def get_context(self):
-        """Create full context for recipe.html"""
         context = {
             'recipe': self.recipe,
             'steps': self.recipe.get_step_list(),
             'is_owner': self.is_owner,
         }
 
-        # Add tag display
         context.update(get_recipe_tag_display_context(self.recipe))
-        #Add time display
         context.update(get_recipe_time_display_context(self.recipe))
-        #Add scaled ingredients
-        scaling_context = get_scaled_ingredients_context(self.recipe, self.desired_servings)
-        context.update(scaling_context)
-        #Add cost estimation
-        context.update(self.get_cost_context(scaling_context['scaled_ingredients']))
-        #Add user data
+
+        scaling = get_scaled_ingredients_context(
+            self.recipe, self.desired_servings
+        )
+        context.update(scaling)
+        context.update(self.get_cost_context(scaling["scaled_ingredients"]))
         context.update(self.get_user_context())
 
         return context
