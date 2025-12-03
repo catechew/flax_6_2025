@@ -7,8 +7,7 @@ from recipes.forms import LogInForm
 from recipes.models import User
 
 class LogInFormTestCase(TestCase):
-    """ Unit tests of the log in form. """
-
+    
     fixtures = ['recipes/tests/fixtures/default_user.json']
 
     def setUp(self):
