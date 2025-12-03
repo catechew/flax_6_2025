@@ -1,5 +1,5 @@
 from django.http import QueryDict
-from recipes.helpers.recipe_form_helpers import load_temp_image
+from recipes.helpers.recipe_form_images import load_temp_image
 from django.core.files.storage import default_storage
 
 
