@@ -159,7 +159,6 @@ class RecipeForm(forms.ModelForm):
 
     def clean_ingredients(self):
         """ Validate ingredient format: Ingredient (quantity). """
-        
         ingredients = self.cleaned_data.get("ingredients")
         if not ingredients:
             raise ValidationError("Ingredients are required.")
