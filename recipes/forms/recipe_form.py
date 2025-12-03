@@ -175,18 +175,23 @@ class RecipeForm(forms.ModelForm):
         return ingredients
     
     def _find_ingredient_errors(self, text):
-        pattern = r"^[^(]+\(.+\)$"
         lines = [line.strip() for line in text.splitlines() if line.strip()]
+        errors = []
 
-        return [
-            f"Line {i}: '{line}' - Invalid format"
-            for i, line in enumerate(lines, 1)
-            if not re.match(pattern, line)
-        ]
-    
+        for i, line in enumerate(lines, start=1):
+            if '(' not in line or ')' not in line:
+                errors.append(f"Line {i}: missing parentheses")
+            elif not line.endswith(')'):
+                errors.append(f"Line {i}: parentheses should be at the end")
+            elif line.count('(') != line.count(')'):
+                errors.append(f"Line {i}: mismatched parentheses")
+
+        return errors
+
     def _format_ingredient_errors(self, errors):
         return (
             "Please fix the following ingredient formatting errors:\n"
             + "\n".join(errors)
-            + "\n\nCorrect format: Ingredient (quantity)\nExample: Avocado (1)"
+            + "\n\nCorrect format: Ingredient name (quantity)\n"
+            "Example: Avocado (1)"
         )
