@@ -2,7 +2,9 @@ from django import forms
 from django.contrib.auth import authenticate
 
 class LogInForm(forms.Form):
-    """ Form enabling registered users to authenticate. """
+    """ 
+    Form enabling registered users to authenticate. 
+    """
     
     username = forms.CharField(label="Username")
     password = forms.CharField(
