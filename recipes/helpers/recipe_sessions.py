@@ -1,5 +1,6 @@
 from django.http import QueryDict
 from recipes.helpers.recipe_form_helpers import load_temp_image
+from django.core.files.storage import default_storage
 
 
 def rebuild_form_data(session_data, request, recipe):
@@ -14,7 +15,14 @@ def rebuild_form_data(session_data, request, recipe):
     )
     return form_data, files
 
-def save_form_to_session(session_data, post_data):
-    """ Persist form fields to session. """
-    session_data["form_data"] = dict(post_data.items())
-    session_data["image_clear"] = post_data.get("image-clear", False)
+from django.core.files.storage import default_storage
+
+def save_form_to_session(session_data, post_data, files=None):
+    """ Save recipe form data (and temp image) to session. """
+    
+    session_data["form_data"] = post_data.dict()
+
+    if files and 'image' in files:
+        image = files['image']
+        temp_path = default_storage.save(f"temp/{image.name}", image)
+        session_data['temp_image_path'] = temp_path
