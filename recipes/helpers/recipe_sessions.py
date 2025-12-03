@@ -14,7 +14,6 @@ def rebuild_form_data(session_data, request, recipe):
     )
     return form_data, files
 
-
 def save_form_to_session(session_data, post_data):
     """ Persist form fields to session. """
     session_data["form_data"] = dict(post_data.items())
