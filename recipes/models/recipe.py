@@ -1,6 +1,7 @@
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
+
 from django.db.models import Avg
 import math
 

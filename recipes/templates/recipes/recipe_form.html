@@ -16,82 +16,90 @@
         <div class="card-header bg-success text-white">
           <h3 class="mb-0">
             {% if mode == 'create' %}
-                <i class="bi bi-plus-circle"></i> Create New Recipe - Step 1 of 2
+              <i class="bi bi-plus-circle"></i> Create New Recipe - Step 1 of 2
             {% elif is_owner %}
-                <i class="bi bi-pencil"></i> Update Recipe - Step 1 of 2
+              <i class="bi bi-pencil"></i> Update Recipe - Step 1 of 2
             {% else %}
-                <i class="bi bi-copy"></i> Create Your Version - Step 1 of 2
+              <i class="bi bi-copy"></i> Create Your Version - Step 1 of 2
             {% endif %}
           </h3>
           <small>
             {% if mode == 'create' %}
-                Basic Recipe Information
+              Basic Recipe Information
             {% elif is_owner %}
-                Edit Your Recipe
+              Edit Your Recipe
             {% else %}
-             Modifying recipe by {{ original_author }}
+              Modifying recipe by {{ original_author }}
             {% endif %}
           </small>
         </div>
 
         <div class="card-body">
-            {% if mode == 'update' and not is_owner %}
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i>
-                    You're creating a modified version of <strong>{{ original_author }}</strong>'s recipe. 
-                    Your changes will be saved as a new recipe under your name. The original will not be changed.
-                </div>
-            {% endif %}
 
-            <form method="POST" enctype="multipart/form-data">
+          {% if mode == 'update' and not is_owner %}
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle"></i>
+              You're creating a modified version of
+              <strong>{{ original_author }}</strong>'s recipe.
+              The original recipe will not be changed.
+            </div>
+          {% endif %}
+
+          <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
-            {# Display non-field errors #}
             {% if form.non_field_errors %}
-              <div class="alert alert-danger" role="alert">
+              <div class="alert alert-danger">
                 {{ form.non_field_errors }}
               </div>
             {% endif %}
 
-            {# Basic Recipe Fields #}
-            {% for field in form %}
-              {% if field.name not in 'prep_time_hours,prep_time_minutes,cook_time_hours,cook_time_minutes' %}
-              <div class="mb-3">
-                <label for="{{ field.id_for_label }}" class="form-label fw-bold">
-                  {{ field.label }}
-                  {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
-                </label>
-                {{ field }}
-                {% if field.help_text %}
-                  <small class="form-text text-muted d-block mt-1">{{ field.help_text }}</small>
-                {% endif %}
-                {% if field.errors %}
-                  <div class="text-danger mt-1">
-                    {{ field.errors }}
+            {% with excluded_fields="prep_time_hours,prep_time_minutes,cook_time_hours,cook_time_minutes" %}
+              {% for field in form %}
+                {% if field.name not in excluded_fields %}
+                  <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label fw-bold">
+                      {{ field.label }}
+                      {% if field.field.required %}
+                        <span class="text-danger">*</span>
+                      {% endif %}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                      <small class="form-text text-muted d-block mt-1">
+                        {{ field.help_text }}
+                      </small>
+                    {% endif %}
+
+                    {% if field.errors %}
+                      <div class="text-danger mt-1">
+                        {{ field.errors }}
+                      </div>
+                    {% endif %}
+
+                    {% if field.name == 'image' and has_temp_image %}
+                      <small class="form-text text-success">
+                        <i class="bi bi-check-circle-fill"></i> Image uploaded
+                      </small>
+                    {% endif %}
                   </div>
                 {% endif %}
-                {% if field.name == 'image' %}
-                  {% if has_temp_image %}
-                  <small class="form-text text-success">
-                    <i class="bi bi-check-circle-fill"></i> Image uploaded
-                  </small>
-                  {% endif %}
-                {% endif %}
-              </div>
-              {% endif %}
-            {% endfor %}
+              {% endfor %}
+            {% endwith %}
 
-            <!-- Prep Time -->
+            <!-- Preparation Time -->
             <div class="mb-3">
               <label class="form-label fw-bold">Preparation Time</label>
               <div class="d-flex align-items-center gap-2">
-                <input type="number" name="prep_time_hours" id="id_prep_time_hours" 
-            value="{{ form.prep_time_hours.value|default:'0' }}" min="0" 
-            class="form-control" style="width: 80px;">
+                <input type="number" name="prep_time_hours"
+                       value="{{ form.prep_time_hours.value|default:'0' }}"
+                       min="0" class="form-control" style="width:80px;">
                 <span>h</span>
-                <input type="number" name="prep_time_minutes" id="id_prep_time_minutes" 
-            value="{{ form.prep_time_minutes.value|default:'0' }}" min="0" max="59" 
-            class="form-control" style="width: 80px;">
+                <input type="number" name="prep_time_minutes"
+                       value="{{ form.prep_time_minutes.value|default:'0' }}"
+                       min="0" max="59" class="form-control" style="width:80px;">
                 <span>min</span>
               </div>
               {% if form.prep_time_hours.errors or form.prep_time_minutes.errors %}
@@ -102,17 +110,17 @@
               {% endif %}
             </div>
 
-            <!-- Cook Time -->
+            <!-- Cooking Time -->
             <div class="mb-3">
               <label class="form-label fw-bold">Cooking Time</label>
               <div class="d-flex align-items-center gap-2">
-                <input type="number" name="cook_time_hours" id="id_cook_time_hours" 
-            value="{{ form.cook_time_hours.value|default:'0' }}" min="0" 
-            class="form-control" style="width: 80px;">
+                <input type="number" name="cook_time_hours"
+                       value="{{ form.cook_time_hours.value|default:'0' }}"
+                       min="0" class="form-control" style="width:80px;">
                 <span>h</span>
-                <input type="number" name="cook_time_minutes" id="id_cook_time_minutes" 
-            value="{{ form.cook_time_minutes.value|default:'0' }}" min="0" max="59" 
-            class="form-control" style="width: 80px;">
+                <input type="number" name="cook_time_minutes"
+                       value="{{ form.cook_time_minutes.value|default:'0' }}"
+                       min="0" max="59" class="form-control" style="width:80px;">
                 <span>min</span>
               </div>
               {% if form.cook_time_hours.errors or form.cook_time_minutes.errors %}
@@ -123,52 +131,46 @@
               {% endif %}
             </div>
 
-            {# Show current image if exists #}
             {% if mode == 'update' and recipe.image %}
-            <div class="mb-3">
-                <label class="form-label fw-bold">Current Image:</label>
-                <div class="card" style="max-width: 300px;">
-                <img src="{{ recipe.image.url }}" class="card-img-top" alt="Current recipe image">
-                <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Current Image</label>
+                <div class="card" style="max-width:300px;">
+                  <img src="{{ recipe.image.url }}"
+                       class="card-img-top"
+                       alt="Current recipe image">
+                  <div class="card-body">
                     <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="image-clear" id="image-clear">
-                    <label class="form-check-label" for="image-clear">
-                        <i class="bi bi-trash"></i> Delete this image
-                    </label>
+                      <input class="form-check-input" type="checkbox"
+                             name="image-clear" id="image-clear">
+                      <label class="form-check-label" for="image-clear">
+                        Delete image
+                      </label>
                     </div>
+                  </div>
                 </div>
-                </div>
-                <small class="form-text text-muted">Upload a new image to replace, or check the box above to delete it.</small>
-            </div>
+              </div>
             {% endif %}
 
+            <div class="d-flex justify-content-between mt-4">
+              {% if mode == 'create' or not recipe %}
+                <a href="{% url 'cancel_recipe' %}" class="btn btn-secondary">
+                  Cancel
+                </a>
+              {% else %}
+                <a href="{% url 'cancel_recipe_update' recipe.id %}" class="btn btn-secondary">
+                  Cancel
+                </a>
+              {% endif %}
 
-            {# Form Buttons #}
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                {% if mode == 'create' %}
-                    <a href="{% url 'cancel_recipe' %}" class="btn btn-primary">
-                        <i class="bi bi-x-circle"></i> Cancel
-                    </a>
-                {% else %}
-                    <a href="{% url 'cancel_recipe_update' recipe.id %}" class="btn btn-primary">
-                        <i class="bi bi-x-circle"></i> Cancel
-                    </a>
-                {% endif %}
               <button type="submit" class="btn btn-primary">
-                {% if mode == 'create' %}
-                    Next: Add Tags <i class="bi bi-arrow-right"></i>
-                {% else %}
-                    Next: Edit Tags <i class="bi bi-arrow-right"></i>
-                {% endif %}
+                Next: Add Tags <i class="bi bi-arrow-right"></i>
               </button>
             </div>
-          </form>
 
+          </form>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
-
-
