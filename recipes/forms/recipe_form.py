@@ -17,7 +17,6 @@ class RecipeForm(forms.ModelForm):
             attrs={
                 "type": "date",
                 "class": "form-control",
-                "max": timezone.now().date().isoformat(),
             }
         ),
         help_text="Select publication date (today or earlier)"
@@ -127,6 +126,10 @@ class RecipeForm(forms.ModelForm):
         ),
     )
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set max date dynamically to today
+        self.fields['publication_date'].widget.attrs['max'] = timezone.now().date().isoformat()
     
     class Meta:
         model = Recipe
@@ -146,28 +149,26 @@ class RecipeForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(attrs={"class": "form-control"}),
         }
-
-    def clean_ingredients(self):
-        """ Validate ingredient format: Ingredient (quantity). """
         
-        ingredients = self.cleaned_data.get("ingredients")
-        if not ingredients:
-            return ingredients
-
-        errors = self._find_ingredient_errors(ingredients)
-        if errors:
-            raise ValidationError(
-                "Each ingredient must be in the format: Ingredient (quantity). "
-                "Example: Avocado (1)"
-            )
-        return ingredients
-    
     def clean_publication_date(self):
         """ Validate that publication date is not in the future. """
         date = self.cleaned_data.get('publication_date')
         if date and date > timezone.now().date():
             raise ValidationError("Publication date cannot be in the future.")
         return date
+
+    def clean_ingredients(self):
+        """ Validate ingredient format: Ingredient (quantity). """
+        
+        ingredients = self.cleaned_data.get("ingredients")
+        if not ingredients:
+            raise ValidationError("Ingredients are required.")
+
+        errors = self._find_ingredient_errors(ingredients)
+        if errors:
+            raise ValidationError(self._format_ingredient_errors(errors))
+        
+        return ingredients
     
     def _find_ingredient_errors(self, text):
         lines = [line.strip() for line in text.splitlines() if line.strip()]
@@ -184,6 +185,7 @@ class RecipeForm(forms.ModelForm):
         return errors
 
     def _format_ingredient_errors(self, errors):
+        """ Format ingredient errors for display. """
         return (
             "Please fix the following ingredient formatting errors:\n"
             + "\n".join(errors)
