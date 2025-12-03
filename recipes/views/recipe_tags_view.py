@@ -31,7 +31,3 @@ def recipe_tags_view(request, recipe_id=None):
     # Display tag selection page
     context = handler.get_tags_context()
     return render(request, 'recipes/recipe_tags_form.html', context)
-
-
-
-        
