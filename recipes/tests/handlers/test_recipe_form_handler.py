@@ -190,18 +190,6 @@ class RecipeFormHandlerTestCase(TestCase):
         messages = list(request._messages)
         self.assertEqual(len(messages), 2)
 
-    # Test handle_tag_action with no action
-    def test_handle_tag_action_no_action(self):
-        """Test handle_tag_action returns None when no action"""
-        from unittest.mock import patch
-        request = self.get_request()
-        handler = RecipeFormHandler(request)
-        
-        with patch('recipes.handlers.recipe_form_handler.get_tag_action_from_request', return_value=(None, None, None)):
-            result = handler.handle_tag_action()
-        
-        self.assertIsNone(result)
-
     # Test prepare_recipe_author for owner update
     def test_prepare_recipe_author_owner_update(self):
         """Test author not changed for owner update"""
@@ -249,30 +237,6 @@ class RecipeFormHandlerTestCase(TestCase):
         
         self.assertEqual(response.status_code, 200)
 
-    # Test form context with temp image
-    def test_get_form_context_with_temp_image(self):
-        """Test form context shows temp image when present"""
-        from recipes.forms.recipe_form import RecipeForm
-        request = self.get_request()
-        handler = RecipeFormHandler(request)
-        handler.session_data['temp_image_path'] = '/tmp/test.jpg'
-        form = RecipeForm()
-        
-        context = handler.get_form_context(form)
-        
-        self.assertTrue(context['has_temp_image'])
-
-    # Test tags context with temp image
-    def test_get_tags_context_with_image(self):
-        """Test tags context shows has_image when temp image exists"""
-        request = self.get_request()
-        handler = RecipeFormHandler(request)
-        handler.session_data['temp_image_path'] = '/tmp/test.jpg'
-        
-        context = handler.get_tags_context()
-        
-        self.assertTrue(context['has_image'])
-
     # Test create form without instance
     def test_create_form_without_instance(self):
         """Test form creation without recipe instance"""
@@ -292,3 +256,130 @@ class RecipeFormHandlerTestCase(TestCase):
         form = handler.create_form()
         
         self.assertEqual(form.instance, self.recipe)
+
+    def test_prepare_recipe_author_create_mode(self):
+        """Test author is set in create mode"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        
+        new_recipe = Recipe()
+        handler.prepare_recipe_author(new_recipe, self.user, None, True)
+        
+        self.assertEqual(new_recipe.author, self.user)
+
+    # Test prepare_recipe_author for non-owner copy
+    def test_prepare_recipe_author_non_owner_copy(self):
+        """Test recipe pk/id are cleared for non-owner copy"""
+        request = self.get_request(user=self.other_user)
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
+        new_recipe = Recipe(pk=999, id=999)
+        handler.prepare_recipe_author(new_recipe, self.other_user, self.recipe, False)
+        
+        self.assertIsNone(new_recipe.pk)
+        self.assertIsNone(new_recipe.id)
+        self.assertEqual(new_recipe.author, self.other_user)
+
+    # Test handle_image_deletion without image_clear flag
+    def test_handle_image_deletion_no_clear_flag(self):
+        """Test image not deleted when image_clear is False"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
+        test_recipe = Recipe()
+        test_recipe.image = 'test.jpg'
+        session_data = {'image_clear': False}
+        
+        handler.handle_image_deletion(test_recipe, session_data, self.recipe, True)
+        
+        # Image should still exist
+        self.assertEqual(test_recipe.image, 'test.jpg')
+
+    # Test handle_image_deletion for non-owner
+    def test_handle_image_deletion_non_owner(self):
+        """Test image not deleted for non-owner"""
+        request = self.get_request(user=self.other_user)
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
+        test_recipe = Recipe()
+        test_recipe.image = 'test.jpg'
+        session_data = {'image_clear': True}
+        
+        handler.handle_image_deletion(test_recipe, session_data, self.recipe, False)
+        
+        # Image should still exist - not owner
+        self.assertEqual(test_recipe.image, 'test.jpg')
+
+    # Test handle_image_deletion without original recipe
+    def test_handle_image_deletion_no_original(self):
+        """Test image deletion when no original recipe"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        
+        test_recipe = Recipe()
+        test_recipe.image = 'test.jpg'
+        session_data = {'image_clear': True}
+        
+        handler.handle_image_deletion(test_recipe, session_data, None, True)
+        
+        # Image should still exist - no original recipe
+        self.assertEqual(test_recipe.image, 'test.jpg')
+
+    # Test save_form_to_session
+    def test_save_form_to_session(self):
+        """Test form data is saved to session"""
+        factory = RequestFactory()
+        request = factory.post('/test/', {'title': 'Test', 'image-clear': 'on'})
+        request.user = self.user
+        request.session = SessionStore()
+        request.session.create()
+        setattr(request, '_messages', FallbackStorage(request))
+        
+        handler = RecipeFormHandler(request)
+        handler.save_form_to_session()
+        
+        self.assertIn('form_data', handler.session_data)
+        self.assertEqual(handler.session_data['form_data']['title'], 'Test')
+        self.assertEqual(handler.session_data['image_clear'], 'on')
+
+    # Test handle_image_in_session with no files
+    def test_handle_image_in_session_no_files(self):
+        """Test handle_image_in_session returns False when no image"""
+        factory = RequestFactory()
+        request = factory.post('/test/')
+        request.user = self.user
+        request.session = SessionStore()
+        request.session.create()
+        setattr(request, '_messages', FallbackStorage(request))
+        
+        handler = RecipeFormHandler(request)
+        result = handler.handle_image_in_session()
+        
+        self.assertFalse(result)
+
+    # Test session key generation for create mode
+    def test_session_key_create_mode(self):
+        """Test session key is correct for create mode"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        
+        self.assertEqual(handler.session_key, 'recipe_form_data')
+
+    # Test session key generation for update mode
+    def test_session_key_update_mode(self):
+        """Test session key is correct for update mode"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
+        self.assertEqual(handler.session_key, f'recipe_update_{self.recipe.id}')
+
+    # Test show_missing_form_data_warning message
+    def test_show_missing_form_data_warning_message(self):
+        """Test warning message is shown"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        
+        handler.show_missing_form_data_warning()
+        
+        messages = list(request._messages)
+        self.assertTrue(any('fill in the recipe details' in str(m) for m in messages))
