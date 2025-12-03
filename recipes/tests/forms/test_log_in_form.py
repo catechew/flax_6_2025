@@ -1,11 +1,13 @@
-"""Unit tests of the log in form."""
+""" 
+Unit tests of the log in form. 
+"""
 from django import forms
 from django.test import TestCase
 from recipes.forms import LogInForm
 from recipes.models import User
 
 class LogInFormTestCase(TestCase):
-    """Unit tests of the log in form."""
+    """ Unit tests of the log in form. """
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 
