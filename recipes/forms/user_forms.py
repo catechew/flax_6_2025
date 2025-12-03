@@ -3,20 +3,17 @@ from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from recipes.models import User
 
+
 class UserForm(forms.ModelForm):
     """
     Form to update user profile information.
-
-    This form allows authenticated users to update their basic profile
-    details such as first name, last name, username, and email address.
-    It is typically used in a profile settings or account management page.
     """
 
     class Meta:
-        """Form options."""
-
+        """ Form options. """
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'gender', 'age_range', 'profile_picture']
+
 
 class NewPasswordMixin(forms.Form):
     """
@@ -50,27 +47,14 @@ class NewPasswordMixin(forms.Form):
     password_confirmation = forms.CharField(label='Password confirmation', widget=forms.PasswordInput())
 
     def clean(self):
-        """
-        Validate matching passwords and enforce password confirmation rules.
-
-        This method ensures that the values entered in `new_password` and
-        `password_confirmation` fields match. If they do not, an error is
-        added to the `password_confirmation` field.
-
-        Returns:
-            dict: The cleaned form data.
-
-        Raises:
-            ValidationError: If the password and confirmation do not match.
-        """
-        super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('password_confirmation')
-        if new_password != password_confirmation:
+        """ Validate matching passwords and enforce password confirmation rules.  """
+        data = super().clean()
+        if data.get("new_password") != data.get("password_confirmation"):
             self.add_error(
-                'password_confirmation', 
-                'Confirmation does not match password.'
+                "password_confirmation",
+                "Confirmation does not match password."
             )
+        return data
 
 
 class PasswordForm(NewPasswordMixin):
@@ -97,26 +81,8 @@ class PasswordForm(NewPasswordMixin):
         self.user = user
 
     def clean(self):
-        """
-        Validate the current and new password fields.
-
-        Ensures that:
-        - The current password matches the user’s existing password.
-        - The new password and confirmation fields (via `NewPasswordMixin`)
-          match and meet complexity requirements.
-
-        If any validation step fails, an appropriate error message is added
-        to the form.
-
-        Returns:
-            dict: The cleaned form data.
-
-        Raises:
-            ValidationError: If the current password is incorrect or
-            the new passwords do not match.
-        """
-
-        super().clean()
+        """ Validate the current and new password fields. """
+        data = super().clean()
         password = self.cleaned_data.get('password')
         if self.user is not None:
             user = authenticate(username=self.user.username, password=password)
