@@ -124,7 +124,10 @@ class RecipeFormHandler:
         tag_data = get_tag_context(self.session_data)
         context.update(tag_data)
 
-        context["has_image"] = "temp_image_path" in self.session_data
+        context["has_image"] = (
+            "temp_image_path" in self.session_data
+            or (self.recipe and self.recipe.image)
+        )
         return context
     
     def handle_tag_action(self):
