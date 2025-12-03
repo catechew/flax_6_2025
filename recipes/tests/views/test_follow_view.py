@@ -121,3 +121,47 @@ class FollowViewTestCase(TestCase):
         fake_url = reverse('follow_user', kwargs={'user_id': 99999})
         response = self.client.post(fake_url)
         self.assertEqual(response.status_code, 404)
+
+
+class FollowersPageTests(TestCase):
+    """ Tests for followers_list and following_list views. """
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='@alpha',
+            email='alpha@example.com',
+            password='Password123'
+        )
+        self.other = User.objects.create_user(
+            username='@beta',
+            email='beta@example.com',
+            password='Password123'
+        )
+
+        self.other.follow(self.user)
+
+    def test_followers_list_requires_login(self):
+        url = reverse('followers_list', args=[self.user.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_followers_list_logged_in(self):
+        self.client.login(username='@alpha', password='Password123')
+        url = reverse('followers_list', args=[self.user.id])
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '@beta')
+
+    def test_following_list_requires_login(self):
+        url = reverse('following_list', args=[self.other.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_following_list_logged_in(self):
+        self.client.login(username='@beta', password='Password123')
+        url = reverse('following_list', args=[self.other.id])
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '@alpha')
