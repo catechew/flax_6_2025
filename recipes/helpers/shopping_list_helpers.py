@@ -113,7 +113,7 @@ def _build_consolidated_dict(items):
         ingredient = item['item']
         key = ingredient.lower()
         
-        if consolidated[key]['base_item'] is None:
+        if consolidated[key]['count'] == 0:
             consolidated[key]['base_item'] = ingredient
         
         consolidated[key]['count'] += 1
