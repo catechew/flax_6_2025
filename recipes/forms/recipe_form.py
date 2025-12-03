@@ -6,16 +6,10 @@ from django.utils import timezone
 
 from recipes.models import Recipe
 
+
 class RecipeForm(forms.ModelForm):
     """
     Form enabling registered users to add recipes.
-
-    Fields:
-        author, title, publication_date, 
-        image, servings, prep time, 
-        ingredients, steps,
-        private/public,
-        cook_time, tags (cuisine, course, dietary, others)
     """
 
     publication_date = forms.DateField(
