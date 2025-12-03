@@ -55,58 +55,30 @@ class Command(BaseCommand):
         self._create_fixture_users()
         self._create_random_users()
 
-    def _create_fixture_users(self):
-        """ Create predefined fixture users. """
-        for user_data in USER_FIXTURES:
-            if user_data['username'] == '@johndoe':
-                self._create_admin_user(user_data)
-            else:
-                self._try_create_user(user_data)
+    def _seed_fixture_users(self):
+        for data in USER_FIXTURES:
+            payload = create_fixture_user_payload(data)
+            self._create_user(payload)
 
-    def _create_admin_user(self, user_data):
-        """ Create admin superuser. """
-        try:
-            user = User.objects.create_superuser(
-                username=user_data['username'],
-                email=user_data['email'],
-                password=self.DEFAULT_PASSWORD,
-                first_name=user_data['first_name'],
-                last_name=user_data['last_name']
-            )
-            user.is_staff = True
-            user.save()
-        except Exception:
-            pass
-
-    def _create_random_users(self):
+    def _seed_random_users(self):
         """ Generate random users until target count reached. """
         while User.objects.count() < self.USER_COUNT:
-            count = User.objects.count()
-            print(f"Seeding user {count}/{self.USER_COUNT}", end='\r')
-            self._generate_user()
-        print("User seeding complete.      ")
+            self._create_user(create_random_user_payload())
+        self.stdout.write(self.style.SUCCESS("User seeding complete"))
 
-    def _generate_user(self):
-        """ Generate single random user. """
-        first_name = self.faker.first_name()
-        last_name = self.faker.last_name()
-        user_data = {
-            'username': _create_username(first_name, last_name),
-            'email': _create_email(first_name, last_name),
-            'first_name': first_name,
-            'last_name': last_name
-        }
-        self._try_create_user(user_data)
-
-    def _try_create_user(self, user_data):
-        """ Attempt user creation, ignore failures. """
+    def _create_user(self, data):
         try:
-            User.objects.create_user(
-                username=user_data['username'],
-                email=user_data['email'],
+            creator = (
+                User.objects.create_superuser
+                if data["is_admin"]
+                else User.objects.create_user
+            )
+            creator(
+                username=data["username"],
+                email=data["email"],
                 password=self.DEFAULT_PASSWORD,
-                first_name=user_data['first_name'],
-                last_name=user_data['last_name']
+                first_name=data["first_name"],
+                last_name=data["last_name"],
             )
         except Exception:
             pass
@@ -150,37 +122,33 @@ class Command(BaseCommand):
         }
         self._try_create_recipe(recipe_data)
 
-    def _try_create_recipe(self, data):
-        """ Attempt recipe creation, ignore failures. """
+    def _create_recipe(self, users):
+        title = RecipeDataGenerator.generate_title()
+        prep_h, prep_m = RecipeDataGenerator.generate_time_component()
+        cook_h, cook_m = RecipeDataGenerator.generate_time_component()
+        image, filename = ImageHandler.load_image(title)
+
         try:
             recipe = Recipe.objects.create(
-                title=data['title'],
-                author=data['author'],
-                publication_date=data['publication_date'],
-                ingredients=data['ingredients'],
-                steps=data['steps'],
-                prep_time_hours=data['prep_time_hours'],
-                prep_time_minutes=data['prep_time_minutes'],
-                cook_time_hours=data['cook_time_hours'],
-                cook_time_minutes=data['cook_time_minutes'],
-                course_tags=data['course_tags'],
-                cuisine_tags=data['cuisine_tags'],
-                dietary_tags=data['dietary_tags'],
-                other_tags=data['other_tags']
+                title=title,
+                author=choice(users),
+                publication_date=RecipeDataGenerator.generate_date(),
+                ingredients=RecipeDataGenerator.generate_ingredients(),
+                steps=RecipeDataGenerator.generate_steps(),
+                prep_time_hours=prep_h,
+                prep_time_minutes=prep_m,
+                cook_time_hours=cook_h,
+                cook_time_minutes=cook_m,
+                course_tags=TagGenerator.generate_tags("course"),
+                cuisine_tags=TagGenerator.generate_tags("cuisine"),
+                dietary_tags=TagGenerator.generate_tags("dietary"),
+                other_tags=TagGenerator.generate_tags("other"),
             )
-            if data['image_content'] and data['image_filename']:
-                recipe.image.save(
-                    data['image_filename'],
-                    data['image_content'],
-                    save=True
-                )
-        except Exception as e:
-            print(f"Error creating recipe: {e}")
+            self._attach_image(recipe, image, filename)
+        except Exception:
+            pass
 
-def _create_username(first_name, last_name):
-    """ Create username from first and last names. """
-    return f"@{first_name.lower()}{last_name.lower()}"
-
-def _create_email(first_name, last_name):
-    """ Create email from first and last names. """
-    return f"{first_name}.{last_name}@example.org"
+    @staticmethod
+    def _attach_image(recipe, content, filename):
+        if content and filename:
+            recipe.image.save(filename, content, save=True)
