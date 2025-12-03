@@ -17,25 +17,24 @@ from .seed_helpers.user_data import (
 
 USER_FIXTURES = [
     {
-        'username': '@johndoe',
-        'email': 'john.doe@example.org',
-        'first_name': 'John',
-        'last_name': 'Doe'
+        "username": "@johndoe",
+        "email": "john.doe@example.org",
+        "first_name": "John",
+        "last_name": "Doe",
+        "is_admin": True,
     },
-
     {
-        'username': '@janedoe',
-        'email': 'jane.doe@example.org',
-        'first_name': 'Jane',
-        'last_name': 'Doe'
+        "username": "@janedoe",
+        "email": "jane.doe@example.org",
+        "first_name": "Jane",
+        "last_name": "Doe",
     },
-
     {
-        'username': '@charlie',
-        'email': 'charlie.johnson@example.org',
-        'first_name': 'Charlie',
-        'last_name': 'Johnson'
-    }
+        "username": "@charlie",
+        "email": "charlie.johnson@example.org",
+        "first_name": "Charlie",
+        "last_name": "Johnson",
+    },
 ]
 
 class Command(BaseCommand):
