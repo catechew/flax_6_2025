@@ -23,12 +23,12 @@ class LogInView(LoginProhibitedMixin, View):
         form = LogInForm(request.POST)
 
         if not form.is_valid():
-            return self._render(form)
+            return self.render(form)
 
         user = form.get_user()
         if user is None:
             messages.error(request, "The credentials provided were invalid!")
-            return self._render(form)
+            return self.render(form)
 
         login(request, user)
         return redirect(self.next)
