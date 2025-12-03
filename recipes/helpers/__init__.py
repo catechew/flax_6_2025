@@ -1,4 +1,6 @@
-""" Helper modules for recipe operations. """
+""" 
+Helper modules for recipe operations. 
+"""
 
 from .recipe_form_helpers import (
     get_tag_action_from_request,
