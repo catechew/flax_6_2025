@@ -7,6 +7,7 @@ from datetime import date
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from unittest.mock import patch
 
 from recipes.helpers.shopping_list_helpers import (
     categorise_ingredient,
@@ -37,6 +38,12 @@ class CategoriseIngredientTests(TestCase):
         self.assertEqual(category, "🛒 Other Items")
     
 
+    def test_no_category_match_after_loop(self):
+        """Covers full loop run with no keyword matches."""
+        result = categorise_ingredient("xyzitem123")
+        self.assertEqual(result, "🛒 Other Items")
+        
+        
 class ExtractIngredientsTests(TestCase):
     """ Tests for extract_ingredients helper. """
 
@@ -50,23 +57,24 @@ class ExtractIngredientsTests(TestCase):
             user=self.user,
             week_start=date(2025, 11, 24),
         )
-        self.recipe = Recipe.objects.create(
+
+    def test_extracts_ingredients_by_category(self):
+        recipe = Recipe.objects.create(
             title="Test Meal",
             author=self.user,
             publication_date=date.today(),
             ingredients="Chicken\nRice",
             steps="Cook",
         )
-        MealSlot.objects.create(
+
+        slot = MealSlot.objects.create(
             meal_plan=self.plan,
             day="mon",
             meal_type="dinner",
-            recipe=self.recipe,
+            recipe=recipe,
         )
 
-    def test_extracts_ingredients_by_category(self):
-        slots = self.plan.entries.all()
-        shopping_list = extract_ingredients(slots)
+        shopping_list = extract_ingredients(MealSlot.objects.filter(id=slot.id))
 
         self.assertIsInstance(shopping_list, defaultdict)
         self.assertIn("🥩 Meat & Poultry", shopping_list)
@@ -80,15 +88,40 @@ class ExtractIngredientsTests(TestCase):
             ingredients="\n  \nSalt\n",
             steps="Cook",
         )
-        MealSlot.objects.create(
+
+        slot = MealSlot.objects.create(
             meal_plan=self.plan,
             day="tue",
             meal_type="dinner",
             recipe=recipe,
         )
 
-        shopping_list = extract_ingredients(self.plan.entries.all())
+        shopping_list = extract_ingredients(MealSlot.objects.filter(id=slot.id))
         self.assertEqual(len(shopping_list["🧂 Condiments"]), 1)
+
+    def test_only_empty_ingredient_lines_are_skipped(self):
+        recipe = Recipe.objects.create(
+            title="Only Empty",
+            author=self.user,
+            publication_date=date.today(),
+            ingredients="\n  \n",
+            steps="Cook",
+        )
+
+        empty_plan = MealPlan.objects.create(
+            user=self.user,
+            week_start=date(2025, 12, 1),
+        )
+
+        MealSlot.objects.create(
+            meal_plan=empty_plan,
+            day="wed",
+            meal_type="dinner",
+            recipe=recipe,
+        )
+
+        shopping_list = extract_ingredients(empty_plan.entries.all())
+        self.assertEqual(len(shopping_list), 0)
 
 
 class ConsolidateIngredientsTests(TestCase):
@@ -114,20 +147,7 @@ class ConsolidateIngredientsTests(TestCase):
 
         self.assertEqual(consolidated[0]["count"], 1)
         self.assertEqual(consolidated[0]["item"], "Salt")
-    
-    def test_consolidate_single_item_does_not_scale(self):
-        items = [{
-            "item": "Salt",
-            "day": "Monday",
-            "meal": "Dinner",
-            "recipe": "Test Recipe",
-        }]
 
-        result = consolidate_ingredients(items)
-
-        self.assertEqual(result[0]["count"], 1)
-        self.assertEqual(result[0]["item"], "Salt")
-    
     def test_consolidate_empty_list_returns_empty(self):
         result = consolidate_ingredients([])
         self.assertEqual(result, [])
@@ -144,6 +164,21 @@ class ConsolidateIngredientsTests(TestCase):
         self.assertEqual(consolidated[0]["count"], 2)
         # The scaled ingredient should contain "4"
         self.assertIn("4", consolidated[0]["item"])
+
+    @patch("recipes.helpers.shopping_list_helpers.scale_ingredient")
+    def test_multiple_items_trigger_scaling_branch(self, mock_scale):
+        mock_scale.return_value = "Rice (scaled)"
+
+        items = [
+            {"item": "Rice", "recipe": "R1", "day": "Mon", "meal": "Dinner"},
+            {"item": "Rice", "recipe": "R2", "day": "Tue", "meal": "Lunch"},
+        ]
+
+        result = consolidate_ingredients(items)
+
+        self.assertEqual(result[0]["count"], 2)
+        self.assertEqual(result[0]["item"], "Rice (scaled)")
+        mock_scale.assert_called_once()
 
 
 class OrganiseShoppingListTests(TestCase):

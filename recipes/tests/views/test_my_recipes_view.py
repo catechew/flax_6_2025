@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.models import User, Recipe
 from datetime import date
+from recipes.tests.utils import get_default_user, create_test_user, create_test_recipe, create_test_recipes
 
 
 class MyRecipesViewTestCase(TestCase):
@@ -15,42 +16,29 @@ class MyRecipesViewTestCase(TestCase):
     def setUp(self):
         """Set up test data before each test."""
         self.url = reverse('my_recipes')
-        self.user = User.objects.get(username='@johndoe')
-        self.recipe1 = Recipe.objects.create(
-            author=self.user,
+        self.user = get_default_user()
+        self.recipe1 = create_test_recipe(
             title='Test Recipe One',
             publication_date=date(2025, 11, 17),
-            ingredients="test (1)",
-            steps="test",
             course_tags="breakfast",
             cuisine_tags="Japanese",
             dietary_tags="vegan",
             other_tags="other"
         )
-        self.recipe2 = Recipe.objects.create(
-            author=self.user,
+        self.recipe2 = create_test_recipe(
             title='Test Recipe Two',
             publication_date=date(2025, 11, 16),
-            ingredients="test (1)",
-            steps="test",
             course_tags="main",
             cuisine_tags="Italian",
             dietary_tags="vegetarian",
             other_tags="others"
         )
-        self.other_user = User.objects.create_user(
-            username='@janedoe',
-            email='jane@example.org',
-            password='Password123',
-            first_name='Jane',
-            last_name='Doe'
-        )
-        self.other_recipe = Recipe.objects.create(
+        self.other_user = create_test_user(username='@janedoe')
+
+        self.other_recipe = create_test_recipe(
             author=self.other_user,
             title='Other User Recipe',
             publication_date=date(2025, 11, 15),
-            ingredients="test (1)",
-            steps="test"
         )
 
     def test_my_recipes_url(self):
@@ -151,14 +139,7 @@ class MyRecipesViewTestCase(TestCase):
 
     def test_my_recipes_with_many_recipes(self):
         """Test that page handles many recipes correctly."""
-        for i in range(10):
-            Recipe.objects.create(
-                author=self.user,
-                title=f'Recipe Number {i}',
-                publication_date=date(2025, 11, 10),
-                ingredients="test (1)",
-                steps="test"
-            )
+        create_test_recipes(count=10)
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.context['recipe_count'], 12)
@@ -181,13 +162,7 @@ class MyRecipesViewTestCase(TestCase):
     def test_my_recipes_pluralization(self):
         """Test that recipe/recipes text is pluralized correctly."""
         Recipe.objects.filter(author=self.user).delete()
-        Recipe.objects.create(
-            author=self.user,
-            title='Only Recipe',
-            publication_date=date(2025, 11, 17),
-            ingredients="test (1)",
-            steps="test"
-        )
+        create_test_recipe()
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertContains(response, '1')

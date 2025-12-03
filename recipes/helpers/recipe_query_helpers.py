@@ -53,6 +53,7 @@ def apply_search(recipes, search_query):
   | Q(adjectives__icontains=search_query)
   | Q(steps__icontains=search_query)
   | Q(author_name__icontains=search_query)
+  | Q(author__username__icontains=search_query)
  )
 
  ingredient_query = _build_ingredient_query(words)

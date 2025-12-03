@@ -2,24 +2,18 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe, User
 from datetime import date
+from recipes.tests.utils import create_test_user, create_test_recipe, get_default_user
 
 class RecipeDeleteViewTestCase(TestCase):
+    fixtures = ['recipes/tests/fixtures/default_user.json']
     def setUp(self):
-        self.user = User.objects.create_user(
-            username='testuser',
-            email='test@example.com',
-            password='Password123',
-            first_name='Test',
-            last_name='User'
-        )
-        self.recipe = Recipe.objects.create(
+        self.user = get_default_user()
+        self.recipe = create_test_recipe(
             title='Test Recipe',
-            author=self.user,
-            publication_date=date.today(),
             ingredients='Tomato\nGarlic',
             steps='Chop tomatoes\nCook garlic'
         )
-        self.client.login(username='testuser', password='Password123')
+        self.client.login(username='@johndoe', password='Password123')
         self.url = reverse('delete_recipe', kwargs={'recipe_id': self.recipe.id})
     
     def test_get_shows_confirmation(self):
@@ -36,12 +30,8 @@ class RecipeDeleteViewTestCase(TestCase):
     
     def test_cannot_delete_other_users_recipe(self):
         """Test that users cannot delete recipes they don't own"""
-        other_user = User.objects.create_user(
-            username='otheruser',
-            email='other@example.com',
-            password='Password123'
-        )
-        self.client.login(username='otheruser', password='Password123')
+        other_user = create_test_user(username='@otheruser')
+        self.client.login(username='@otheruser', password='Password123')
         
         response = self.client.post(self.url)
         # Check if view returns 403 or 404 (both are valid for unauthorized access)
