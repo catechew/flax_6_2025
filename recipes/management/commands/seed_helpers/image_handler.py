@@ -1,4 +1,6 @@
-""" Image handling for recipe seeding. """
+""" 
+Image handling for recipe seeding. 
+"""
 
 import os
 from random import randint
@@ -8,12 +10,12 @@ from django.core.files.base import ContentFile
 DISH_TYPE_MAPPING = {
     'pasta': ['pasta', 'spaghetti', 'macaroni', 'bolognese', 'penne', 'pasta bake', 
               'ramen', 'noodles', 'mee goreng'],
-
+    
     'rice': ['rice', 'fried rice', 'rice bowl', 'egg fried rice', 'microwave rice', 'nasi lemak'],
-
+    
     'curry': ['curry', 'butter chicken', 'tofu thai curry', 'mushroom curry', 'chickpea curry', 'aloo gobi',
               'katsu', 'dal', 'tarka'],
-
+    
     'soup': ['soup', 'tomato soup', 'pho', 'gyoza soup'],
 
     'pizza': ['pizza', 'margherita', 'frozen pizza', 'pizza toast'],
