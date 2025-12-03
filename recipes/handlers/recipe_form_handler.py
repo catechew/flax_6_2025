@@ -228,57 +228,48 @@ class RecipeFormHandler:
         return recipe
 
     def finalise_recipe(self):
-        """Create or update the recipe the form data and tags"""
+        """Create or update the recipe with form data and tags"""
 
         form_data, files = self.prepare_form_data()
         form = self.create_form(form_data, files)
-        
+
         if not form.is_valid():
-            messages.error(self.request, 'There was an error with your recipe. Please check the form.')
-            return self.redirect_to_form_page()
-        
-        # Save recipe
+            context = self.get_form_context(form)
+            return render(self.request, 'recipes/recipe_form.html', context)
+
         try:
             saved_recipe = self.save_recipe_with_tags(
                 form, self.session_data, self.request.user, self.recipe, self.is_owner
             )
 
-            # Cleanup and show success
             cleanup_session(self.session_key, self.session_data, self.request)
             self.show_success_message(saved_recipe)
             return self.redirect_to_detail_page(saved_recipe.id)
-        
+
         except Exception as e:
             messages.error(self.request, f'Error saving recipe: {str(e)}')
             return self.redirect_to_form_page()
 
+
     def handle_form_post(self):
         """Handle form submission"""
-        # Handle image upload
+
         image_uploaded = self.handle_image_in_session()
-        
-        # Only copy files if no image was uploaded to prevent corrupt files 
+
         post_data = self.request.POST.copy()
         files_data = self.request.FILES.copy() if not image_uploaded else {}
-        
-        # Create form with instance (if available)
+
         form = self.create_form(post_data, files_data)
 
         if not form.is_valid():
-            # Save form data to session to make sure image doesn't disappear when there's errors
-            self.save_form_to_session()
-            self.mark_session_modified()
-
             context = self.get_form_context(form)
             return render(self.request, 'recipes/recipe_form.html', context)
 
-        # Save form data to session
         self.save_form_to_session()
-
         self.mark_session_modified()
 
-        # Redirect to tags page
         return self.redirect_to_tags_page()
+
 
     def handle_form_get(self):
         """Handle form display"""

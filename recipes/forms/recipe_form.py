@@ -149,6 +149,7 @@ class RecipeForm(forms.ModelForm):
 
     def clean_publication_date(self):
         """ Prevent future publication dates. """
+        
         date = self.cleaned_data.get("publication_date")
         if date and date > timezone.now().date():
             raise ValidationError("Publication date cannot be in the future.")
@@ -156,13 +157,17 @@ class RecipeForm(forms.ModelForm):
 
     def clean_ingredients(self):
         """ Validate ingredient format: Ingredient (quantity). """
+        
         ingredients = self.cleaned_data.get("ingredients")
         if not ingredients:
             return ingredients
 
         errors = self._find_ingredient_errors(ingredients)
         if errors:
-            raise ValidationError(self._format_ingredient_errors(errors))
+            raise ValidationError(
+                "Each ingredient must be in the format: Ingredient (quantity). "
+                "Example: Avocado (1)"
+            )
         return ingredients
     
     def _find_ingredient_errors(self, text):
