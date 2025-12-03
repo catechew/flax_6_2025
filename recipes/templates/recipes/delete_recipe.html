@@ -5,16 +5,23 @@ Delete Recipe
 {% endblock %}
 
 {% block content %}
-<h1>Delete Recipe #{{recipe.id}}?</h1>
+<h2>Are you sure you want to delete recipe <strong>{{ recipe.title }}</strong>?
+	<Span style="color: #00000050">(#{{ recipe.id }})</Span></h2>
+
 <p>
-	Are you sure you wish to delete the following recipe?
+    This action is permanent. The following recipe will be deleted:
 </p>
 <p>
-	{{recipe.author.username}}  ({{recipe.publication_date.year}})  "{{recipe.title}}"
+    <strong>{{ recipe.title }}</strong><br>
+    by {{ recipe.author.username }} ({{ recipe.publication_date.year }})
 </p>
+
+<br>
+
 <form action="{% url 'delete_recipe' recipe.id %}" method="post">
-	{% csrf_token %}
-	<button type="submit">Yes, delete</button>
+    {% csrf_token %}
+    <button class="btn-primary" type="submit">Yes, delete this recipe</button>
+    <a href="{% url 'all_recipes' %}" style="margin-left: 1rem;">Cancel</a>
 </form>
-<p><a href="{% url 'all_recipes' %}">Return list of recipes without change</a></p>
+
 {% endblock %}

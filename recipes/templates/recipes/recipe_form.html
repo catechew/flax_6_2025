@@ -146,15 +146,15 @@
             {# Form Buttons #}
             <div class="d-flex justify-content-between align-items-center mt-4">
                 {% if mode == 'create' %}
-                    <a href="{% url 'cancel_recipe' %}" class="btn btn-primary btn-lg">
+                    <a href="{% url 'cancel_recipe' %}" class="btn btn-primary">
                         <i class="bi bi-x-circle"></i> Cancel
                     </a>
                 {% else %}
-                    <a href="{% url 'cancel_recipe_update' recipe.id %}" class="btn btn-primary btn-lg">
+                    <a href="{% url 'cancel_recipe_update' recipe.id %}" class="btn btn-primary">
                         <i class="bi bi-x-circle"></i> Cancel
                     </a>
                 {% endif %}
-              <button type="submit" class="btn btn-primary btn-lg">
+              <button type="submit" class="btn btn-primary">
                 {% if mode == 'create' %}
                     Next: Add Tags <i class="bi bi-arrow-right"></i>
                 {% else %}
