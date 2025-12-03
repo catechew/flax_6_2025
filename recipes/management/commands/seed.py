@@ -16,14 +16,12 @@ USER_FIXTURES = [
         'first_name': 'John',
         'last_name': 'Doe'
     },
-
     {
         'username': '@janedoe',
         'email': 'jane.doe@example.org',
         'first_name': 'Jane',
         'last_name': 'Doe'
     },
-
     {
         'username': '@charlie',
         'email': 'charlie.johnson@example.org',
@@ -32,8 +30,11 @@ USER_FIXTURES = [
     }
 ]
 
+
 class Command(BaseCommand):
-    """ Seed database with users and recipes. """
+    """ 
+    Seed database with users and recipes. 
+    """
 
     USER_COUNT = 200
     RECIPE_COUNT = 500
