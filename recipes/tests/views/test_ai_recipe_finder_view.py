@@ -57,9 +57,9 @@ class AIRecipeGeneratorViewTestCase(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'ai_recipe_generator.html')
-        self.assertContains(response, 'AI Recipe Generator')
-        self.assertContains(response, 'What do you want to make?')
+        self.assertTemplateUsed(response, 'ai/ai_recipe_generator.html')
+        self.assertContains(response, 'What do you want to eat?')
+        self.assertContains(response, 'Describe what you want to cook and Chef AI will create a recipe for you!')
 
     def test_empty_prompt_shows_error(self):
         """Test that empty prompt shows error message."""
