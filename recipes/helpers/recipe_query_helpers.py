@@ -192,4 +192,6 @@ def get_recipes_context(request, search_query):
     "cuisine_options": CUISINE_OPTIONS,
     "other_options": OTHER_OPTIONS,
     "sort_options": SORT_OPTIONS,
+    "recipe_count": page_object.paginator.count,
+    "user_count" : user_count, 
   }

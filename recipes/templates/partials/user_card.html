@@ -1,6 +1,6 @@
 {% load avatar_tags %}
 
-<div class="card h-100">
+<div class="card h-10">
     <div class="card-body">
         <div class="d-flex align-items-center gap-3">
             {# Avatar #}
@@ -21,7 +21,7 @@
 
             {# Follow button #}
             {% if user != request.user %}
-                {% if request.user.is_following user %}
+                {% if user in request.user.following.all %}
                     <form action="{% url 'unfollow_user' user.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-sm btn-outline-danger">Unfollow</button>

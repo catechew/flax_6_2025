@@ -3,10 +3,11 @@ Helper functions for searching, sorting and paginating users
 """
 
 from django.db.models import Q, Count
+from django.db.models.functions import Concat
+from django.db.models import Value
 from django.core.paginator import Paginator
 from recipes.models.user import User
 from recipes.models.recipe import Recipe
-from recipes.helpers.recipe_query_helpers import apply_search
 
 ITEMS_PER_PAGE = 25
 
@@ -15,10 +16,19 @@ def apply_user_search(users, search_query):
     if not search_query:
         return users
     
+    users = users.annotate(
+        full_name=Concat(
+            "first_name",
+            Value(" "),
+            "last_name",
+        )
+    )
+    
     query = (
         Q(username__icontains=search_query)
-        | Q(first_name__icontains=search_query)
+        |Q(first_name__icontains=search_query)
         |Q(last_name__icontains=search_query)
+        |Q(full_name__icontains=search_query)
     )
 
     return users.filter(query)
@@ -31,6 +41,7 @@ def paginate_users(users, request):
 
 def get_users_context(request, search_query):
     """Create context for users tab"""
+    from recipes.helpers.recipe_query_helpers import apply_search
 
     user_queryset = User.objects.all()
     filtered_users = apply_user_search(user_queryset, search_query)

@@ -90,3 +90,21 @@ h3.profile-title {
 .content a:hover {
   color: var(--primary-colour-darkest);
 }
+
+/* Search Tabs Navigation */
+.search-tabs .nav-item {
+  flex: 1;
+}
+
+.search-tabs .nav-link {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  color: var(--black-colour);
+  font-weight: normal;
+  border-bottom: 3px solid transparent;
+  font-size: 1.1rem;
+}
+
+.search-tabs .nav-link.active {
+  border-bottom: 3px solid var(--primary-colour);
+}
