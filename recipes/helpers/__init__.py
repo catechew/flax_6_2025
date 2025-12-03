@@ -18,6 +18,8 @@ from .recipe_form_images import (
     cleanup_temp_image,
 )
 
+from .recipe_detail_helpers import *
+
 from .meal_plan_helpers import (
     get_monday,
     calculate_completion,
@@ -33,6 +35,7 @@ from .shopping_list_helpers import (
     INGREDIENT_CATEGORIES,
     CATEGORY_ORDER,
 )
+
 
 __all__ = [
     'TAG_CATEGORIES',

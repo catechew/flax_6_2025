@@ -39,6 +39,7 @@ class RecipeDetailHandler:
     
     def _user_context(self):
         """ Build user-specific context (ratings, flags). """
+        
         return {
             "user_rating": get_user_rating(self.recipe, self.request.user),
             "user_has_flagged": has_user_flagged_recipe(
