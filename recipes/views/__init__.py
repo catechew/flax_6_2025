@@ -19,3 +19,5 @@ from .flag_recipe_view import *
 from .recipe_form_view import *
 from .recipe_tags_view import *
 from .recipe_cancel_view import *
+from .ai_recipe_generator_view import *
+from .ai_recipe_search_view import *
