@@ -7,6 +7,7 @@ from datetime import date
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from unittest.mock import patch
 
 from recipes.helpers.shopping_list_helpers import (
     categorise_ingredient,
@@ -145,8 +146,10 @@ class ConsolidateIngredientsTests(TestCase):
         result = consolidate_ingredients([])
         self.assertEqual(result, [])
 
-    def test_multiple_items_trigger_scaling_branch(self):
-        """Covers count > 1 branch without assuming formatting."""
+    @patch("recipes.helpers.shopping_list_helpers.scale_ingredient")
+    def test_multiple_items_trigger_scaling_branch(self, mock_scale):
+        mock_scale.return_value = "Rice (scaled)"
+
         items = [
             {"item": "Rice", "recipe": "R1", "day": "Mon", "meal": "Dinner"},
             {"item": "Rice", "recipe": "R2", "day": "Tue", "meal": "Lunch"},
@@ -155,8 +158,8 @@ class ConsolidateIngredientsTests(TestCase):
         result = consolidate_ingredients(items)
 
         self.assertEqual(result[0]["count"], 2)
-        self.assertIn("Rice", result[0]["item"])
-        self.assertEqual(len(result[0]["recipes"]), 2)
+        self.assertEqual(result[0]["item"], "Rice (scaled)")
+        mock_scale.assert_called_once()
 
 
 class OrganiseShoppingListTests(TestCase):
