@@ -142,7 +142,7 @@ class RecipeFormHandler:
         return redirect_to_tags(self)
     
     def show_missing_form_data_warning(self):
-        "" "Warn user and redirect if they try to access tag page. """
+        """ Warn user and redirect if they try to access tag page. """
         from django.contrib import messages
 
         messages.warning(
@@ -151,4 +151,12 @@ class RecipeFormHandler:
         )
 
         return redirect_to_form(self)
-
+  
+    def redirect_to_cancel_destination(self):
+        """
+        Redirect after cancelling recipe create/update.
+        Clears session data handled elsewhere.
+        """
+        if self.is_create_mode:
+            return redirect("all_recipes")
+        return redirect("recipe_detail", recipe_id=self.recipe_id)
