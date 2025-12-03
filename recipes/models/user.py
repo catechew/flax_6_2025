@@ -21,7 +21,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
-    # Gender field (for AI avatar)
+    # Gender field for AI avatar
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
@@ -34,7 +34,7 @@ class User(AbstractUser):
         blank=True
     )
 
-    # Age field (for AI avatar)
+    # Age field for AI avatar
     AGE_CHOICES = [
         ('young', '18-30'),
         ('middle', '31-50'),

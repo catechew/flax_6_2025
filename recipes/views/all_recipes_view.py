@@ -21,9 +21,7 @@ from recipes.helpers.recipe_filter_options import (
 
 @login_required
 def all_recipes(request):
- """
- Display public recipes with search, filtering and pagination.
- """
+ """ Display public recipes with search, filtering and pagination. """
  base_queryset = Recipe.objects.filter(private=False)
 
  search_query = get_search_query(request)

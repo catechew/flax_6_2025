@@ -23,7 +23,8 @@ Recipes | Recipe #{{recipe.id}}
     <div class="mb-3">
 
         {# Flagging form for logged-in users #}
-        <!-- Flag/Unflag Toggle Button -->
+
+        <!-- Flag/Unflag toggle button -->
         {% if user.is_authenticated and recipe.author != user %}
           {% if user_has_flagged %}
             <form action="{% url 'unflag_recipe' recipe.id %}" method="post" class="d-inline">
@@ -41,8 +42,8 @@ Recipes | Recipe #{{recipe.id}}
             </form>
           {% endif %}
         {% endif %}
-
-        {# Rating form for logged-in users #}
+        
+        <!-- Rating form for logged in users -->
         {% if user.is_authenticated %}
         <form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="d-flex align-items-center gap-3 mb-2">
             {% csrf_token %}
@@ -76,7 +77,7 @@ Recipes | Recipe #{{recipe.id}}
         </form>
         {% endif %}
 
-        {# --- Average Rating Section --- #}
+       <!-- Average rating section -->
         <div class="mt-2 d-flex align-items-center gap-2">
             <strong>Average Rating:</strong>
 
@@ -101,7 +102,7 @@ Recipes | Recipe #{{recipe.id}}
 
     </div>
 
-        {# Display Tags as Chips #}
+        <!-- Display tags as chips -->
         {% if course_tags or cuisine_tags or dietary_tags or other_tags %}
         <div class="mb-3">
             <i class="bi bi-tags"></i><strong> Tags:</strong> 
@@ -117,7 +118,7 @@ Recipes | Recipe #{{recipe.id}}
     </div>
 
 
-    {# Servings Adjustment #}
+   <!-- Servings adjustment -->
     <div class="card shadow mb-4">
         <div class="card-body">
         <form method="GET" class="row g-3 align-items-center">
@@ -151,7 +152,7 @@ Recipes | Recipe #{{recipe.id}}
         </div>
     </div>
 
-    {# Cost Estimate #}
+    <!-- Cost estimate -->
     <div class="card shadow mb-4">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">
@@ -185,7 +186,7 @@ Recipes | Recipe #{{recipe.id}}
         </div>
     </div>
 
-    {# Ingredients #}
+   <!-- Ingredients -->
     <div class="card shadow mb-4">
         <div class="card-header bg-success text-white">
         <h4 class="mb-0">
@@ -205,7 +206,7 @@ Recipes | Recipe #{{recipe.id}}
     </div>
 
 
-    {# Steps #}
+    <!-- Steps -->
     <div class="card shadow mb-4">
         <div class="card-header bg-info text-white">
         <h4 class="mb-0">
@@ -227,7 +228,7 @@ Recipes | Recipe #{{recipe.id}}
         </div>
     </div>
 
-    {# Action Buttons #}
+    <!-- Action buttons -->
     <div class="mb-4">
         <a href="{% url 'home' %}" class="btn margin-vertical btn-primary">
         <i class="bi bi-arrow-left"></i> Go back home
