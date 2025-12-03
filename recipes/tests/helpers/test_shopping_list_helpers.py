@@ -31,6 +31,11 @@ class CategoriseIngredientTests(TestCase):
         category = categorise_ingredient("Protein powder")
         self.assertEqual(category, "🛒 Other Items")
     
+    def test_unknown_ingredient_categorised_as_other(self):
+        """Test unknown ingredients return Other Items."""
+        category = categorise_ingredient("Quinoa")
+        self.assertEqual(category, "🛒 Other Items")
+    
 
 class ExtractIngredientsTests(TestCase):
     """ Tests for extract_ingredients helper. """
@@ -126,6 +131,19 @@ class ConsolidateIngredientsTests(TestCase):
     def test_consolidate_empty_list_returns_empty(self):
         result = consolidate_ingredients([])
         self.assertEqual(result, [])
+    
+    def test_duplicate_ingredients_are_scaled(self):
+        """Test that duplicate ingredients trigger scaling (count > 1)."""
+        items = [
+            {"item": "2 cups Rice", "recipe": "R1", "day": "Mon", "meal": "Dinner"},
+            {"item": "2 cups Rice", "recipe": "R2", "day": "Tue", "meal": "Lunch"},
+        ]
+        
+        consolidated = consolidate_ingredients(items)
+        
+        self.assertEqual(consolidated[0]["count"], 2)
+        # The scaled ingredient should contain "4"
+        self.assertIn("4", consolidated[0]["item"])
 
 
 class OrganiseShoppingListTests(TestCase):
