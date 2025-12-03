@@ -124,55 +124,29 @@ class Command(BaseCommand):
     def _generate_recipe(self, users):
         """ Generate single random recipe. """
         title = RecipeDataGenerator.generate_title()
-        prep_hours, prep_mins = RecipeDataGenerator.generate_time_component()
-        cook_hours, cook_mins = RecipeDataGenerator.generate_time_component()
-        image_content, image_filename = ImageHandler.load_image(title)
+        prep = RecipeDataGenerator.generate_time_component()
+        cook = RecipeDataGenerator.generate_time_component()
+        image, filename = ImageHandler.load_image(title)
 
-        recipe_data = {
-            'title': title,
-            'author': choice(users),
-            'publication_date': RecipeDataGenerator.generate_date(),
-            'ingredients': RecipeDataGenerator.generate_ingredients(),
-            'steps': RecipeDataGenerator.generate_steps(),
-            'prep_time_hours': prep_hours,
-            'prep_time_minutes': prep_mins,
-            'cook_time_hours': cook_hours,
-            'cook_time_minutes': cook_mins,
-            'course_tags': TagGenerator.generate_tags('course'),
-            'cuisine_tags': TagGenerator.generate_tags('cuisine'),
-            'dietary_tags': TagGenerator.generate_tags('dietary'),
-            'other_tags': TagGenerator.generate_tags('other'),
-            'image_content': image_content,
-            'image_filename': image_filename
-        }
-        self._try_create_recipe(recipe_data)
+        data = RecipeDataGenerator.build_recipe_payload(title, prep, cook)
+        data.update({
+            "author": choice(users),
+            "course_tags": TagGenerator.generate_tags("course"),
+            "cuisine_tags": TagGenerator.generate_tags("cuisine"),
+            "dietary_tags": TagGenerator.generate_tags("dietary"),
+            "other_tags": TagGenerator.generate_tags("other"),
+        })
 
-    def _try_create_recipe(self, data):
+        self._try_create_recipe(data, image, filename)
+
+    def _try_create_recipe(self, data, image, filename):
         """ Attempt recipe creation, ignore failures. """
         try:
-            recipe = Recipe.objects.create(
-                title=data['title'],
-                author=data['author'],
-                publication_date=data['publication_date'],
-                ingredients=data['ingredients'],
-                steps=data['steps'],
-                prep_time_hours=data['prep_time_hours'],
-                prep_time_minutes=data['prep_time_minutes'],
-                cook_time_hours=data['cook_time_hours'],
-                cook_time_minutes=data['cook_time_minutes'],
-                course_tags=data['course_tags'],
-                cuisine_tags=data['cuisine_tags'],
-                dietary_tags=data['dietary_tags'],
-                other_tags=data['other_tags']
-            )
-            if data['image_content'] and data['image_filename']:
-                recipe.image.save(
-                    data['image_filename'],
-                    data['image_content'],
-                    save=True
-                )
-        except Exception as e:
-            print(f"Error creating recipe: {e}")
+            recipe = Recipe.objects.create(**data)
+            if image and filename:
+                recipe.image.save(filename, image, save=True)
+        except Exception:
+            pass
 
 def _create_username(first_name, last_name):
     """ Create username from first and last names. """

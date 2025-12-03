@@ -148,3 +148,19 @@ class RecipeDataGenerator:
         if "Serve hot" not in steps:
             steps.append("Serve hot")
         return '\n'.join(steps)
+    
+    @staticmethod
+    def build_recipe_payload(title, prep, cook):
+        prep_h, prep_m = prep
+        cook_h, cook_m = cook
+
+        return {
+            "title": title,
+            "publication_date": RecipeDataGenerator.generate_date(),
+            "ingredients": RecipeDataGenerator.generate_ingredients(),
+            "steps": RecipeDataGenerator.generate_steps(),
+            "prep_time_hours": prep_h,
+            "prep_time_minutes": prep_m,
+            "cook_time_hours": cook_h,
+            "cook_time_minutes": cook_m,
+        }
