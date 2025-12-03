@@ -9,6 +9,14 @@
             <div class="welcome-section">
                 <h1 class="welcome-title">What do you want to eat?</h1>
                 <p class="welcome-subtitle">Describe what you want to cook and Chef AI will create a recipe for you!</p>
+                    <!-- Link to AI Recipe Search -->
+                <div class="ai-search-link-top">
+                    <a href="{% url 'ai_recipe_search' %}" class="ai-search-btn">
+                        <i class="bi bi-search"></i>
+                        Search existing recipes using AI
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
             </div>
         {% endif %}
 
@@ -18,6 +26,7 @@
                     <div class="alert alert-{{ message.tags }}">
                         {{ message }}
                     </div>
+
                 {% endfor %}
             </div>
         {% endif %}
@@ -102,7 +111,7 @@
                         {% endif %}
 
                         <div class="recipe-actions">
-                            <a href="{% url 'ai_recipe_finder' %}" class="btn btn-primary btn-lg">
+                            <a href="{% url 'ai_recipe_generator' %}" class="btn btn-primary btn-lg">
                                 <i class="bi bi-arrow-clockwise"></i>
                                 Generate Another Recipe
                             </a>
