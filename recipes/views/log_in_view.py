@@ -32,6 +32,7 @@ class LogInView(LoginProhibitedMixin, View):
             return self.render(form)
 
         login(request, user)
+        redirect_url = self.next or self.redirect_when_logged_in_url
         return redirect(self.next)
     
     def render(self, form=None):
