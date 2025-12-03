@@ -14,7 +14,7 @@ class SavedRecipesViewTestCase(TestCase):
 
     def setUp(self):
         self.user = get_default_user()
-        self.other_user = create_test_user(username='@janedoe')
+        self.other_user = User.objects.get(username='@janedoe')
         
         self.client.login(username='@johndoe', password='Password123')
 

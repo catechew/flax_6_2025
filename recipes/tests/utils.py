@@ -102,7 +102,7 @@ def create_test_form_data(**kwargs):
     defaults.update(kwargs)
     return defaults
 
-def create_test_image(name='test.jpg', size=(100,0), color='red', format='JPEG'):
+def create_test_image(name='test.jpg', size=(100,100), color='red', format='JPEG'):
     """
     Create a test image file for upload testing
 
@@ -114,7 +114,7 @@ def create_test_image(name='test.jpg', size=(100,0), color='red', format='JPEG')
     returns SimpleUploadedFile instance
     """
 
-    image = Image.new('RBG', size, color=color)
+    image = Image.new('RGB', size, color=color)
     image_file = BytesIO()
     image.save(image_file, format)
     image_file.seek(0)

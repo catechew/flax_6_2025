@@ -110,9 +110,7 @@ class RecipeDetailViewTestCase(TestCase):
 
     def test_recipe_with_multiple_steps(self):
         """Test recipe with multiple steps displays all in order"""
-        recipe = Recipe.objects.create(
-            steps="Boil water\nAdd salt\nReduce heat\nSimmer for 10 minutes\nServe hot"
-        )
+        recipe = create_test_recipe(steps="Boil water\nAdd salt\nReduce heat\nSimmer for 10 minutes\nServe hot")
 
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)

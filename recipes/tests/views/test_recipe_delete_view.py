@@ -5,6 +5,7 @@ from datetime import date
 from recipes.tests.utils import create_test_user, create_test_recipe, get_default_user
 
 class RecipeDeleteViewTestCase(TestCase):
+    fixtures = ['recipes/tests/fixtures/default_user.json']
     def setUp(self):
         self.user = get_default_user()
         self.recipe = create_test_recipe(

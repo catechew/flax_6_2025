@@ -503,8 +503,8 @@ class AllRecipesViewTestCase(TestCase):
         self.assertIn('filters', response.context)
         self.assertIn('course_filters', response.context['filters'])
         self.assertIn('dietary_filters', response.context['filters'])
-        self.assertIn('main', response.context['course_filters'])
-        self.assertIn('vegan', response.context['dietary_filters'])
+        self.assertIn('main', response.context['filters']['course_filters'])
+        self.assertIn('vegan', response.context['filters']['dietary_filters'])
 
     def test_filter_options_in_context(self):
         """Test that filter options are available in context"""
