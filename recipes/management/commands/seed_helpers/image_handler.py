@@ -1,4 +1,6 @@
-""" Image handling for recipe seeding. """
+""" 
+Image handling for recipe seeding. 
+"""
 
 import os
 from random import randint

@@ -30,7 +30,9 @@ USER_FIXTURES = [
 ]
 
 class Command(BaseCommand):
-    """ Seed database with users and recipes. """
+    """ 
+    Seed database with users and recipes. 
+    """
 
     USER_COUNT = 200
     RECIPE_COUNT = 500
