@@ -248,3 +248,47 @@ class RecipeFormHandlerTestCase(TestCase):
         response = handler.handle_form_get()
         
         self.assertEqual(response.status_code, 200)
+
+    # Test form context with temp image
+    def test_get_form_context_with_temp_image(self):
+        """Test form context shows temp image when present"""
+        from recipes.forms.recipe_form import RecipeForm
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        handler.session_data['temp_image_path'] = '/tmp/test.jpg'
+        form = RecipeForm()
+        
+        context = handler.get_form_context(form)
+        
+        self.assertTrue(context['has_temp_image'])
+
+    # Test tags context with temp image
+    def test_get_tags_context_with_image(self):
+        """Test tags context shows has_image when temp image exists"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        handler.session_data['temp_image_path'] = '/tmp/test.jpg'
+        
+        context = handler.get_tags_context()
+        
+        self.assertTrue(context['has_image'])
+
+    # Test create form without instance
+    def test_create_form_without_instance(self):
+        """Test form creation without recipe instance"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        
+        form = handler.create_form()
+        
+        self.assertIsNone(form.instance.pk)
+
+    # Test create form with instance
+    def test_create_form_with_instance(self):
+        """Test form creation with recipe instance"""
+        request = self.get_request()
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
+        form = handler.create_form()
+        
+        self.assertEqual(form.instance, self.recipe)
