@@ -96,36 +96,10 @@ class Command(BaseCommand):
             self._generate_recipe(users)
         print("Recipe seeding complete.")
 
-    def _generate_recipe(self, users):
-        """ Generate single random recipe. """
+    def _create_recipe(self, users):
         title = RecipeDataGenerator.generate_title()
         prep_hours, prep_mins = RecipeDataGenerator.generate_time_component()
         cook_hours, cook_mins = RecipeDataGenerator.generate_time_component()
-        image_content, image_filename = ImageHandler.load_image(title)
-
-        recipe_data = {
-            'title': title,
-            'author': choice(users),
-            'publication_date': RecipeDataGenerator.generate_date(),
-            'ingredients': RecipeDataGenerator.generate_ingredients(),
-            'steps': RecipeDataGenerator.generate_steps(),
-            'prep_time_hours': prep_hours,
-            'prep_time_minutes': prep_mins,
-            'cook_time_hours': cook_hours,
-            'cook_time_minutes': cook_mins,
-            'course_tags': TagGenerator.generate_tags('course'),
-            'cuisine_tags': TagGenerator.generate_tags('cuisine'),
-            'dietary_tags': TagGenerator.generate_tags('dietary'),
-            'other_tags': TagGenerator.generate_tags('other'),
-            'image_content': image_content,
-            'image_filename': image_filename
-        }
-        self._try_create_recipe(recipe_data)
-
-    def _create_recipe(self, users):
-        title = RecipeDataGenerator.generate_title()
-        prep_h, prep_m = RecipeDataGenerator.generate_time_component()
-        cook_h, cook_m = RecipeDataGenerator.generate_time_component()
         image, filename = ImageHandler.load_image(title)
 
         try:
@@ -135,10 +109,10 @@ class Command(BaseCommand):
                 publication_date=RecipeDataGenerator.generate_date(),
                 ingredients=RecipeDataGenerator.generate_ingredients(),
                 steps=RecipeDataGenerator.generate_steps(),
-                prep_time_hours=prep_h,
-                prep_time_minutes=prep_m,
-                cook_time_hours=cook_h,
-                cook_time_minutes=cook_m,
+                prep_time_hours=prep_hours,
+                prep_time_minutes=prep_mins,
+                cook_time_hours=cook_hours,
+                cook_time_minutes=cook_mins,
                 course_tags=TagGenerator.generate_tags("course"),
                 cuisine_tags=TagGenerator.generate_tags("cuisine"),
                 dietary_tags=TagGenerator.generate_tags("dietary"),
