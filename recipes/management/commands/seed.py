@@ -43,12 +43,7 @@ class Command(BaseCommand):
     USER_COUNT = 200
     RECIPE_COUNT = 500
     DEFAULT_PASSWORD = 'Password123'
-    help = 'Seeds the database with sample data'
-
-    def __init__(self, *args, **kwargs):
-        """ Initialise command with Faker instance. """
-        super().__init__(*args, **kwargs)
-        self.faker = Faker('en_GB')
+    help = "Seeds the database with sample data"
 
     def handle(self, *args, **options):
         """ Execute seeding workflow. """
