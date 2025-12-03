@@ -28,7 +28,6 @@ class MealPlanModelTests(TestCase):
       user=self.user,
       week_start=self.week_start,
     )
-
     self.assertEqual(plan.user, self.user)
     self.assertEqual(plan.week_start, self.week_start)
 
@@ -37,7 +36,6 @@ class MealPlanModelTests(TestCase):
       user=self.user,
       week_start=self.week_start,
     )
-
     with self.assertRaises(IntegrityError):
       MealPlan.objects.create(
         user=self.user,
@@ -50,17 +48,14 @@ class MealPlanModelTests(TestCase):
       email="other@example.com",
       password="Password123",
     )
-
     plan_one = MealPlan.objects.create(
       user=self.user,
       week_start=self.week_start,
     )
-
     plan_two = MealPlan.objects.create(
       user=other_user,
       week_start=self.week_start,
     )
-
     self.assertNotEqual(plan_one.user, plan_two.user)
 
   def test_string_representation_is_readable(self):
@@ -68,6 +63,5 @@ class MealPlanModelTests(TestCase):
       user=self.user,
       week_start=self.week_start,
     )
-
     expected = "@mealuser's plan for 2025-11-24"
     self.assertEqual(str(plan), expected)

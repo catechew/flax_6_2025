@@ -1,4 +1,6 @@
-""" Helper functions for meal plan operations. """
+""" 
+Helper functions for meal plan operations. 
+"""
 
 from datetime import timedelta
 
