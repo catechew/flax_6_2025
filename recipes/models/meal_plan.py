@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from recipes.models.recipe import Recipe
 
+
 class MealPlan(models.Model):
     """
     A weekly meal plan for a user.
@@ -12,7 +13,7 @@ class MealPlan(models.Model):
         on_delete=models.CASCADE,
         related_name='meal_plans'
     )
-    week_start = models.DateField()  # E.g. 2025-11-24 (Monday)
+    week_start = models.DateField()  
 
     class Meta: 
         """ User can only have one meal plan per week. """
@@ -23,8 +24,8 @@ class MealPlan(models.Model):
 
 class MealSlot(models.Model):
     """
-    Represents a single meal slot (Breakfast, Lunch, Dinner, Snack) for a given day of the week.
-    Eg: Tuesday - Dinner - Tuna Pasta
+    Represents a single meal slot. 
+    Eg: Tuesday - Dinner - Tuna Pasta.
     """
     MEAL_TYPES = [
         ('breakfast', 'Breakfast'), 
@@ -32,7 +33,6 @@ class MealSlot(models.Model):
         ('dinner', 'Dinner'), 
         ('snack', 'Snack'), 
     ]
-
     DAYS = [
         ('mon', 'Monday'),
         ('tue', 'Tuesday'),
@@ -42,7 +42,6 @@ class MealSlot(models.Model):
         ('sat', 'Saturday'),
         ('sun', 'Sunday'),
     ]
-
     meal_plan = models.ForeignKey(
         MealPlan, 
         on_delete=models.CASCADE, 
@@ -58,6 +57,7 @@ class MealSlot(models.Model):
         on_delete=models.SET_NULL
     )
     notes = models.TextField(blank=True, default='')
+
 
     class Meta:
         unique_together = ('meal_plan', 'day', 'meal_type')
