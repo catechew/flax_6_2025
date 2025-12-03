@@ -1,9 +1,10 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from recipes.models import Recipe
 from recipes.forms.recipe_form import RecipeForm
 from recipes.helpers.recipe_form_helpers import (
     get_session_key, 
     initialise_tag_session, 
+    get_tag_context,
     get_tag_action_from_request, 
     handle_tag_operation, 
     apply_tags_to_recipe,
@@ -106,3 +107,48 @@ class RecipeFormHandler:
         show_success_message(self.request, self, recipe)
 
         return redirect("recipe_detail", recipe_id=recipe.id)
+    
+    def get_tags_context(self):
+        """ Build context for tags template. """
+        context = {
+            "mode": self.mode,
+            "is_owner": self.is_owner,
+        }
+
+        if self.recipe:
+            context.update({
+                "recipe": self.recipe,
+                "recipe_id": self.recipe.id,
+            })
+
+        tag_data = get_tag_context(self.session_data)
+        context.update(tag_data)
+
+        context["has_image"] = "temp_image_path" in self.session_data
+        return context
+    
+    def handle_tag_action(self):
+        """ Handle add/remove tag actions from the tags page. 
+            Returns a redirect if an action was processed.
+        """
+        action, category, value = get_tag_action_from_request(self.request)
+
+        if not action:
+            return None
+
+        if handle_tag_operation(self.session_data, action, category, value):
+            self.request.session.modified = True
+
+        return redirect_to_tags(self)
+    
+    def show_missing_form_data_warning(self):
+        "" "Warn user and redirect if they try to access tag page. """
+        from django.contrib import messages
+
+        messages.warning(
+            self.request,
+            "Please fill in the recipe details first"
+        )
+
+        return redirect_to_form(self)
+

@@ -152,7 +152,7 @@
             {% endif %}
 
             <div class="d-flex justify-content-between mt-4">
-              {% if mode == 'create' %}
+              {% if mode == 'create' or not recipe %}
                 <a href="{% url 'cancel_recipe' %}" class="btn btn-secondary">
                   Cancel
                 </a>
