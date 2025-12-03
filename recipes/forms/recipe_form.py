@@ -8,8 +8,8 @@ from recipes.models import Recipe
 
 
 class RecipeForm(forms.ModelForm):
-    """
-    Form enabling registered users to add recipes.
+    """ 
+    Form enabling registered users to add recipes. 
     """
 
     publication_date = forms.DateField(
