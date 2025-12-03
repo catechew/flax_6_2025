@@ -1,10 +1,11 @@
-from django.conf import settings
-from django.db import models
-
 """
 Rating model allows authenticated users to leave a 1–5 star rating on a recipe.
 A user may only rate a recipe once.
 """
+
+from django.conf import settings
+from django.db import models
+
 
 class Rating(models.Model):
     recipe = models.ForeignKey(
@@ -25,8 +26,9 @@ class Rating(models.Model):
         help_text="Rating value (1 to 5)"
     )
 
-    # Ensures each user can only rate a recipe once
+
     class Meta:
+        # Ensures each user can only rate a recipe once
         unique_together = ("recipe", "user")
 
     def __str__(self):
