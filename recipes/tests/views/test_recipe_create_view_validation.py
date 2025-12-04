@@ -28,6 +28,7 @@ class RecipeCreateValidationTestCase(TestCase):
         form = response.context.get('form') if getattr(response, 'context', None) else None
         self.assertIsNotNone(form)
         self.assertIn('title', form.errors)
+        # check that the error message has anything telling us about minimum length
         self.assertTrue(any('at least' in e or 'Ensure this value has at least' in e for e in form.errors['title']))
 
     def test_recipe_creation_fails_without_title(self):
