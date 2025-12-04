@@ -59,19 +59,8 @@
                 <i class="bi bi-eye"></i> View
             </a>
 
-            {% if user.is_authenticated and show_save_button %}
-            <form action="{% url 'toggle_save_recipe' recipe.id %}" method="POST">
-                {% csrf_token %}
-                {% if user in recipe.saved_by.all %}
-                <button type="submit" class="btn heart-btn">
-                    <i class="bi bi-heart-fill"></i>
-                </button>
-                {% else %}
-                <button type="submit" class="btn heart-btn">
-                    <i class="bi bi-heart"></i>
-                </button>
-                {% endif %}
-            </form>
+            {% if show_save_button %}
+                {% include 'partials/save_recipe_button.html' %}
             {% endif %}
         </div>
     </div>
