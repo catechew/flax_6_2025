@@ -225,21 +225,6 @@
   box-shadow: 0 0 0 3px rgba(241, 80, 52, 0.1);
 }
 
-.day-header .btn-light {
-    background: white !important;
-    border: 1px solid #ddd !important;
-    color: #555 !important;
-    font-size: 0.75rem !important;
-    padding: 3px 10px !important;
-    font-weight: 500 !important;
-}
-
-.day-header .btn-light:hover {
-    background: #f8f9fa !important;
-    border-color: var(--primary-colour) !important;
-    color: var(--primary-colour) !important;
-}
-
 .meal-label {
     font-size: 0.9rem;
     color: #666;
