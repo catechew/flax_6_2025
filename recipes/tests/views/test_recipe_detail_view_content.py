@@ -5,7 +5,9 @@ from django.utils import timezone
 from unittest.mock import patch
 
 class RecipeDetailViewTestCase(TestCase):
-    """Tests for the recipe detail view."""
+    """
+    Tests for the recipe detail view.
+    """
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json'
@@ -25,7 +27,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.url = reverse('recipe_detail', kwargs={'recipe_id': self.recipe.id})
 
     def test_recipe_detail_with_long_title(self):
-        """Test displaying recipe with maximum length title"""
+        """ Test displaying recipe with maximum length title. """
         long_title = "A" * 255
         recipe = Recipe.objects.create(
             author=self.user,
@@ -38,7 +40,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, long_title)
     
     def test_recipe_detail_with_minimum_length_title(self):
-        """Test displaying recipe with minimum valid title (4 chars)"""
+        """ Test displaying recipe with minimum valid title (4 chars). """
         recipe = Recipe.objects.create(
             author=self.user,
             title="ABCD",
@@ -50,7 +52,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "ABCD")
     
     def test_recipe_detail_with_special_characters(self):
-        """Test displaying recipe with special characters in title"""
+        """ Test displaying recipe with special characters in title. """
         recipe = Recipe.objects.create(
             author=self.user,
             title="Grandmother's Secret Recipe! (The Best)",
@@ -62,7 +64,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "Grandmother&#x27;s Secret Recipe! (The Best)")
     
     def test_recipe_detail_from_different_author(self):
-        """Test viewing recipe created by a different user"""
+        """ Test viewing recipe created by a different user. """
         try:
             other_user = User.objects.get(username='@janedoe')
         except User.DoesNotExist:
@@ -83,7 +85,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, other_user.username)
 
     def test_recipe_detail_displays_image_when_present(self):
-        """Test that recipe image is displayed when recipe has an image"""
+        """ Test that recipe image is displayed when recipe has an image. """
         from django.core.files.uploadedfile import SimpleUploadedFile
         from PIL import Image
         from io import BytesIO
@@ -114,7 +116,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, recipe_with_image.image.url)
 
     def test_recipe_detail_without_image_shows_no_image_tag(self):
-        """Test that no image tag appears when recipe has no image"""
+        """ Test that no image tag appears when recipe has no image. """
         recipe_without_image = Recipe.objects.create(
             author=self.user,
             title="Recipe without Image",
@@ -134,7 +136,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertNotContains(response, 'recipe_images/')
     
     def test_recipe_detail_displays_servings(self):
-        """Test that recipe servings are displayed"""
+        """ Test that recipe servings are displayed. """
         recipe = Recipe.objects.create(
             author=self.user,
             title="Four Serving Recipe",
@@ -152,7 +154,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "servings")
 
     def test_recipe_detail_servings_adjustment_form(self):
-        """Test that servings adjustment form is present"""
+        """ Test that servings adjustment form is present. """
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
@@ -162,7 +164,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, 'Recalculate')
 
     def test_recipe_detail_with_minimum_servings(self):
-        """Test recipe with minimum servings (1)"""
+        """ Test recipe with minimum servings (1). """
         recipe = Recipe.objects.create(
             author=self.user,
             title="Single Serving Recipe",
@@ -174,13 +176,12 @@ class RecipeDetailViewTestCase(TestCase):
 
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "1")
         self.assertContains(response, "serving")
 
     def test_recipe_detail_with_large_servings(self):
-        """Test recipe with large number of servings"""
+        """ Test recipe with large number of servings. """
         recipe = Recipe.objects.create(
             author=self.user,
             title="Party Recipe",

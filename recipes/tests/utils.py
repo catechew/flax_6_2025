@@ -1,3 +1,7 @@
+"""
+Utility functions for creating test data in tests
+"""
+
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from recipes.models import Recipe
@@ -6,15 +10,12 @@ from PIL import Image
 from io import BytesIO
 import uuid
 
-"""
-Utility functions for creating test data in tests
-"""
 
 User = get_user_model()
 
 def create_test_user(username=None, password='Password123', **kwargs):
     """
-    Create test user with default values
+    Create test user with default values.
 
     username: Username (default: @testuser)
     password: Password (default: Password123)
@@ -42,12 +43,12 @@ def create_test_user(username=None, password='Password123', **kwargs):
 
 def create_test_recipe(author=None, **kwargs):
     """
-    Create a test recipe with default values
+    Create a test recipe with default values.
 
     author: Recipe author (default: creates new user @johndoe)
     **kwargs: Recipe fields to override
 
-    returns recipe instance
+    Returns recipe instance
     """
 
     if author is None:
@@ -69,9 +70,9 @@ def create_test_recipe(author=None, **kwargs):
 
 def create_test_recipes(count=3, author=None, **kwargs):
     """
-    Create multiple test recipes 
-
-    returns list of recipe instances
+    Create multiple test recipes.
+    
+    Returns list of recipe instances.
     """
     recipes = []
     for i in range(1, count + 1):
@@ -82,9 +83,9 @@ def create_test_recipes(count=3, author=None, **kwargs):
 
 def create_test_form_data(**kwargs):
     """
-    Create form data dictionary for RecipeForm 
-
-    returns dictionary of form data
+    Create form data dictionary for RecipeForm.
+    
+    Returns dictionary of form data
     """
 
     defaults = {
@@ -105,13 +106,12 @@ def create_test_form_data(**kwargs):
 def create_test_image(name='test.jpg', size=(100,100), color='red', format='JPEG'):
     """
     Create a test image file for upload testing
-
     name: Filename (default: test.jpg)
     size: Image dimensions tuple (default: (100,100))
     color: Image color (default:red)
     format: Image format (default: JPEG)
-
-    returns SimpleUploadedFile instance
+    
+    Returns SimpleUploadedFile instance
     """
 
     image = Image.new('RGB', size, color=color)
@@ -129,11 +129,10 @@ def create_test_image(name='test.jpg', size=(100,100), color='red', format='JPEG
 
 def create_invalid_image(name='invalid.txt'):
     """
-    Create an invalid image file (text file)
-
+    Create an invalid image file (text file).
     name: Filename (default: invalid.txt)
-
-    returns SimpleUploadedFile instance
+    
+    Returns SimpleUploadedFile instance
     """
 
     return SimpleUploadedFile(
@@ -144,9 +143,9 @@ def create_invalid_image(name='invalid.txt'):
 
 def get_default_user():
     """
-    get the defaul test user (@johndoe) from fixtures
-
-    returns user instance
+    Get the defaul test user (@johndoe) from fixture.
+    
+    Returns user instance
     """
 
     return User.objects.get(username='@johndoe')

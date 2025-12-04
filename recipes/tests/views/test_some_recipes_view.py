@@ -16,7 +16,9 @@ from recipes.models import Recipe, User
 
 
 class SomeRecipesViewTestCase(TestCase):
-    """Tests for displaying specific recipes using ID list."""
+    """
+    Tests for displaying specific recipes using ID list.
+    """
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 
@@ -41,42 +43,40 @@ class SomeRecipesViewTestCase(TestCase):
         )
 
     def test_login_required(self):
-        """Unauthenticated users are redirected."""
+        """ Unauthenticated users are redirected. """
         self.client.logout()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
 
     def test_valid_ids_return_recipes(self):
-        """Valid IDs return matching recipes."""
+        """ Valid IDs return matching recipes. """
         ids = f"{self.recipe1.id},{self.recipe2.id}"
         response = self.client.get(self.url, {'ids': ids})
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Recipe One")
         self.assertContains(response, "Recipe Two")
 
     def test_missing_ids_returns_empty_list(self):
-        """Missing IDs parameter returns no recipes."""
+        """ Missing IDs parameter returns no recipes. """
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['recipes']), 0)
 
     def test_empty_ids_returns_empty_list(self):
-        """Empty ids string returns no recipes."""
+        """ Empty ids string returns no recipes. """
         response = self.client.get(self.url, {'ids': ''})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['recipes']), 0)
 
     def test_invalid_ids_are_ignored(self):
-        """Invalid ID strings do not crash the view."""
+        """ Invalid ID strings do not crash the view. """
         response = self.client.get(self.url, {'ids': 'abc,123'})
 
         self.assertEqual(response.status_code, 200)
 
     def test_pagination_applied(self):
-        """Pagination limits recipes to 25 per page."""
+        """  Pagination limits recipes to 25 per page. """
         Recipe.objects.all().delete()
 
         recipe_ids = []
@@ -99,7 +99,7 @@ class SomeRecipesViewTestCase(TestCase):
         self.assertTrue(page.has_next())
 
     def test_correct_template_used(self):
-        """View renders the correct template."""
+        """ View renders the correct template. """
         response = self.client.get(
             self.url, {'ids': str(self.recipe1.id)}
         )

@@ -7,7 +7,6 @@ from recipes.models import User
 from recipes.tests.test_helpers_base import LogInTester
 
 class SignUpViewTestCase(TestCase, LogInTester):
-    """Tests of the sign up view."""
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 

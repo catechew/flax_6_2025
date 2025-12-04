@@ -6,6 +6,7 @@ body, button, input, textarea, select {
 
 body {
   background-color: var(--bg-colour);
+  overflow-x: hidden;
 }
 
 /* Layout Helpers */

@@ -13,6 +13,7 @@
     <h2>All Recipes</h2>
   {% endif %}
 
+<<<<<<< HEAD
   <!-- Tabs -->
   <ul class="nav nav-tabs search-tabs justify-content-center border-0 mb-4 mt-4" id="searchTabs" role="tablist">
     <li class="nav-item" role="presentation">
@@ -31,6 +32,9 @@
   {% if active_tab == 'recipes' %}
 
   <!-- Filter and Sort Form -->
+=======
+  <!-- Filter and sort Form -->
+>>>>>>> main
   <div class="mb-4">
     <form method="GET" action="{% url 'all_recipes' %}" id="filterForm">
       {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
@@ -48,6 +52,7 @@
       </div>
       
       <div class="row g-2">
+
         <!-- Filters Section -->
         <div class="col-12 col-md-auto">
           <div class="collapse d-md-block mb-3 mb-md-0" id="filtersSection">
@@ -55,7 +60,7 @@
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <i class="bi bi-funnel d-none d-md-inline"></i>
 
-              <!-- Course Filter -->
+              <!-- Course filter -->
               <div class="dropdown">
                 <button class="btn btn-outline-course btn-sm dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside">
@@ -72,7 +77,7 @@
                 </div>
               </div>
 
-              <!-- Dietary Filter -->
+              <!-- Dietary filter -->
               <div class="dropdown">
                 <button class="btn btn-outline-dietary btn-sm dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside">
@@ -89,7 +94,7 @@
                 </div>
               </div>
 
-              <!-- Cuisine Filter -->
+              <!-- Cuisine filter -->
               <div class="dropdown">
                 <button class="btn btn-outline-cuisine btn-sm dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside">
@@ -106,7 +111,7 @@
                 </div>
               </div>
 
-              <!-- Other Filter -->
+              <!-- Other filter -->
               <div class="dropdown">
                 <button class="btn btn-outline-other btn-sm dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" data-bs-auto-close="outside">
@@ -133,7 +138,7 @@
           </div>
         </div>
 
-        <!-- Sort Section -->
+        <!-- Sort section -->
         <div class="col-12 col-md-auto ms-md-auto">
           <div class="collapse d-md-block" id="sortSection">
             <div class="d-flex align-items-center gap-2">
@@ -160,7 +165,7 @@
     </form>
   </div>
 
-  <!-- Active Filters -->
+  <!-- Active filters -->
   {% if filters.course_filters or filters.dietary_filters or filters.cuisine_filters or filters.other_filters %}
     <div class="alert alert-info mt-3">
       <strong>Active Filters:</strong>
@@ -171,7 +176,7 @@
     </div>
   {% endif %}
 
-  <!-- Recipe Grid -->
+  <!-- Recipe grid -->
   {% if recipes %}
     <div class="row mt-4">
       {% for recipe in page_object %}

@@ -12,6 +12,7 @@ load_dotenv()
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 
+
 def generate_recipe_with_ai(user_prompt):
     """
     Generate a complete recipe based on user's description/request.
@@ -71,9 +72,7 @@ IMPORTANT: Return ONLY the JSON object, no markdown code blocks, no extra text."
 
 @login_required
 def ai_recipe_generator_view(request):
-    """
-    AI Recipe Generator - creates new recipes from user prompts
-    """
+    """ AI Recipe Generator - creates new recipes from user prompts. """
     if request.method != 'POST':
         return render(request, 'ai_recipe_generator.html')
 

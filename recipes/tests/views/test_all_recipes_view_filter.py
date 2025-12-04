@@ -3,8 +3,9 @@ from django.urls import reverse
 from recipes.models import Recipe
 from recipes.tests.utils import get_default_user, create_test_recipe
 
+
 class AllRecipesFilterTestCase(TestCase):
-    """Tests for recipe filtering functionality"""
+    """tests for filter functionality in all recipes view"""
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
         'recipes/tests/fixtures/other_users.json'
@@ -13,10 +14,10 @@ class AllRecipesFilterTestCase(TestCase):
     def setUp(self):
         self.user = get_default_user()
         self.url = reverse('all_recipes')
-        self.client.login(username="@johndoe", password='Password123')
+        self.client.login(username='@johndoe', password='Password123')
 
     def test_filter_by_course_tag(self):
-        """Test filtering recipes by course tag"""
+        """test filtering recipes by course tag"""
         Recipe.objects.all().delete()
         breakfast_recipe = create_test_recipe(
             course_tags="breakfast"
@@ -34,7 +35,7 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(dinner_recipe, recipes)
 
     def test_filter_by_dietary_tag(self):
-        """Test filtering recipes by dietary tag"""
+        """test filtering recipes by dietary tag"""
         Recipe.objects.all().delete()
         vegan_recipe = create_test_recipe(
             dietary_tags="vegan"
@@ -52,7 +53,7 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(non_vegan_recipe, recipes)
 
     def test_filter_by_cuisine_tag(self):
-        """Test filtering recipes by cuisine tag"""
+        """test filtering recipes by cuisine tag"""
         Recipe.objects.all().delete()
         italian_recipe = create_test_recipe(
             cuisine_tags="Italian"
@@ -70,7 +71,7 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(japanese_recipe, recipes)
 
     def test_filter_by_other_tag(self):
-        """Test filtering recipes by other tag"""
+        """test filtering recipes by other tag"""
         Recipe.objects.all().delete()
         quick_recipe = create_test_recipe(
             other_tags="quick"
@@ -88,7 +89,7 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(slow_recipe, recipes)
 
     def test_filter_multiple_tags_same_category(self):
-        """Test filtering with multiple tags from same category"""
+        """test filtering with multiple tags from same category"""
         Recipe.objects.all().delete()
         breakfast_recipe = create_test_recipe(
             course_tags="breakfast"
@@ -109,7 +110,7 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(main_recipe, recipes)
 
     def test_filter_context_variables(self):
-        """Test that filter parameters are passed to context"""
+        """test that filter parameters are passed to context"""
         response = self.client.get(self.url, {'course': 'main', 'dietary': 'vegan'})
 
         self.assertIn('filters', response.context)
@@ -119,7 +120,7 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertIn('vegan', response.context['filters']['dietary_filters'])
 
     def test_filter_options_in_context(self):
-        """Test that filter options are available in context"""
+        """test that filter options are available in context"""
         response = self.client.get(self.url)
 
         self.assertIn('course_options', response.context)

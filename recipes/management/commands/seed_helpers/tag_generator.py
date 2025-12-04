@@ -1,4 +1,6 @@
-""" Tag generation for recipe seeding. """
+""" 
+Tag generation for recipe seeding. 
+"""
 
 from random import randint, sample
 
@@ -32,7 +34,9 @@ TAG_OPTIONS = {
 
 
 class TagGenerator:
-    """ Generates random tags for recipes. """
+    """ 
+    Generates random tags for recipes.
+    """
 
     @staticmethod
     def generate_tags(tag_type):

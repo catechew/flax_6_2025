@@ -1,6 +1,7 @@
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
+
 from django.db.models import Avg
 import math
 
@@ -136,39 +137,30 @@ class Recipe(models.Model):
         )
     
     def get_ingredient_list(self):
-        """Returns the ingredients as a list of lines"""
         return [line.strip() for line in self.ingredients.split('\n') if line.strip()]
     
     def get_step_list(self):
-        """Returns the steps as a list of lines"""
         return [line.strip() for line in self.steps.split('\n') if line.strip()]
     
     def get_course_tags_list(self):
-        """Returns list of course tags"""
         return [tag.strip() for tag in self.course_tags.split(',') if tag.strip()]
 
     def get_dietary_tags_list(self):
-        """Returns list of dietary tags"""
         return [tag.strip() for tag in self.dietary_tags.split(',') if tag.strip()]
     
     def get_cuisine_tags_list(self):
-        """Returns list of cuisine tags"""
         return [tag.strip() for tag in self.cuisine_tags.split(',') if tag.strip()]
 
     def get_other_tags_list(self):
-        """Returns list of other tags"""
         return [tag.strip() for tag in self.other_tags.split(',') if tag.strip()]
 
     def get_all_tags_list(self):
-        """Returns all tags combined as a list"""
         return self.get_course_tags_list() + self.get_dietary_tags_list() + self.get_cuisine_tags_list() + self.get_other_tags_list()
 
     def get_total_prep_time_minutes(self):
-        """Returns total prep time in minutes"""
         return (self.prep_time_hours * 60) + self.prep_time_minutes
 
     def get_total_cook_time_minutes(self):
-        """Returns total cook time in minutes"""
         return (self.cook_time_hours * 60) + self.cook_time_minutes
 
     def format_time(self, hours, minutes):
@@ -183,19 +175,15 @@ class Recipe(models.Model):
         return " ".join(parts)
 
     def get_prep_time_display(self):
-        """Returns formatted prep time"""
         return self.format_time(self.prep_time_hours, self.prep_time_minutes)
 
     def get_cook_time_display(self):
-        """Returns formatted cook time"""
         return self.format_time(self.cook_time_hours, self.cook_time_minutes)
     
     def get_total_time_minutes(self):
-        """Returns total time (prep + cook) in minutes"""
         return self.get_total_cook_time_minutes() + self.get_total_prep_time_minutes()
     
     def get_total_time_display(self):
-        """Returns formatted total time"""
         total_minutes = self.get_total_time_minutes()
         total_hours = total_minutes // 60
         total_mins_remainder = total_minutes % 60
@@ -210,17 +198,13 @@ class Recipe(models.Model):
             return None
         
     def get_save_count(self):
-        """Return the number of users who have saved this recipe"""
         return self.saved_by.count()
 
     def average_rating(self):
-        """Return the average rating of this recipe by users"""
         return self.ratings.aggregate(avg=Avg("stars"))["avg"] or 0
 
     def average_rating_rounded(self):
-        """Return average rating to the nearest whole star"""
         return math.floor(self.average_rating() + 0.5)
 
     def rating_count(self):
-        """Return the number of ratings for this recipe"""
         return self.ratings.count()

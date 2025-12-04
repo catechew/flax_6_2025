@@ -15,20 +15,25 @@ def scale_ingredient(ingredient, factor):
         number_str = match.group(1)
 
         # Handle fractions
-        if '/' in number_str:
-            parts = number_str.split('/')
-            number = float(parts[0]) / float(parts[1])
-        else:
-            number = float(number_str)
+        number = get_new_number(number_str) if '/' in number_str else float(number_str)
         
         # Scale the number
         scaled = number * factor
 
-        if scaled == int(scaled):
-            return str(int(scaled))
-        else:
-            return f"{scaled:.1f}"
+        return format_scaled_number(scaled)
+        
     return re.sub(pattern, replace_number, ingredient)
+
+def format_scaled_number(number):
+    if number.is_integer():
+        return str(int(number))
+    else:
+        return f"{number:.1f}"
+
+def get_new_number(number_str):
+    parts = number_str.split('/')
+    number = float(parts[0]) / float(parts[1])
+    return number
 
 def get_scaled_ingredients_context(recipe, desired_servings):
     if desired_servings <= 0:
@@ -89,11 +94,11 @@ def get_recipe_time_display_context(recipe):
     }
 
 
-def get_cost_estimate_data(scaled_ingredients, servings):
-    """Get cost estimate data from AI for given ingredients and servings"""
 
+def create_cost_prompt(scaled_ingredients, servings):
+    """create AI prompt for cost estimation"""
     ingredients_text = '\n'.join(scaled_ingredients)
-    ai_prompt = f"""Estimate the total cost in GBP (£) for these ingredients for {servings} servings:
+    return f"""Estimate the total cost in GBP (£) for these ingredients for {servings} servings:
 
     {ingredients_text}
 
@@ -105,27 +110,36 @@ def get_cost_estimate_data(scaled_ingredients, servings):
     }}
 
     Use typical UK supermarket prices. Return only JSON."""
-    
+
+
+def call_openai_for_cost(prompt):
+    """Call OpenAI API for cost estimation"""
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "Estimate recipe costs in GBP. Return only JSON."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.3,
+        max_tokens=150,
+        timeout=30
+    )
+    return response.choices[0].message.content.strip()
+
+def parse_cost_response(ai_response, servings):
+    """parse AI response and extract cost data"""
+    cost_data = json.loads(ai_response)
+    return {
+        'total_cost': cost_data['total_cost'],
+        'cost_per_serving': cost_data['cost_per_serving'],
+        'servings': servings
+    }
+
+def get_cost_estimate_data(scaled_ingredients, servings):
+    """Get cost estimate data using AI"""
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Estimate recipe costs in GBP. Return only JSON."},
-                {"role": "user", "content": ai_prompt}
-            ],
-            temperature=0.3,
-            max_tokens=150,
-            timeout=30
-        )
-        
-        ai_response = response.choices[0].message.content.strip()
-        cost_data = json.loads(ai_response)
-        
-        return {
-            'total_cost': cost_data['total_cost'],
-            'cost_per_serving': cost_data['cost_per_serving'],
-            'servings': servings
-        }
-        
+        prompt = create_cost_prompt(scaled_ingredients, servings)
+        ai_response = call_openai_for_cost(prompt)
+        return parse_cost_response(ai_response, servings)
     except Exception as e:
         raise Exception(f"Unexpected error: {str(e)}")

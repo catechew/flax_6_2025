@@ -6,7 +6,7 @@ from unittest.mock import patch
 from recipes.tests.utils import create_test_recipe, get_default_user
 
 class RecipeDetailViewTestCase(TestCase):
-    """Tests for the recipe detail view."""
+    """ Tests for the recipe detail view. """
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json'
@@ -26,7 +26,6 @@ class RecipeDetailViewTestCase(TestCase):
     def test_recipe_detail_url(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-    
 
     def test_recipe_detail_template(self):
         response = self.client.get(self.url)
@@ -59,29 +58,26 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_recipe_detail_displays_title(self):
-        """Test that recipe title is displayed on the page"""
         response = self.client.get(self.url)
         self.assertContains(response, "Korean Noodles")
 
     def test_recipe_detail_displays_ingredients(self):
-        """Test that recipe ingredients are displayed on the page"""
+        """ Test that recipe ingredients are displayed on the page. """
         response = self.client.get(self.url)
         self.assertContains(response, "test (1)")
         self.assertContains(response, self.recipe.ingredients)
 
     def test_recipe_detail_displays_steps(self):
-        """Test that recipe steps are displayed on the page"""
+        """ Test that recipe steps are displayed on the page. """
         response = self.client.get(self.url)
         self.assertContains(response, "test")
         self.assertContains(response, self.recipe.steps)
     
     def test_recipe_detail_displays_author(self):
-        """Test that recipe author username is displayed"""
         response = self.client.get(self.url)
         self.assertContains(response, self.user.username)
     
     def test_recipe_detail_displays_publication_date(self):
-        """Test that publication date is displayed"""
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
@@ -90,7 +86,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, formatted_date)
     
     def test_recipe_with_multiple_ingredients(self):
-        """Test recipe with multiple ingredients displays all correctly"""
+        """ Test recipe with multiple ingredients displays all correctly. """
         recipe = create_test_recipe(
             ingredients="Flour (500g)\nSugar (200g)\nEggs (3)\nMilk (250ml)\nButter (100g)"
         )
@@ -109,7 +105,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "Butter")
 
     def test_recipe_with_multiple_steps(self):
-        """Test recipe with multiple steps displays all in order"""
+        """ Test recipe with multiple steps displays all in order. """
         recipe = create_test_recipe(steps="Boil water\nAdd salt\nReduce heat\nSimmer for 10 minutes\nServe hot")
 
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
@@ -125,7 +121,7 @@ class RecipeDetailViewTestCase(TestCase):
 
     # Test that update button is present
     def test_recipe_detail_has_update_button(self):
-        """Test that update button is present"""
+        """ Test that update button is present. """
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
@@ -134,18 +130,16 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, update_url)
 
     def test_recipe_detail_has_delete_button(self):
-        """Test that delete button is present"""
+        """ Test that delete button is present. """
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Delete this recipe')
         delete_url = reverse('delete_recipe', kwargs={'recipe_id': self.recipe.id})
         self.assertContains(response, delete_url)
 
     def test_recipe_detail_has_back_button(self):
-        """Test that back to home button is present"""
+        """ Test that back to home button is present. """
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Go back home')
         home_url = reverse('home')

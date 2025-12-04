@@ -1,41 +1,36 @@
-from django import forms
-from django.utils import timezone
-from recipes.models import Recipe
-from django.core.exceptions import ValidationError
 import re
 
-class RecipeForm(forms.ModelForm):
-    """
-    Form enabling registered users to add recipes.
+from django import forms
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
-    Fields:
-        author, title, publication_date, 
-        image, servings, prep time, 
-        ingredients, steps,
-        private/public,
-        cook_time, tags (cuisine, course, dietary, others)
+from recipes.models import Recipe
+
+
+class RecipeForm(forms.ModelForm):
+    """ 
+    Form enabling registered users to add recipes. 
     """
 
     publication_date = forms.DateField(
         widget=forms.DateInput(
             attrs={
-                'type': 'date',
-                'class': 'form-control',
-                'max': timezone.now().date().isoformat(),
+                "type": "date",
+                "class": "form-control",
             }
         ),
-        help_text='Select the publication date (today or earlier)'
+        help_text="Select publication date (today or earlier)"
     )
 
     image = forms.ImageField(
         required=False,
         widget=forms.FileInput(
             attrs={
-                'class': 'form-control',
-                'accept': 'image/*',
+                "class": "form-control",
+                "accept": "image/*",
             }
         ),
-        help_text='Upload an image of the dish (optional).'
+        help_text="Upload an image of the dish (optional).",
     )
 
     servings = forms.IntegerField(
@@ -44,127 +39,155 @@ class RecipeForm(forms.ModelForm):
         required=True,
         widget=forms.NumberInput(
             attrs={
-                'class': 'form-control',
-                'min': '1',
-                'required': 'required',
+                "class": "form-control",
+                "min": "1",
+                "required": "required",
             }
         ),
-        help_text='How many servings does this recipe make?',
+        help_text="How many servings does this recipe make?",
         error_messages={
-            'required' : 'Please enter the number of servings for this recipe.',
-            'invalid' : 'Please enter a valid number',
-            'min_value' : 'Servings must be at least 1.',
+            "required": "Please enter the number of servings for this recipe.",
+            "invalid": "Please enter a valid number.",
+            "min_value": "Servings must be at least 1.",
         }
     )
 
     ingredients = forms.CharField(
         widget=forms.Textarea(
             attrs={
-                'class': 'form-control',
-                'rows': 10,
-                'placeholder': 'Enter each ingredient on a new line, e.g.:\nGarlic (5 cloves)\nSoy sauce (4 tablespoons)\nChicken breast (500g)'
+                "class": "form-control",
+                "rows": 10,
+                "placeholder": (
+                    "Enter each ingredient on a new line, e.g.:\n"
+                    "Garlic (5 cloves)\n"
+                    "Soy sauce (4 tablespoons)\n"
+                    "Chicken breast (500g)"
+                ),
             }
         ),
-        help_text='List each ingredient on a new line with quantities in parentheses'
+        help_text="List each ingredient on a new line with quantities in parentheses",
     )
 
     steps = forms.CharField(
         widget=forms.Textarea(
             attrs={
-                'class': 'form-control',
-                'rows': 10,
-                'placeholder': 'Enter each step on a new line, e.g.:\nHeat oil in a large pan\nAdd garlic and cook for 1 minute\nAdd chicken and cook until golden'
+                "class": "form-control",
+                "rows": 10,
+                "placeholder": (
+                    "Enter each step on a new line, e.g.:\n"
+                    "Heat oil in a large pan\n"
+                    "Add garlic and cook for 1 minute\n"
+                    "Add chicken and cook until golden"
+                ),
             }
         ),
-        help_text='List each step on a new line'
+        help_text="List each step on a new line",
     )
 
-    visibility_choices = [(True, 'private'), (False, 'public')]
-
     private = forms.ChoiceField(
-        choices = visibility_choices,
-        initial = False,
-        required = True, 
-        widget = forms.Select(attrs={'class': 'form-control'}),
-        label= 'Recipe Visibility'
+        choices=[(True, "private"), (False, "public")],
+        widget=forms.Select(attrs={"class": "form-control"}),
+        initial=False,
+        required=True,
+        label="Recipe Visibility",
     )
 
     prep_time_hours = forms.IntegerField(
         min_value=0,
         initial=0,
         required=False,
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'min':'0'}),
-        label='Prep Time (hours)'
+        widget=forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
     )
+    
     prep_time_minutes = forms.IntegerField(
         min_value=0,
         max_value=59,
         initial=0,
         required=False,
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '59'}),
-        label='Prep Time (minutes)'
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "min": "0", "max": "59"}
+        ),
     )
+    
     cook_time_hours = forms.IntegerField(
         min_value=0,
         initial=0,
         required=False,
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'min':'0'}),
-        label='Cook Time (hours)'
+        widget=forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
     )
+    
     cook_time_minutes = forms.IntegerField(
         min_value=0,
         max_value=59,
         initial=0,
         required=False,
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '0', 'max': '59'}),
-        label='Cook Time (minutes)'
+        widget=forms.NumberInput(
+            attrs={"class": "form-control", "min": "0", "max": "59"}
+        ),
     )
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set max date dynamically to today
+        self.fields['publication_date'].widget.attrs['max'] = timezone.now().date().isoformat()
     
     class Meta:
         model = Recipe
-        fields = ['title', 'publication_date', 'servings', 'ingredients', 'steps', 'image', 'prep_time_hours', 'prep_time_minutes','cook_time_hours', 'cook_time_minutes', 'private']
+        fields = [
+            "title",
+            "publication_date",
+            "servings",
+            "ingredients",
+            "steps",
+            "image",
+            "prep_time_hours",
+            "prep_time_minutes",
+            "cook_time_hours",
+            "cook_time_minutes",
+            "private",
+        ]
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
         }
-
+        
     def clean_publication_date(self):
-        publication_date = self.cleaned_data.get('publication_date')
-        if publication_date and publication_date > timezone.now().date():
-            raise forms.ValidationError("Publication date cannot be in the future.")
-        return publication_date
+        """ Validate that publication date is not in the future. """
+        date = self.cleaned_data.get('publication_date')
+        if date and date > timezone.now().date():
+            raise ValidationError("Publication date cannot be in the future.")
+        return date
 
     def clean_ingredients(self):
-        """Validate that each ingredient follows the format: Name (quantity)"""
-        ingredients = self.cleaned_data.get('ingredients')
+        """ Validate ingredient format: Ingredient (quantity). """
+        ingredients = self.cleaned_data.get("ingredients")
         if not ingredients:
-            return ingredients
+            raise ValidationError("Ingredients are required.")
 
-        lines = [line.strip() for line in ingredients.split('\n') if line.strip()]
+        errors = self._find_ingredient_errors(ingredients)
+        if errors:
+            raise ValidationError(self._format_ingredient_errors(errors))
+        
+        return ingredients
+    
+    def _find_ingredient_errors(self, text):
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
         errors = []
 
-        # Pattern: ingredient name followed by quantity in parentheses
-        # Must have exactly one set of parentheses at the end
-        # pattern = r'^[^()]+\([^()]+\)$'
-        pattern = r'^[^(]+\(.+\)$'
+        for i, line in enumerate(lines, start=1):
+            if '(' not in line or ')' not in line:
+                errors.append(f"Line {i}: missing parentheses")
+            elif not line.endswith(')'):
+                errors.append(f"Line {i}: parentheses should be at the end")
+            elif line.count('(') != line.count(')'):
+                errors.append(f"Line {i}: mismatched parentheses")
 
-        for i, line in enumerate(lines, 1):
-            # Check if line matches the pattern
-            if not re.match(pattern, line):
-                # Check for common errors to give helpful messages
-                if '(' not in line and ')' not in line:
-                    errors.append(f"Line {i}: '{line}' - Missing quantity in parentheses")
-                elif line.count('(') > 1 or line.count(')') > 1:
-                    errors.append(f"Line {i}: '{line}' - Should have exactly one set of parentheses")
-                elif not line.endswith(')'):
-                    errors.append(f"Line {i}: '{line}' - Parentheses should be at the end")
-                elif '(' not in line or ')' not in line:
-                    errors.append(f"Line {i}: '{line}' - Invalid format")
-                else:
-                    errors.append(f"Line {i}: '{line}' - Should be: Ingredient name (quantity)")
+        return errors
 
-        if errors:
-            error_msg = "Please fix the following ingredient formatting errors:\n" + "\n".join(errors)
-            error_msg += "\n\nCorrect format: Ingredient name (quantity)\nExample: Avocado (1)"
-            raise ValidationError(error_msg)
-
-        return ingredients
+    def _format_ingredient_errors(self, errors):
+        """ Format ingredient errors for display. """
+        return (
+            "Please fix the following ingredient formatting errors:\n"
+            + "\n".join(errors)
+            + "\n\nCorrect format: Ingredient name (quantity)\n"
+            "Example: Avocado (1)"
+        )

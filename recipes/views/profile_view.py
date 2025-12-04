@@ -25,16 +25,12 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "users/profile.html"
 
     def get_object(self):
-        """
-        Return the authenticated user.
-
+        """ Return the authenticated user. 
         Ensures users can only update their own profile.
         """
         return self.request.user
 
     def get_success_url(self):
-        """
-        Redirect user after successful profile update.
-        """
+        """ Redirect user after successful profile update. """
         messages.add_message(self.request, messages.SUCCESS, "Profile updated!")
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)

@@ -11,7 +11,7 @@ def cancel_recipe_operation(request, recipe_id=None):
     """
     handler = RecipeFormHandler(request, recipe_id)
 
-    # Cleanup temp giles
+    # Cleanup temp files
     if handler.session_key in request.session:
         cleanup_session(handler.session_key, handler.session_data, request)
 

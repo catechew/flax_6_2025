@@ -24,19 +24,19 @@
                     <small>Select Tags (Optional)</small>
                 </div>
                 <div class="card-body">
-                    {# Course Tags #}
+                     <!-- Course tags -->
                     {% include 'partials/tag_section.html' with category='course' title='Course Type(s)' selected_tags=course_tags available_options=course_options chip_class='tag-chip' button_class='btn-outline-course' button_class_solid='btn-course' %}
                     
-                    {# Cuisine Tags #}
+                     <!-- Cuisine tags -->
                     {% include 'partials/tag_section.html' with category='cuisine' title='Cuisine Type(s)' selected_tags=cuisine_tags available_options=cuisine_options chip_class='tag-chip' button_class='btn-outline-cuisine' button_class_solid='btn-cuisine' %}
 
-                    {# Dietary Tags #}
+                    <!-- Dietary tags -->
                     {% include 'partials/tag_section.html' with category='dietary' title='Dietary Type(s)' selected_tags=dietary_tags available_options=dietary_options chip_class='tag-chip' button_class='btn-outline-dietary' button_class_solid='btn-dietary' %}
 
-                    {# Other Tags #}
+                     <!-- Other tags -->
                     {% include 'partials/tag_section.html' with category='other' title='Other Type(s)' selected_tags=other_tags available_options=other_options chip_class='tag-chip' button_class='btn-outline-other' button_class_solid='btn-other' %}
 
-                    {# Final Actions #}
+                     <!-- Final actions-->
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         {% if mode == 'create' %}
                             <a href="{% url 'create_recipe' %}" class="btn btn-primary btn-lg">
