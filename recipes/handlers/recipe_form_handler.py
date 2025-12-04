@@ -78,7 +78,7 @@ class RecipeFormHandler:
         return render(
             self.request,
             "recipes/recipe_form.html",
-            {"form": form, "mode": self.mode, "is_owner": self.is_owner},
+            {"form": form, "mode": self.mode, "is_owner": self.is_owner, "recipe": self.recipe, "session_data": self.session_data},
         )
 
     def handle_form_post(self):
@@ -152,6 +152,12 @@ class RecipeFormHandler:
             self.request.session.modified = True
 
         return redirect_to_tags(self)
+    
+    def handle_tags_post(self):
+        """Handle POST request for tag operations or recipe finalisation"""
+        if 'create_recipe' in self.request.POST or 'update_recipe' in self.request.POST:
+            return self.finalise_recipe()
+        return self.handle_tag_action()
     
     def show_missing_form_data_warning(self):
         """ Warn user and redirect if they try to access tag page. """

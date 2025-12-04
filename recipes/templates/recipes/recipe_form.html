@@ -141,7 +141,7 @@
                   <div class="card-body">
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox"
-                             name="image-clear" id="image-clear">
+                             name="image-clear" id="image-clear" {% if session_data.image_clear %}checked{% endif %}>
                       <label class="form-check-label" for="image-clear">
                         Delete image
                       </label>
