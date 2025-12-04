@@ -61,19 +61,21 @@
 
 /* Outlined Button Variants */
 .btn-outline-primary {
-  --btn-bg: var(--bg-colour);
+  --btn-bg: transparent;
   --btn-border: var(--primary-colour);
   --btn-text: var(--primary-colour);
   --btn-bg-hover: var(--primary-colour);
   --btn-text-hover: var(--bg-colour);
+  box-shadow: 0 2px 0 var(--primary-colour);
 }
 
 .btn-outline-warning {
   --btn-bg: transparent;
-  --btn-border: var(--primary-colour-darkest);
-  --btn-text: var(--primary-colour-darkest);
-  --btn-bg-hover: var(--primary-colour-darkest);
+  --btn-border: var(--primary-colour-darker);
+  --btn-text: var(--primary-colour-darker);
+  --btn-bg-hover: var(--primary-colour-darker);
   --btn-text-hover: var(--white-colour);
+  box-shadow: 0 2px 0 var(--primary-colour-darker);
 }
 
 /* Outlined buttons flip text colour on hover */
@@ -93,8 +95,13 @@
 .btn-outline-dietary { --btn-bg: transparent; --btn-border: var(--colour-3); --btn-text: var(--colour-3); }
 .btn-outline-other   { --btn-bg: transparent; --btn-border: var(--colour-4); --btn-text: var(--colour-4); }
 
-/* Back to top button */
 
+/* Light button */
+.btn-light {
+  --btn-bg: var(--white-colour) !important;
+}
+
+/* Back to top button */
 .btn-top {
   position: fixed;
   bottom: 20px;
@@ -109,3 +116,4 @@
 
   z-index: 999;
 }
+
