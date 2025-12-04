@@ -50,7 +50,6 @@ from recipes.views.recipe_cancel_view import cancel_recipe_operation
 from recipes.views.some_recipes_view import some_recipes
 from recipes.views.ai_recipe_generator_view import ai_recipe_generator_view
 
-from recipes.views.ai_recipe_generator_view import ai_recipe_generator_view
 from recipes.views.ai_recipe_search_view import ai_recipe_search_view
 from recipes.views.save_ai_recipe_view import save_ai_recipe_view
 
