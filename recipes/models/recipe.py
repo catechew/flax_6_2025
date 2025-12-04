@@ -6,8 +6,7 @@ from django.db.models import Avg
 import math
 
 
-"""A Recipe can be posted by a user and later we will be able to do all CRUD operations on it.
-    It has 5 fields as shown below"""
+"""A Recipe can be posted by a user and later we will be able to do all CRUD operations on it."""
 
 class Recipe(models.Model):
     
