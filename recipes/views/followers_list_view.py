@@ -5,7 +5,7 @@ from recipes.models import User
 
 @login_required
 def followers_list(request, user_id):
-    """Display list of users who follow this user."""
+    """ Display list of users who follow this user. """
     profile_user = get_object_or_404(User, id=user_id)
     followers = profile_user.followers.all()
 
@@ -15,10 +15,9 @@ def followers_list(request, user_id):
         'list_type': 'Followers',
     })
 
-
 @login_required
 def following_list(request, user_id):
-    """Display list of users this user follows."""
+    """ Display list of users this user follows. """
     profile_user = get_object_or_404(User, id=user_id)
     following = profile_user.following.all()
 

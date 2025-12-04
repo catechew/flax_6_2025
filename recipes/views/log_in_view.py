@@ -9,7 +9,9 @@ from recipes.views.decorators import LoginProhibitedMixin
 
 
 class LogInView(LoginProhibitedMixin, View):
-    """ Display and process the login form. """
+    """ 
+    Display and process the login form. 
+    """
 
     http_method_names = ['get', 'post']
     redirect_when_logged_in_url = settings.REDIRECT_URL_WHEN_LOGGED_IN

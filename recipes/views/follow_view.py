@@ -6,7 +6,7 @@ from recipes.models import User
 
 @login_required
 def follow_user(request, user_id):
-    """Follow a user"""
+    """ Follow a user. """
     user_to_follow = get_object_or_404(User, id=user_id)
 
     if user_to_follow == request.user:
@@ -22,7 +22,7 @@ def follow_user(request, user_id):
 
 @login_required
 def unfollow_user(request, user_id):
-    """Unfollow a user"""
+    """ Unfollow a user. """
     user_to_unfollow = get_object_or_404(User, id=user_id)
 
     if not request.user.is_following(user_to_unfollow):
