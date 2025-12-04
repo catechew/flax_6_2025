@@ -21,7 +21,7 @@ class RecipeModelRatingTests(TestCase):
         self.assertEqual(self.recipe.average_rating(), 4)
     
     def test_rating_str(self):
-        """Test that the Rating model __str__ method returns the correct string."""
+        """ Test that the Rating model __str__ method returns the correct string. """
         rating = Rating.objects.create(recipe=self.recipe, user=self.user, stars=5)
         expected = f"{self.user} rated {self.recipe} - 5 stars"
         self.assertEqual(str(rating), expected)

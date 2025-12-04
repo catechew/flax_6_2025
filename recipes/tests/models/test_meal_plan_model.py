@@ -3,18 +3,18 @@ Tests for MealPlan model.
 """
 
 from datetime import date
-
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.test import TestCase
-
 from recipes.models.meal_plan import MealPlan
 
 User = get_user_model()
 
 
 class MealPlanModelTests(TestCase):
-  """ Test behaviour and constraints of MealPlan model. """
+  """ 
+  Test behaviour and constraints of MealPlan model. 
+  """
 
   def setUp(self):
     self.user = User.objects.create_user(
