@@ -1,14 +1,14 @@
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
-
 from django.db.models import Avg
 import math
 
 
-"""A Recipe can be posted by a user and later we will be able to do all CRUD operations on it."""
-
 class Recipe(models.Model):
+    """
+    A Recipe can be posted by a user and later we will be able to do all CRUD operations on it.
+    """
     
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
@@ -106,7 +106,7 @@ class Recipe(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        """Auto-populate adjectives from tag fields"""
+        """ Auto-populate adjectives from tag fields. """
         all_tags = []
 
         if self.course_tags:
@@ -125,7 +125,7 @@ class Recipe(models.Model):
         ordering = ['-publication_date']  # Newest first
         
     def __str__(self):
-        # Format ingredients and steps as multi-line text for readability
+        # Format ingredients and steps as multi-line text for readability. 
         ingredients_text = "\n".join(self.get_ingredient_list())
         steps_text = "\n".join(self.get_step_list())
         return (
@@ -163,7 +163,7 @@ class Recipe(models.Model):
         return (self.cook_time_hours * 60) + self.cook_time_minutes
 
     def format_time(self, hours, minutes):
-        """Format time as a readable string"""
+        """ Format time as a readable strin. """
         if hours == 0 and minutes == 0:
             return "Not specified"
         parts = []
