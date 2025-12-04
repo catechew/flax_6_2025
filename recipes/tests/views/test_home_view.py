@@ -4,7 +4,6 @@ from django.urls import reverse
 from recipes.models import User
 
 class HomeViewTestCase(TestCase):
-    """Tests of the home view."""
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 

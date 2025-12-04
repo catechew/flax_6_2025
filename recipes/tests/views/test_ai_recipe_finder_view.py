@@ -258,7 +258,7 @@ class AIRecipeGeneratorIntegrationTestCase(TestCase):
 
     @patch.dict('os.environ', {'OPENAI_API_KEY': 'test-key'})
     def test_api_key_loaded_from_environment(self):
-        """ Test that API key is loaded from environment """
+        """ Test that API key is loaded from environment. """
         import os
         key = os.environ.get('OPENAI_API_KEY')
         self.assertEqual(key, 'test-key')
