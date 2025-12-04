@@ -92,6 +92,8 @@ def ai_recipe_generator_view(request):
             'show_results': True
         }
 
+        request.session['last_ai_recipe'] = recipe_data
+
         return render(request, 'ai/ai_recipe_generator.html', context)
 
     except json.JSONDecodeError as e:
