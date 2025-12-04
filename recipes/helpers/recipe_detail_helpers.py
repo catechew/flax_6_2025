@@ -15,20 +15,25 @@ def scale_ingredient(ingredient, factor):
         number_str = match.group(1)
 
         # Handle fractions
-        if '/' in number_str:
-            parts = number_str.split('/')
-            number = float(parts[0]) / float(parts[1])
-        else:
-            number = float(number_str)
+        number = get_new_number(number_str) if '/' in number_str else float(number_str)
         
         # Scale the number
         scaled = number * factor
 
-        if scaled == int(scaled):
-            return str(int(scaled))
-        else:
-            return f"{scaled:.1f}"
+        return format_scaled_number(scaled)
+        
     return re.sub(pattern, replace_number, ingredient)
+
+def format_scaled_number(number):
+    if number.is_integer():
+        return str(int(number))
+    else:
+        return f"{number:.1f}"
+
+def get_new_number(number_str):
+    parts = number_str.split('/')
+    number = float(parts[0]) / float(parts[1])
+    return number
 
 def get_scaled_ingredients_context(recipe, desired_servings):
     if desired_servings <= 0:
