@@ -9,12 +9,14 @@ from recipes.tests.utils import get_default_user, create_test_user, create_test_
 
 
 class MyRecipesViewTestCase(TestCase):
-
-    """Tests for the my_recipes view."""
+    """
+    Tests for the my_recipes view.
+    """
+    
     fixtures = ['recipes/tests/fixtures/default_user.json']
 
     def setUp(self):
-        """Set up test data before each test."""
+        """ Set up test data before each test. """
         self.url = reverse('my_recipes')
         self.user = get_default_user()
         self.recipe1 = create_test_recipe(
@@ -42,29 +44,26 @@ class MyRecipesViewTestCase(TestCase):
         )
 
     def test_my_recipes_url(self):
-        """Test that the my_recipes URL is correct."""
+        """ Test that the my_recipes URL is correct. """
         self.assertEqual(self.url, '/my_recipes/')
 
     def test_get_my_recipes_redirects_when_not_logged_in(self):
-        """Test that accessing my_recipes redirects to login when not authenticated."""
+        """ Test that accessing my_recipes redirects to login when not authenticated. """
         response = self.client.get(self.url, follow=True)
         redirect_url = reverse('log_in') + f'?next={self.url}'
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
 
     def test_get_my_recipes_when_logged_in(self):
-        """Test that logged-in users can access their recipes page."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_my_recipes_uses_correct_template(self):
-        """Test that the correct template is used."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertTemplateUsed(response, 'users/user_profile.html')
 
     def test_my_recipes_shows_only_user_recipes(self):
-        """Test that users only see their own recipes, not others'."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'Test Recipe One')
@@ -78,13 +77,11 @@ class MyRecipesViewTestCase(TestCase):
         self.assertNotContains(response, 'Other User Recipe')
 
     def test_my_recipes_shows_correct_recipe_count(self):
-        """Test that the recipe count is accurate."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.context['recipe_count'], 2)
 
     def test_my_recipes_shows_user_information(self):
-        """Test that user's name and username are displayed."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertContains(response, '@johndoe')
@@ -92,7 +89,7 @@ class MyRecipesViewTestCase(TestCase):
         self.assertContains(response, self.user.last_name)
 
     def test_my_recipes_with_no_recipes(self):
-        """Test empty page view when user has no recipes."""
+        """ Test empty page view when user has no recipes. """
         Recipe.objects.filter(author=self.user).delete()
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
@@ -101,7 +98,7 @@ class MyRecipesViewTestCase(TestCase):
         self.assertContains(response, "You haven't created any recipes yet")
 
     def test_my_recipes_displays_recipe_details(self):
-        """Test that recipe details are displayed correctly."""
+        """ Test that recipe details are displayed correctly. """
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'Test Recipe One')
@@ -112,7 +109,7 @@ class MyRecipesViewTestCase(TestCase):
         self.assertContains(response, 'Nov 17, 2025')
 
     def test_my_recipes_has_links_to_recipe_actions(self):
-        """Test that view/edit/delete links are present."""
+        """ Test that view/edit/delete links are present. """
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'View')
@@ -120,7 +117,7 @@ class MyRecipesViewTestCase(TestCase):
         self.assertContains(response, 'Delete')
 
     def test_my_recipes_shows_create_recipe_link_when_empty(self):
-        """Test that create recipe link appears when no recipes exist."""
+        """ Test that create recipe link appears when no recipes exist. """
         Recipe.objects.filter(author=self.user).delete()
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
@@ -129,7 +126,6 @@ class MyRecipesViewTestCase(TestCase):
         self.assertContains(response, 'Create Your First Recipe')
 
     def test_my_recipes_context_contains_required_data(self):
-        """Test that the context user has all required variables."""
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertIn('user', response.context)
@@ -138,7 +134,6 @@ class MyRecipesViewTestCase(TestCase):
         self.assertEqual(response.context['user'], self.user)
 
     def test_my_recipes_with_many_recipes(self):
-        """Test that page handles many recipes correctly."""
         create_test_recipes(count=10)
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
@@ -146,7 +141,7 @@ class MyRecipesViewTestCase(TestCase):
         self.assertEqual(len(response.context['recipes']), 12)
 
     def test_my_recipes_recipe_ordering(self):
-        """Test that recipes are ordered by publication date (newest first)."""
+        """ Test that recipes are ordered by publication date (newest first). """
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         recipes = list(response.context['recipes'])
@@ -154,13 +149,13 @@ class MyRecipesViewTestCase(TestCase):
         self.assertEqual(recipes[1].title, 'Test Recipe Two') #has publication date as 16th
 
     def test_my_recipes_displays_avatar(self):
-        """Test that user's avatar is displayed."""
+        """ Test that user's avatar is displayed. """
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertContains(response, 'avatar')
 
     def test_my_recipes_pluralization(self):
-        """Test that recipe/recipes text is pluralized correctly."""
+        """ Test that recipe/recipes text is pluralized correctly. """
         Recipe.objects.filter(author=self.user).delete()
         create_test_recipe()
         self.client.login(username='@johndoe', password='Password123')

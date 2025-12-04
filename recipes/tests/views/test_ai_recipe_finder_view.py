@@ -1,3 +1,6 @@
+""" 
+Tests for AI Recipe Generator functionality. 
+"""
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
@@ -7,9 +10,6 @@ import json
 
 
 class AIRecipeGeneratorViewTestCase(TestCase):
-    """ 
-    Tests for AI Recipe Generator functionality. 
-    """
 
     def setUp(self):
         """ Set up test user and client. """

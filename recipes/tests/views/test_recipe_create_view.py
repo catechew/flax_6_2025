@@ -6,7 +6,9 @@ from datetime import timedelta
 from recipes.tests.utils import get_default_user, create_test_image, create_test_form_data
 
 class RecipeCreateViewTestCase(TestCase):
-    """ Tests for the create recipe view """
+    """ 
+    Tests for the create recipe view. 
+    """
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
@@ -697,12 +699,8 @@ class RecipeCreateViewTestCase(TestCase):
         self.assertEqual(len(response.context['course_tags']), 0)
 
     def test_cancel_without_session_data(self):
-        """Test cancelling when no session data exists"""
+        """ Test cancelling when no session data exists. """
         response = self.client.get(reverse('cancel_recipe'))
 
         # Should still redirect without error
         self.assertRedirects(response, reverse('all_recipes'))
-
-
-
-

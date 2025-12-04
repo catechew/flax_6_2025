@@ -1,4 +1,6 @@
-"""Tests of the log in view."""
+"""
+Tests of the log in view.
+"""
 from django.contrib import messages
 from django.test import TestCase
 from django.urls import reverse
@@ -7,7 +9,6 @@ from recipes.models import User
 from recipes.tests.test_helpers_base import LogInTester, MenuTesterMixin, reverse_with_next
 
 class LogInViewTestCase(TestCase, LogInTester, MenuTesterMixin):
-    """Tests of the log in view."""
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 

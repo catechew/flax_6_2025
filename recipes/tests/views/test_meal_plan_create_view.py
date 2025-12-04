@@ -1,21 +1,21 @@
 """
 Tests for the meal plan creation view.
 """
-
 from datetime import date
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
 from recipes.models.meal_plan import MealPlan
 from recipes.helpers.meal_plan_helpers import get_monday
+
 
 User = get_user_model()
 
 
 class MealPlanCreateViewTests(TestCase):
- """ Tests for MealPlanCreateView. """
+ """ 
+ Tests for MealPlanCreateView. 
+ """
 
  def setUp(self):
   self.user = User.objects.create_user(

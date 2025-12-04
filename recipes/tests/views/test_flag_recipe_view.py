@@ -1,7 +1,6 @@
 """
 Tests for recipe flagging and unflagging views.
 """
-
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone

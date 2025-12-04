@@ -1,4 +1,6 @@
-"""Tests for the password view."""
+"""
+Tests for the password view.
+"""
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
@@ -8,7 +10,6 @@ from recipes.models import User
 from recipes.tests.test_helpers_base import reverse_with_next
 
 class PasswordViewTest(TestCase):
-    """Test suite for the password view."""
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json'

@@ -1,3 +1,6 @@
+"""
+Tests for the all recipes view.
+"""
 from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe, User
@@ -6,7 +9,6 @@ from datetime import timedelta
 from recipes.tests.utils import create_test_recipes, get_default_user, create_test_recipe
 
 class AllRecipesViewTestCase(TestCase):
-    """Tests for the all recipes view."""
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
         'recipes/tests/fixtures/other_users.json'

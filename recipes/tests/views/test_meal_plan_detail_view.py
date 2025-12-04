@@ -1,13 +1,10 @@
 """
 Tests for meal plan detail view.
 """
-
 from datetime import date
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
 from recipes.models.meal_plan import MealPlan
 from recipes.helpers.meal_plan_helpers import create_meal_slots
 
@@ -15,7 +12,9 @@ User = get_user_model()
 
 
 class MealPlanDetailViewTests(TestCase):
-    """ Tests for MealPlanDetailView. """
+    """ 
+    Tests for MealPlanDetailView. 
+    """
 
     def setUp(self):
         self.user = User.objects.create_user(

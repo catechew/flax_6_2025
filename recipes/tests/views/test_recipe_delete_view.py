@@ -17,19 +17,19 @@ class RecipeDeleteViewTestCase(TestCase):
         self.url = reverse('delete_recipe', kwargs={'recipe_id': self.recipe.id})
     
     def test_get_shows_confirmation(self):
-        """Test that GET request shows confirmation page"""
+        """ Test that GET request shows confirmation page. """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Test Recipe')
     
     def test_post_deletes_recipe(self):
-        """Test that POST request deletes the recipe"""
+        """ Test that POST request deletes the recipe. """
         response = self.client.post(self.url)
         self.assertFalse(Recipe.objects.filter(id=self.recipe.id).exists())
         self.assertRedirects(response, reverse('all_recipes'))
     
     def test_cannot_delete_other_users_recipe(self):
-        """Test that users cannot delete recipes they don't own"""
+        """ Test that users cannot delete recipes they don't own. """
         other_user = create_test_user(username='@otheruser')
         self.client.login(username='@otheruser', password='Password123')
         
@@ -38,7 +38,7 @@ class RecipeDeleteViewTestCase(TestCase):
         self.assertIn(response.status_code, [403, 404])
 
     def test_delete_nonexistent_recipe_returns_error(self):
-        """Test that deleting a nonexistent recipe returns 404"""
+        """ Test that deleting a nonexistent recipe returns 404. """
         url = reverse('delete_recipe', kwargs={'recipe_id': 99999})
         self.client.login(username='testuser', password='Password123')
         response = self.client.get(url)

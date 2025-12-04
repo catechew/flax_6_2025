@@ -1,12 +1,12 @@
+"""
+Tests for randomise_avatar view.
+"""
 from django.test import TestCase, Client
 from django.urls import reverse
 from recipes.models import User
 
 
 class RandomiseAvatarViewTestCase(TestCase):
-    """
-    Tests for randomise_avatar view.
-    """
 
     def setUp(self):
         """ Set up test user and client. """
