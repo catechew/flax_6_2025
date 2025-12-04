@@ -24,12 +24,13 @@ def get_tag_action_from_request(request):
     if request.method != "POST":
         return None, None, None
 
-    for category in TAG_CATEGORIES:
-        result = check_category_for_tag_action(request, category)
-        if result[0] is not None: 
-            return result
+    results = [check_category_for_tag_action(request, cat) for cat in TAG_CATEGORIES]
+    valid_results = [r for r in results if r != (None, None, None)]
 
-    return None, None, None
+    if not valid_results:
+        return None, None, None
+
+    return valid_results[0]
 
 def check_category_for_tag_action(request, category):
     """Check if a specific category has a tag action"""
@@ -46,6 +47,7 @@ def check_category_for_tag_action(request, category):
         return "remove", category, request.POST.get(key)
     
     return None, None, None
+
 
 def handle_tag_operation(session_data, action, category, value):
     """Add or remove a tag from session data."""
@@ -93,7 +95,7 @@ def get_tag_list_for_key(recipe, key):
     """Get tag list for a specific key from recipe or return empty list"""
     if recipe is None:
         return []
-    return getattr(recipe, f"get_{key}_tags_kist")()
+    return getattr(recipe, f"get_{key}_tags_list")()
 
 def apply_tags_to_recipe(recipe, session_data):
     """ Apply tags from session to recipe. """

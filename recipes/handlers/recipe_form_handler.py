@@ -51,14 +51,19 @@ class RecipeFormHandler:
 
     def _init_session(self):
         session = self.request.session
-        if self.session_key not in session:
-            session[self.session_key] = {}
-            initialise_tag_session(session[self.session_key], self.recipe)
-            if self.recipe:
-                session[self.session_key]["is_owner"] = (
-                    self.recipe.author == self.request.user
-                )
+        if self.session_key in session:
+            return session[self.session_key]
+    
+        session[self.session_key] = {}
+        initialise_tag_session(session[self.session_key], self.recipe)
+        self.set_ownership_in_session(session[self.session_key])
         return session[self.session_key]
+    
+    def set_ownership_in_session(self, session_data):
+        """Set ownership flag in session if recipe exists"""
+        if not self.recipe:
+            return
+        session_data["is_owner"] = (self.recipe.author == self.request.user)
 
     @property
     def is_create_mode(self):
