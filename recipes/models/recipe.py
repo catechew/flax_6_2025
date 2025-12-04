@@ -224,3 +224,13 @@ class Recipe(models.Model):
     def rating_count(self):
         """Return the number of ratings for this recipe"""
         return self.ratings.count()
+
+    @property
+    def rating_display(self):
+        """Display average rating for admin."""
+        return round(self.average_rating(), 2)
+
+    @property
+    def flag_count(self):
+        """Total flags for this recipe."""
+        return self.flags.count()
