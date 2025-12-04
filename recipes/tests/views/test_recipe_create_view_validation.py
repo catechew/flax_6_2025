@@ -91,6 +91,8 @@ class RecipeCreateValidationTestCase(TestCase):
         
         self.assertEqual(Recipe.objects.count(), initial_recipe_count)
         self.assertEqual(response.status_code, 200)
+        # get the form if the context exists
+        # syntax is like this to avoid extra indentation
         form = response.context.get('form') if getattr(response, 'context', None) else None
         self.assertIsNotNone(form)
         self.assertIn('servings', form.errors)
@@ -114,6 +116,7 @@ class RecipeCreateValidationTestCase(TestCase):
         self.form_data['title'] = 'A' * 255
         initial_recipe_count = Recipe.objects.count()
         response = self.client.post(self.url, self.form_data, follow=True)
+        # send create_recipe=true data to url, to complete creation
         response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
 
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)

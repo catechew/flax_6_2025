@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe
 from recipes.tests.utils import get_default_user, create_test_form_data
+from recipes.forms.recipe_form import RecipeForm
 
 
 class RecipeCreateBasicTestCase(TestCase):
@@ -31,7 +32,6 @@ class RecipeCreateBasicTestCase(TestCase):
         """test that form is passed to template context"""
         response = self.client.get(self.url)
         self.assertIn('form', response.context)
-        from recipes.forms.recipe_form import RecipeForm
         self.assertIsInstance(response.context['form'], RecipeForm)
     
     def test_create_recipe_form_fields(self):

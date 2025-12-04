@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe
 from recipes.tests.utils import get_default_user, create_test_image, create_test_form_data
+from django.core.files.storage import default_storage
 
 
 class RecipeCreateImagesTestCase(TestCase):
@@ -69,7 +70,6 @@ class RecipeCreateImagesTestCase(TestCase):
         self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
 
         if temp_path:
-            from django.core.files.storage import default_storage
             self.assertFalse(default_storage.exists(temp_path))
 
     def test_cancel_deletes_temp_image(self):
@@ -87,5 +87,4 @@ class RecipeCreateImagesTestCase(TestCase):
         self.client.get(reverse('cancel_recipe'))
 
         if temp_path:
-            from django.core.files.storage import default_storage
             self.assertFalse(default_storage.exists(temp_path))
