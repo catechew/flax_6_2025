@@ -1,0 +1,99 @@
+%%% This is a LaTeX template for the small group project self-assessment document.
+%%% To compile this document, make sure pdflatex is installed on your workstation and use:
+%%% pdflatex self-assessment.tex in a UNIX CLI.
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\renewcommand{\familydefault}{\sfdefault}
+
+\begin{document}
+\title{Small Group Project Self-Assessment}
+\author{}
+\date{}
+\maketitle
+
+%%% Lines starting with %%% are comment lines.
+%%% Fill out the form by removing all comment lines and replacing them by the suggested content.
+
+\noindent\textbf{Team name}: %%% Insert team name here
+
+\noindent\textbf{URL of the deployed application}: %%% Insert URL of the deployed application here
+
+\noindent\textbf{Team members}:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item %%% Name of member 1
+\item %%% Name of member 2
+\item %%% Name of member 3
+\item %%% Name of member 4
+\item %%% Name of member 5
+\end{itemize}
+
+\noindent\textbf{If the team agrees on an effective team size, specify it here.  Otherwise, state that the team does not agree.} 
+%%% Insert effective team size or “did not agree” here.
+
+\section*{Submission checklist}
+\begin{tabular}{|p{15mm}|p{13cm}|}
+\hline
+Check & Task \\
+\hline
+& The work that is submitted has been produced by members of the team only, without input from other students or third parties.  All use of examples from the internet and generative AI are declared in the \texttt{README.md} file.\\
+\hline
+& The team is familiar with the required deliverables for this project, outlined in the small group project handbook, available on KEATS.\\
+\hline
+& The team's shared GitHub repository has been registered on Team Feedback.  All commits are attributed to a member of the team (check this on Team Feedback!).  All collaborative coding sessions have been registered by the committer on Team Feedback.  The shared repository has a default branch that corresponds to the accepted version of the software.\\
+\hline
+& The version of the web application that the team wishes to submit has been deployed.  The URL is recorded in the \texttt{README.md} file.  The deployed system is seeded with data that meets the requirements outlined in the specifications.  The system is accessible using the required access credentials.  The deployed system has been manually tested to ensure all functionality available in development works and is accessible in production.\\
+\hline
+& All team members listed above agree with the claims made in this checklist.\\
+\hline
+\end{tabular}
+
+\section*{Objective}
+Briefly outline the business objective of the system you have built.  Aim to identify what the system you developed aims to achieve (do not regurgitate the overall assignment).  This section should consist of a single paragraph.  Aim for less than 100 words.
+
+%%% Insert your objective description here.
+
+\section*{Use cases}
+Use cases clarify who uses the system and how they can use it to accomplish particular tasks.  Identify the main use cases of your team's application.  For each use case, provide:
+\begin{itemize}
+\item Name: a name for the use case.  If the name does not describe the task adequately by itself, add a short task description.
+\item Actor \& trigger: Identify who and what starts the interaction with the system.
+\item Main success scenario \& outcome: List the main steps that lead to a successful outcome.
+\item Alternate flows: Identify possible alternative flow conditions (e.g. what happens under anomalous conditions).
+\end{itemize}
+An example of a use case is as follows:
+\begin{itemize}
+\item Name: Place order
+\item Actor and trigger: Customer selects products and proceeds to checkout.
+\item Main success scenario: (1) Customer logs in, (2) adds products to cart, (3) proceeds to checkout, (4) enters shipping and payment details, (5) confirms order, (6) system processes payment and displays confirmation. Outcome: new order is placed.
+\item Alternate flows: Payment fails $\rightarrow$ system redirects to step (4) with error message.
+\end{itemize}
+
+\begin{tabular}{|p{30mm}|p{30mm}|p{40mm}|p{40mm}|}
+\hline
+Name (\& short task description) & Actor \& trigger & Main success scenario \& outcome & Alternative flows\\
+\hline
+ & & & \\
+ \hline
+  & & & \\
+ \hline
+  & & & \\
+ \hline
+  & & & \\
+ \hline
+  & & & \\
+ \hline
+  & & & \\
+ \hline
+  & & & \\
+ \hline
+  & & & \\
+ \hline
+  & & & \\
+ \hline
+  & & & \\
+ \hline
+\end{tabular}
+%%% Add rows as needed.
+
+\end{document}
