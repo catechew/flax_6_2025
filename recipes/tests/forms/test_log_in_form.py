@@ -6,6 +6,7 @@ from django.test import TestCase
 from recipes.forms import LogInForm
 from recipes.models import User
 
+
 class LogInFormTestCase(TestCase):
     
     fixtures = ['recipes/tests/fixtures/default_user.json']
