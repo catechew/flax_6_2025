@@ -1,7 +1,7 @@
 <div class="mb-4 p-3 border rounded bg-light">
     <h5 class="mb-3">{{ title }}</h5>
 
-    {# Display selected tags as chips #}
+    <!-- Display selecte tags as chips -->
     <div class="mb-3">
         {% if selected_tags %}
             {% for tag in selected_tags %}
@@ -18,7 +18,7 @@
         {% endif %}
     </div>
 
-    {# Predefined tag buttons #}
+     <!-- Predefined tag buttons-->
     <div class="mb-2">
         <strong>Quick select:</strong><br>
         {% for option in available_options %}
@@ -33,7 +33,7 @@
         {% endfor %}
     </div>
 
-    {# Custom tag input #}
+     <!-- Custom tag input -->
     <form method="POST" class="mt-2">
         {% csrf_token %}
         <div class="input-group">
