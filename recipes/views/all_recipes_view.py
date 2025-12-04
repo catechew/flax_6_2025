@@ -10,16 +10,10 @@ from recipes.helpers.recipe_query_helpers import get_recipes_context
 
 @login_required
 def all_recipes(request):
-<<<<<<< HEAD
  """
  Display public recipes with search, filtering and pagination.
  """
  
-=======
- """ Display public recipes with search, filtering and pagination. """
- base_queryset = Recipe.objects.filter(private=False)
-
->>>>>>> main
  search_query = get_search_query(request)
  tab = request.GET.get("tab", "recipes")
 

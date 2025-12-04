@@ -153,11 +153,11 @@
 
             <div class="d-flex justify-content-between mt-4">
               {% if mode == 'create' or not recipe %}
-                <a href="{% url 'cancel_recipe' %}" class="btn btn-secondary">
+                <a href="{% url 'cancel_recipe' %}" class="btn btn-primary">
                   Cancel
                 </a>
               {% else %}
-                <a href="{% url 'cancel_recipe_update' recipe.id %}" class="btn btn-secondary">
+                <a href="{% url 'cancel_recipe_update' recipe.id %}" class="btn btn-primary">
                   Cancel
                 </a>
               {% endif %}
