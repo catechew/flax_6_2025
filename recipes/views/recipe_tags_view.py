@@ -12,26 +12,19 @@ def recipe_tags_view(request, recipe_id=None):
 
     handler = RecipeFormHandler(request, recipe_id)
 
-    # Redirect to step 1 if no form data
+    # Redirect to step 1 if no form data.
     if 'form_data' not in handler.session_data:
         return handler.show_missing_form_data_warning()
 
-    # Handle tag operations (add/remove)
-    if request.method == 'POST':
-        # Check if this is a tag action (not final submit)
-        if 'create_recipe' not in request.POST and 'update_recipe' not in request.POST:
-            tag_redirect = handler.handle_tag_action()
-            if tag_redirect:
-                return tag_redirect
+    # Handle POST requests
+    if request.method != 'POST':
+        context = handler.get_tags_context()
+        return render(request, 'recipes/recipe_tags_form.html', context)
     
-        # Handle recipe creation/update
-        else:
-            return handler.finalise_recipe()
+    response = handler.handle_tags_post()
+    if response:
+        return response
         
-    # Display tag selection page
+    # Display tag selection page.
     context = handler.get_tags_context()
     return render(request, 'recipes/recipe_tags_form.html', context)
-
-
-
-        

@@ -1,0 +1,38 @@
+{% load avatar_tags %}
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex align-items-center gap-3">
+            {# Avatar #}
+            <a href="{% url 'user_profile' user.id %}">
+                <img src="{% get_avatar_url user 50 %}"
+                    alt="{{ user.get_full_name }}"
+                    class="rounded-circle"
+                    style="width: 50px; height: 50px; object-fit: cover;">
+            </a>
+
+            {# User Info #}
+            <div class="flex-grow-1">
+                <a href="{% url 'user_profile' user.id %}" class="text-decoration-none">
+                    <h6 class="mb-0 text-dark fw-bold">{{ user.get_full_name }}</h6>
+                    <p class="text-muted small mb-0">{{ user.username }}</p>
+                </a>
+            </div>
+
+            {# Follow button #}
+            {% if user != request.user %}
+                {% if user in request.user.following.all %}
+                    <form action="{% url 'unfollow_user' user.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Unfollow</button>
+                    </form>
+                {% else %}
+                    <form action="{% url 'follow_user' user.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-primary">Follow</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -22,11 +22,11 @@ class RecipeDetailHandler:
         self.is_owner = self.determine_ownership()
 
     def get_recipe(self):
-        """Retrieve recipe or raise 404"""
+        """ Retrieve recipe or raise 404. """
         return get_object_or_404(Recipe, id=self.recipe_id)
     
     def parse_servings_param(self):
-        """Parse servings from GET parameter, default to recipe servings"""
+        """ Parse servings from GET parameter, default to recipe servings. """
         servings_input = self.request.GET.get('servings', self.recipe.servings)
         try:
             servings = int(servings_input)
@@ -35,20 +35,20 @@ class RecipeDetailHandler:
             return self.recipe.servings
         
     def determine_ownership(self):
-        """Check if current user owns the recipe"""
+        """ Check if current user owns the recipe. """
         if not self.request.user.is_authenticated:
             return False
         return self.recipe.author == self.request.user
     
     def get_user_context(self):
-        """Build user-specific context (ratings, flags)"""
+        """ Build user-specific context (ratings, flags). """
         return {
             'user_rating': get_user_rating(self.recipe, self.request.user),
             'user_has_flagged': has_user_flagged_recipe(self.recipe, self.request.user),
         }
     
     def get_cost_context(self, scaled_ingredients):
-        """return cost estimation context (cost estimate and cost error)"""
+        """ Return cost estimation context (cost estimate and cost error). """
         cost_estimate = None
         cost_error = None
 
@@ -64,7 +64,7 @@ class RecipeDetailHandler:
         }
 
     def get_context(self):
-        """Create full context for recipe.html"""
+        """ Create full context for recipe.html. """
         context = {
             'recipe': self.recipe,
             'steps': self.recipe.get_step_list(),
@@ -73,13 +73,15 @@ class RecipeDetailHandler:
 
         # Add tag display
         context.update(get_recipe_tag_display_context(self.recipe))
+        
         #Add time display
         context.update(get_recipe_time_display_context(self.recipe))
+        
         #Add scaled ingredients
         scaling_context = get_scaled_ingredients_context(self.recipe, self.desired_servings)
         context.update(scaling_context)
-        #Add cost estimation
         context.update(self.get_cost_context(scaling_context['scaled_ingredients']))
+        
         #Add user data
         context.update(self.get_user_context())
 

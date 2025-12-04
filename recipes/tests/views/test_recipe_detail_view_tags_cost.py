@@ -1,3 +1,6 @@
+"""
+Tests for the recipe detail view.
+"""
 from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe, User
@@ -5,7 +8,6 @@ from django.utils import timezone
 from unittest.mock import patch
 
 class RecipeDetailViewTestCase(TestCase):
-    """Tests for the recipe detail view."""
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json'
@@ -25,7 +27,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.url = reverse('recipe_detail', kwargs={'recipe_id': self.recipe.id})
 
     def test_recipe_detail_displays_course_tags(self):
-        """Test that course tags are displayed"""
+        """ Test that course tags are displayed. """
         recipe = Recipe.objects.create(
             author=self.user,
             title="Tagged Recipe",
@@ -35,16 +37,13 @@ class RecipeDetailViewTestCase(TestCase):
             steps="Fry eggs",
             course_tags="breakfast,main"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "breakfast")
         self.assertContains(response, "main")
 
     def test_recipe_detail_displays_dietary_tags(self):
-        """Test that dietary tags are displayed"""
         recipe = Recipe.objects.create(
             author=self.user,
             title="Dietary Recipe",
@@ -54,16 +53,13 @@ class RecipeDetailViewTestCase(TestCase):
             steps="Cook tofu",
             dietary_tags="vegan,gluten-free"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "vegan")
         self.assertContains(response, "gluten-free")
 
     def test_recipe_detail_displays_cuisine_tags(self):
-        """Test that cuisine tags are displayed"""
         recipe = Recipe.objects.create(
             author=self.user,
             title="Cuisine Recipe",
@@ -73,16 +69,14 @@ class RecipeDetailViewTestCase(TestCase):
             steps="Cook pasta",
             cuisine_tags="Italian,Mediterranean"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Italian")
         self.assertContains(response, "Mediterranean")
 
     def test_recipe_detail_displays_other_tags(self):
-        """Test that other tags are displayed"""
+        """ Test that other tags are displayed. """
         recipe = Recipe.objects.create(
             author=self.user,
             title="Quick Recipe",
@@ -101,7 +95,7 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "budget")
 
     def test_recipe_detail_with_all_tags(self):
-        """Test recipe with all tag types displays correctly"""
+        """ Test recipe with all tag types displays correctly. """
         recipe = Recipe.objects.create(
             author=self.user,
             title="Fully Tagged Recipe",
@@ -117,7 +111,6 @@ class RecipeDetailViewTestCase(TestCase):
 
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "main")
         self.assertContains(response, "vegan")
@@ -125,10 +118,8 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "quick")
         self.assertContains(response, "budget")
 
-# Cost Estimation Tests
-
 def test_cost_estimation_button_present(self):
-    """Test that cost estimation button appears on page"""
+    """ Test that cost estimation button appears on page. """
     response = self.client.get(self.url)
     
     self.assertEqual(response.status_code, 200)
@@ -136,9 +127,8 @@ def test_cost_estimation_button_present(self):
     self.assertContains(response, 'Cost Estimate')
 
 def test_cost_estimation_not_calculated_by_default(self):
-    """Test that cost is not calculated on initial page load"""
+    """ Test that cost is not calculated on initial page load. """
     response = self.client.get(self.url)
-    
     self.assertEqual(response.status_code, 200)
     self.assertNotContains(response, 'Total Cost:')
     self.assertNotContains(response, 'Cost per Serving:')
@@ -146,7 +136,7 @@ def test_cost_estimation_not_calculated_by_default(self):
 
 @patch('recipes.views.recipe_detail_view.openai.ChatCompletion.create')
 def test_cost_estimation_successful_response(self, mock_openai):
-    """Test successful cost estimation returns and displays correctly"""
+    """ Test successful cost estimation returns and displays correctly. """
     # Mock OpenAI response
     mock_openai.return_value = type('obj', (object,), {
         'choices': [
@@ -169,7 +159,6 @@ def test_cost_estimation_successful_response(self, mock_openai):
     
     url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
     response = self.client.get(url, {'show_cost': 'true', 'servings': 4})
-    
     self.assertEqual(response.status_code, 200)
     self.assertContains(response, 'Total Cost:')
     self.assertContains(response, '£5.50')
@@ -179,7 +168,7 @@ def test_cost_estimation_successful_response(self, mock_openai):
 
 @patch('recipes.views.recipe_detail_view.openai.ChatCompletion.create')
 def test_cost_estimation_with_scaled_servings(self, mock_openai):
-    """Test cost estimation uses scaled servings correctly"""
+    """ Test cost estimation uses scaled servings correctly. """
     mock_openai.return_value = type('obj', (object,), {
         'choices': [
             type('obj', (object,), {
@@ -202,14 +191,13 @@ def test_cost_estimation_with_scaled_servings(self, mock_openai):
     url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
     # Request with doubled servings
     response = self.client.get(url, {'show_cost': 'true', 'servings': 8})
-    
     self.assertEqual(response.status_code, 200)
     self.assertContains(response, 'for 8 servings')
     self.assertContains(response, '£11.00')
 
 @patch('recipes.views.recipe_detail_view.openai.ChatCompletion.create')
 def test_cost_estimation_openai_error_handling(self, mock_openai):
-    """Test that OpenAI errors are handled gracefully"""
+    """ Test that OpenAI errors are handled gracefully. """
     # Mock OpenAI raising an error
     mock_openai.side_effect = Exception("API connection failed")
     
@@ -232,7 +220,7 @@ def test_cost_estimation_openai_error_handling(self, mock_openai):
 
 @patch('recipes.views.recipe_detail_view.openai.ChatCompletion.create')
 def test_cost_estimation_invalid_json_response(self, mock_openai):
-    """Test handling of invalid JSON from AI"""
+    """ Test handling of invalid JSON from AI. """
     # Mock OpenAI returning invalid JSON
     mock_openai.return_value = type('obj', (object,), {
         'choices': [
@@ -255,7 +243,6 @@ def test_cost_estimation_invalid_json_response(self, mock_openai):
     
     url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
     response = self.client.get(url, {'show_cost': 'true'})
-    
     self.assertEqual(response.status_code, 200)
     self.assertContains(response, 'Failed to parse AI response')
 
@@ -281,15 +268,13 @@ def test_cost_estimation_incomplete_json_response(self, mock_openai):
         ingredients="Eggs (4)",
         steps="Scramble eggs"
     )
-    
     url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
     response = self.client.get(url, {'show_cost': 'true'})
-    
     self.assertEqual(response.status_code, 200)
     self.assertContains(response, 'Received incomplete data from AI')
 
 def test_cost_estimation_persists_with_servings_change(self):
-    """Test that cost parameter stays when recalculating servings"""
+    """ Test that cost parameter stays when recalculating servings. """
     response = self.client.get(self.url, {'show_cost': 'true', 'servings': 6})
     
     self.assertEqual(response.status_code, 200)

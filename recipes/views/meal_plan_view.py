@@ -1,4 +1,6 @@
-""" Meal plan management views. """
+""" 
+Meal plan management views. 
+"""
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
@@ -22,8 +24,10 @@ from recipes.helpers.shopping_list_helpers import (
 
 
 class MealPlanCreateView(LoginRequiredMixin, View):
-    """ Creates a meal plan for the current week. """
-
+    """ 
+    Creates a meal plan for the current week. 
+    """
+    
     def get(self, request):
         today = date.today()
         week_start = get_monday(today)
@@ -40,7 +44,9 @@ class MealPlanCreateView(LoginRequiredMixin, View):
 
 
 class MealPlanDetailView(LoginRequiredMixin, View):
-    """ Displays a full weekly meal plan. """
+    """ 
+    Displays a full weekly meal plan.
+    """
 
     def get(self, request, plan_id):
         plan = get_object_or_404(
@@ -69,8 +75,11 @@ class MealPlanDetailView(LoginRequiredMixin, View):
             "meals_logged_pct": meals_logged_pct,
         }
 
+
 class MealPlanNavigateView(LoginRequiredMixin, View):
-    """ Navigate to previous or next week's meal plan. """
+    """ 
+    Navigate to previous or next week's meal plan. 
+    """
 
     def get(self, request, plan_id, direction):
         plan = get_object_or_404(
@@ -78,7 +87,6 @@ class MealPlanNavigateView(LoginRequiredMixin, View):
             id=plan_id,
             user=request.user
         )
-
         new_week = self._calculate_new_week(plan, direction)
         if not new_week:
             return redirect("meal-plan-detail", plan_id=plan.id)
@@ -98,7 +106,6 @@ class MealPlanNavigateView(LoginRequiredMixin, View):
             user=user,
             week_start=week_start
         )
-
         if created:
             create_meal_slots(plan)
 
@@ -106,7 +113,9 @@ class MealPlanNavigateView(LoginRequiredMixin, View):
 
 
 class MealSlotUpdateView(LoginRequiredMixin, View):
-    """ Assign or change the recipe for one slot. """
+    """ 
+    Assign or change the recipe for one slot. 
+    """
 
     def get(self, request, slot_id):
         slot = get_object_or_404(
@@ -125,7 +134,6 @@ class MealSlotUpdateView(LoginRequiredMixin, View):
             id=slot_id,
             meal_plan__user=request.user
         )
-
         recipe_id = request.POST.get("recipe_id")
         slot.recipe = Recipe.objects.get(id=recipe_id) if recipe_id else None
         slot.save()
@@ -134,7 +142,9 @@ class MealSlotUpdateView(LoginRequiredMixin, View):
 
 
 class MealSlotClearView(LoginRequiredMixin, View):
-    """ Remove a recipe from the slot. """
+    """ 
+    Remove a recipe from the slot. 
+    """
 
     def get(self, request, slot_id):
         slot = get_object_or_404(
@@ -142,14 +152,15 @@ class MealSlotClearView(LoginRequiredMixin, View):
             id=slot_id,
             meal_plan__user=request.user
         )
-
         slot.recipe = None
         slot.save()
         return redirect("meal-plan-detail", plan_id=slot.meal_plan.id)
 
 
 class ShoppingListView(LoginRequiredMixin, View):
-    """ Generate shopping list from meal plan. """
+    """ 
+    Generate shopping list from meal plan. 
+    """
 
     def get(self, request, plan_id):
         plan = get_object_or_404(
@@ -171,7 +182,9 @@ class ShoppingListView(LoginRequiredMixin, View):
 
 
 class MealSlotNotesView(LoginRequiredMixin, View):
-    """ Update notes for a meal slot. """
+    """ 
+    Update notes for a meal slot. 
+    """
 
     def post(self, request, slot_id):
         slot = get_object_or_404(
@@ -188,7 +201,9 @@ class MealSlotNotesView(LoginRequiredMixin, View):
 
 
 class MealPlanReuseLastWeekView(LoginRequiredMixin, View):
-    """ Reuse meals from previous week's meal plan. """
+    """ 
+    Reuse meals from previous week's meal plan. 
+    """
 
     def post(self, request, plan_id):
         plan = get_object_or_404(

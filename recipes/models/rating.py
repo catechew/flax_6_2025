@@ -27,8 +27,8 @@ class Rating(RecipeInteractionMixin, models.Model):
         help_text="Rating value (1 to 5)"
     )
 
-    # A user can only rate a recipe once
     class Meta:
+        # Ensures each user can only rate a recipe once
         unique_together = ("recipe", "user")
 
     def __str__(self):

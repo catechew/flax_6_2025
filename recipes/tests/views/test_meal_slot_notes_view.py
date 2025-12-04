@@ -1,21 +1,21 @@
 """
 Tests for MealSlotNotesView.
 """
-
 from datetime import date
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
 from recipes.models.meal_plan import MealPlan
 from recipes.helpers.meal_plan_helpers import create_meal_slots
+
 
 User = get_user_model()
 
 
 class MealSlotNotesViewTests(TestCase):
-  """ Tests for adding and updating meal slot notes. """
+  """ 
+  Tests for adding and updating meal slot notes. 
+  """
 
   def setUp(self):
     self.user = User.objects.create_user(
@@ -23,14 +23,14 @@ class MealSlotNotesViewTests(TestCase):
       email="notes@example.com",
       password="Password123",
     )
+    
     self.client.login(username="@notesuser", password="Password123")
-
     self.plan = MealPlan.objects.create(
       user=self.user,
       week_start=date(2025, 11, 24),
     )
+    
     create_meal_slots(self.plan)
-
     self.slot = self.plan.entries.filter(meal_type="snack").first()
 
   def test_post_saves_notes_to_slot(self):

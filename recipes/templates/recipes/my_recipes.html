@@ -4,7 +4,8 @@
 <div class="container" style="max-width: 600px; margin-top: 50px;">
 
     <div class="text-center mb-4">
-        <!-- profile picture using Gravatar -->
+
+        <!-- Profile picture using Gravatar -->
         <img src="{{ user.avatar_url }}"
              alt="Profile Picture"
              class="rounded-circle mb-3"
@@ -24,7 +25,6 @@
     </div>
 
     <hr class="my-4">
-
 
     <h4 class="mb-3">My Recipes</h4>
 
@@ -66,7 +66,8 @@
             {% endfor %}
         </div>
     {% else %}
-        <!-- Show this if the user hasn't created any recipe yet -->
+    
+        <!-- Show this if the user has not created any recipe yet -->
         <div class="text-center py-5">
             <div class="mb-4" style="font-size: 80px;">🧅</div>
             <h4>You haven't created any recipes yet...</h4>

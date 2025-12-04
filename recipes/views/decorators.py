@@ -59,9 +59,7 @@ class LoginProhibitedMixin:
         return super().dispatch(*args, **kwargs)
 
     def handle_already_logged_in(self, *args, **kwargs):
-        """
-        Redirect the user when already logged in.
-        """
+        """ Redirect the user when already logged in. """
         url = self.get_redirect_when_logged_in_url()
         return redirect(url)
 

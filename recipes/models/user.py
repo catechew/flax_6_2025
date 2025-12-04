@@ -1,11 +1,14 @@
+"""
+Model used for user authentication, and team member related information.
+"""
+
+
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
 
 class User(AbstractUser):
-    """Model used for user authentication, and team member related information."""
-
     username = models.CharField(
         max_length=30,
         unique=True,
@@ -18,7 +21,7 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
-    # Gender field (for AI avatar)
+    # Gender field for AI avatar
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
@@ -31,7 +34,7 @@ class User(AbstractUser):
         blank=True
     )
 
-    # Age field (for AI avatar)
+    # Age field for AI avatar
     AGE_CHOICES = [
         ('young', '18-30'),
         ('middle', '31-50'),
@@ -45,7 +48,6 @@ class User(AbstractUser):
         blank=True
     )
 
-    # Avatar type selection
     AVATAR_TYPE_CHOICES = [
         ('initials', 'Initials'),
         ('random', 'Random'),
@@ -84,23 +86,26 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"    # Shows every user's first and last name in admin panel
 
+
     class Meta:
-        """Model options."""
+        """
+        Model options.
+        """
         ordering = ['last_name', 'first_name']
 
     def avatar_url(self, size=120):
-        """Return avatar URL based on user preference."""
+        """ Return avatar URL based on user preference. """
 
-        # 1. If user uploaded custom picture, use it (highest priority)
+        # 1. If user uploads custom picture, use it (highest priority)
         if self.profile_picture:
             return self.profile_picture.url
 
-        # 2. User chose initials
+        # 2. User chooses initials
         if self.avatar_type == 'initials':
             name = f"{self.first_name} {self.last_name}".strip()
             return f"https://ui-avatars.com/api/?name={name}&size={size}&background=f15034&color=fff&bold=true&rounded=true"
 
-        # 3. User chose random avatar
+        # 3. User chooses random avatar
         if self.avatar_type == 'random' and self.avatar_seed:
             return f"https://api.dicebear.com/7.x/avataaars/svg?seed={self.avatar_seed}&size={size}"
 
@@ -125,26 +130,21 @@ class User(AbstractUser):
         return f"https://ui-avatars.com/api/?name={name}&size={size}&background=f15034&color=fff&bold=true&rounded=true"
 
     def mini_gravatar(self):
-        """Return a URL to a miniature version of the user's gravatar."""
-        
+        """ Return a URL to a miniature version of the user's gravatar. """
         return self.avatar_url(size=60)
 
     def follow(self, user):
-        """Follow another user."""
         if user != self:
             self.following.add(user)
+            
     def unfollow(self, user):
-        """Unfollow a user."""
         self.following.remove(user)
 
     def is_following(self, user):
-        """Check if this user is following another user."""
         return self.following.filter(pk=user.pk).exists()
 
     def follower_count(self):
-        """Return tot n. of followers."""
         return self.followers.count()
 
     def following_count(self):
-        """Return the n. of users followed by this user."""
         return self.following.count()

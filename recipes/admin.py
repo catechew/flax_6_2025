@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Recipe, Rating, Flag
+from .models import User, Recipe, Rating, Flag, RecipeInteractionMixin
 
 class RecipeInteractionAdmin(admin.ModelAdmin):
     """Base admin for Recipe interactions (Rating, Flag)."""

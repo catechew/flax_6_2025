@@ -1,3 +1,12 @@
+"""
+    Display the current user's dashboard.
+
+    This view renders the dashboard page for the authenticated user.
+    It ensures that only logged-in users can access the page. 
+    If a user is not authenticated, they are automatically redirected to the login
+    page.
+"""
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Q, Avg, Count
@@ -5,14 +14,6 @@ from recipes.models.recipe import Recipe
 
 @login_required
 def dashboard(request):
-    """
-    Display the current user's dashboard.
-
-    This view renders the dashboard page for the authenticated user.
-    It ensures that only logged-in users can access the page. If a user
-    is not authenticated, they are automatically redirected to the login
-    page.
-    """
 
     current_user = request.user
     # Get the 3 most recent recipes (public recipes + user's own private recipes)
@@ -20,7 +21,6 @@ def dashboard(request):
         Q(private=False) | Q(author=current_user)
     ).order_by('-publication_date')[:3]
 
-    # --- Most Saved Recipes (global) ---
     most_saved_recipes = (
         Recipe.objects.filter(private=False)
         .annotate(save_count=Count("saved_by"))

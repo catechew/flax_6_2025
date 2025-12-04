@@ -1,13 +1,10 @@
 """
 Tests for MealSlotClearView.
 """
-
 from datetime import date
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
 from recipes.models.meal_plan import MealPlan
 from recipes.models.recipe import Recipe
 from recipes.helpers.meal_plan_helpers import create_meal_slots
@@ -16,7 +13,9 @@ User = get_user_model()
 
 
 class MealSlotClearViewTests(TestCase):
-  """ Tests for clearing a meal slot. """
+  """ 
+  Tests for clearing a meal slot.
+  """
 
   def setUp(self):
     self.user = User.objects.create_user(
@@ -25,15 +24,12 @@ class MealSlotClearViewTests(TestCase):
       password="Password123",
     )
     self.client.login(username="@clearslot", password="Password123")
-
     self.plan = MealPlan.objects.create(
       user=self.user,
       week_start=date(2025, 11, 24),
     )
     create_meal_slots(self.plan)
-
     self.slot = self.plan.entries.first()
-
     self.recipe = Recipe.objects.create(
       title="Clear Me",
       author=self.user,
@@ -49,7 +45,6 @@ class MealSlotClearViewTests(TestCase):
       "meal-slot-clear",
       args=[self.slot.id],
     )
-
     self.client.get(url)
 
     self.slot.refresh_from_db()
@@ -60,7 +55,6 @@ class MealSlotClearViewTests(TestCase):
       "meal-slot-clear",
       args=[self.slot.id],
     )
-
     response = self.client.get(url)
     self.assertRedirects(
       response,
@@ -69,11 +63,9 @@ class MealSlotClearViewTests(TestCase):
 
   def test_login_required(self):
     self.client.logout()
-
     url = reverse(
       "meal-slot-clear",
       args=[self.slot.id],
     )
-
     response = self.client.get(url)
     self.assertEqual(response.status_code, 302)

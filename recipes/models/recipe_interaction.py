@@ -17,3 +17,4 @@ class RecipeInteractionMixin:
     def recipe_rating(self):
         """Get recipe average rating."""
         return self.recipe.average_rating()
+    

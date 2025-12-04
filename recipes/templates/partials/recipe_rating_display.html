@@ -1,4 +1,4 @@
-{# Display star rating #}
+ <!-- Display star rating-->
 {% with rating_value=rating|default:0 %}
     {% for i in "12345" %}
         {% if forloop.counter <= rating_value %}

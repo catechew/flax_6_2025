@@ -1,4 +1,6 @@
-"""Tests for the profile view."""
+"""
+Tests for the profile view.
+"""
 from django.contrib import messages
 from django.test import TestCase
 from django.urls import reverse
@@ -7,7 +9,6 @@ from recipes.models import User
 from recipes.tests.test_helpers_base import reverse_with_next
 
 class ProfileViewTest(TestCase):
-    """Test suite for the profile view."""
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json',

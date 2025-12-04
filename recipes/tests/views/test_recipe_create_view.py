@@ -3,12 +3,12 @@ from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone
 from datetime import timedelta
-from django.core.files.uploadedfile import SimpleUploadedFile
-from PIL import Image
-from io import BytesIO
+from recipes.tests.utils import get_default_user, create_test_image, create_test_form_data
 
 class RecipeCreateViewTestCase(TestCase):
-    """ Tests for the create recipe view """
+    """ 
+    Tests for the create recipe view. 
+    """
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
@@ -16,23 +16,12 @@ class RecipeCreateViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
+        self.user = get_default_user()
         self.client.login(username='@johndoe', password='Password123')
         self.url = reverse('create_recipe')
 
-        self.form_data = {
-            'title' : 'Test Recipe',
-            'publication_date' : timezone.now().date(),
-            'servings' : 4,
-            'ingredients' : "test (1)",
-            'steps' : "test",
-            'prep_time_hours': 0,
-            'prep_time_minutes': 30,
-            'cook_time_hours': 1,
-            'cook_time_minutes': 15,
-            'private': False,
-        }
-    
+        self.form_data = create_test_form_data()
+
     # Test that the create recipe url is correct
     def test_create_recipe_url(self):
         self.assertEqual(self.url, '/create_recipe/')
@@ -316,17 +305,7 @@ class RecipeCreateViewTestCase(TestCase):
     def test_create_recipe_with_image_upload_succeeds(self):
         initial_recipe_count = Recipe.objects.count()
 
-        # Create a real valid image file
-        image = Image.new('RGB', (100, 100), color='red')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         data = self.form_data.copy()
         data['image'] = uploaded_file
@@ -612,20 +591,8 @@ class RecipeCreateViewTestCase(TestCase):
 
     def test_temp_image_deleted_after_creation(self):
         """Test that temporary image is deleted after recipe creation"""
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from PIL import Image
-        from io import BytesIO
 
-        image = Image.new('RGB', (100, 100), color='red')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         data = self.form_data.copy()
         data['image'] = uploaded_file
@@ -672,20 +639,7 @@ class RecipeCreateViewTestCase(TestCase):
 
     def test_cancel_deletes_temp_image(self):
         """Test that cancelling deletes temporary image"""
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from PIL import Image
-        from io import BytesIO
-
-        image = Image.new('RGB', (100, 100), color='blue')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='cancel_test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         data = self.form_data.copy()
         data['image'] = uploaded_file
@@ -706,20 +660,7 @@ class RecipeCreateViewTestCase(TestCase):
 
     def test_has_image_context_variable(self):
         """Test that has_image context variable is set correctly"""
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from PIL import Image
-        from io import BytesIO
-
-        image = Image.new('RGB', (100, 100), color='green')
-        image_file = BytesIO()
-        image.save(image_file, 'JPEG')
-        image_file.seek(0)
-
-        uploaded_file = SimpleUploadedFile(
-            name='context_test.jpg',
-            content=image_file.read(),
-            content_type='image/jpeg'
-        )
+        uploaded_file = create_test_image()
 
         data = self.form_data.copy()
         data['image'] = uploaded_file
@@ -758,12 +699,8 @@ class RecipeCreateViewTestCase(TestCase):
         self.assertEqual(len(response.context['course_tags']), 0)
 
     def test_cancel_without_session_data(self):
-        """Test cancelling when no session data exists"""
+        """ Test cancelling when no session data exists. """
         response = self.client.get(reverse('cancel_recipe'))
 
         # Should still redirect without error
         self.assertRedirects(response, reverse('all_recipes'))
-
-
-
-

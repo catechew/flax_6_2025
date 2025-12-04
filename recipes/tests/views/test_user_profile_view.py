@@ -8,7 +8,6 @@ from datetime import date
 
 
 class UserProfileViewTestCase(TestCase):
-    """ Tests for the user_profile view. """
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 

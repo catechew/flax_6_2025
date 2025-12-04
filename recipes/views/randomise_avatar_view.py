@@ -6,7 +6,7 @@ import uuid
 
 @login_required
 def randomise_avatar(request):
-    """Generate a new random avatar seed for the user."""
+    """ Generate a new random avatar seed for the user. """
     user = request.user
 
     # Clear uploaded picture if any
@@ -22,10 +22,9 @@ def randomise_avatar(request):
     messages.success(request, "Avatar randomised! Your new avatar is ready.")
     return redirect('profile')
 
-
 @login_required
 def use_initials_avatar(request):
-    """Reset avatar to initials (default)."""
+    """ Reset avatar to initials (default). """
     user = request.user
 
     # Clear uploaded picture if any

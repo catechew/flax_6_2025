@@ -1,7 +1,6 @@
 """
 Tests for the star rating feature.
 """
-
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -10,12 +9,14 @@ from recipes.models.rating import Rating
 
 
 class RatingViewTestCase(TestCase):
-    """Tests for rating a recipe via the rate_recipe view."""
+    """
+    Tests for rating a recipe via the rate_recipe view.
+    """
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 
     def setUp(self):
-        """Set up a test user and a recipe."""
+        """ Set up a test user and a recipe. """
         self.user = User.objects.get(username='@johndoe')
 
         # Create a second user for testing non author rating
@@ -37,11 +38,11 @@ class RatingViewTestCase(TestCase):
         self.url = reverse('rate_recipe', kwargs={'recipe_id': self.recipe.id})
 
     def test_rate_recipe_url(self):
-        """Test that the rate_recipe URL is correct."""
+        """ Test that the rate_recipe URL is correct. """
         self.assertEqual(self.url, f"/recipes/{self.recipe.id}/rate/")
 
     def test_rating_requires_login(self):
-        """Test that an unauthenticated user is redirected to login."""
+        """ Test that an unauthenticated user is redirected to login. """
         response = self.client.post(self.url)
         login_url = reverse('log_in')
         self.assertRedirects(response, f"{login_url}?next={self.url}")
@@ -61,7 +62,7 @@ class RatingViewTestCase(TestCase):
         self.assertRedirects(response, detail_url, status_code=302, target_status_code=200)
 
     def test_user_can_update_rating(self):
-        """Test that rating an already-rated recipe updates the rating."""
+        """ Test that rating an already-rated recipe updates the rating. """
         self.client.login(username='@janedoe', password='Password123')
 
         # Create initial rating
@@ -74,7 +75,7 @@ class RatingViewTestCase(TestCase):
         self.assertEqual(updated_rating.stars, 5)
 
     def test_cannot_rate_own_recipe(self):
-        """Test that recipe authors cannot rate their own recipe."""
+        """ Test that recipe authors cannot rate their own recipe. """
         self.client.login(username='@johndoe', password='Password123')
 
         response = self.client.post(self.url, {'stars': 5}, follow=True)
@@ -91,7 +92,7 @@ class RatingViewTestCase(TestCase):
         self.assertTrue(any("You cannot rate your own recipe." in str(m) for m in messages))
 
     def test_invalid_rating_ignored(self):
-        """Test that invalid star values do not create a rating."""
+        """ Test that invalid star values do not create a rating. """
         self.client.login(username='@janedoe', password='Password123')
 
         # Invalid: 0 stars
@@ -103,16 +104,16 @@ class RatingViewTestCase(TestCase):
         self.assertFalse(Rating.objects.filter(recipe=self.recipe, user=self.other_user).exists())
 
     def test_average_rating_and_count(self):
-        """Test that average rating and rating_count work correctly."""
+        """ Test that average rating and rating_count work correctly. """
         Rating.objects.create(recipe=self.recipe, user=self.other_user, stars=4)
-        Rating.objects.create(recipe=self.recipe, user=self.user, stars=3)  # manually add even though authors can't normally rate
+        Rating.objects.create(recipe=self.recipe, user=self.user, stars=3) 
 
         self.assertEqual(self.recipe.rating_count(), 2)
         self.assertAlmostEqual(self.recipe.average_rating(), 3.5)
-        self.assertEqual(self.recipe.average_rating_rounded(), 4)  # rounded display value
+        self.assertEqual(self.recipe.average_rating_rounded(), 4)  
 
     def test_get_request_does_not_create_rating(self):
-        """Test that a GET request does not process a rating."""
+        """ Test that a GET request does not process a rating. """
         self.client.login(username='@janedoe', password='Password123')
 
         response = self.client.get(self.url)

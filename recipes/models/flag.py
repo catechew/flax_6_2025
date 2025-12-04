@@ -24,6 +24,7 @@ class Flag(RecipeInteractionMixin, models.Model):
     )
 
     class Meta:
+        # Ensures each user can only flag a recipe once
         unique_together = ("recipe", "user")
 
     @property

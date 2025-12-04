@@ -13,7 +13,9 @@ User = get_user_model()
 
 
 class MealSlotModelTest(TestCase):
-    """ Test MealSlot behaviour. """
+    """ 
+    Test MealSlot behaviour. 
+    """
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -38,7 +40,6 @@ class MealSlotModelTest(TestCase):
             day='mon',
             meal_type='breakfast'
         )
-
         self.assertIsNone(slot.recipe)
 
     def test_slot_with_recipe(self):
@@ -48,7 +49,6 @@ class MealSlotModelTest(TestCase):
             meal_type='lunch',
             recipe=self.recipe
         )
-
         self.assertEqual(slot.recipe, self.recipe)
 
     def test_unique_day_meal_constraint(self):
@@ -57,7 +57,6 @@ class MealSlotModelTest(TestCase):
             day='wed',
             meal_type='dinner'
         )
-
         with self.assertRaises(IntegrityError):
             MealSlot.objects.create(
                 meal_plan=self.plan,
@@ -76,7 +75,6 @@ class MealSlotModelTest(TestCase):
             day='thu',
             meal_type='lunch'
         )
-
         self.assertNotEqual(slot1.id, slot2.id)
 
     def test_string_representation(self):
@@ -85,7 +83,6 @@ class MealSlotModelTest(TestCase):
             day='mon',
             meal_type='dinner'
         )
-
         self.assertEqual(str(slot), 'Monday - Dinner')
 
     def test_recipe_deleted_sets_null(self):
@@ -95,10 +92,8 @@ class MealSlotModelTest(TestCase):
             meal_type='lunch',
             recipe=self.recipe
         )
-
         self.recipe.delete()
         slot.refresh_from_db()
-
         self.assertIsNone(slot.recipe)
 
     def test_meal_slot_related_name(self):
@@ -107,5 +102,4 @@ class MealSlotModelTest(TestCase):
             day='sat',
             meal_type='dinner'
         )
-
         self.assertEqual(self.plan.entries.count(), 1)
