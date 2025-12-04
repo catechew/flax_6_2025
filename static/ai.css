@@ -7,7 +7,7 @@ AI Chat
     text-align: center;
     max-width: 700px;
     margin: 0 auto;
-    padding: 6rem 1rem;
+    padding: 2rem 1rem;
 }
 
 .welcome-title {
@@ -20,6 +20,7 @@ AI Chat
 .welcome-subtitle {
     font-size: 1.2rem;
     color: #6c757d;
+    margin-bottom: 2rem;
 }
 
 /* Messages */
