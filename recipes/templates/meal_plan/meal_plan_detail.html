@@ -42,7 +42,7 @@
     <form method="POST"
           action="{% url 'meal-plan-reuse-last-week' plan.id %}">
       {% csrf_token %}
-      <button class="btn-orange btn-orange-lg">
+      <button class="btn btn-primary btn-lg">
         ╰┈➤ Reuse Last Week
       </button>
     </form>
