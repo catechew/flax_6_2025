@@ -26,7 +26,7 @@ def get_tag_action_from_request(request):
 
     for category in TAG_CATEGORIES:
         result = check_category_for_tag_action(request, category)
-        if result[0] is not None:
+        if result[0] is not None: 
             return result
 
     return None, None, None
@@ -87,10 +87,13 @@ def initialise_tag_session(session_data, recipe=None):
     keys = ("course", "dietary", "cuisine", "other")
 
     for key in keys:
-        session_data[f"{key}_tags"] = (
-            getattr(recipe, f"get_{key}_tags_list")()
-            if recipe else []
-        )
+        session_data[f"{key}_tags"] = get_tag_list_for_key(recipe, key)
+
+def get_tag_list_for_key(recipe, key):
+    """Get tag list for a specific key from recipe or return empty list"""
+    if recipe is None:
+        return []
+    return getattr(recipe, f"get_{key}_tags_kist")()
 
 def apply_tags_to_recipe(recipe, session_data):
     """ Apply tags from session to recipe. """
