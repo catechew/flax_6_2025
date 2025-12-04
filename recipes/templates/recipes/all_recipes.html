@@ -13,11 +13,28 @@
     <h2>All Recipes</h2>
   {% endif %}
 
-  <!-- Filter and sort Form -->
+  <!-- Tabs -->
+  <ul class="nav nav-tabs search-tabs justify-content-center border-0 mb-4 mt-4" id="searchTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link {% if active_tab == 'recipes' %}active{% endif %} w-100 py-3 text-dark fw-normal" href="?q={{ search_query }}&tab=recipes">       
+        <i class="bi bi-card-list me-2"></i>Recipes ({{ recipe_count }})
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link {% if active_tab == 'users' %}active{% endif %} w-100 py-3 text-dark fw-normal" href="?q={{ search_query }}&tab=users">
+        <i class="bi bi-people-fill me-2"></i>Users ({{ user_count }})
+      </a>
+    </li>
+  </ul>
+
+  <!-- RECIPES TAB CONTENT -->
+  {% if active_tab == 'recipes' %}
+
+  <!-- Filter and Sort Form -->
   <div class="mb-4">
     <form method="GET" action="{% url 'all_recipes' %}" id="filterForm">
       {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
-
+      <input type="hidden" name="tab" value="recipes">
       <!-- Mobile toggle buttons -->
       <div class="d-md-none d-flex gap-2 mb-2">
         <button class="btn btn-outline-primary btn-sm" type="button" 
@@ -35,6 +52,7 @@
         <!-- Filters Section -->
         <div class="col-12 col-md-auto">
           <div class="collapse d-md-block mb-3 mb-md-0" id="filtersSection">
+            {# Filters #}
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <i class="bi bi-funnel d-none d-md-inline"></i>
 
@@ -109,7 +127,7 @@
               <button type="submit" class="btn btn-primary btn-sm">
                 <i class="bi bi-search"></i> Apply
               </button>
-              <a href="{% url 'all_recipes' %}" class="btn btn-primary btn-sm">
+              <a href="{% url 'all_recipes' %}?tab=recipes" class="btn btn-primary btn-sm">
                 <i class="bi bi-x-circle"></i> Clear
               </a>
             </div>
@@ -166,44 +184,45 @@
 
     <!-- Pagination -->
     {% if page_object.paginator %}
-      <nav aria-label="Recipe results pages">
-        <ul class="pagination justify-content-center mt-4">
-          {% if page_object.has_previous %}
-            <li class="page-item">
-              <a class="page-link" 
-                 href="?q={{ search_query }}{% for c in course_filters %}&course={{ c }}{% endfor %}{% for d in dietary_filters %}&dietary={{ d }}{% endfor %}{% for cu in cuisine_filters %}&cuisine={{ cu }}{% endfor %}{% for o in other_filters %}&other={{ o }}{% endfor %}&sort={{ sort_by }}&page={{ page_object.previous_page_number }}">
-                Previous
-              </a>
-            </li>
-          {% else %}
-            <li class="page-item disabled"><span class="page-link">Previous</span></li>
-          {% endif %}
-
-          <li class="page-item disabled">
-            <span class="page-link">Page {{ page_object.number }} of {{ page_object.paginator.num_pages }}</span>
-          </li>
-
-          {% if page_object.has_next %}
-            <li class="page-item">
-              <a class="page-link" 
-                 href="?q={{ search_query }}{% for c in course_filters %}&course={{ c }}{% endfor %}{% for d in dietary_filters %}&dietary={{ d }}{% endfor %}{% for cu in cuisine_filters %}&cuisine={{ cu }}{% endfor %}{% for o in other_filters %}&other={{ o }}{% endfor %}&sort={{ sort_by }}&page={{ page_object.next_page_number }}">
-                Next
-              </a>
-            </li>
-          {% else %}
-            <li class="page-item disabled"><span class="page-link">Next</span></li>
-          {% endif %}
-        </ul>
-      </nav>
+      {% include "partials/pagination.html" with aria_label="Recipe results pages" tab="recipes" extra_params=pagination_extra_params %}
     {% endif %}
   {% else %}
     <div class="alert alert-info mt-4">
       {% if search_query %}
-        No recipes found matching "{{ search_query }}". Try a different search term.
+        No recipes found matching "{{ search_query }}". Try a different search term or check the Users tab.
       {% else %}
         No recipes available.
       {% endif %}
     </div>
+  {% endif %}
+    
+  <!-- USERS TAB CONTENT -->
+  {% else %}
+
+    <!-- Users List -->
+    {% if users %}
+      <div class="row mt-4">
+        {% for user in page_object %}
+          <div class="col-md-6 mb-3">
+            {% include "partials/user_card.html" with user=user %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if page_object.paginator %}
+         {% include "partials/pagination.html" with aria_label="User results pages" tab="users" extra_params="" %}
+      {% endif %}
+    {% else %}
+      <div class="alert alert-info mt-4">
+        {% if search_query %}
+          No users found matching "{{ search_query }}". Try a different search term or check the Recipes tab.
+        {% else %}
+          No users found.
+        {% endif %}
+      </div>
+    {% endif %}
+
   {% endif %}
 
 </div>
