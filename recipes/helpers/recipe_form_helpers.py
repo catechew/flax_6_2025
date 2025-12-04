@@ -24,20 +24,30 @@ def get_tag_action_from_request(request):
     if request.method != "POST":
         return None, None, None
 
-    for category in TAG_CATEGORIES:
-        key = f"add_{category}_tag"
-        if key in request.POST:
-            return "add", category, request.POST.get(key)
+    results = [check_category_for_tag_action(request, cat) for cat in TAG_CATEGORIES]
+    valid_results = [r for r in results if r != (None, None, None)]
 
-        key = f"add_{category}_tag_custom"
-        if key in request.POST:
-            return "add", category, request.POST.get(f"{category}_tag_value")
+    if not valid_results:
+        return None, None, None
 
-        key = f"remove_{category}_tag"
-        if key in request.POST:
-            return "remove", category, request.POST.get(key)
+    return valid_results[0]
 
+def check_category_for_tag_action(request, category):
+    """Check if a specific category has a tag action"""
+    key = f"add_{category}_tag"
+    if key in request.POST:
+        return "add", category, request.POST.get(key)
+
+    key = f"add_{category}_tag_custom"
+    if key in request.POST:
+        return "add", category, request.POST.get(f"{category}_tag_value")
+
+    key = f"remove_{category}_tag"
+    if key in request.POST:
+        return "remove", category, request.POST.get(key)
+    
     return None, None, None
+
 
 def handle_tag_operation(session_data, action, category, value):
     """Add or remove a tag from session data."""
@@ -79,10 +89,13 @@ def initialise_tag_session(session_data, recipe=None):
     keys = ("course", "dietary", "cuisine", "other")
 
     for key in keys:
-        session_data[f"{key}_tags"] = (
-            getattr(recipe, f"get_{key}_tags_list")()
-            if recipe else []
-        )
+        session_data[f"{key}_tags"] = get_tag_list_for_key(recipe, key)
+
+def get_tag_list_for_key(recipe, key):
+    """Get tag list for a specific key from recipe or return empty list"""
+    if recipe is None:
+        return []
+    return getattr(recipe, f"get_{key}_tags_list")()
 
 def apply_tags_to_recipe(recipe, session_data):
     """ Apply tags from session to recipe. """

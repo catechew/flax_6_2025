@@ -51,14 +51,19 @@ class RecipeFormHandler:
 
     def _init_session(self):
         session = self.request.session
-        if self.session_key not in session:
-            session[self.session_key] = {}
-            initialise_tag_session(session[self.session_key], self.recipe)
-            if self.recipe:
-                session[self.session_key]["is_owner"] = (
-                    self.recipe.author == self.request.user
-                )
+        if self.session_key in session:
+            return session[self.session_key]
+    
+        session[self.session_key] = {}
+        initialise_tag_session(session[self.session_key], self.recipe)
+        self.set_ownership_in_session(session[self.session_key])
         return session[self.session_key]
+    
+    def set_ownership_in_session(self, session_data):
+        """Set ownership flag in session if recipe exists"""
+        if not self.recipe:
+            return
+        session_data["is_owner"] = (self.recipe.author == self.request.user)
 
     @property
     def is_create_mode(self):
@@ -73,7 +78,7 @@ class RecipeFormHandler:
         return render(
             self.request,
             "recipes/recipe_form.html",
-            {"form": form, "mode": self.mode, "is_owner": self.is_owner},
+            {"form": form, "mode": self.mode, "is_owner": self.is_owner, "recipe": self.recipe, "session_data": self.session_data},
         )
 
     def handle_form_post(self):
@@ -147,6 +152,12 @@ class RecipeFormHandler:
             self.request.session.modified = True
 
         return redirect_to_tags(self)
+    
+    def handle_tags_post(self):
+        """Handle POST request for tag operations or recipe finalisation"""
+        if 'create_recipe' in self.request.POST or 'update_recipe' in self.request.POST:
+            return self.finalise_recipe()
+        return self.handle_tag_action()
     
     def show_missing_form_data_warning(self):
         """ Warn user and redirect if they try to access tag page. """
