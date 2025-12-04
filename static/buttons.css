@@ -167,3 +167,16 @@
 .btn-orange:hover i {
   transform: translateX(3px);
 }
+
+.btn-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
