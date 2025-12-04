@@ -1,14 +1,16 @@
 from django.conf import settings
 from django.db import models
+from .recipe_interaction import RecipeInteractionMixin
 
-"""
-Rating model allows authenticated users to leave a 1–5 star rating on a recipe.
-A user may only rate a recipe once.
-"""
 
-class Rating(models.Model):
+class Rating(RecipeInteractionMixin, models.Model):
+    """
+    Rating model allows authenticated users to leave a 1–5 star rating on a recipe.
+    A user may only rate a recipe once.
+    """
+
     recipe = models.ForeignKey(
-        "recipes.Recipe",
+        "Recipe",
         on_delete=models.CASCADE,
         related_name="ratings",
         help_text="The recipe this rating belongs to"
@@ -25,7 +27,7 @@ class Rating(models.Model):
         help_text="Rating value (1 to 5)"
     )
 
-    # Ensures each user can only rate a recipe once
+    # A user can only rate a recipe once
     class Meta:
         unique_together = ("recipe", "user")
 
