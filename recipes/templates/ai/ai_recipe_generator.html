@@ -111,6 +111,10 @@
                         {% endif %}
 
                         <div class="recipe-actions">
+                            <a href="{% url 'save_ai_recipe' %}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-plus-circle"></i>
+                                Save This Recipe
+                            </a>
                             <a href="{% url 'ai_recipe_generator' %}" class="btn btn-primary btn-lg">
                                 <i class="bi bi-arrow-clockwise"></i>
                                 Generate Another Recipe

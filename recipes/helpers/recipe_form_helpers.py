@@ -116,3 +116,36 @@ def cleanup_session(session_key, session_data, request):
         del request.session[session_key]
 
     request.session.modified = True
+
+def apply_ai_dietary_tags(session_data, ai_dietary_info):
+    """Apply AI dietary tags to session."""
+    from recipes.helpers.ai_recipe_parser import map_ai_dietary_tags
+
+    if not ai_dietary_info:
+        return
+
+    mapped_tags = map_ai_dietary_tags(ai_dietary_info)
+    existing_tags = session_data.get('dietary_tags', [])
+
+    for tag in mapped_tags:
+        if tag not in existing_tags:
+            existing_tags.append(tag)
+
+    session_data['dietary_tags'] = existing_tags
+
+def get_ai_prefill_from_session(request):
+    """Get AI prefill data from session if available."""
+    if not request.session.pop('from_ai_save_button', False):
+        return None
+
+    ai_data = request.session.pop('ai_recipe_prefill', None)
+    return ai_data
+
+
+def store_ai_dietary_info(session_data, ai_prefill):
+    """Store AI dietary info in session for tags page."""
+    if 'ai_dietary_info' not in ai_prefill:
+        return
+
+    session_data['ai_dietary_info'] = ai_prefill.pop('ai_dietary_info')
+    session_data['ai_description'] = ai_prefill.pop('ai_description', '')

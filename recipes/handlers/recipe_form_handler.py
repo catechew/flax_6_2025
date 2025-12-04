@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from recipes.models import Recipe
+from recipes.helpers.ai_recipe_parser import parse_ai_recipe_data
 from recipes.forms.recipe_form import RecipeForm
 from recipes.helpers.recipe_form_helpers import (
     get_session_key, 
@@ -8,6 +9,9 @@ from recipes.helpers.recipe_form_helpers import (
     get_tag_action_from_request, 
     handle_tag_operation, 
     apply_tags_to_recipe,
+    get_ai_prefill_from_session,
+    store_ai_dietary_info,
+    apply_ai_dietary_tags,
     cleanup_session
 )
 from recipes.helpers.recipe_ownership import (
@@ -30,9 +34,7 @@ from recipes.helpers.recipe_redirects import (
 
 
 class RecipeFormHandler:
-    """
-    Handles recipe create/update workflow state and operations
-    """
+    """Handles recipe create/update workflow state and operations."""
 
     def __init__(self, request, recipe_id=None):
         self.request = request
@@ -44,42 +46,107 @@ class RecipeFormHandler:
         self.is_owner = determine_ownership(self.session_data)
 
     def _get_recipe(self):
+        """Get recipe or None."""
         return (
             get_object_or_404(Recipe, id=self.recipe_id)
             if self.recipe_id else None
         )
 
     def _init_session(self):
+        """Initialize or get existing session."""
         session = self.request.session
+
         if self.session_key in session:
             return session[self.session_key]
-    
+
+        return self._create_new_session(session)
+
+    def _create_new_session(self, session):
+        """Create new session data."""
         session[self.session_key] = {}
-        initialise_tag_session(session[self.session_key], self.recipe)
-        self.set_ownership_in_session(session[self.session_key])
-        return session[self.session_key]
-    
+        session_data = session[self.session_key]
+
+        initialise_tag_session(session_data, self.recipe)
+        self._apply_ai_tags_if_available(session_data)
+        self.set_ownership_in_session(session_data)
+
+        return session_data
+
+    def _apply_ai_tags_if_available(self, session_data):
+        """Apply AI dietary tags if present."""
+        ai_dietary = session_data.get('ai_dietary_info', [])
+        if ai_dietary:
+            apply_ai_dietary_tags(session_data, ai_dietary)
+
     def set_ownership_in_session(self, session_data):
-        """Set ownership flag in session if recipe exists"""
+        """Set ownership flag in session if recipe exists."""
         if not self.recipe:
             return
         session_data["is_owner"] = (self.recipe.author == self.request.user)
 
     @property
     def is_create_mode(self):
+        """Check if in create mode."""
         return self.mode == "create"
 
     def handle_form_get(self):
-        form = (
-            RecipeForm(self.session_data["form_data"], instance=self.recipe)
-            if "form_data" in self.session_data
-            else RecipeForm(instance=self.recipe)
+        """Handle GET request for form display."""
+        ai_prefill = self._get_ai_prefill_data()
+
+        if ai_prefill:
+            return self._render_form_with_ai_data(ai_prefill)
+
+        if 'form_data' in self.session_data:
+            return self._render_form_from_session()
+
+        return self._render_empty_form()
+
+    def _get_ai_prefill_data(self):
+        """Get and parse AI prefill data."""
+        # Only use AI data if user clicked "Save to My Recipes"
+        if not self.request.session.pop('from_ai_save_button', False):
+            return None
+
+        ai_data = self.request.session.pop('ai_recipe_prefill', None)
+
+        if not ai_data:
+            return None
+
+        from recipes.helpers.ai_recipe_parser import parse_ai_recipe_data
+        return parse_ai_recipe_data(ai_data)
+
+    def _render_form_with_ai_data(self, ai_prefill):
+        """Render form with AI prefill data."""
+        store_ai_dietary_info(self.session_data, ai_prefill)
+        self.request.session.modified = True
+
+        form = RecipeForm(initial=ai_prefill, instance=self.recipe)
+
+        return self._render_form(form)
+
+    def _render_form_from_session(self):
+        """Render form from session data."""
+        form = RecipeForm(
+            self.session_data["form_data"],
+            instance=self.recipe
         )
-        return render(
-            self.request,
-            "recipes/recipe_form.html",
-            {"form": form, "mode": self.mode, "is_owner": self.is_owner, "recipe": self.recipe, "session_data": self.session_data},
-        )
+        return self._render_form(form)
+
+    def _render_empty_form(self):
+        """Render empty form."""
+        form = RecipeForm(instance=self.recipe)
+        return self._render_form(form)
+
+    def _render_form(self, form):
+        """Render form with context."""
+        context = {
+            "form": form,
+            "mode": self.mode,
+            "is_owner": self.is_owner,
+            "recipe": self.recipe,
+            "session_data": self.session_data,
+        }
+        return render(self.request, "recipes/recipe_form.html", context)
 
     def handle_form_post(self):
         form = RecipeForm(self.request.POST, self.request.FILES, instance=self.recipe)

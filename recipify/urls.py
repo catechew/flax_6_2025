@@ -52,6 +52,7 @@ from recipes.views.ai_recipe_generator_view import ai_recipe_generator_view
 
 from recipes.views.ai_recipe_generator_view import ai_recipe_generator_view
 from recipes.views.ai_recipe_search_view import ai_recipe_search_view
+from recipes.views.save_ai_recipe_view import save_ai_recipe_view
 
 from recipes.views.meal_plan_view import (
     MealPlanCreateView,
@@ -122,6 +123,7 @@ urlpatterns = [
 
     path('ai-recipe-generator/', ai_recipe_generator_view, name='ai_recipe_generator'),
     path('ai-recipe-search/', ai_recipe_search_view, name='ai_recipe_search'),
+    path('save-ai-recipe/', save_ai_recipe_view, name='save_ai_recipe'),
 
 ] 
 
