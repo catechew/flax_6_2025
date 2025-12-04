@@ -36,10 +36,9 @@ class CategoriseIngredientTests(TestCase):
     
     def test_unknown_ingredient_categorised_as_other(self):
         """ Test unknown ingredients return Other Items. """
-        category = categorise_ingredient("Quinoa")
+        category = categorise_ingredient("randomthing")
         self.assertEqual(category, "🛒 Other Items")
     
-
     def test_no_category_match_after_loop(self):
         """ Covers full loop run with no keyword matches. """
         result = categorise_ingredient("xyzitem123")
@@ -157,7 +156,7 @@ class ConsolidateIngredientsTests(TestCase):
         # The scaled ingredient should contain "4"
         self.assertIn("4", consolidated[0]["item"])
 
-    @patch("recipes.helpers.shopping_list_helpers.scale_ingredient")
+    @patch("recipes.helpers.recipe_detail_helpers.scale_ingredient")
     def test_multiple_items_trigger_scaling_branch(self, mock_scale):
         mock_scale.return_value = "Rice (scaled)"
 
