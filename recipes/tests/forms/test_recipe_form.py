@@ -180,7 +180,6 @@ class RecipeFormTestCase(TestCase):
         recipe = form.save(commit=False)
         recipe.author = self.user
         recipe.save()
-        
         self.assertEqual(recipe.title, 'Test Recipe')
         self.assertEqual(recipe.author, self.user)
         self.assertEqual(recipe.servings, 4)

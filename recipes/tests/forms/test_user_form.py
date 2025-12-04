@@ -1,11 +1,12 @@
-"""Unit tests of the user form."""
+"""
+Unit tests of the user form.
+"""
 from django import forms
 from django.test import TestCase
 from recipes.forms import UserForm
 from recipes.models import User
 
 class UserFormTestCase(TestCase):
-    """Unit tests of the user form."""
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json'

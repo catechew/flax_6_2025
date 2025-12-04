@@ -1,4 +1,6 @@
-"""Unit tests of the sign up form."""
+"""
+Unit tests of the sign up form.
+"""
 from django.contrib.auth.hashers import check_password
 from django import forms
 from django.test import TestCase
@@ -6,7 +8,6 @@ from recipes.forms import SignUpForm
 from recipes.models import User
 
 class SignUpFormTestCase(TestCase):
-    """Unit tests of the sign up form."""
 
     def setUp(self):
         self.form_input = {
