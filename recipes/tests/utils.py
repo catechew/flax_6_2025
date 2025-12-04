@@ -41,6 +41,27 @@ def create_test_user(username=None, password='Password123', **kwargs):
         **defaults
     )
 
+def create_test_users(count=1, username='testuser', **kwargs):
+    """
+    Create multiple test users 
+
+    count: number of users to create
+    username: prefix for username (default '@testuser')
+    **kwargs: Additional fields to set on all users
+
+    returns llist of created user instances
+    """
+    users = []
+    for i in range(count):
+        user = create_test_user(
+            username = f'@{username}{i}',
+            first_name = kwargs.get('first_name', f'Test{i}'),
+            last_name = kwargs.get('last_name', 'User'),
+            **{k: v for k, v in kwargs.items() if k not in ['first_name', 'last_name']}
+        )
+        users.append(user)
+    return users
+
 def create_test_recipe(author=None, **kwargs):
     """
     Create a test recipe with default values.
