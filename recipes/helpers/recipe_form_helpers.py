@@ -25,18 +25,26 @@ def get_tag_action_from_request(request):
         return None, None, None
 
     for category in TAG_CATEGORIES:
-        key = f"add_{category}_tag"
-        if key in request.POST:
-            return "add", category, request.POST.get(key)
+        result = check_category_for_tag_action(request, category)
+        if result[0] is not None:
+            return result
 
-        key = f"add_{category}_tag_custom"
-        if key in request.POST:
-            return "add", category, request.POST.get(f"{category}_tag_value")
+    return None, None, None
 
-        key = f"remove_{category}_tag"
-        if key in request.POST:
-            return "remove", category, request.POST.get(key)
+def check_category_for_tag_action(request, category):
+    """Check if a specific category has a tag action"""
+    key = f"add_{category}_tag"
+    if key in request.POST:
+        return "add", category, request.POST.get(key)
 
+    key = f"add_{category}_tag_custom"
+    if key in request.POST:
+        return "add", category, request.POST.get(f"{category}_tag_value")
+
+    key = f"remove_{category}_tag"
+    if key in request.POST:
+        return "remove", category, request.POST.get(key)
+    
     return None, None, None
 
 def handle_tag_operation(session_data, action, category, value):
