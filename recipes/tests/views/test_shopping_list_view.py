@@ -1,13 +1,10 @@
 """
 Tests for ShoppingListView.
 """
-
 from datetime import date
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
 from recipes.models.meal_plan import MealPlan
 from recipes.models.recipe import Recipe
 from recipes.helpers.meal_plan_helpers import create_meal_slots
@@ -16,7 +13,9 @@ User = get_user_model()
 
 
 class ShoppingListViewTests(TestCase):
-  """ Tests for generating a shopping list from a meal plan. """
+  """ 
+  Tests for generating a shopping list from a meal plan. 
+  """
 
   def setUp(self):
     self.user = User.objects.create_user(
@@ -25,13 +24,11 @@ class ShoppingListViewTests(TestCase):
       password="Password123",
     )
     self.client.login(username="@shopuser", password="Password123")
-
     self.plan = MealPlan.objects.create(
       user=self.user,
       week_start=date(2025, 11, 24),
     )
     create_meal_slots(self.plan)
-
     self.recipe = Recipe.objects.create(
       title="Simple Meal",
       author=self.user,
