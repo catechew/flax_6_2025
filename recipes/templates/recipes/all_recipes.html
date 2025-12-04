@@ -3,6 +3,8 @@
 {% block content %}
 <div class="container mt-4">
 
+  <a id="top"></a>
+
   <!-- Header -->
   {% if search_query %}
     <h2>Search results for "{{ search_query }}"</h2>
@@ -207,4 +209,11 @@
   {% endif %}
 
 </div>
+
+<!-- Back to Top Button -->
+<a href="#top" class="btn-top btn-primary btn">
+    <i class="bi bi-arrow-up"></i>
+</a>
+
+
 {% endblock %}
