@@ -1,7 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from recipes.models import Recipe, User
-from django.utils import timezone 
 from unittest.mock import patch
 from recipes.tests.utils import create_test_recipe, get_default_user
 
@@ -144,3 +142,10 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, 'Go back home')
         home_url = reverse('home')
         self.assertContains(response, home_url)
+
+    def test_determine_ownership_unauthenticated_user(self):
+        """Test ownership check for unauthenticated user"""
+        self.client.logout()
+        response = self.client.get(self.url)
+        # Should still work but determine_ownership returns False
+        self.assertEqual(response.status_code, 200)
