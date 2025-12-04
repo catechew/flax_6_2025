@@ -13,13 +13,9 @@ def scale_ingredient(ingredient, factor):
 
     def replace_number(match):
         number_str = match.group(1)
-
-        # Handle fractions
         number = get_new_number(number_str) if '/' in number_str else float(number_str)
-        
-        # Scale the number
         scaled = number * factor
-
+        
         return format_scaled_number(scaled)
         
     return re.sub(pattern, replace_number, ingredient)
@@ -56,7 +52,6 @@ def get_user_rating(recipe, user):
     # Retrieve logged in user's rating for the recipe
     if not user.is_authenticated:
         return None
-    
     try: 
         return Rating.objects.filter(recipe=recipe, user=user).first()
     except Rating.DoesNotExist:
@@ -64,16 +59,13 @@ def get_user_rating(recipe, user):
      
 
 def has_user_flagged_recipe(recipe, user):
-    # Check if user has flagged a recipe
     if not user.is_authenticated:
         return False
    
     return Flag.objects.filter(recipe=recipe, user=user).exists()
 
 def get_recipe_tag_display_context(recipe):
-    """
-    returns tag display context from recipe model
-    """
+    """ Returns tag display context from recipe model. """
     return {
         'course_tags': recipe.get_course_tags_list(),
         'dietary_tags': recipe.get_dietary_tags_list(),
@@ -82,9 +74,7 @@ def get_recipe_tag_display_context(recipe):
     }
 
 def get_recipe_time_display_context(recipe):
-    """
-    return recipe time display context from recipe model
-    """
+    """ Return recipe time display context from recipe model. """
     return {
         'prep_time_display': recipe.get_prep_time_display(),
         'cook_time_display': recipe.get_cook_time_display(),
@@ -93,10 +83,8 @@ def get_recipe_time_display_context(recipe):
         'total_prep_minutes' : recipe.get_total_prep_time_minutes(),
     }
 
-
-
 def create_cost_prompt(scaled_ingredients, servings):
-    """create AI prompt for cost estimation"""
+    """ Create AI prompt for cost estimation. """
     ingredients_text = '\n'.join(scaled_ingredients)
     return f"""Estimate the total cost in GBP (£) for these ingredients for {servings} servings:
 
@@ -113,7 +101,7 @@ def create_cost_prompt(scaled_ingredients, servings):
 
 
 def call_openai_for_cost(prompt):
-    """Call OpenAI API for cost estimation"""
+    """ Call OpenAI API for cost estimation. """
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -127,7 +115,7 @@ def call_openai_for_cost(prompt):
     return response.choices[0].message.content.strip()
 
 def parse_cost_response(ai_response, servings):
-    """parse AI response and extract cost data"""
+    """ Parse AI response and extract cost data. """
     cost_data = json.loads(ai_response)
     return {
         'total_cost': cost_data['total_cost'],
@@ -136,7 +124,7 @@ def parse_cost_response(ai_response, servings):
     }
 
 def get_cost_estimate_data(scaled_ingredients, servings):
-    """Get cost estimate data using AI"""
+    """ Get cost estimate data using AI. """
     try:
         prompt = create_cost_prompt(scaled_ingredients, servings)
         ai_response = call_openai_for_cost(prompt)

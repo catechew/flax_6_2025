@@ -6,245 +6,254 @@ Recipes | Recipe #{{recipe.id}}
 
 {% block content %}
 <div class="container mt-4">
-<div class="row justify-content-center">
-    <div class="col-lg-10 col-xl-8">
-     <!-- Recipe header -->
-    <div class="card shadow mb-4">
-        {% if recipe.image %}
-        <img src="{{ recipe.image.url }}" class="card-img-top recipe-detail-image" alt="{{ recipe.title }}">
-        {% endif %}
-        <div class="card-body">
-        <h1 class="card-title">{{ recipe.title }}</h1>
-        <p class="text-muted">
-            <i class="bi bi-person"></i> By {{ recipe.author.username }} |
-            <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
-        </p>
 
-    <div class="mb-3">
+    <a id="top"></a>
 
-         <!-- Flagging form for logged in users-->
-
-        <!-- Flag/Unflag toggle button -->
-        {% if user.is_authenticated and recipe.author != user %}
-          {% if user_has_flagged %}
-            <form action="{% url 'unflag_recipe' recipe.id %}" method="post" class="d-inline">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-link text-danger p-0" title="Remove flag">
-                <i class="bi bi-flag-fill"></i>
-              </button>
-            </form>
-          {% else %}
-            <form action="{% url 'flag_recipe' recipe.id %}" method="post" class="d-inline">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-link text-muted p-0" title="Report this recipe">
-                <i class="bi bi-flag"></i>
-              </button>
-            </form>
-          {% endif %}
-        {% endif %}
-        
-        <!-- Rating form for logged in users -->
-        {% if user.is_authenticated %}
-        <form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="d-flex align-items-center gap-3 mb-2">
-            {% csrf_token %}
-
-            <span class="fw-bold">Your Rating:</span>
-
-             <!-- Star rating input-->
-            <div class="rating-input">
-                {% with current=user_rating.stars|default:0 %}
-                    {% for i in "54321" %}
-
-                        <input type="radio"
-                            name="stars"
-                            id="star{{ i }}"
-                            value="{{ i }}"
-                            {% if current|floatformat:0 == i %}checked{% endif %}>
-
-                        <label for="star{{ i }}" class="m-0">
-                            {% if current|floatformat:0 >= i %}
-                                <i class="bi bi-star-fill"> </i>
-                            {% else %}
-                                <i class="bi bi-star"></i>
-                            {% endif %}
-                        </label>
-
-                    {% endfor %}
-                {% endwith %}
-            </div>
-
-            <button class="btn btn-sm btn-primary">Save Rating</button>
-        </form>
-        {% endif %}
-
-       <!-- Average rating section -->
-        <div class="mt-2 d-flex align-items-center gap-2">
-            <strong>Average Rating:</strong>
-
-            <span>
-                {% include 'partials/recipe_rating_display.html' with rating=recipe.average_rating_rounded %}
-            </span>
-
-            <span class="text-muted">
-                {{ recipe.average_rating|floatformat:1 }}
-            </span>
-
-            {% if recipe.rating_count > 0 %}
-                <span class="text-muted rating-count-text">
-                    ({{ recipe.rating_count }} rating{% if recipe.rating_count != 1 %}s{% endif %})
-                </span>
-            {% else %}
-                <span class="text-muted rating-count-text">
-                    (No ratings yet)
-                </span>
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+        <!-- Recipe header -->
+        <div class="card shadow mb-4">
+            {% if recipe.image %}
+            <img src="{{ recipe.image.url }}" class="card-img-top recipe-detail-image" alt="{{ recipe.title }}">
             {% endif %}
-        </div>
+            <div class="card-body">
+            <h1 class="card-title">{{ recipe.title }}</h1>
+            <p class="text-muted">
+                <i class="bi bi-person"></i> By {{ recipe.author.username }} |
+                <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
+            </p>
 
-    </div>
-
-        <!-- Display tags as chips -->
-        {% if course_tags or cuisine_tags or dietary_tags or other_tags %}
         <div class="mb-3">
-            <i class="bi bi-tags"></i><strong> Tags:</strong> 
-            {% include 'partials/recipe_tags_display.html' %}
-        </div>
-        {% endif %}
 
-         <!-- Display times -->
-        <div class="d-flex gap-3">
-            {% include 'partials/recipe_time_display.html' %}
-        </div>
-        </div>
-    </div>
+            <!-- Flagging form for logged in users-->
 
-
-   <!-- Servings adjustment -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-        <form method="GET" class="row g-3 align-items-center">
-            <div class="col-auto">
-            <label class="col-form-label fw-bold">
-                <i class="bi bi-people"></i> Adjust Servings:
-            </label>
-            </div>
-            <div class="col-auto">
-            <span class="form-text">Original: {{ recipe.servings }} servings</span>
-            </div>
-            <div class="col-auto">
-            <input type="number" 
-                    name="servings" 
-                    class="form-control servings-input" 
-                    value="{{ desired_servings }}" 
-                    min="1" >
-            </div>
-            <div class="col-auto">
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-calculator"></i> Recalculate
-            </button>
-            </div>
-        </form>
-        {% if scaling_factor != 1 %}
-            <div class="alert alert-info mt-3 mb-0">
-            <i class="bi bi-info-circle"></i>
-            Ingredients scaled by {{ scaling_factor|floatformat:2 }}x
-            </div>
-        {% endif %}
-        </div>
-    </div>
-
-    <!-- Cost estimate -->
-    <div class="card shadow mb-4">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">
-                <i class="bi bi-currency-pound"></i> Cost Estimate
-            </h4>
-        </div>
-        <div class="card-body">
-            <form method="GET" class="d-inline">
-                <input type="hidden" name="servings" value="{{ desired_servings }}">
-                <input type="hidden" name="show_cost" value="true">
-                <button type="submit" class="btn btn-success">
-                    <i class="bi bi-calculator"></i> Get Cost Estimate
+            <!-- Flag/Unflag toggle button -->
+            {% if user.is_authenticated and recipe.author != user %}
+            {% if user_has_flagged %}
+                <form action="{% url 'unflag_recipe' recipe.id %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link text-danger p-0" title="Remove flag">
+                    <i class="bi bi-flag-fill"></i>
                 </button>
-            </form>
+                </form>
+            {% else %}
+                <form action="{% url 'flag_recipe' recipe.id %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link text-muted p-0" title="Report this recipe">
+                    <i class="bi bi-flag"></i>
+                </button>
+                </form>
+            {% endif %}
+            {% endif %}
             
-            <div class="mt-3 cost-estimate-container">
-                {% if cost_estimate %}
-                    <div class="alert alert-success mb-0">
-                        <strong>Total Cost:</strong> £{{ cost_estimate.total_cost|floatformat:2 }}<br>
-                        <strong>Cost per Serving:</strong> £{{ cost_estimate.cost_per_serving|floatformat:2 }}
-                        <small class="text-muted d-block mt-1">(for {{ cost_estimate.servings }} servings)</small>
-                    </div>
-                {% elif cost_error %}
-                    <div class="alert alert-danger mb-0">
-                        <i class="bi bi-exclamation-triangle"></i> {{ cost_error }}
-                    </div>
+            <!-- Rating form for logged in users -->
+            {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="d-flex align-items-center gap-3 mb-2">
+                {% csrf_token %}
+
+                <span class="fw-bold">Your Rating:</span>
+
+                <!-- Star rating input-->
+                <div class="rating-input">
+                    {% with current=user_rating.stars|default:0 %}
+                        {% for i in "54321" %}
+
+                            <input type="radio"
+                                name="stars"
+                                id="star{{ i }}"
+                                value="{{ i }}"
+                                {% if current|floatformat:0 == i %}checked{% endif %}>
+
+                            <label for="star{{ i }}" class="m-0">
+                                {% if current|floatformat:0 >= i %}
+                                    <i class="bi bi-star-fill"> </i>
+                                {% else %}
+                                    <i class="bi bi-star"></i>
+                                {% endif %}
+                            </label>
+
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+
+                <button class="btn btn-sm btn-primary">Save Rating</button>
+            </form>
+            {% endif %}
+
+        <!-- Average rating section -->
+            <div class="mt-2 d-flex align-items-center gap-2">
+                <strong>Average Rating:</strong>
+
+                <span>
+                    {% include 'partials/recipe_rating_display.html' with rating=recipe.average_rating_rounded %}
+                </span>
+
+                <span class="text-muted">
+                    {{ recipe.average_rating|floatformat:1 }}
+                </span>
+
+                {% if recipe.rating_count > 0 %}
+                    <span class="text-muted rating-count-text">
+                        ({{ recipe.rating_count }} rating{% if recipe.rating_count != 1 %}s{% endif %})
+                    </span>
                 {% else %}
-                    <p class="text-muted mb-0">Click the button to estimate the cost for {{ desired_servings }} servings</p>
+                    <span class="text-muted rating-count-text">
+                        (No ratings yet)
+                    </span>
                 {% endif %}
             </div>
-        </div>
-    </div>
 
-   <!-- Ingredients -->
-    <div class="card shadow mb-4">
-        <div class="card-header bg-success text-white">
-        <h4 class="mb-0">
-            <i class="bi bi-basket"></i> Ingredients ({{ desired_servings }} servings)
-        </h4>
         </div>
-        <div class="card-body">
-        <div class="list-group list-group-flush">
-            {% for ingredient in scaled_ingredients %}
-            <label class="list-group-item d-flex align-items-center checkable-list-item">
-                <input class="form-check-input me-3 ingredient-checkbox large-checkbox" type="checkbox">
-                <span class="ingredient-text">{{ ingredient }}</span>
-            </label>
-            {% endfor %}
-        </div>
-        </div>
-    </div>
 
-
-    <!-- Steps -->
-    <div class="card shadow mb-4">
-        <div class="card-header bg-info text-white">
-        <h4 class="mb-0">
-            <i class="bi bi-list-ol"></i> Instructions
-        </h4>
-        </div>
-        <div class="card-body">
-        <div class="list-group list-group-flush">
-            {% for step in steps %}
-            <label class="list-group-item d-flex align-items-start checkable-list-item">
-                <input class="form-check-input me-3 step-checkbox flex-shrink-0 large-checkbox" type="checkbox">
-                <div class="flex-grow-1">
-                    <strong class="me-2">{{ forloop.counter }}.</strong>
-                    <span class="step-text">{{ step }}</span>
-                </div>
-            </label>
-            {% endfor %}
-        </div>
-        </div>
-    </div>
-
-    <!-- Action buttons -->
-    <div class="mb-4">
-        <a href="{% url 'home' %}" class="btn margin-vertical btn-primary">
-        <i class="bi bi-arrow-left"></i> Go back home
-        </a>
-        <a href="{% url 'update_recipe' recipe.id %}" class="btn margin-vertical btn-success">
-            {% if is_owner %}
-                <i class="bi bi-pencil"></i> Update this recipe
-            {% else %}
-                <i class="bi bi-plus-circle"></i> Create My Version
+            <!-- Display tags as chips -->
+            {% if course_tags or cuisine_tags or dietary_tags or other_tags %}
+            <div class="mb-3">
+                <i class="bi bi-tags"></i><strong> Tags:</strong> 
+                {% include 'partials/recipe_tags_display.html' %}
+            </div>
             {% endif %}
-        </a>
-        <a href="{% url 'delete_recipe' recipe.id %}" class="btn margin-vertical btn-warning">
-        <i class="bi bi-trash"></i> Delete this recipe
-        </a>
-    </div>
+
+            <!-- Display times -->
+            <div class="d-flex gap-3">
+                {% include 'partials/recipe_time_display.html' %}
+            </div>
+            </div>
+        </div>
+
+
+    <!-- Servings adjustment -->
+        <div class="card shadow mb-4">
+            <div class="card-body">
+            <form method="GET" class="row g-3 align-items-center">
+                <div class="col-auto">
+                <label class="col-form-label fw-bold">
+                    <i class="bi bi-people"></i> Adjust Servings:
+                </label>
+                </div>
+                <div class="col-auto">
+                <span class="form-text">Original: {{ recipe.servings }} servings</span>
+                </div>
+                <div class="col-auto">
+                <input type="number" 
+                        name="servings" 
+                        class="form-control servings-input" 
+                        value="{{ desired_servings }}" 
+                        min="1" >
+                </div>
+                <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-calculator"></i> Recalculate
+                </button>
+                </div>
+            </form>
+            {% if scaling_factor != 1 %}
+                <div class="alert alert-info mt-3 mb-0">
+                <i class="bi bi-info-circle"></i>
+                Ingredients scaled by {{ scaling_factor|floatformat:2 }}x
+                </div>
+            {% endif %}
+            </div>
+        </div>
+
+        <!-- Cost estimate -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-currency-pound"></i> Cost Estimate
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="GET" class="d-inline">
+                    <input type="hidden" name="servings" value="{{ desired_servings }}">
+                    <input type="hidden" name="show_cost" value="true">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-calculator"></i> Get Cost Estimate
+                    </button>
+                </form>
+                
+                <div class="mt-3 cost-estimate-container">
+                    {% if cost_estimate %}
+                        <div class="alert alert-success mb-0">
+                            <strong>Total Cost:</strong> £{{ cost_estimate.total_cost|floatformat:2 }}<br>
+                            <strong>Cost per Serving:</strong> £{{ cost_estimate.cost_per_serving|floatformat:2 }}
+                            <small class="text-muted d-block mt-1">(for {{ cost_estimate.servings }} servings)</small>
+                        </div>
+                    {% elif cost_error %}
+                        <div class="alert alert-danger mb-0">
+                            <i class="bi bi-exclamation-triangle"></i> {{ cost_error }}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Click the button to estimate the cost for {{ desired_servings }} servings</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    <!-- Ingredients -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white">
+            <h4 class="mb-0">
+                <i class="bi bi-basket"></i> Ingredients ({{ desired_servings }} servings)
+            </h4>
+            </div>
+            <div class="card-body">
+            <div class="list-group list-group-flush">
+                {% for ingredient in scaled_ingredients %}
+                <label class="list-group-item d-flex align-items-center checkable-list-item">
+                    <input class="form-check-input me-3 ingredient-checkbox large-checkbox" type="checkbox">
+                    <span class="ingredient-text">{{ ingredient }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
+
+
+        <!-- Steps -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+            <h4 class="mb-0">
+                <i class="bi bi-list-ol"></i> Instructions
+            </h4>
+            </div>
+            <div class="card-body">
+            <div class="list-group list-group-flush">
+                {% for step in steps %}
+                <label class="list-group-item d-flex align-items-start checkable-list-item">
+                    <input class="form-check-input me-3 step-checkbox flex-shrink-0 large-checkbox" type="checkbox">
+                    <div class="flex-grow-1">
+                        <strong class="me-2">{{ forloop.counter }}.</strong>
+                        <span class="step-text">{{ step }}</span>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="mb-4">
+            <a href="{% url 'home' %}" class="btn margin-vertical btn-primary">
+            <i class="bi bi-arrow-left"></i> Go back home
+            </a>
+            <a href="{% url 'update_recipe' recipe.id %}" class="btn margin-vertical btn-success">
+                {% if is_owner %}
+                    <i class="bi bi-pencil"></i> Update this recipe
+                {% else %}
+                    <i class="bi bi-plus-circle"></i> Create My Version
+                {% endif %}
+            </a>
+            <a href="{% url 'delete_recipe' recipe.id %}" class="btn margin-vertical btn-warning">
+            <i class="bi bi-trash"></i> Delete this recipe
+            </a>
+        </div>
+        </div>
     </div>
 </div>
-</div>
+
+<!-- Back to Top Button -->
+<a href="#top" class="btn-top btn-primary btn">
+    <i class="bi bi-arrow-up"></i>
+</a>
+
 {% endblock %}
