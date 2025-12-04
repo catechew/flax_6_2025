@@ -2,6 +2,7 @@ from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
 from django.db.models import Avg
+from .recipe_interaction import RecipeInteractionMixin
 import math
 
 
@@ -206,4 +207,15 @@ class Recipe(models.Model):
         return math.floor(self.average_rating() + 0.5)
 
     def rating_count(self):
+        """Return the number of ratings for this recipe"""
         return self.ratings.count()
+
+    @property
+    def rating_display(self):
+        """Display average rating for admin."""
+        return round(self.average_rating(), 2)
+
+    @property
+    def flag_count(self):
+        """Total flags for this recipe."""
+        return self.flags.count()

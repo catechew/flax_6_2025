@@ -27,10 +27,6 @@ def some_recipes(request):
 
     paginator = Paginator(recipes, ITEMS_PER_PAGE)
     page_object = paginator.get_page(request.GET.get('page'))
-
-    context = {
-        'recipes': recipes,
-        'page_object': page_object,
-    }
-
-    return render(request, 'some_recipes.html', context)
+    
+    context = {'recipes': recipes, 'page_object': page_object}
+    return render(request, 'ai/some_recipes.html', context)

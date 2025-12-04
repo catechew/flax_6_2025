@@ -1,0 +1,148 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="ai-chat-container">
+    <!-- Messages Area -->
+    <div class="chat-messages" id="chatMessages">
+        {% if not show_results and not is_generating %}
+            <!-- Welcome Message -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">What do you want to eat?</h1>
+                <p class="welcome-subtitle">Describe what you want to cook and Chef AI will create a recipe for you!</p>
+                    <!-- Link to AI Recipe Search -->
+                <div class="ai-search-link-top">
+                    <a href="{% url 'ai_recipe_search' %}" class="ai-search-btn">
+                        <i class="bi bi-search"></i>
+                        Search existing recipes using AI
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if messages %}
+            <div class="messages-wrapper">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if show_results and recipe %}
+            <!-- User's Prompt -->
+            <div class="message-bubble user-message">
+                <div class="message-content">
+                    {{ user_prompt }}
+                </div>
+            </div>
+
+            <!-- AI Response -->
+            <div class="message-bubble ai-message">
+                <div class="message-content">
+                    <div class="recipe-result">
+                        <h2 class="recipe-title">{{ recipe.title }}</h2>
+                        <p class="recipe-description">{{ recipe.description }}</p>
+
+                        <div class="recipe-stats-grid">
+                            <div class="recipe-stat">
+                                <i class="bi bi-clock"></i>
+                                <div class="stat-label">Prep Time</div>
+                                <div class="stat-value">{{ recipe.prep_time }}</div>
+                            </div>
+                            <div class="recipe-stat">
+                                <i class="bi bi-fire"></i>
+                                <div class="stat-label">Cook Time</div>
+                                <div class="stat-value">{{ recipe.cook_time }}</div>
+                            </div>
+                            <div class="recipe-stat">
+                                <i class="bi bi-people"></i>
+                                <div class="stat-label">Servings</div>
+                                <div class="stat-value">{{ recipe.servings }}</div>
+                            </div>
+                            <div class="recipe-stat">
+                                <i class="bi bi-speedometer2"></i>
+                                <div class="stat-label">Difficulty</div>
+                                <div class="stat-value">{{ recipe.difficulty }}</div>
+                            </div>
+                        </div>
+
+                        {% if recipe.dietary_info %}
+                            <div class="dietary-info">
+                                <strong>Dietary Info:</strong>
+                                {% for tag in recipe.dietary_info %}
+                                    <span class="badge bg-success">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <h3 class="recipe-section-title">
+                            <i class="bi bi-card-checklist"></i>
+                            Ingredients
+                        </h3>
+                        <ul class="ingredient-list">
+                            {% for ingredient in recipe.ingredients %}
+                                <li>{{ ingredient }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <h3 class="recipe-section-title">
+                            <i class="bi bi-list-ol"></i>
+                            Instructions
+                        </h3>
+                        <ol class="instruction-list">
+                            {% for step in recipe.steps %}
+                                <li>{{ step }}</li>
+                            {% endfor %}
+                        </ol>
+
+                        {% if recipe.tips %}
+                            <h3 class="recipe-section-title">
+                                <i class="bi bi-lightbulb"></i>
+                                Chef's Tips
+                            </h3>
+                            <ul class="tips-list">
+                                {% for tip in recipe.tips %}
+                                    <li>{{ tip }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <div class="recipe-actions">
+                            <a href="{% url 'ai_recipe_generator' %}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                Generate Another Recipe
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Input Area (Fixed at Bottom) -->
+    <div class="chat-input-container">
+        <div class="chat-input-wrapper">
+            <form method="post" class="chat-form">
+                {% csrf_token %}
+                <div class="input-group-chat">
+                    <textarea
+                        name="prompt"
+                        id="prompt"
+                        class="chat-textarea"
+                        rows="1"
+                        placeholder="e.g., I'm a student on a budget and only have £3 for tonight. What can I make?"
+                        required
+                    ></textarea>
+                    <button type="submit" class="chat-submit-btn">
+                        <i class="bi bi-arrow-up"></i>
+                    </button>
+                </div>
+                <small class="input-helper-text">This may take around 10 seconds.</small>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

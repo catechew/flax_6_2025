@@ -114,5 +114,36 @@
   align-items: center;
   justify-content: center;
 
-  z-index: 999;
+<<<<<<< HEAD
+.btn-orange:hover i {
+ transform: translateX(3px);
+}
+
+/* AI Prompt Submit Button */
+.chat-submit-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: var(--primary-colour);
+    border: none;
+    color: var(--white-colour);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.chat-submit-btn:hover {
+    background-color: var(--primary-colour-darker);
+    transform: translateY(-2px);
+}
+
+.chat-submit-btn:active {
+    transform: translateY(0);
+}
+
+.chat-submit-btn i {
+    font-size: 1.3rem;
+    z-index: 999;
 }
