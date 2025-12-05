@@ -1,5 +1,6 @@
 from django.test import TestCase, RequestFactory
 from unittest.mock import MagicMock
+from django.contrib.sessions.backends.db import SessionStore
 
 from recipes.helpers.recipe_form_helpers import (
     get_tag_action_from_request,
@@ -127,7 +128,7 @@ class CleanupSessionTests(TestCase):
 
     def test_cleanup_when_key_not_present(self):
         request = self.factory.get("/")
-        request.session = {}
+        request.session = SessionStore()
 
         cleanup_session("nonexistent_key", request.session, request)
 
@@ -135,10 +136,12 @@ class CleanupSessionTests(TestCase):
 
     def test_cleanup_when_key_present(self):
         request = self.factory.get("/")
-        request.session = {
-            "recipe_form_data": {},
-            "temp_image_path": None,
-        }
+        
+        session = SessionStore()           
+        session["recipe_form_data"] = {}
+        session["temp_image_path"] = None
+
+        request.session = session         
 
         cleanup_session("recipe_form_data", request.session, request)
 
@@ -169,7 +172,7 @@ class GetAIPrefillTests(TestCase):
 
     def test_returns_none_when_flag_false(self):
         request = self.factory.get("/")
-        request.session = {}
+        request.session = SessionStore()
 
         result = get_ai_prefill_from_session(request)
         self.assertIsNone(result)
