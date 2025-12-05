@@ -52,3 +52,17 @@ class AIRecipeSearchViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'ai/ai_recipe_search.html')
+
+    def test_post_without_context_shows_error(self):
+        """test post without context shows error"""
+        self.client.login(username='@testuser', password='Password123')
+        response = self.client.post(self.url, {})
+        messages = list(response.context['messages'])
+        self.assertTrue(any('Please describe your situation' in str(m) for m in messages))
+
+    def test_post_with_empty_context_shows_error(self):
+        """test post with empty context shows error"""
+        self.client.login(username='@testuser', password='Password123')
+        response = self.client.post(self.url, {'context': ''})
+        messages = list(response.context['messages'])
+        self.assertTrue(any('Please describe your situation' in str(m) for m in messages))
