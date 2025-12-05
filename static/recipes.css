@@ -1,11 +1,6 @@
 /* Recipe Cards*/
 .recipe-card {
-  background: var(--white-colour) !important;
-  border: none !important;
-  border-radius: 2px;
   padding: 0.75rem;
-  overflow: hidden;
-  box-shadow: 0px 10px var(--black-colour);
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
@@ -33,11 +28,6 @@
 
 .recipe-card .card-body {
   padding: 0.5rem 0.75rem;
-}
-
-.recipe-card .card-title {
-  font-weight: 700;
-  font-size: 1.15rem;
 }
 
 .recipe-card .card-text {
@@ -88,8 +78,8 @@
 }
 
 .heart-btn i {
-    font-size: 1.3rem;
-    color: #dc3545 !important;
+    font-size: 1.2rem;
+    color: var(--black-colour); 
 }
 
 .heart-btn:hover i {
@@ -137,7 +127,6 @@
 .tag-remove {
     background: none;
     border: none;
-    font-weight: bold;
     cursor: pointer;
     padding: 0 2px;
     line-height: 1;
@@ -155,7 +144,7 @@
 }
 
 .rating-count-text {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .servings-input {

@@ -5,17 +5,17 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <a class="navbar-brand navbar-brand-centered" href="{% url 'dashboard' %}">
+    <a class="navbar-brand navbar-brand-centered fw-bold" href="{% url 'dashboard' %}">
       RECIPIFY
     </a>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-bold">
         
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="discoverDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <b>Discover</b>
+            Discover
           </a>
           <ul class="dropdown-menu" aria-labelledby="discoverDropdown">
             <li>
@@ -29,7 +29,7 @@
 
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="kitchenDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <b>My Kitchen</b>
+              My Kitchen
             </a>
             <ul class="dropdown-menu" aria-labelledby="kitchenDropdown">
               <li>
@@ -53,7 +53,7 @@
 
         <li class="nav-item">
           <a class="nav-link" href="{% url 'create_recipe' %}">
-            <b><i class="bi bi-plus-circle"></i> Create Recipe</b>
+            <i class="bi bi-plus-circle"></i> Create Recipe</b>
           </a>
         </li>
 
@@ -76,7 +76,7 @@
             </div>
         {% else %}
              <div class="navbar-nav">
-                <a class="nav-link" href="{% url 'log_in' %}"><b>Log In</b></a>
+                <a class="nav-link" href="{% url 'log_in' %}">Log In</a>
              </div>
         {% endif %}
       </div>

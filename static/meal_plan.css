@@ -2,204 +2,113 @@
  * Meal Plan Styles.
  * Inherits CSS variables from custom.css.
  */
-
-.meal-card {
-  background: var(--white-colour);
-  border-radius: 14px !important;
-  border: 1px solid var(--white-colour) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
-  transition: 0.2s ease;
-}
-
-.meal-card .card-header {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9rem;
-}
-
-.meal-card .card-body {
-  padding: 0.75rem;
-}
-
 .meal-card:hover {
   transform: translateY(-2px);
 }
 
-.meal-tag {
-    display: inline-block;
-    background: var(--white-colour);
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-right: 4px;
-    color: #444;
-}
-
 .day-header {
-    font-size: 1.05rem;
-    font-weight: 700;
-    padding: 14px 16px;
-    letter-spacing: 0.3px;
-    background: var(--primary-colour);
-    color: var(--bg-colour);
-}
-
-.day-header .day-date {
-    font-size: 0.9rem;
-    font-weight: 500;
-    opacity: 0.85;
-}
-
-.meal-plan-wrapper {
-    background: linear-gradient(135deg, #faf8f5 0%, #f0ebe3 100%);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0px 8px 24px rgba(0,0,0,0.06);
-}
-
-.empty-slot {
-  color: #6c757d;
-  font-style: italic;
+  background: var(--primary-colour);
+  color: var(--bg-colour);
 }
 
 .slot-line strong {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: #2a2522;
-    letter-spacing: 0.3px;
-    display: block;
-    margin-bottom: 15px;
-}
-
-.meal-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 4px;
-  object-fit: contain;
-  opacity: 0.85;
+  color: var(--black-colour);
+  display: block;
+  margin-bottom: 15px;
 }
 
 .meal-grid {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    gap: 16px;
-    padding-bottom: 16px;
-    padding-left: 4px;
-    padding-right: 4px;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scroll-padding: 16px;
-    -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 16px;
+  padding-bottom: 16px;
+  padding-left: 4px;
+  padding-right: 4px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scroll-padding: 16px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .meal-grid::-webkit-scrollbar {
-    height: 10px;
+  height: 10px;
 }
 
 .meal-grid::-webkit-scrollbar-track {
-    background: var(--white-colour);
-    border-radius: 10px;
-    margin: 0 10px;
+  background: var(--white-colour);
+  border-radius: 10px;
+  margin: 0 10px;
 }
 
 .meal-grid::-webkit-scrollbar-thumb {
-    background: var(--primary-colour);
-    border-radius: 10px;
+  background: var(--primary-colour);
+  border-radius: 10px;
 }
 
 .meal-grid::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-colour-darker);
+  background: var(--primary-colour-darker);
 }
 
 @media (min-width: 769px) {
-    .meal-card {
-        min-width: 280px;
-        max-width: 280px;
-        flex-shrink: 0;
-        scroll-snap-align: start;
-    }
+  .meal-card {
+    min-width: 280px;
+    max-width: 280px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
 }
 
 @media (max-width: 768px) {
-    .meal-card {
-        min-width: 240px;
-        max-width: 240px;
-        flex-shrink: 0;
-        scroll-snap-align: start;
-    }
-    
-    .meal-grid {
-        gap: 12px;
-        scroll-snap-type: x proximity;
-    }
+  .meal-card {
+    min-width: 240px;
+    max-width: 240px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  .meal-grid {
+    gap: 12px;
+    scroll-snap-type: x proximity;
+  }
 }
 
 .slot-content {
-    display: flex;
-    flex-direction: column;
-    margin-top: 8px;
-}
-
-.btn-row {
-    display: flex;
-    gap: 6px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
 }
 
 .recipe-link {
-    color: var(--black-colour);
-    text-decoration: none;
+  color: var(--black-colour);
+  text-decoration: none;
 }
 
 .recipe-link:hover {
-    color: var(--primary-colour);
-    text-decoration: underline;
+  color: var(--primary-colour);
+  text-decoration: underline;
 }
 
 .meal-thumb {
-    width: 90px;
-    height: 90px;
-    border-radius: 8px;
-    object-fit: cover;
-    box-shadow: none;
-    margin-right: 10px;
-}
-
-.btn-row .btn {
-    padding: 10px 12px !important;
-    font-size: 0.9rem !important;
-}
-
-.btn-add {
-    padding: 5px 14px !important;
-    font-size: 0.8rem !important;
-    font-weight: 500 !important;
-    border-radius: 8px !important;
-    border: 1.5px solid var(--primary-colour) !important;
-    color: var(--primary-colour) !important;
-    background: transparent !important;
-    transition: all 0.2s ease !important;
-}
-
-.btn-add:hover {
-    background-color: var(--primary-colour) !important;
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(197, 60, 50, 0.2);
+  width: 90px;
+  height: 90px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: none;
+  margin-right: 10px;
 }
 
 .edit-meal-wrapper {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .meal-context .badge {
-  font-size: 0.9rem;
   padding: 8px 16px;
   margin-right: 8px;
 }
@@ -210,13 +119,12 @@
 }
 
 .edit-meal-wrapper .form-label {
-  color: #5a4f47;
-  font-size: 0.95rem;
+  color: var(--grey-colour);
 }
 
 .edit-meal-wrapper .form-select {
-  border: 2px solid #e0e0e0;
-  padding: 12px; 
+  border: 2px solid var(--white-colour);
+  padding: 12px;
   border-radius: 10px;
 }
 
@@ -226,59 +134,38 @@
 }
 
 .meal-label {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 6px;
-    display: block;
-    font-weight: 600;
+  color: var(--grey-colour);
+  margin-bottom: 6px;
+  display: block; 
 }
 
 .slot-line {
-    margin-bottom: 14px !important;
-    padding-bottom: 12px !important;
+  margin-bottom: 14px !important;
+  padding-bottom: 12px !important;
 }
 
 .slot-line:last-child {
-    border-bottom: none !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-}
-
-.empty-meal-indicator {
-  color: #fffefe;
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 14px 0;
-  font-style: italic;
-  user-select: none;
-}
-
-.slot-content:hover .empty-meal-indicator {
-  color: var(--primary-colour);
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .day-heading {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    white-space: nowrap;
-    padding-right: 10px;
-}
-
-.day-title {
-    font-size: 1.05rem;
-    font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  white-space: nowrap;
+  padding-right: 10px;
 }
 
 .day-date {
-    font-size: 0.9rem;
-    opacity: 0.85;
+  opacity: 0.85;
 }
 
 .day-date::before {
-    content: "•";
-    margin-right: 6px;
-    opacity: 0.5;
+  content: "•";
+  margin-right: 6px;
+  opacity: 0.5;
 }
 
 .progress-ring {
@@ -288,19 +175,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: conic-gradient(
-    #39954e var(--progress, 0%),
-    #eaeaea 0
-  );
+  background: conic-gradient(var(--colour-3) var(--progress, 0%),
+      var(--grey-colour) 0);
 }
 
 .progress-ring span {
-  background: #faf8f5;
+  background: var(--white-colour);
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -314,75 +198,81 @@
 .progress-ring-lg span {
   width: 78px;
   height: 78px;
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1rem;
 }
 
 .snack-collapsible {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px dashed #e0e0e0;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--white-colour);
 }
 
 .snack-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    color: #888;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--grey-colour);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .snack-toggle:hover {
-    color: var(--primary-colour);
+  color: var(--primary-colour);
 }
 
 .snack-toggle:hover .plus-icon {
-    color: var(--primary-colour);
-    transform: rotate(90deg);
+  color: var(--primary-colour);
+  transform: rotate(90deg);
 }
 
 .snack-toggle[aria-expanded="true"] .plus-icon {
-    transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
-.shopping-list-item input[type="checkbox"]:checked + label {
-    text-decoration: line-through;
-    color: #999;
-    opacity: 0.6;
+.shopping-list-item input[type="checkbox"]:checked+label {
+  text-decoration: line-through;
+  color: var(--grey-colour);
+  opacity: 0.6;
 }
 
-.shopping-list-item input[type="checkbox"]:checked + label strong {
-    text-decoration: line-through;
+.shopping-list-item input[type="checkbox"]:checked+label strong {
+  text-decoration: line-through;
 }
 
 .shopping-list-banner {
-  background: #02661a;
+  background: var(--colour-3);
+}
+
+.tag-meal-plan {
+  padding: 1px 7px;
+  font-size: 0.6rem !important;
+  border-radius: 8px;
+}
+
+.tag-vegetarian {
+  background-color: var(--colour-3);
+  color: var(--white-colour);
+}
+
+.tag-protein {
+  background-color: var(--colour-4);
+  color: var(--white-colour);
+}
+
+.badge {
+  background-color: var(--primary-colour-darker) !important;
+  color: var(--bg-colour) !important;
 }
 
 @media print {
   .btn,
-  nav { display: none !important; }
-  .card { page-break-inside: avoid; }
-  .text-muted { display: none !important; }
-}
+  nav {
+    display: none !important;
+  }
 
-.tag {
-  padding: 1px 7px;
-  font-size: 0.6rem;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.tag-vegetarian {
-  background-color: #dcfce7;
-  color: #166534;
-}
-
-.tag-protein {
-  background-color: #dbeafe;
-  color: #1e40af;
+  .text-muted {
+    display: none !important;
+  }
 }

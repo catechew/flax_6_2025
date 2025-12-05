@@ -30,11 +30,11 @@
           <div class="d-flex gap-1 mt-1 flex-wrap">
 
             {% if "vegetarian" in slot.recipe.get_dietary_tags_list %}
-              <span class="tag tag-vegetarian">Vegetarian</span>
+              <span class="tag-meal-plan tag-vegetarian">Vegetarian</span>
             {% endif %}
 
             {% if "high protein" in slot.recipe.get_other_tags_list %}
-              <span class="tag tag-protein">High Protein</span>
+              <span class="tag-meal-plan tag-protein">High Protein</span>
             {% endif %}
 
           </div>

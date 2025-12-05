@@ -12,13 +12,33 @@
   --heart: #ff4d88;
 
   --black-colour: #202323;
+  --grey-colour: #9da4aa;
   --bg-colour: #f7f3eb;
   --white-colour: #FAF9F5;
 }
 
-/* 
-* Card Header 
-*/
+/* Alerts */
+.alert {
+  border-radius: 0;
+}
+
+.alert-info {
+  background-color: var(--primary-colour-lighter) !important;
+  border-color: var(--primary-colour) !important;
+  color: var(--primary-colour-darkest) !important;
+}
+
+/* Card Base */
+.card-base {
+  background: var(--white-colour) !important;
+  border-radius: 8px;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: 0.2s ease;
+}
+
+/* Card Headers */
 .card-header.bg-primary {
   background-color: var(--primary-colour) !important;
   color: var(--bg-colour) !important;
@@ -37,28 +57,4 @@
 .card-header.bg-warning {
   background-color: var(--primary-colour-lighter) !important;
   color: var(--black-colour) !important;
-}
-
-/*
-* Tag colours
-*/
-.badge.bg-primary {
-  background-color: var(--primary-colour) !important;
-  color: var(--bg-colour) !important;
-}
-
-.badge.bg-warning {
-  background-color: var(--primary-colour-darkest) !important;
-  color: var(--bg-colour) !important;
-}
-
-/* Alerts */
-.alert {
-  border-radius: 0;
-}
-
-.alert-info {
-  background-color: var(--primary-colour-lighter) !important;
-  border-color: var(--primary-colour) !important;
-  color: var(--primary-colour-darkest) !important;
 }

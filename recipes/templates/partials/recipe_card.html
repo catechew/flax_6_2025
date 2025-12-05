@@ -9,7 +9,7 @@
     {% endif %}
 
     <div class="card-body d-flex flex-column">
-        <h5 class="card-title">{{ recipe.title }}</h5>
+        <h5 class="card-title fw-bold">{{ recipe.title }}</h5>
 
         <div class="small mb-2 d-flex align-items-center gap-1">
             {% include 'partials/recipe_rating_display.html' with rating=recipe.average_rating_rounded %}
