@@ -183,3 +183,40 @@ class AIRecipeSearchViewTests(TestCase):
         response = self.client.post(self.url, {'context': user_input})
         
         self.assertEqual(response.context['user_context'], user_input)
+
+    @patch('recipes.views.ai_recipe_search_view.openai.ChatCompletion.create')
+    def test_openai_api_error(self, mock_openai):
+        """test openai api error shows error message"""
+        self.client.login(username='@testuser', password='Password123')
+        mock_openai.side_effect = Exception('API Error')
+        
+        response = self.client.post(self.url, {'context': 'I want pasta'})
+        
+        messages = list(response.context['messages'])
+        self.assertTrue(any('An error occurred' in str(m) for m in messages))
+
+    @patch('recipes.views.ai_recipe_search_view.openai.ChatCompletion.create')
+    def test_invalid_json_response(self, mock_openai):
+        """test invalid json from ai shows error"""
+        self.client.login(username='@testuser', password='Password123')
+        
+        invalid = MagicMock()
+        invalid.choices = [MagicMock()]
+        invalid.choices[0].message.content = 'not valid json'
+        mock_openai.return_value = invalid
+        
+        response = self.client.post(self.url, {'context': 'I want pasta'})
+        
+        messages = list(response.context['messages'])
+        self.assertTrue(any('An error occurred' in str(m) for m in messages))
+
+    @patch('recipes.views.ai_recipe_search_view.openai.ChatCompletion.create')
+    def test_exception_preserves_user_context(self, mock_openai):
+        """test user context preserved on error"""
+        self.client.login(username='@testuser', password='Password123')
+        mock_openai.side_effect = Exception('Error')
+        
+        user_input = 'I want Italian food'
+        response = self.client.post(self.url, {'context': user_input})
+        
+        self.assertEqual(response.context['user_context'], user_input)
