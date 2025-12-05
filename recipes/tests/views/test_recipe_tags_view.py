@@ -3,8 +3,7 @@ from django.urls import reverse
 from unittest.mock import patch
 from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model 
-
-User = ger_user_model()
+User = get_user_model()
 
 
 class RecipeTagsViewTests(TestCase):
