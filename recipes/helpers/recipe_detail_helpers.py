@@ -103,7 +103,7 @@ def create_cost_prompt(scaled_ingredients, servings):
 def call_openai_for_cost(prompt):
     """ Call OpenAI API for cost estimation. """
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "Estimate recipe costs in GBP. Return only JSON."},
             {"role": "user", "content": prompt}
