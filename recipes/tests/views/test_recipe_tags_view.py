@@ -28,7 +28,7 @@ class RecipeTagsViewTests(TestCase):
 
         # Pre populate the session with form data 
         session = self.client.session
-        session["form_data"] = {"title": "Test"}
+        session["recipe_form_data"] = {"title": "Test"}
         session.save()
 
     @patch("recipes.views.recipe_tags_view.RecipeFormHandler.handle_tags_post")
