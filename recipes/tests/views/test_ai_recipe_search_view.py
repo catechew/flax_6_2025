@@ -122,3 +122,64 @@ class AIRecipeSearchViewTests(TestCase):
         
         self.assertTrue(response.context['no_results'])
         self.assertTrue(response.context['show_results'])
+
+    @patch('recipes.views.ai_recipe_search_view.openai.ChatCompletion.create')
+    def test_all_context_variables_present(self, mock_openai):
+        """test all required context variables are present"""
+        self.client.login(username='@testuser', password='Password123')
+        
+        search_params = MagicMock()
+        search_params.choices = [MagicMock()]
+        search_params.choices[0].message.content = json.dumps({
+            "search_query": "pasta",
+            "dietary_filters": [],
+            "cuisine_filters": [],
+            "other_filters": [],
+            "sort_by": "date_newest"
+        })
+        
+        ranking = MagicMock()
+        ranking.choices = [MagicMock()]
+        ranking.choices[0].message.content = json.dumps({
+            "top_picks": [{"recipe_id": self.recipe1.id, "title": "Pasta", "reason": "Good"}],
+            "search_explanation": "Found pasta"
+        })
+        
+        mock_openai.side_effect = [search_params, ranking]
+        response = self.client.post(self.url, {'context': 'I want pasta'})
+        
+        self.assertIn('user_context', response.context)
+        self.assertIn('search_params', response.context)
+        self.assertIn('search_explanation', response.context)
+        self.assertIn('top_picks', response.context)
+        self.assertIn('top_pick_ids', response.context)
+        self.assertIn('total_count', response.context)
+        self.assertIn('view_all_url', response.context)
+
+    @patch('recipes.views.ai_recipe_search_view.openai.ChatCompletion.create')
+    def test_user_context_preserved(self, mock_openai):
+        """test user input is preserved in context"""
+        self.client.login(username='@testuser', password='Password123')
+        
+        search_params = MagicMock()
+        search_params.choices = [MagicMock()]
+        search_params.choices[0].message.content = json.dumps({
+            "search_query": "quick",
+            "dietary_filters": [],
+            "cuisine_filters": [],
+            "other_filters": ["quick"],
+            "sort_by": "date_newest"
+        })
+        
+        ranking = MagicMock()
+        ranking.choices = [MagicMock()]
+        ranking.choices[0].message.content = json.dumps({
+            "top_picks": [{"recipe_id": self.recipe1.id, "title": "Pasta", "reason": "Quick"}],
+            "search_explanation": "Found quick recipes"
+        })
+        
+        mock_openai.side_effect = [search_params, ranking]
+        user_input = 'I need something quick for dinner'
+        response = self.client.post(self.url, {'context': user_input})
+        
+        self.assertEqual(response.context['user_context'], user_input)
