@@ -23,7 +23,7 @@ def some_recipes(request):
         except ValueError:
             continue
 
-    recipes = Recipe.objects.filter(id__in=recipe_ids)
+    recipes = Recipe.objects.visible_to(request.user).filter(id__in=recipe_ids)
 
     paginator = Paginator(recipes, ITEMS_PER_PAGE)
     page_object = paginator.get_page(request.GET.get('page'))

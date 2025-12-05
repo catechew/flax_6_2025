@@ -5,6 +5,22 @@ from django.db.models import Avg
 from .recipe_interaction import RecipeInteractionMixin
 import math
 
+class RecipeManager(models.Manager):
+    def visible_to(self, user):
+        """
+        return recipes visible to a specific user (public + user's own)
+        """
+        if user.is_authenticated:
+            return self.filter(
+                models.Q(is_private=False) | models.Q(author=user)
+            )
+        return self.filter(is_private=False)
+    
+    def public(self):
+        """
+        return only public recipes
+        """
+        return self.filter(is_private=False)
 
 class Recipe(models.Model):
     """
@@ -219,3 +235,5 @@ class Recipe(models.Model):
     def flag_count(self):
         """Total flags for this recipe."""
         return self.flags.count()
+    
+    objects = RecipeManager()
