@@ -52,13 +52,14 @@ class SaveAIRecipeViewTests(TestCase):
         }
         session.save()
 
-        response = self.client.get(self.url, follow=True)
+        response = self.client.get(self.url)
 
-        self.assertRedirects(response, reverse('create_recipe'))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('create_recipe'))
 
-        self.assertTrue(self.client.session.get('from_ai_save_button'))
-
-        self.assertIn('ai_recipe_prefill', self.client.session)
+        session = self.client.session
+        self.assertIn('ai_recipe_prefill', session)
+        self.assertTrue(session.get('from_ai_save_button'))
 
     def test_cleans_up_last_ai_recipe(self):
         """last_ai_recipe removed from session after transfer."""
