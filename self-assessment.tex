@@ -1,0 +1,158 @@
+%%% This is a LaTeX template for the small group project self-assessment document.
+%%% To compile this document, make sure pdflatex is installed on your workstation and use:
+%%% pdflatex self-assessment.tex in a UNIX CLI.
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\renewcommand{\familydefault}{\sfdefault}
+
+\begin{document}
+\title{Small Group Project Self-Assessment}
+\author{}
+\date{}
+\maketitle
+
+%%% Lines starting with %%% are comment lines.
+%%% Fill out the form by removing all comment lines and replacing them by the suggested content.
+
+\noindent\textbf{Team name}: Flax-6
+
+\noindent\textbf{URL of the deployed application}: https://hamed54.pythonanywhere.com/
+
+\noindent\textbf{Team members}:
+\begin{itemize}
+\setlength\itemsep{0em}
+\item Arvin Hadidi-Fard
+\item Cate Tay Chew
+\item Hamed Latif
+\item Katherine Wanting Zhao
+\item Kausar Khan
+\end{itemize}
+
+\noindent\textbf{If the team agrees on an effective team size, specify it here.  Otherwise, state that the team does not agree.} 
+The team agrees that the effective team size was five.
+
+\section*{Submission checklist}
+\begin{tabular}{|p{15mm}|p{13cm}|}
+\hline
+Check & Task \\
+\hline
+& The work that is submitted has been produced by members of the team only, without input from other students or third parties.  All use of examples from the internet and generative AI are declared in the \texttt{README.md} file.\\
+\hline
+& The team is familiar with the required deliverables for this project, outlined in the small group project handbook, available on KEATS.\\
+\hline
+& The team's shared GitHub repository has been registered on Team Feedback.  All commits are attributed to a member of the team (check this on Team Feedback!).  All collaborative coding sessions have been registered by the committer on Team Feedback.  The shared repository has a default branch that corresponds to the accepted version of the software.\\
+\hline
+& The version of the web application that the team wishes to submit has been deployed.  The URL is recorded in the \texttt{README.md} file.  The deployed system is seeded with data that meets the requirements outlined in the specifications.  The system is accessible using the required access credentials.  The deployed system has been manually tested to ensure all functionality available in development works and is accessible in production.\\
+\hline
+& All team members listed above agree with the claims made in this checklist.\\
+\hline
+\end{tabular}
+
+\section*{Objective}
+This project helps students in student accommodation to make everyday cooking easier to fit tailored meals into the busy student lifestyle. It centralises recipes, sorts recipes, and simplifies meal planning. It enables users to discover and store recipes for later, and automatically generate shopping lists, with optional AI support for inspiration. By integrating planning, organisation, and light social features in one platform, the application encourages consistent home cooking and makes managing meals easier and more approachable.
+
+\subsection*{Draft (team planning notes -- to be removed)}
+
+\textbf{Target users:}
+\begin{itemize}
+\item Students mainly living in shared housing / uni accom
+\item These students need simple, repeatable meals 
+\end{itemize}
+
+\textbf{Core problem we are solving:}
+\begin{itemize}
+\item Recipes are often scattered (notes, screenshots, youtube, social media)
+\item Cooking decisions takes too much effort 
+\item Meal planning is tedious and often manual 
+\item Shopping lists are forgotten or incomplete 
+\end{itemize}
+
+\textbf{What Recipify helps users to do:}
+\begin{itemize}
+\item Discover recipes easily
+\item Store their own recipes in one place
+\item Discover recipes from others 
+\item Plan meals for the week
+\item Reuse previous weeks' meal plans to save time 
+\item Generate shopping lists automatically
+\item Use AI to get recipe ideas when they don't know what to cook
+\end{itemize}
+
+\textbf{Business value:}
+\begin{itemize}
+\item Helps students cook meals more consistently instead of defaulting to takeaways
+\item Reduce decision fatigue around cooking 
+\item Makes cooking feel manageable not overwhelming 
+\end{itemize}
+
+\textbf{Social / engagement:}
+\begin{itemize}
+\item Follow other users
+\item See popular and highly rated recipes
+\item Save favourite recipes 
+\item Build a profile showing personal contributions 
+\item Light community feel; not heavy social media
+\end{itemize}
+
+\textbf{What makes our app different from other recipe sites:}
+\begin{itemize}
+\item Integration of meal planning, shopping lists, and social features in one platform
+\item AI is used as a decision tool; not just for show 
+\end{itemize}
+
+\textbf{What is not the goal:}
+\begin{itemize}
+\item Not intended to be a commercial or professional nutrition planning service
+\item Not aimed at professional chefs
+\item No a social platform first 
+\item Not a calorie tracking / fitness app 
+\end{itemize}
+
+
+
+\section*{Use cases}
+Use cases clarify who uses the system and how they can use it to accomplish particular tasks.  Identify the main use cases of your team's application.  For each use case, provide:
+\begin{itemize}
+\item Name: a name for the use case.  If the name does not describe the task adequately by itself, add a short task description.
+\item Actor \& trigger: Identify who and what starts the interaction with the system.
+\item Main success scenario \& outcome: List the main steps that lead to a successful outcome.
+\item Alternate flows: Identify possible alternative flow conditions (e.g. what happens under anomalous conditions).
+\end{itemize}
+An example of a use case is as follows:
+\begin{itemize}
+\item Name: Place order
+\item Actor and trigger: Customer selects products and proceeds to checkout.
+\item Main success scenario: (1) Customer logs in, (2) adds products to cart, (3) proceeds to checkout, (4) enters shipping and payment details, (5) confirms order, (6) system processes payment and displays confirmation. Outcome: new order is placed.
+\item Alternate flows: Payment fails $\rightarrow$ system redirects to step (4) with error message.
+\end{itemize}
+
+\begin{tabular}{|p{30mm}|p{30mm}|p{40mm}|p{40mm}|}
+\hline
+Name (\& short task description) & Actor \& trigger & Main success scenario \& outcome & Alternative flows\\
+\hline Create recipe
+ & & & \\ 
+ \hline Browse and filter recipes
+  & & & \\
+ \hline Search recipes
+  & & & \\
+ \hline View recipe details
+  & & & \\
+ \hline Rate recipes
+  & & & \\
+ \hline Save recipes
+  & & & \\
+ \hline Plan meals
+  & & & \\
+ \hline Reuse previous meal plans
+  & & & \\
+ \hline Generate a shopping list
+  & & & \\
+ \hline Follow and view other users
+  & & & \\
+ \hline Suggest new recipes with AI
+   & & & \\
+ \hline
+\end{tabular}
+%%% Add rows as needed.
+
+\end{document}

@@ -1,15 +1,15 @@
 from django.core.validators import MinLengthValidator, MinValueValidator
 from django.conf import settings
 from django.db import models
-
 from django.db.models import Avg
+from .recipe_interaction import RecipeInteractionMixin
 import math
 
 
-"""A Recipe can be posted by a user and later we will be able to do all CRUD operations on it.
-    It has 5 fields as shown below"""
-
 class Recipe(models.Model):
+    """
+    A Recipe can be posted by a user and later we will be able to do all CRUD operations on it.
+    """
     
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
@@ -107,7 +107,7 @@ class Recipe(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        """Auto-populate adjectives from tag fields"""
+        """ Auto-populate adjectives from tag fields. """
         all_tags = []
 
         if self.course_tags:
@@ -126,7 +126,7 @@ class Recipe(models.Model):
         ordering = ['-publication_date']  # Newest first
         
     def __str__(self):
-        # Format ingredients and steps as multi-line text for readability
+        # Format ingredients and steps as multi-line text for readability. 
         ingredients_text = "\n".join(self.get_ingredient_list())
         steps_text = "\n".join(self.get_step_list())
         return (
@@ -164,7 +164,7 @@ class Recipe(models.Model):
         return (self.cook_time_hours * 60) + self.cook_time_minutes
 
     def format_time(self, hours, minutes):
-        """Format time as a readable string"""
+        """ Format time as a readable strin. """
         if hours == 0 and minutes == 0:
             return "Not specified"
         parts = []
@@ -207,4 +207,15 @@ class Recipe(models.Model):
         return math.floor(self.average_rating() + 0.5)
 
     def rating_count(self):
+        """Return the number of ratings for this recipe"""
         return self.ratings.count()
+
+    @property
+    def rating_display(self):
+        """Display average rating for admin."""
+        return round(self.average_rating(), 2)
+
+    @property
+    def flag_count(self):
+        """Total flags for this recipe."""
+        return self.flags.count()

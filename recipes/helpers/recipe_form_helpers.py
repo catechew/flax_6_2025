@@ -24,23 +24,33 @@ def get_tag_action_from_request(request):
     if request.method != "POST":
         return None, None, None
 
-    for category in TAG_CATEGORIES:
-        key = f"add_{category}_tag"
-        if key in request.POST:
-            return "add", category, request.POST.get(key)
+    results = [check_category_for_tag_action(request, cat) for cat in TAG_CATEGORIES]
+    valid_results = [r for r in results if r != (None, None, None)]
 
-        key = f"add_{category}_tag_custom"
-        if key in request.POST:
-            return "add", category, request.POST.get(f"{category}_tag_value")
+    if not valid_results:
+        return None, None, None
 
-        key = f"remove_{category}_tag"
-        if key in request.POST:
-            return "remove", category, request.POST.get(key)
+    return valid_results[0]
 
+def check_category_for_tag_action(request, category):
+    """Check if a specific category has a tag action"""
+    key = f"add_{category}_tag"
+    if key in request.POST:
+        return "add", category, request.POST.get(key)
+
+    key = f"add_{category}_tag_custom"
+    if key in request.POST:
+        return "add", category, request.POST.get(f"{category}_tag_value")
+
+    key = f"remove_{category}_tag"
+    if key in request.POST:
+        return "remove", category, request.POST.get(key)
+    
     return None, None, None
 
+
 def handle_tag_operation(session_data, action, category, value):
-    """Add or remove a tag from session data."""
+    """ Add or remove a tag from session data. """
     if not all([action, category, value]):
         return False
 
@@ -51,7 +61,11 @@ def handle_tag_operation(session_data, action, category, value):
     tag_key = f"{category}_tags"
     session_data.setdefault(tag_key, [])
 
-    if action == "add" and value not in session_data[tag_key]:
+    if action == "add":
+        # If tag already exists then it is success (no duplicate added)
+        if value in session_data[tag_key]:
+            return True
+
         session_data[tag_key].append(value)
         return True
 
@@ -79,10 +93,13 @@ def initialise_tag_session(session_data, recipe=None):
     keys = ("course", "dietary", "cuisine", "other")
 
     for key in keys:
-        session_data[f"{key}_tags"] = (
-            getattr(recipe, f"get_{key}_tags_list")()
-            if recipe else []
-        )
+        session_data[f"{key}_tags"] = get_tag_list_for_key(recipe, key)
+
+def get_tag_list_for_key(recipe, key):
+    """Get tag list for a specific key from recipe or return empty list"""
+    if recipe is None:
+        return []
+    return getattr(recipe, f"get_{key}_tags_list")()
 
 def apply_tags_to_recipe(recipe, session_data):
     """ Apply tags from session to recipe. """
@@ -103,3 +120,36 @@ def cleanup_session(session_key, session_data, request):
         del request.session[session_key]
 
     request.session.modified = True
+
+def apply_ai_dietary_tags(session_data, ai_dietary_info):
+    """ Apply AI dietary tags to session. """
+    from recipes.helpers.ai_recipe_parser import map_ai_dietary_tags
+
+    if not ai_dietary_info:
+        return
+
+    mapped_tags = map_ai_dietary_tags(ai_dietary_info)
+    existing_tags = session_data.get('dietary_tags', [])
+
+    for tag in mapped_tags:
+        if tag not in existing_tags:
+            existing_tags.append(tag)
+
+    session_data['dietary_tags'] = existing_tags
+
+def get_ai_prefill_from_session(request):
+    """ Get AI prefill data from session if available. """
+    if not request.session.pop('from_ai_save_button', False):
+        return None
+
+    ai_data = request.session.pop('ai_recipe_prefill', None)
+    return ai_data
+
+
+def store_ai_dietary_info(session_data, ai_prefill):
+    """ Store AI dietary info in session for tags page. """
+    if 'ai_dietary_info' not in ai_prefill:
+        return
+
+    session_data['ai_dietary_info'] = ai_prefill.pop('ai_dietary_info')
+    session_data['ai_description'] = ai_prefill.pop('ai_description', '')

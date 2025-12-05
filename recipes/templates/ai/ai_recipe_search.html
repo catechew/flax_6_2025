@@ -1,0 +1,199 @@
+{% extends 'base/base_content.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">
+            <i class="bi bi-lightbulb"></i> AI Recipe Search
+          </h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted mb-4">
+            Describe your situation, event, or craving, and our AI will find the perfect recipes from our database!
+          </p>
+
+          <!-- Example Scenarios -->
+          <div class="alert alert-light border">
+            <strong><i class="bi bi-chat-dots"></i> Example scenarios:</strong>
+            <ul class="mb-0 mt-2">
+              <li>"There's an event at uni tonight. We were asked to bring some halal food. What can I make?"</li>
+              <li>"I need a romantic dinner for two. My university partner is vegetarian and loves Italian food."</li>
+              <li>"I'm very tight on money but need to get my protein in now. What can I eat?"</li>
+              <li>"My professor loves a nice dessert. I want to make him something before graduation. Any suggestions?"</li>
+            </ul>
+          </div>
+
+          <!-- Input Form -->
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="context" class="form-label">
+                <strong>Describe Your Situation:</strong>
+              </label>
+              <textarea
+                class="form-control"
+                id="context"
+                name="context"
+                rows="5"
+                placeholder="Tell us about your occasion, dietary needs, time constraints, who you're cooking for, etc."
+                required
+              >{{ user_context|default:'' }}</textarea>
+              <small class="form-text text-muted">
+                Be as specific as possible - mention the occasion, number of people, preferences, restrictions, time available, etc.
+              </small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100">
+              <i class="bi bi-search"></i> Find Perfect Recipes
+            </button>
+          </form>
+
+          <!-- Loading Message -->
+          <div class="alert alert-info text-center mt-4">
+            <strong>After clicking submit, please wait 5 seconds for Chef AI to process your request.</strong>
+          </div>
+
+          {% if show_results %}
+          <!-- Results Display -->
+          <div class="mt-4">
+            <hr>
+
+            <!-- Search Strategy Explanation -->
+            {% if search_explanation %}
+            <div class="alert alert-info">
+              <strong><i class="bi bi-info-circle"></i> Search Strategy:</strong> {{ search_explanation }}
+            </div>
+            {% endif %}
+
+            <!-- Search Parameters Used -->
+            <div class="card mb-3 border-secondary">
+              <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-sliders"></i> Search Parameters Used</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  {% if search_params.search_query %}
+                  <div class="col-md-6 mb-2">
+                    <strong>Search Terms:</strong>
+                    <span class="badge bg-secondary">{{ search_params.search_query }}</span>
+                  </div>
+                  {% endif %}
+
+                  {% if search_params.course_filters %}
+                  <div class="col-md-6 mb-2">
+                    <strong>Course:</strong>
+                    {% for filter in search_params.course_filters %}
+                      <span class="badge bg-primary">{{ filter }}</span>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+
+                  {% if search_params.dietary_filters %}
+                  <div class="col-md-6 mb-2">
+                    <strong>Dietary:</strong>
+                    {% for filter in search_params.dietary_filters %}
+                      <span class="badge bg-success">{{ filter }}</span>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+
+                  {% if search_params.cuisine_filters %}
+                  <div class="col-md-6 mb-2">
+                    <strong>Cuisine:</strong>
+                    {% for filter in search_params.cuisine_filters %}
+                      <span class="badge bg-warning text-dark">{{ filter }}</span>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+
+                  {% if search_params.other_filters %}
+                  <div class="col-md-6 mb-2">
+                    <strong>Other:</strong>
+                    {% for filter in search_params.other_filters %}
+                      <span class="badge bg-secondary">{{ filter }}</span>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Recommendations -->
+            <h4 class="mb-3" style="color: var(--primary-colour-darker);">
+              <i class="bi bi-star-fill"></i> Top Recommendations
+            </h4>
+
+            {% if top_picks %}
+              {% for pick in top_picks %}
+              <div class="card mb-3" style="border-color: var(--primary-colour-darker);">
+                <div class="card-body">
+                  <div class="d-flex align-items-start">
+                    <div class="badge bg-primary rounded-circle me-3" style="font-size: 1.2rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                      {{ forloop.counter }}
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="card-title mb-2">
+                        <a href="{% url 'recipe_detail' pick.recipe_id %}">{{ pick.title }}</a>
+                      </h5>
+                      <p class="card-text text-muted mb-0">
+                        <i class="bi bi-lightbulb-fill" style="color: var(--primary-colour-darker);"></i> {{ pick.reason }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No specific recommendations available, but you can view all matching recipes below.</p>
+            {% endif %}
+
+            <!-- View AI Top Picks -->
+            {% if top_picks %}
+            <div class="text-center mt-4">
+              <a href="{% url 'some_recipes' %}?ids={{ top_pick_ids }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-star-fill"></i> View Top {{ top_picks|length }} Picks
+              </a>
+            </div>
+            {% endif %}
+
+            <!-- View All Results -->
+            {% if total_count > 0 %}
+            <div class="text-center mt-4">
+              <p class="text-muted">
+                Found <strong>{{ total_count }}</strong> recipe{{ total_count|pluralize }} matching your criteria
+              </p>
+              <a href="{{ view_all_url }}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-grid"></i> View All Results
+              </a>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+              <i class="bi bi-exclamation-triangle"></i> No recipes found matching your criteria. Try broadening your search.
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Tips Card -->
+      <div class="card mt-4 mb-3" style="border-color: var(--primary-colour-darker);">
+        <div class="card-body">
+          <h5 class="card-title" style="color: var(--primary-colour-darker);">
+            <i class="bi bi-info-circle"></i> How It Works
+          </h5>
+          <ol class="mb-0">
+            <li>Our AI analyzes your situation and extracts key requirements</li>
+            <li>Generates smart search queries and filters based on your needs</li>
+            <li>Searches through our recipe database</li>
+            <li>Ranks the results to show you the most suitable recipes first</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

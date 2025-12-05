@@ -1,5 +1,6 @@
-from .user import *
-from .recipe import *
-from .rating import *
-from .flag import *
-from .meal_plan import MealPlan, MealSlot
+from .user import User
+from .recipe import Recipe
+from .recipe_interaction import RecipeInteractionMixin
+from .rating import Rating
+from .flag import Flag
+from .meal_plan import MealPlan

@@ -29,18 +29,18 @@ SORT_FIELD_MAP = {
 
 
 def get_search_query(request):
- """ Return cleaned search term from request. """
- return request.GET.get("q", "").strip()
+     """ Return cleaned search term from request. """
+     return request.GET.get("q", "").strip()
 
 
 def get_filter_params(request):
- """ Extract tag-based filters from request. """
- return {
-  "course_filters": request.GET.getlist("course", []),
-  "dietary_filters": request.GET.getlist("dietary", []),
-  "cuisine_filters": request.GET.getlist("cuisine", []),
-  "other_filters": request.GET.getlist("other", []),
- }
+     """ Extract tag-based filters from request. """
+     return {
+      "course_filters": request.GET.getlist("course", []),
+      "dietary_filters": request.GET.getlist("dietary", []),
+      "cuisine_filters": request.GET.getlist("cuisine", []),
+      "other_filters": request.GET.getlist("other", []),
+     }
 
 
 def apply_search(recipes, search_query):

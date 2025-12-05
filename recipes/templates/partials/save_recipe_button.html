@@ -1,0 +1,14 @@
+{% if user.is_authenticated %}
+<form action="{% url 'toggle_save_recipe' recipe.id %}" method="POST" class="{{ form_class }}">
+    {% csrf_token %}
+    {% if user in recipe.saved_by.all %}
+    <button type="submit" class="btn {{ button_class|default:'heart-btn' }}" title="Unsave recipe">
+        <i class="bi bi-heart-fill {{ icon_class_filled|default:'' }}"></i>
+    </button>
+    {% else %}
+    <button type="submit" class="btn {{ button_class|default:'heart-btn' }}" title="Save recipe"">
+        <i class="bi bi-heart {{ icon_class_empty|default:'' }}"></i>
+    </button>
+    {% endif %}
+</form>
+{% endif %}

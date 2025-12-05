@@ -22,7 +22,15 @@ def save_form_to_session(session_data, post_data, files=None):
     
     session_data["form_data"] = post_data.dict()
 
+    # Save image-clear checkbox state
+    if 'image-clear' in post_data:
+        session_data['image_clear'] = True
+    elif 'image_clear' in session_data:
+        # Remove it if checkbox was previously checked but now unchecked
+        del session_data['image_clear']
+
     if files and 'image' in files:
         image = files['image']
         temp_path = default_storage.save(f"temp/{image.name}", image)
         session_data['temp_image_path'] = temp_path
+

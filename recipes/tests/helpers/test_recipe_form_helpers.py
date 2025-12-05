@@ -3,6 +3,7 @@ from recipes.helpers.recipe_form_helpers import(get_tag_action_from_request, han
                                                 initialise_tag_session)
 
 class GetTagActionTests(TestCase):
+    
     def test_add_custom_tag(self):
         factory = RequestFactory()
         request = factory.post("/", {
@@ -43,8 +44,27 @@ class HandleTagOperationTests(TestCase):
     def test_handle_tag_operation_invalid_input(self):
         result = handle_tag_operation({}, None, None, None)
         self.assertFalse(result)
+    
+    def test_add_new_tag(self):
+        session = {"course_tags": []}
+        
+        result = handle_tag_operation(
+            session, "add", "course", "Dinner"
+        )
+        
+        self.assertTrue(result)
+        self.assertEqual(session["course_tags"], ["Dinner"])
 
+    def test_add_existing_tag_no_duplicate(self):
+        session = {"course_tags": ["Dinner"]}
 
+        result = handle_tag_operation(
+            session, "add", "course", "Dinner"
+        )
+
+        self.assertTrue(result)
+        self.assertEqual(session["course_tags"], ["Dinner"])
+        
 class InitialiseTagSessionTests(TestCase):
     def test_initialise_empty_session(self):
         session = {}
@@ -54,3 +74,5 @@ class InitialiseTagSessionTests(TestCase):
         self.assertEqual(session["dietary_tags"], [])
         self.assertEqual(session["cuisine_tags"], [])
         self.assertEqual(session["other_tags"], [])
+
+

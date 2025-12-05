@@ -103,4 +103,4 @@ class SomeRecipesViewTestCase(TestCase):
         response = self.client.get(
             self.url, {'ids': str(self.recipe1.id)}
         )
-        self.assertTemplateUsed(response, 'some_recipes.html')
+        self.assertTemplateUsed(response, 'ai/some_recipes.html')
