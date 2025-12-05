@@ -9,7 +9,7 @@ User = get_user_model()
 
 class RecipeTagsViewTests(TestCase):
     """
-    Tests for POST behaviour of recipe_tags_view.
+    Tests recipe_tags_view behaviour.
     """
 
     def setUp(self):
@@ -20,6 +20,7 @@ class RecipeTagsViewTests(TestCase):
         self.client.login(username="testuser", password="pass")
         self.url = reverse("create_recipe_tags")
 
+        # Add form data to session
         session = self.client.session
         session["recipe_form_data"] = {"form_data": {"title": "Test"}}
         session.save()
@@ -28,6 +29,7 @@ class RecipeTagsViewTests(TestCase):
     def test_post_redirects_when_handler_returns_response(self, mock_post):
         """ Redirects when handler returns HttpResponseRedirect. """
         mock_post.return_value = HttpResponseRedirect("/dummy")
+
         resp = self.client.post(self.url)
         self.assertEqual(resp.status_code, 302)
 
@@ -42,12 +44,39 @@ class RecipeTagsViewTests(TestCase):
             "dietary_tags": [],
             "cuisine_tags": [],
             "other_tags": [],
-            "mode": "create",
+            "mode": "create",       
             "is_owner": False,
             "has_image": False,
-            "recipe": None,      
+            "recipe": None,        
         }
 
         resp = self.client.post(self.url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, "recipes/recipe_tags_form.html")
+
+    def test_redirect_when_missing_form_data(self):
+        """ If no form data in session then redirect occurs. """
+        session = self.client.session
+        session.pop("recipe_form_data", None)
+        session.save()
+
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 302)
+
+    @patch("recipes.views.recipe_tags_view.RecipeFormHandler.get_tags_context")
+    def test_get_renders_template(self, mock_context):
+        """ GET request should render template with context. """
+        mock_context.return_value = {
+            "course_tags": [],
+            "dietary_tags": [],
+            "cuisine_tags": [],
+            "other_tags": [],
+            "mode": "create",   
+            "is_owner": False,
+            "has_image": False,
+            "recipe": None,     
+        }
+
+        resp = self.client.get(self.url)
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "recipes/recipe_tags_form.html")
