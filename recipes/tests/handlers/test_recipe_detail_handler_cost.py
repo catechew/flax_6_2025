@@ -32,6 +32,23 @@ class RecipeDetailCostContextTests(TestCase):
         request = self.factory.get("/")
         request.user = self.user
         return request
+    
+    @patch("recipes.handlers.recipe_detail_handler.get_cost_estimate_data")
+    def test_get_context_cost_triggered(self, mock_cost):
+        mock_cost.return_value = {
+            "total_cost": 5.50,
+            "cost_per_serving": 2.75
+        }
+
+        request = self.factory.get("/recipe/1?show_cost=true")
+        request.user = self.user
+
+        handler = RecipeDetailHandler(request, self.recipe.id)
+        context = handler.get_context()
+
+        self.assertEqual(context["cost_estimate"]["total_cost"], 5.50)
+        self.assertIsNone(context["cost_error"])
+        mock_cost.assert_called_once()
 
     @patch("recipes.handlers.recipe_detail_handler.get_cost_estimate_data")
     def test_cost_context_when_show_cost_true(self, mock_cost):
@@ -62,6 +79,16 @@ class RecipeDetailCostContextTests(TestCase):
         # Should not call cost estimator
         self.assertIsNone(result["cost_estimate"])
         self.assertIsNone(result["cost_error"])
+    
+    def test_get_context_cost_not_triggered_without_show_cost(self):
+        request = self.factory.get("/recipe/1")  # No ?show_cost
+        request.user = self.user
+
+        handler = RecipeDetailHandler(request, self.recipe.id)
+        context = handler.get_context()
+
+        self.assertIsNone(context["cost_estimate"])
+        self.assertIsNone(context["cost_error"])
     
     def test_determine_ownership_unauthenticated(self):
         request = self.factory.get('/')
