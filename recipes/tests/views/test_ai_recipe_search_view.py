@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase, Client
 from django.urls import reverse
 from unittest.mock import patch, MagicMock
@@ -66,3 +67,58 @@ class AIRecipeSearchViewTests(TestCase):
         response = self.client.post(self.url, {'context': ''})
         messages = list(response.context['messages'])
         self.assertTrue(any('Please describe your situation' in str(m) for m in messages))
+
+    @patch('recipes.views.ai_recipe_search_view.openai.ChatCompletion.create')
+    def test_successful_search_with_results(self, mock_openai):
+        """test successful search returns results"""
+        self.client.login(username='@testuser', password='Password123')
+        
+        search_params = MagicMock()
+        search_params.choices = [MagicMock()]
+        search_params.choices[0].message.content = json.dumps({
+            "search_query": "vegan",
+            "dietary_filters": ["vegan"],
+            "cuisine_filters": [],
+            "other_filters": [],
+            "sort_by": "date_newest"
+        })
+        
+        ranking = MagicMock()
+        ranking.choices = [MagicMock()]
+        ranking.choices[0].message.content = json.dumps({
+            "top_picks": [{
+                "recipe_id": self.recipe2.id,
+                "title": "Vegan Curry",
+                "reason": "Perfect vegan option"
+            }],
+            "search_explanation": "Found vegan recipes"
+        })
+        
+        mock_openai.side_effect = [search_params, ranking]
+        response = self.client.post(self.url, {'context': 'I want vegan food'})
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['show_results'])
+        self.assertIn('top_picks', response.context)
+        self.assertIn('search_explanation', response.context)
+
+    @patch('recipes.views.ai_recipe_search_view.openai.ChatCompletion.create')
+    def test_search_with_no_results(self, mock_openai):
+        """test search with no matching recipes"""
+        self.client.login(username='@testuser', password='Password123')
+        
+        search_params = MagicMock()
+        search_params.choices = [MagicMock()]
+        search_params.choices[0].message.content = json.dumps({
+            "search_query": "nonexistent",
+            "dietary_filters": [],
+            "cuisine_filters": [],
+            "other_filters": [],
+            "sort_by": "date_newest"
+        })
+        
+        mock_openai.return_value = search_params
+        response = self.client.post(self.url, {'context': 'I want something impossible'})
+        
+        self.assertTrue(response.context['no_results'])
+        self.assertTrue(response.context['show_results'])
