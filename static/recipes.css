@@ -89,12 +89,12 @@
 
 .heart-btn i {
     font-size: 1.3rem;
-    color: var(--black-colour); 
+    color: #dc3545 !important;
 }
 
 .heart-btn:hover i {
-    content: "\f415"; 
-    color: var(--primary-colour);
+    content: "\f415";
+    color: #ff4d88 !important;
 }
 
 .heart-btn.favourited i {
