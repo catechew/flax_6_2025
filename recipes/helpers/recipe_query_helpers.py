@@ -188,7 +188,7 @@ def build_filter_params_string(filters, sort_by):
 
 def get_recipes_context(request, search_query):
   """Create context for recipes tab"""
-  base_queryset = Recipe.objects.filter(private=False)
+  base_queryset = Recipe.objects.visible()
   filter_params = get_filter_params(request)
   sort_by = request.GET.get("sort", "date_newest")
 
