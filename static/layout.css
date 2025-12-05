@@ -44,9 +44,7 @@ ul.errorlist {
   width: 100%;
   padding: 0.75rem 1rem;
   color: var(--black-colour);
-  font-weight: normal;
   border-bottom: 3px solid transparent;
-  font-size: 1.1rem;
 }
 
 .search-tabs .nav-link.active {

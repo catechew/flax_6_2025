@@ -6,8 +6,7 @@
 
 .navbar-brand-centered {
   margin: 0 auto;
-  font-weight: 900;
-  font-size: 28px;
+  font-size: 1.8rem;
   color: var(--white-colour) !important;
 }
 
@@ -56,9 +55,9 @@
   border-radius: 4px;
   padding: 6px 8px;
   color: var(--primary-colour-darker);
-  font-weight: 600;
+  font-weight: bold;
   transition: 0.1s ease-in-out;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .dropdown-item:hover,

@@ -30,11 +30,6 @@
   padding: 0.5rem 0.75rem;
 }
 
-.recipe-card .card-title {
-  font-weight: 700;
-  font-size: 1.15rem;
-}
-
 .recipe-card .card-text {
   line-height: 1.2;
 }
@@ -83,7 +78,7 @@
 }
 
 .heart-btn i {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: var(--black-colour); 
 }
 
@@ -132,7 +127,6 @@
 .tag-remove {
     background: none;
     border: none;
-    font-weight: bold;
     cursor: pointer;
     padding: 0 2px;
     line-height: 1;
@@ -150,7 +144,7 @@
 }
 
 .rating-count-text {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .servings-input {

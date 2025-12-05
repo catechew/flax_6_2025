@@ -12,8 +12,6 @@
 }
 
 .slot-line strong {
-  font-size: 1.2rem;
-  font-weight: 500;
   color: var(--black-colour);
   display: block;
   margin-bottom: 15px;
@@ -101,11 +99,6 @@
   margin-right: 10px;
 }
 
-.btn-row .btn {
-  padding: 10px 12px !important;
-  font-size: 0.9rem !important;
-}
-
 .edit-meal-wrapper {
   max-width: 600px;
   margin: 0 auto;
@@ -116,7 +109,6 @@
 }
 
 .meal-context .badge {
-  font-size: 0.9rem;
   padding: 8px 16px;
   margin-right: 8px;
 }
@@ -128,7 +120,6 @@
 
 .edit-meal-wrapper .form-label {
   color: var(--grey-colour);
-  font-size: 0.95rem;
 }
 
 .edit-meal-wrapper .form-select {
@@ -143,11 +134,9 @@
 }
 
 .meal-label {
-  font-size: 0.9rem;
   color: var(--grey-colour);
   margin-bottom: 6px;
   display: block; 
-  font-weight: 600;
 }
 
 .slot-line {
@@ -170,7 +159,6 @@
 }
 
 .day-date {
-  font-size: 0.9rem;
   opacity: 0.85;
 }
 
@@ -196,8 +184,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,8 +198,7 @@
 .progress-ring-lg span {
   width: 78px;
   height: 78px;
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1rem;
 }
 
 .snack-collapsible {
@@ -225,10 +211,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--grey-colour);
   text-decoration: none;
-  font-weight: 500;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -264,7 +249,6 @@
   padding: 1px 7px;
   font-size: 0.6rem !important;
   border-radius: 8px;
-  font-weight: 600;
 }
 
 .tag-vegetarian {
