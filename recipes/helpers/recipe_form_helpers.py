@@ -50,7 +50,7 @@ def check_category_for_tag_action(request, category):
 
 
 def handle_tag_operation(session_data, action, category, value):
-    """Add or remove a tag from session data."""
+    """ Add or remove a tag from session data. """
     if not all([action, category, value]):
         return False
 
@@ -61,7 +61,11 @@ def handle_tag_operation(session_data, action, category, value):
     tag_key = f"{category}_tags"
     session_data.setdefault(tag_key, [])
 
-    if action == "add" and value not in session_data[tag_key]:
+    if action == "add":
+        # If tag already exists then it is success (no duplicate added)
+        if value in session_data[tag_key]:
+            return True
+
         session_data[tag_key].append(value)
         return True
 
@@ -118,7 +122,7 @@ def cleanup_session(session_key, session_data, request):
     request.session.modified = True
 
 def apply_ai_dietary_tags(session_data, ai_dietary_info):
-    """Apply AI dietary tags to session."""
+    """ Apply AI dietary tags to session. """
     from recipes.helpers.ai_recipe_parser import map_ai_dietary_tags
 
     if not ai_dietary_info:
@@ -134,7 +138,7 @@ def apply_ai_dietary_tags(session_data, ai_dietary_info):
     session_data['dietary_tags'] = existing_tags
 
 def get_ai_prefill_from_session(request):
-    """Get AI prefill data from session if available."""
+    """ Get AI prefill data from session if available. """
     if not request.session.pop('from_ai_save_button', False):
         return None
 
@@ -143,7 +147,7 @@ def get_ai_prefill_from_session(request):
 
 
 def store_ai_dietary_info(session_data, ai_prefill):
-    """Store AI dietary info in session for tags page."""
+    """ Store AI dietary info in session for tags page. """
     if 'ai_dietary_info' not in ai_prefill:
         return
 
