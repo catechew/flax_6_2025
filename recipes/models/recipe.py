@@ -12,15 +12,21 @@ class RecipeManager(models.Manager):
         """
         if user.is_authenticated:
             return self.filter(
-                models.Q(is_private=False) | models.Q(author=user)
+                models.Q(private=False) | models.Q(author=user)
             )
-        return self.filter(is_private=False)
+        return self.filter(private=False)
+    
+    def visible(self):
+        """
+        return recipes that are not private
+        """
+        return self.filter(private=False)
     
     def public(self):
         """
         return only public recipes
         """
-        return self.filter(is_private=False)
+        return self.filter(private=False)
 
 class Recipe(models.Model):
     """
