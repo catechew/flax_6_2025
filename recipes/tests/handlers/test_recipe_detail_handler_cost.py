@@ -51,6 +51,17 @@ class RecipeDetailCostContextTests(TestCase):
         self.assertEqual(result["cost_estimate"]["total_cost"], 5.50)
         self.assertIsNone(result["cost_error"])
         mock_cost.assert_called_once()
+        
+    def test_cost_context_show_cost_not_true(self):
+        request = self.factory.get("/recipe/1?show_cost=False")
+        reuest.user = self.user
+        
+        handler = RecipeDetailHandler(request, self.recipe.id)
+        result = handler.get_cost_context(["Test (1)"])
+        
+        # Should not call cost estimator
+        self.assertIsNone(result["cost_estimate"])
+        self.assertIsNone(result["cost_error"])
     
     def test_determine_ownership_unauthenticated(self):
         request = self.factory.get('/')
