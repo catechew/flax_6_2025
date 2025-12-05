@@ -1,9 +1,11 @@
-"""Helper functions for parsing AI-generated recipe data."""
+"""
+Helper functions for parsing AI-generated recipe data.
+"""
 import re
 
 
 def parse_time_string(time_str):
-    """Parse '15 minutes' or '1 hour 30 minutes' to total minutes."""
+    """ Parse '15 minutes' or '1 hour 30 minutes' to total minutes. """
     if not time_str:
         return 0
 
@@ -12,9 +14,8 @@ def parse_time_string(time_str):
     minutes = extract_minutes(time_str)
     return (hours * 60) + minutes
 
-
 def extract_hours(time_str):
-    """Extract hours from time string."""
+    """ Extract hours from time string. """
     if 'hour' not in time_str:
         return 0
 
@@ -24,9 +25,8 @@ def extract_hours(time_str):
     except (ValueError, IndexError):
         return 0
 
-
 def extract_minutes(time_str):
-    """Extract minutes from time string."""
+    """ Extract minutes from time string. """
     if 'min' not in time_str:
         return 0
 
@@ -36,17 +36,15 @@ def extract_minutes(time_str):
     except (ValueError, IndexError):
         return 0
 
-
 def find_last_digit(parts):
-    """Find last digit in list of string parts."""
+    """ Find last digit in list of string parts. """
     for part in reversed(parts):
         if part.isdigit():
             return int(part)
     return 0
 
-
 def format_ingredients_for_form(ingredients_list):
-    """Convert AI format to app format: '400g spaghetti' → 'Spaghetti (400g)'."""
+    """ Convert AI format to app format: '400g spaghetti' → 'Spaghetti (400g)'. """
     formatted = []
 
     for ingredient in ingredients_list:
@@ -71,22 +69,19 @@ def try_parse_ingredient(ingredient):
     pattern = r'^([\d./]+\s*(?:g|kg|ml|l|tsp|tbsp|cup|cups|oz|lb|cloves?|pieces?)?)\s+(.+)$'
     return re.match(pattern, ingredient, re.IGNORECASE)
 
-
 def format_matched_ingredient(match):
-    """Format parsed ingredient match."""
+    """ Format parsed ingredient match. """
     quantity = match.group(1).strip()
     name = match.group(2).strip()
     name = capitalize_first(name)
     return f"{name} ({quantity})"
 
-
 def capitalize_first(text):
-    """Capitalise first letter."""
+    """ Capitalise first letter. """
     return text[0].upper() + text[1:] if text else text
 
-
 def parse_ai_recipe_data(ai_data):
-    """Parse AI data into form-ready format."""
+    """ Parse AI data into form-ready format. """
     prep_minutes = parse_time_string(ai_data.get('prep_time', ''))
     cook_minutes = parse_time_string(ai_data.get('cook_time', ''))
 
@@ -106,9 +101,8 @@ def parse_ai_recipe_data(ai_data):
         'ai_description': ai_data.get('description', ''),
     }
 
-
 def get_dietary_tag_mapping():
-    """Get AI dietary tag to system tag mapping."""
+    """ Get AI dietary tag to system tag mapping. """
     return {
         'vegetarian': 'Vegetarian',
         'vegan': 'Vegan',
@@ -118,9 +112,8 @@ def get_dietary_tag_mapping():
         'kosher': 'Kosher',
     }
 
-
 def map_ai_dietary_tags(ai_dietary_list):
-    """Map AI dietary tags to system tags."""
+    """ Map AI dietary tags to system tags. """
     mapping = get_dietary_tag_mapping()
     mapped_tags = []
 
