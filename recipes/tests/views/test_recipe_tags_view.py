@@ -24,7 +24,7 @@ class RecipeTagsViewTests(TestCase):
         self.client.login(username="testuser", password="pass")
         
         # URL for the recipe tags view
-        self.url = reverse("recipe-tags")
+        self.url = reverse("create_recipe_tags")
 
         # Pre populate the session with form data 
         session = self.client.session
