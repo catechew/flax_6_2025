@@ -49,6 +49,10 @@ class ExtractHoursTests(TestCase):
     def test_multiple_hours(self):
         """Test multiple hours."""
         self.assertEqual(extract_hours('3 hours'), 3)
+    def test_extract_hours_with_invalid_format(self):
+        """Test extract_hours handles invalid format gracefully."""
+        result = extract_hours('invalid hour format')
+        self.assertEqual(result, 0)
 
 
 class ExtractMinutesTests(TestCase):
@@ -65,7 +69,10 @@ class ExtractMinutesTests(TestCase):
     def test_combined_time(self):
         """Test extracting minutes from combined time."""
         self.assertEqual(extract_minutes('1 hour 30 minutes'), 30)
-
+    def test_extract_minutes_with_invalid_format(self):
+        """Test extract_minutes handles invalid format gracefully."""
+        result = extract_minutes('invalid min format')
+        self.assertEqual(result, 0)
 
 class FormatIngredientsTests(TestCase):
     """Test ingredient formatting."""
@@ -100,6 +107,22 @@ class FormatIngredientsTests(TestCase):
         ingredients = ['Salt to taste']
         result = format_ingredients_for_form(ingredients)
         self.assertEqual(result, 'Salt to taste (as needed)')
+
+    def test_find_last_digit_with_no_digits(self):
+        """Test find_last_digit returns 0 when no digits found."""
+        from recipes.helpers.ai_recipe_parser import find_last_digit
+        result = find_last_digit(['no', 'digits', 'here'])
+        self.assertEqual(result, 0)
+
+    def test_format_empty_ingredient_list(self):
+        """Test formatting empty ingredient list."""
+        result = format_ingredients_for_form([])
+        self.assertEqual(result, '')
+
+    def test_format_ingredient_with_whitespace(self):
+        """Test formatting ingredient with extra whitespace."""
+        result = format_ingredients_for_form(['  400g pasta  '])
+        self.assertEqual(result, 'Pasta (400g)')
 
 
 class ParseAIRecipeDataTests(TestCase):
