@@ -3,6 +3,7 @@ from django.urls import reverse
 from unittest.mock import patch
 from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model 
+
 User = get_user_model()
 
 
@@ -38,3 +39,14 @@ class RecipeTagsViewTests(TestCase):
         mock_post.return_value = HttpResponseRedirect("/dummy")
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, 302)
+    
+    @patch("recipes.views.recipe_tags_view.RecipeFormHandler.handle_tags_post")
+    @patch("recipes.views.recipe_tags_view.RecipeFormHandler.get_tags_context")
+    def test_post_renders_page_when_handler_returns_none(self, mock_context, mock_post):
+        mock_post.return_value = None
+        mock_context.return_value = {"course_tags": []}
+
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "recipes/recipe_tags_form.html")
