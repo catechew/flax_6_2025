@@ -2,25 +2,8 @@
  * Meal Plan Styles.
  * Inherits CSS variables from custom.css.
  */
-
-.meal-card .card-header {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9rem;
-}
-
 .meal-card:hover {
   transform: translateY(-2px);
-}
-
-.meal-tag {
-  display: inline-block;
-  background: var(--white-colour);
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-right: 4px;
-  color: var(--grey-colour);
 }
 
 .day-header {
@@ -204,8 +187,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: conic-gradient(#166534 var(--progress, 0%),
-      var(--white-colour) 0);
+  background: conic-gradient(var(--colour-3) var(--progress, 0%),
+      var(--grey-colour) 0);
 }
 
 .progress-ring span {
@@ -274,11 +257,32 @@
 }
 
 .shopping-list-banner {
-  background: #166534;
+  background: var(--colour-3);
+}
+
+.tag-meal-plan {
+  padding: 1px 7px;
+  font-size: 0.6rem !important;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.tag-vegetarian {
+  background-color: var(--colour-3);
+  color: var(--white-colour);
+}
+
+.tag-protein {
+  background-color: var(--colour-4);
+  color: var(--white-colour);
+}
+
+.badge {
+  background-color: var(--primary-colour-darker) !important;
+  color: var(--bg-colour) !important;
 }
 
 @media print {
-
   .btn,
   nav {
     display: none !important;
@@ -287,21 +291,4 @@
   .text-muted {
     display: none !important;
   }
-}
-
-.tag {
-  padding: 1px 7px;
-  font-size: 0.6rem;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.tag-vegetarian {
-  background-color: var(--white-colour);
-  color: #166534;
-}
-
-.tag-protein {
-  background-color: var(--white-colour);
-  color: #1e40af;
 }

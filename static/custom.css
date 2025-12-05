@@ -12,45 +12,9 @@
   --heart: #ff4d88;
 
   --black-colour: #202323;
-  --grey-colour: #a6a6a6;
+  --grey-colour: #9da4aa;
   --bg-colour: #f7f3eb;
   --white-colour: #FAF9F5;
-}
-
-/* 
-* Card Header 
-*/
-.card-header.bg-primary {
-  background-color: var(--primary-colour) !important;
-  color: var(--bg-colour) !important;
-}
-
-.card-header.bg-success {
-  background-color: var(--primary-colour-darker) !important;
-  color: var(--bg-colour) !important;
-}
-
-.card-header.bg-info {
-  background-color: var(--primary-colour-darkest) !important;
-  color: var(--bg-colour) !important;
-}
-
-.card-header.bg-warning {
-  background-color: var(--primary-colour-lighter) !important;
-  color: var(--black-colour) !important;
-}
-
-/*
-* Tag colours
-*/
-.badge.bg-primary {
-  background-color: var(--primary-colour) !important;
-  color: var(--bg-colour) !important;
-}
-
-.badge.bg-warning {
-  background-color: var(--primary-colour-darkest) !important;
-  color: var(--bg-colour) !important;
 }
 
 /* Alerts */
@@ -74,6 +38,23 @@
   transition: 0.2s ease;
 }
 
-.card-base:hover {
-  transform: translateY(-2px);
+/* Card Headers */
+.card-header.bg-primary {
+  background-color: var(--primary-colour) !important;
+  color: var(--bg-colour) !important;
+}
+
+.card-header.bg-success {
+  background-color: var(--primary-colour-darker) !important;
+  color: var(--bg-colour) !important;
+}
+
+.card-header.bg-info {
+  background-color: var(--primary-colour-darkest) !important;
+  color: var(--bg-colour) !important;
+}
+
+.card-header.bg-warning {
+  background-color: var(--primary-colour-lighter) !important;
+  color: var(--black-colour) !important;
 }

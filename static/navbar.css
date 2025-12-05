@@ -11,7 +11,7 @@
   color: var(--white-colour) !important;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 991px) {
   .navbar-collapse {
     text-align: left;
     padding: 1rem 0;
