@@ -12,6 +12,7 @@
   --heart: #ff4d88;
 
   --black-colour: #202323;
+  --grey-colour: #a6a6a6;
   --bg-colour: #f7f3eb;
   --white-colour: #FAF9F5;
 }
@@ -61,4 +62,18 @@
   background-color: var(--primary-colour-lighter) !important;
   border-color: var(--primary-colour) !important;
   color: var(--primary-colour-darkest) !important;
+}
+
+/* Card Base */
+.card-base {
+  background: var(--white-colour) !important;
+  border-radius: 8px;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: 0.2s ease;
+}
+
+.card-base:hover {
+  transform: translateY(-2px);
 }

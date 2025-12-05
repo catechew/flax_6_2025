@@ -1,11 +1,6 @@
 /* Recipe Cards*/
 .recipe-card {
-  background: var(--white-colour) !important;
-  border: none !important;
-  border-radius: 2px;
   padding: 0.75rem;
-  overflow: hidden;
-  box-shadow: 0px 10px var(--black-colour);
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
