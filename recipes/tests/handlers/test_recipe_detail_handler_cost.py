@@ -54,7 +54,7 @@ class RecipeDetailCostContextTests(TestCase):
         
     def test_cost_context_show_cost_not_true(self):
         request = self.factory.get("/recipe/1?show_cost=False")
-        reuest.user = self.user
+        request.user = self.user
         
         handler = RecipeDetailHandler(request, self.recipe.id)
         result = handler.get_cost_context(["Test (1)"])
