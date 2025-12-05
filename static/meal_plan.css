@@ -8,10 +8,6 @@
   font-size: 0.9rem;
 }
 
-.meal-card .card-body {
-  padding: 0.75rem;
-}
-
 .meal-card:hover {
   transform: translateY(-2px);
 }
@@ -28,47 +24,16 @@
 }
 
 .day-header {
-  font-size: 1.05rem;
-  font-weight: 700;
-  padding: 14px 16px;
-  letter-spacing: 0.3px;
   background: var(--primary-colour);
   color: var(--bg-colour);
-}
-
-.day-header .day-date {
-  font-size: 0.9rem;
-  font-weight: 500;
-  opacity: 0.85;
-}
-
-.meal-plan-wrapper {
-  background: linear-gradient(135deg, #faf8f5 0%, #f0ebe3 100%);
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.06);
-}
-
-.empty-slot {
-  color: var(--grey-colour);
-  font-style: italic;
 }
 
 .slot-line strong {
   font-size: 1.2rem;
   font-weight: 500;
   color: var(--black-colour);
-  letter-spacing: 0.3px;
   display: block;
   margin-bottom: 15px;
-}
-
-.meal-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 4px;
-  object-fit: contain;
-  opacity: 0.85;
 }
 
 .meal-grid {
@@ -134,11 +99,6 @@
   margin-top: 8px;
 }
 
-.btn-row {
-  display: flex;
-  gap: 6px;
-}
-
 .recipe-link {
   color: var(--black-colour);
   text-decoration: none;
@@ -161,24 +121,6 @@
 .btn-row .btn {
   padding: 10px 12px !important;
   font-size: 0.9rem !important;
-}
-
-.btn-add {
-  padding: 5px 14px !important;
-  font-size: 0.8rem !important;
-  font-weight: 500 !important;
-  border-radius: 8px !important;
-  border: 1.5px solid var(--primary-colour) !important;
-  color: var(--primary-colour) !important;
-  background: transparent !important;
-  transition: all 0.2s ease !important;
-}
-
-.btn-add:hover {
-  background-color: var(--primary-colour) !important;
-  color: white !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(197, 60, 50, 0.2);
 }
 
 .edit-meal-wrapper {
@@ -236,30 +178,12 @@
   padding-bottom: 0 !important;
 }
 
-.empty-meal-indicator {
-  color: var(--white-colour);
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 14px 0;
-  font-style: italic;
-  user-select: none;
-}
-
-.slot-content:hover .empty-meal-indicator {
-  color: var(--primary-colour);
-}
-
 .day-heading {
   display: flex;
   align-items: baseline;
   gap: 8px;
   white-space: nowrap;
   padding-right: 10px;
-}
-
-.day-title {
-  font-size: 1.05rem;
-  font-weight: 700;
 }
 
 .day-date {
