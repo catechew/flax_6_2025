@@ -32,7 +32,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     margin-right: 4px;
-    color: #444;
+    color: var(--grey-colour);
 }
 
 .day-header {
@@ -58,14 +58,14 @@
 }
 
 .empty-slot {
-  color: #6c757d;
+  color: var(--grey-colour);
   font-style: italic;
 }
 
 .slot-line strong {
     font-size: 1.2rem;
     font-weight: 500;
-    color: #2a2522;
+    color: var(--black-colour);
     letter-spacing: 0.3px;
     display: block;
     margin-bottom: 15px;
@@ -210,12 +210,12 @@
 }
 
 .edit-meal-wrapper .form-label {
-  color: #5a4f47;
+  color: var(--grey-colour);
   font-size: 0.95rem;
 }
 
 .edit-meal-wrapper .form-select {
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--white-colour);
   padding: 12px; 
   border-radius: 10px;
 }
@@ -227,7 +227,7 @@
 
 .meal-label {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--grey-colour);
     margin-bottom: 6px;
     display: block;
     font-weight: 600;
@@ -245,7 +245,7 @@
 }
 
 .empty-meal-indicator {
-  color: #fffefe;
+  color: var(--white-colour);
   font-size: 0.9rem;
   text-align: center;
   padding: 14px 0;
@@ -289,13 +289,13 @@
   align-items: center;
   justify-content: center;
   background: conic-gradient(
-    #39954e var(--progress, 0%),
-    #eaeaea 0
+    #166534 var(--progress, 0%),
+    var(--white-colour) 0
   );
 }
 
 .progress-ring span {
-  background: #faf8f5;
+  background: var(--white-colour);
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -321,7 +321,7 @@
 .snack-collapsible {
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px dashed #e0e0e0;
+    border-top: 1px dashed var(--white-colour);
 }
 
 .snack-toggle {
@@ -329,7 +329,7 @@
     align-items: center;
     gap: 6px;
     font-size: 0.85rem;
-    color: #888;
+    color: var(--grey-colour);
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
@@ -351,7 +351,7 @@
 
 .shopping-list-item input[type="checkbox"]:checked + label {
     text-decoration: line-through;
-    color: #999;
+    color: var(--grey-colour);
     opacity: 0.6;
 }
 
@@ -360,7 +360,7 @@
 }
 
 .shopping-list-banner {
-  background: #02661a;
+  background: #166534;
 }
 
 @media print {
@@ -378,11 +378,11 @@
 }
 
 .tag-vegetarian {
-  background-color: #dcfce7;
+  background-color: var(--white-colour);
   color: #166534;
 }
 
 .tag-protein {
-  background-color: #dbeafe;
+  background-color: var(--white-colour);
   color: #1e40af;
 }
