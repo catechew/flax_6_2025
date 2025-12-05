@@ -7,7 +7,7 @@ from recipes.models import User, Recipe, Rating
 def user_profile(request, user_id):
     """ Display any user's profile (including your own). """
     profile_user = get_object_or_404(User, id=user_id)
-    user_recipes = Recipe.objects.filter(author=profile_user).order_by('-publication_date')
+    user_recipes = Recipe.objects.visible_to(request.user).filter(author=profile_user).order_by('-publication_date')
     user_ratings = Rating.objects.filter(user=profile_user).select_related('recipe', 'recipe__author')
 
     # Check if you're viewing your own profile or someone else's
