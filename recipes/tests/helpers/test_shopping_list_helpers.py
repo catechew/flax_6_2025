@@ -171,6 +171,21 @@ class ConsolidateIngredientsTests(TestCase):
         mock_scale.assert_called_once()
 
 
+class ConsolidateScalingBranchTests(TestCase):
+
+    def test_scaled_branch_with_duplicate_items(self):
+        items = [
+            {"item": "Rice (1 cup)", "recipe": "A", "day": "Mon", "meal": "Dinner"},
+            {"item": "Rice (1 cup)", "recipe": "B", "day": "Tue", "meal": "Lunch"},
+        ]
+
+        result = consolidate_ingredients(items)
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["count"], 2)
+        self.assertIn("Rice", result[0]["item"])
+
+
 class OrganiseShoppingListTests(TestCase):
     """ 
     Tests for organise_shopping_list helper. 
