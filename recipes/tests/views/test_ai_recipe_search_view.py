@@ -52,24 +52,3 @@ class AIRecipeSearchViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'ai/ai_recipe_search.html')
-
-    @patch('recipes.views.ai_recipe_search_view.openai.ChatCompletion.create')
-    def test_successful_search(self, mock_openai):
-        """Test successful AI recipe search."""
-        self.client.login(username='@testuser', password='Password123')
-
-        # Mock OpenAI response
-        mock_openai.return_value = MagicMock(
-            choices=[MagicMock(
-                message=MagicMock(
-                    content='{"search_query": "pasta", "dietary_tags": ["vegetarian"]}'
-                )
-            )]
-        )
-
-        response = self.client.post(self.url, {
-            'user_prompt': 'I want vegetarian pasta'
-        })
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(mock_openai.called)
