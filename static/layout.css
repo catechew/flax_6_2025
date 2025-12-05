@@ -28,11 +28,12 @@ ul.errorlist {
 /* Links */
 .content a {
   text-decoration: none;
-  color: var(--primary-colour-darkest);
+  color: var(--primary-colour-darker);
 }
 
 .content a:hover {
   color: var(--primary-colour-darkest);
+  text-decoration: underline;
 }
 
 /* AI Chat Layout */

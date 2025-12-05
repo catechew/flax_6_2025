@@ -33,7 +33,7 @@
   background: var(--white-colour) !important;
   border-radius: 8px;
   border: none !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 5px rgba(0,0,0,0.1);
   overflow: hidden;
   transition: 0.2s ease;
 }
