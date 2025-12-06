@@ -3,28 +3,80 @@ Core Recipe model behaviour tests.
 """
 
 from django.test import TestCase
-from recipes.tests.utils import create_test_user, create_test_recipe
+from django.contrib.auth.models import AnonymousUser
+from recipes.models import User, Recipe, Flag
+from datetime import date
 
-class RecipeModelCoreTests(TestCase):
+
+class RecipeManagerTests(TestCase):
+    """Test Recipe manager methods."""
 
     def setUp(self):
-        self.user = create_test_user(username='@testuser')
-        self.recipe = create_test_recipe(
-            author=self.user,
-            title="Korean Noodles",
-            ingredients="Garlic (5 cloves)\nSoy sauce (2 tbsp)",
-            steps="Mix\nFry",
+        """Set up test data."""
+        self.user = User.objects.create_user(
+            username='@testuser',
+            email='test@example.com',
+            password='Password123'
         )
 
-    def test_str_method(self):
-        text = str(self.recipe)
-        self.assertIn("Korean Noodles", text)
-        self.assertIn("Garlic (5 cloves)", text)
+        self.other_user = User.objects.create_user(
+            username='@otheruser',
+            email='other@example.com',
+            password='Password123'
+        )
 
-    def test_get_ingredient_list(self):
-        ingredients = self.recipe.get_ingredient_list()
-        self.assertEqual(len(ingredients), 2)
+        # Public recipe
+        self.public_recipe = Recipe.objects.create(
+            author=self.user,
+            title='Public Recipe',
+            publication_date=date.today(),
+            ingredients='Test (1)',
+            steps='Test step',
+            private=False
+        )
 
-    def test_get_step_list(self):
-        steps = self.recipe.get_step_list()
-        self.assertEqual(steps, ["Mix", "Fry"])
+        # Private recipe
+        self.private_recipe = Recipe.objects.create(
+            author=self.user,
+            title='Private Recipe',
+            publication_date=date.today(),
+            ingredients='Test (1)',
+            steps='Test step',
+            private=True
+        )
+
+    def test_visible_to_authenticated_user_sees_own_private(self):
+        """Authenticated user sees their own private recipes."""
+        recipes = Recipe.objects.visible_to(self.user)
+
+        self.assertIn(self.public_recipe, recipes)
+        self.assertIn(self.private_recipe, recipes)
+
+    def test_visible_to_authenticated_user_not_see_others_private(self):
+        """Authenticated user doesn't see other users' private recipes."""
+        recipes = Recipe.objects.visible_to(self.other_user)
+
+        self.assertIn(self.public_recipe, recipes)
+        self.assertNotIn(self.private_recipe, recipes)
+
+    def test_visible_to_unauthenticated_user(self):
+        """Unauthenticated user only sees public recipes."""
+        anon_user = AnonymousUser()
+        recipes = Recipe.objects.visible_to(anon_user)
+
+        self.assertIn(self.public_recipe, recipes)
+        self.assertNotIn(self.private_recipe, recipes)
+
+    def test_visible_method(self):
+        """visible() returns only public recipes."""
+        recipes = Recipe.objects.visible()
+
+        self.assertIn(self.public_recipe, recipes)
+        self.assertNotIn(self.private_recipe, recipes)
+
+    def test_public_method(self):
+        """public() returns only public recipes."""
+        recipes = Recipe.objects.public()
+
+        self.assertIn(self.public_recipe, recipes)
+        self.assertNotIn(self.private_recipe, recipes)

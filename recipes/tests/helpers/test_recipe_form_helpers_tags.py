@@ -1,0 +1,492 @@
+from django.test import TestCase, RequestFactory
+from django.contrib.sessions.backends.db import SessionStore
+from recipes.helpers.recipe_form_helpers import get_tag_action_from_request, check_category_for_tag_action, handle_tag_operation, get_tag_context, initialise_tag_session, get_tag_list_for_key, apply_tags_to_recipe, get_session_key, cleanup_session, apply_ai_dietary_tags, get_ai_prefill_from_session, store_ai_dietary_info
+from recipes.models import User, Recipe
+from datetime import date
+from unittest.mock import patch, MagicMock
+
+
+class GetTagActionFromRequestTests(TestCase):
+    """Test get_tag_action_from_request function."""
+
+    def setUp(self):
+        """Set up test request factory."""
+        self.factory = RequestFactory()
+
+    def test_returns_none_for_get_request(self):
+        """GET request returns None, None, None."""
+        request = self.factory.get('/test/')
+        result = get_tag_action_from_request(request)
+        self.assertEqual(result, (None, None, None))
+
+    def test_returns_add_action_for_course_tag(self):
+        """POST with add_course_tag returns correct action."""
+        request = self.factory.post('/test/', {'add_course_tag': 'breakfast'})
+        result = get_tag_action_from_request(request)
+        self.assertEqual(result, ('add', 'course', 'breakfast'))
+
+    def test_returns_add_custom_action(self):
+        """POST with custom tag returns correct action."""
+        request = self.factory.post('/test/', {
+            'add_course_tag_custom': '1',
+            'course_tag_value': 'brunch'
+        })
+        result = get_tag_action_from_request(request)
+        self.assertEqual(result, ('add', 'course', 'brunch'))
+
+    def test_returns_remove_action(self):
+        """POST with remove tag returns correct action."""
+        request = self.factory.post('/test/', {'remove_dietary_tag': 'vegan'})
+        result = get_tag_action_from_request(request)
+        self.assertEqual(result, ('remove', 'dietary', 'vegan'))
+
+    def test_returns_none_when_no_tag_action(self):
+        """POST with no tag action returns None."""
+        request = self.factory.post('/test/', {'other_field': 'value'})
+        result = get_tag_action_from_request(request)
+        self.assertEqual(result, (None, None, None))
+
+
+class HandleTagOperationTests(TestCase):
+    """Test handle_tag_operation function."""
+
+    def setUp(self):
+        """Set up session data."""
+        self.session_data = {'course_tags': ['breakfast']}
+
+    def test_add_new_tag(self):
+        """Add new tag successfully."""
+        result = handle_tag_operation(
+            self.session_data, 'add', 'course', 'lunch'
+        )
+        self.assertTrue(result)
+        self.assertIn('lunch', self.session_data['course_tags'])
+
+    def test_add_duplicate_tag_returns_true(self):
+        """Adding duplicate tag returns True (idempotent)."""
+        result = handle_tag_operation(
+            self.session_data, 'add', 'course', 'breakfast'
+        )
+        self.assertTrue(result)
+        # Should only appear once
+        self.assertEqual(
+            self.session_data['course_tags'].count('breakfast'), 1
+        )
+
+    def test_remove_existing_tag(self):
+        """Remove existing tag successfully."""
+        result = handle_tag_operation(
+            self.session_data, 'remove', 'course', 'breakfast'
+        )
+        self.assertTrue(result)
+        self.assertNotIn('breakfast', self.session_data['course_tags'])
+
+    def test_remove_nonexistent_tag_returns_false(self):
+        """Removing non-existent tag returns False."""
+        result = handle_tag_operation(
+            self.session_data, 'remove', 'course', 'dinner'
+        )
+        self.assertFalse(result)
+
+    def test_empty_value_returns_false(self):
+        """Empty value returns False."""
+        result = handle_tag_operation(
+            self.session_data, 'add', 'course', ''
+        )
+        self.assertFalse(result)
+
+    def test_whitespace_only_value_returns_false(self):
+        """Whitespace-only value returns False."""
+        result = handle_tag_operation(
+            self.session_data, 'add', 'course', '   '
+        )
+        self.assertFalse(result)
+
+    def test_value_too_long_returns_false(self):
+        """Value longer than 50 characters returns False."""
+        long_value = 'a' * 51
+        result = handle_tag_operation(
+            self.session_data, 'add', 'course', long_value
+        )
+        self.assertFalse(result)
+
+    def test_value_exactly_50_chars_succeeds(self):
+        """Value exactly 50 characters succeeds."""
+        exact_value = 'a' * 50
+        result = handle_tag_operation(
+            self.session_data, 'add', 'course', exact_value
+        )
+        self.assertTrue(result)
+
+    def test_none_action_returns_false(self):
+        """None action returns False."""
+        result = handle_tag_operation(
+            self.session_data, None, 'course', 'lunch'
+        )
+        self.assertFalse(result)
+
+    def test_none_category_returns_false(self):
+        """None category returns False."""
+        result = handle_tag_operation(
+            self.session_data, 'add', None, 'lunch'
+        )
+        self.assertFalse(result)
+
+    def test_none_value_returns_false(self):
+        """None value returns False."""
+        result = handle_tag_operation(
+            self.session_data, 'add', 'course', None
+        )
+        self.assertFalse(result)
+
+    def test_creates_tag_key_if_missing(self):
+        """Creates tag key if it doesn't exist."""
+        session = {}
+        result = handle_tag_operation(session, 'add', 'dietary', 'vegan')
+        self.assertTrue(result)
+        self.assertIn('dietary_tags', session)
+        self.assertIn('vegan', session['dietary_tags'])
+
+
+class GetTagContextTests(TestCase):
+    """Test get_tag_context function."""
+
+    def test_returns_all_tag_categories(self):
+        """Returns context with all tag categories."""
+        session_data = {
+            'course_tags': ['breakfast'],
+            'dietary_tags': ['vegan'],
+            'cuisine_tags': ['Italian'],
+            'other_tags': ['quick'],
+        }
+        result = get_tag_context(session_data)
+
+        self.assertEqual(result['course_tags'], ['breakfast'])
+        self.assertEqual(result['dietary_tags'], ['vegan'])
+        self.assertEqual(result['cuisine_tags'], ['Italian'])
+        self.assertEqual(result['other_tags'], ['quick'])
+
+        # Check options are present
+        self.assertIn('course_options', result)
+        self.assertIn('dietary_options', result)
+        self.assertIn('cuisine_options', result)
+        self.assertIn('other_options', result)
+
+    def test_returns_empty_lists_when_no_tags(self):
+        """Returns empty lists when tags not in session."""
+        result = get_tag_context({})
+
+        self.assertEqual(result['course_tags'], [])
+        self.assertEqual(result['dietary_tags'], [])
+        self.assertEqual(result['cuisine_tags'], [])
+        self.assertEqual(result['other_tags'], [])
+
+
+class InitialiseTagSessionTests(TestCase):
+    """Test initialise_tag_session function."""
+
+    def setUp(self):
+        """Set up test data."""
+        self.user = User.objects.create_user(
+            username='@testuser',
+            email='test@example.com',
+            password='Password123'
+        )
+
+        self.recipe = Recipe.objects.create(
+            author=self.user,
+            title='Test Recipe',
+            publication_date=date.today(),
+            ingredients='Test (1)',
+            steps='Test step',
+            course_tags='breakfast,lunch',
+            dietary_tags='vegan',
+            cuisine_tags='Italian',
+            other_tags='quick',
+        )
+
+    def test_initialises_empty_tags_for_new_recipe(self):
+        """Initialises empty tag lists for new recipe."""
+        session_data = {}
+        initialise_tag_session(session_data, recipe=None)
+
+        self.assertEqual(session_data['course_tags'], [])
+        self.assertEqual(session_data['dietary_tags'], [])
+        self.assertEqual(session_data['cuisine_tags'], [])
+        self.assertEqual(session_data['other_tags'], [])
+
+    def test_initialises_tags_from_existing_recipe(self):
+        """Initialises tags from existing recipe."""
+        session_data = {}
+        initialise_tag_session(session_data, recipe=self.recipe)
+
+        self.assertIn('breakfast', session_data['course_tags'])
+        self.assertIn('lunch', session_data['course_tags'])
+        self.assertIn('vegan', session_data['dietary_tags'])
+        self.assertIn('Italian', session_data['cuisine_tags'])
+        self.assertIn('quick', session_data['other_tags'])
+
+
+class ApplyTagsToRecipeTests(TestCase):
+    """Test apply_tags_to_recipe function."""
+
+    def setUp(self):
+        """Set up test data."""
+        self.user = User.objects.create_user(
+            username='@testuser',
+            email='test@example.com',
+            password='Password123'
+        )
+
+        self.recipe = Recipe.objects.create(
+            author=self.user,
+            title='Test Recipe',
+            publication_date=date.today(),
+            ingredients='Test (1)',
+            steps='Test step',
+        )
+
+    def test_applies_tags_to_recipe(self):
+        """Applies tags from session to recipe."""
+        session_data = {
+            'course_tags': ['breakfast', 'lunch'],
+            'dietary_tags': ['vegan'],
+            'cuisine_tags': ['Italian'],
+            'other_tags': ['quick'],
+        }
+
+        apply_tags_to_recipe(self.recipe, session_data)
+
+        self.assertEqual(self.recipe.course_tags, 'breakfast,lunch')
+        self.assertEqual(self.recipe.dietary_tags, 'vegan')
+        self.assertEqual(self.recipe.cuisine_tags, 'Italian')
+        self.assertEqual(self.recipe.other_tags, 'quick')
+
+    def test_handles_empty_tags(self):
+        """Handles empty tag lists."""
+        session_data = {
+            'course_tags': [],
+            'dietary_tags': [],
+            'cuisine_tags': [],
+            'other_tags': [],
+        }
+
+        apply_tags_to_recipe(self.recipe, session_data)
+
+        self.assertEqual(self.recipe.course_tags, '')
+        self.assertEqual(self.recipe.dietary_tags, '')
+        self.assertEqual(self.recipe.cuisine_tags, '')
+        self.assertEqual(self.recipe.other_tags, '')
+
+
+class GetSessionKeyTests(TestCase):
+    """Test get_session_key function."""
+
+    def test_returns_create_key_when_no_id(self):
+        """Returns create key when recipe_id is None."""
+        result = get_session_key(recipe_id=None)
+        self.assertEqual(result, 'recipe_form_data')
+
+    def test_returns_update_key_with_id(self):
+        """Returns update key with recipe_id."""
+        result = get_session_key(recipe_id=123)
+        self.assertEqual(result, 'recipe_update_123')
+
+
+class CleanupSessionTests(TestCase):
+    """Test cleanup_session function."""
+
+    @patch('recipes.helpers.recipe_form_helpers.cleanup_temp_image')
+    def test_cleans_up_temp_image(self, mock_cleanup):
+        """Calls cleanup_temp_image with correct path."""
+        from django.contrib.sessions.backends.db import SessionStore
+
+        session_data = {'temp_image_path': '/tmp/test.jpg'}
+
+        # Create proper session object
+        request = MagicMock()
+        request.session = SessionStore()
+        request.session.create()
+        request.session['recipe_form_data'] = session_data
+
+        cleanup_session('recipe_form_data', session_data, request)
+
+        mock_cleanup.assert_called_once_with('/tmp/test.jpg')
+
+    @patch('recipes.helpers.recipe_form_helpers.cleanup_temp_image')
+    def test_deletes_session_key(self, mock_cleanup):
+        """Deletes session key when it exists."""
+        from django.contrib.sessions.backends.db import SessionStore
+
+        session_data = {}
+
+        # Create proper session object
+        request = MagicMock()
+        request.session = SessionStore()
+        request.session.create()
+        request.session['recipe_form_data'] = session_data
+
+        cleanup_session('recipe_form_data', session_data, request)
+
+        # Should mark session as modified
+        self.assertTrue(request.session.modified)
+
+        # Key should be deleted
+        self.assertNotIn('recipe_form_data', request.session)
+
+    @patch('recipes.helpers.recipe_form_helpers.cleanup_temp_image')
+    def test_handles_missing_session_key(self, mock_cleanup):
+        """Handles when session key doesn't exist."""
+        from django.contrib.sessions.backends.db import SessionStore
+
+        session_data = {}
+
+        # Create proper session object without the key
+        request = MagicMock()
+        request.session = SessionStore()
+        request.session.create()
+
+        cleanup_session('nonexistent_key', session_data, request)
+
+        # Should still mark as modified
+        self.assertTrue(request.session.modified)
+
+
+class ApplyAIDietaryTagsTests(TestCase):
+    """Test apply_ai_dietary_tags function."""
+
+    def test_does_nothing_when_no_ai_info(self):
+        """Does nothing when ai_dietary_info is empty."""
+        session_data = {'dietary_tags': ['existing']}
+        apply_ai_dietary_tags(session_data, [])
+
+        self.assertEqual(session_data['dietary_tags'], ['existing'])
+
+    def test_does_nothing_when_none(self):
+        """Does nothing when ai_dietary_info is None."""
+        session_data = {'dietary_tags': ['existing']}
+        apply_ai_dietary_tags(session_data, None)
+
+        self.assertEqual(session_data['dietary_tags'], ['existing'])
+
+    @patch('recipes.helpers.ai_recipe_parser.map_ai_dietary_tags')
+    def test_adds_mapped_tags(self, mock_map):
+        """Adds mapped AI tags to session."""
+        mock_map.return_value = ['Vegan', 'Gluten-Free']
+        session_data = {'dietary_tags': []}
+
+        apply_ai_dietary_tags(session_data, ['vegan', 'gluten-free'])
+
+        self.assertIn('Vegan', session_data['dietary_tags'])
+        self.assertIn('Gluten-Free', session_data['dietary_tags'])
+
+    @patch('recipes.helpers.ai_recipe_parser.map_ai_dietary_tags')
+    def test_does_not_add_duplicates(self, mock_map):
+        """Does not add duplicate tags."""
+        mock_map.return_value = ['Vegan']
+        session_data = {'dietary_tags': ['Vegan']}
+
+        apply_ai_dietary_tags(session_data, ['vegan'])
+
+        # Should only have one Vegan
+        self.assertEqual(session_data['dietary_tags'].count('Vegan'), 1)
+
+
+class GetAIPrefillFromSessionTests(TestCase):
+    """Test get_ai_prefill_from_session function."""
+
+    def setUp(self):
+        """Set up test request."""
+        self.factory = RequestFactory()
+
+    def test_returns_none_when_no_flag(self):
+        """Returns None when from_ai_save_button is False."""
+        request = self.factory.get('/test/')
+        request.session = SessionStore()
+        request.session.create()
+        request.session['from_ai_save_button'] = False
+
+        result = get_ai_prefill_from_session(request)
+
+        self.assertIsNone(result)
+
+    def test_returns_data_when_flag_true(self):
+        """Returns data when from_ai_save_button is True."""
+        request = self.factory.get('/test/')
+        request.session = SessionStore()
+        request.session.create()
+        request.session['from_ai_save_button'] = True
+        request.session['ai_recipe_prefill'] = {'title': 'Test'}
+
+        result = get_ai_prefill_from_session(request)
+
+        self.assertEqual(result, {'title': 'Test'})
+
+    def test_pops_flag_from_session(self):
+        """Removes from_ai_save_button from session."""
+        request = self.factory.get('/test/')
+        request.session = SessionStore()
+        request.session.create()
+        request.session['from_ai_save_button'] = True
+        request.session['ai_recipe_prefill'] = {'title': 'Test'}
+
+        get_ai_prefill_from_session(request)
+
+        self.assertNotIn('from_ai_save_button', request.session)
+
+    def test_pops_data_from_session(self):
+        """Removes ai_recipe_prefill from session."""
+        request = self.factory.get('/test/')
+        request.session = SessionStore()
+        request.session.create()
+        request.session['from_ai_save_button'] = True
+        request.session['ai_recipe_prefill'] = {'title': 'Test'}
+
+        get_ai_prefill_from_session(request)
+
+        self.assertNotIn('ai_recipe_prefill', request.session)
+
+
+class StoreAIDietaryInfoTests(TestCase):
+    """Test store_ai_dietary_info function."""
+
+    def test_does_nothing_when_no_ai_info(self):
+        """Does nothing when ai_dietary_info not in ai_prefill."""
+        session_data = {}
+        ai_prefill = {'title': 'Test'}
+
+        store_ai_dietary_info(session_data, ai_prefill)
+
+        self.assertNotIn('ai_dietary_info', session_data)
+
+    def test_stores_ai_dietary_info(self):
+        """Stores ai_dietary_info in session."""
+        session_data = {}
+        ai_prefill = {'ai_dietary_info': ['vegan'], 'title': 'Test'}
+
+        store_ai_dietary_info(session_data, ai_prefill)
+
+        self.assertEqual(session_data['ai_dietary_info'], ['vegan'])
+        self.assertNotIn('ai_dietary_info', ai_prefill)
+
+    def test_stores_ai_description(self):
+        """Stores ai_description in session."""
+        session_data = {}
+        ai_prefill = {
+            'ai_dietary_info': ['vegan'],
+            'ai_description': 'A delicious recipe'
+        }
+
+        store_ai_dietary_info(session_data, ai_prefill)
+
+        self.assertEqual(session_data['ai_description'], 'A delicious recipe')
+        self.assertNotIn('ai_description', ai_prefill)
+
+    def test_handles_missing_description(self):
+        """Handles missing ai_description gracefully."""
+        session_data = {}
+        ai_prefill = {'ai_dietary_info': ['vegan']}
+
+        store_ai_dietary_info(session_data, ai_prefill)
+
+        self.assertEqual(session_data['ai_description'], '')
