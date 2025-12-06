@@ -125,6 +125,5 @@ class UserAvatarTestCase(TestCase):
         self.assertEqual(user.avatar_seed, '')
 
     def tearDown(self):
-        """ Clean up uploaded files. """
         if self.user_initials.profile_picture:
             self.user_initials.profile_picture.delete()
