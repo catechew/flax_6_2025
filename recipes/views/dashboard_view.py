@@ -16,6 +16,7 @@ def dashboard(request):
 
     current_user = request.user
     # Get the 3 most recent recipes (public recipes + user's own private recipes)
+    limit = 3
     recent_recipes = Recipe.objects.visible_to(current_user).order_by('-publication_date')[:3]
 
     most_saved_recipes = (
@@ -40,11 +41,11 @@ def dashboard(request):
     )
 
     context = {
-        "user": user,
-        "recent_recipes": get_recent_recipes(user),
-        "most_saved_recipes": get_most_saved_recipes(),
-        "highest_rated_recipes": get_highest_rated_recipes(),
-        "followed_recipes": get_followed_recipes(user),
+        "user": current_user,
+        "recent_recipes": recent_recipes,
+        "most_saved_recipes": most_saved_recipes,
+        "highest_rated_recipes": highest_rated_recipes,
+        "followed_recipes": followed_recipes,
     }
 
     return render(request, "dashboard/dashboard.html", context)
