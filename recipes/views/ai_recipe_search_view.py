@@ -42,7 +42,7 @@ def get_search_params_from_ai(user_context):
         Only relevant filters. Empty arrays if none apply."""
 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "Extract recipe search params. Return only JSON."},
             {"role": "user", "content": ai_prompt}
