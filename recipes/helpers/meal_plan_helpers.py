@@ -94,6 +94,8 @@ def reuse_prev_week(plan):
         slot.recipe = prev_slot.recipe if prev_slot else None
         slot.notes = prev_slot.notes if prev_slot else ''
         slot.save()
+        
+    return True
 
 def calculate_meals_logged(plan):
     """
