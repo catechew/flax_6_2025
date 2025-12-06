@@ -27,13 +27,14 @@ Recipes | Recipe #{{recipe.id}}
                 {% include 'partials/save_recipe_button.html' %}
             </div>
             {% endif %}
+
         <h1 class="card-title">{{ recipe.title }}</h1>
         <p class="text-muted">
             <i class="bi bi-person"></i> By 
-            <a href="{% url 'user_profile' recipe.author.id %}">
-                {{ recipe.author.get_full_name }}
+            <a href="/user/{{ recipe.author.id }}/">
+                {{ recipe.author.username }}
             </a>
-             |
+            |
             <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
         </p>
 
