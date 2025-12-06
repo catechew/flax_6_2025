@@ -50,7 +50,9 @@ class MealPlanDetailViewTests(TestCase):
 
 
 class MealPlanReuseLastWeekViewTests(TestCase):
-    """ Tests for reusing last week's meal plan. """
+    """ 
+    Tests for reusing last week's meal plan. 
+    """
 
     def setUp(self):
         self.user = User.objects.create_user(
@@ -100,3 +102,19 @@ class MealPlanReuseLastWeekViewTests(TestCase):
         # Confirm notes were copied
         new_slot = self.plan.entries.first()
         self.assertEqual(new_slot.notes, "Copied note")
+    
+    def test_reuse_last_week_shows_warning_when_none_available(self):
+        # Ensure no previous plan exists
+        MealPlan.objects.filter(
+            user=self.user,
+            week_start=date(2025, 11, 17)
+        ).delete()
+
+        response = self.client.post(self.url, follow=True)
+
+        messages = list(response.context['messages'])
+
+        self.assertTrue(any(
+            "No meals from last week available to reuse." in str(m)
+            for m in messages
+        ))
