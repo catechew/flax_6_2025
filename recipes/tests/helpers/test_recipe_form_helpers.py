@@ -2,14 +2,15 @@ from django.test import TestCase, RequestFactory
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.messages.storage.fallback import FallbackStorage
 from recipes.handlers.recipe_form_handler import RecipeFormHandler
+from recipes.helpers.recipe_form_helpers import get_tag_action_from_request
 from recipes.models import Recipe, User
 from django.utils import timezone
 from unittest.mock import patch, MagicMock
 
 
-class RecipeFormHandlerTestCase(TestCase):
+class RecipeFormHelpersTestCase(TestCase):
     """
-    Tests for RecipeFormHandler class.
+    Tests for RecipeFormHelper class.
     """
     fixtures = ['recipes/tests/fixtures/default_user.json', 'recipes/tests/fixtures/other_users.json']
 
@@ -353,3 +354,20 @@ class RecipeFormHandlerTestCase(TestCase):
             handler = RecipeFormHandler(request)
             result = handler.handle_tag_action()
             self.assertIsNone(result)
+
+    def test_get_tag_action_from_request_no_valid_tag_actions(self):
+        """
+        test that function returns none tuple when post has no tag action keys
+        """
+        # Create a POST request with irrelevant data
+        factory = RequestFactory()
+        request = factory.post('/fake-url/', {
+            'some_other_field': 'value',
+            'another_field': 'another_value'
+        })
+        
+        action, category, value = get_tag_action_from_request(request)
+        
+        self.assertIsNone(action)
+        self.assertIsNone(category)
+        self.assertIsNone(value)
