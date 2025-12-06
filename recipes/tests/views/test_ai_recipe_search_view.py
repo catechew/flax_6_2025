@@ -36,6 +36,7 @@ class AIRecipeSearchViewTests(TestCase):
             ingredients='Pasta (400g)\nEggs (2)',
             steps='Cook pasta\nMix with eggs',
             dietary_tags='vegetarian',
+            cuisine_tags='Italian',
         )
 
         self.recipe2 = Recipe.objects.create(
@@ -45,6 +46,7 @@ class AIRecipeSearchViewTests(TestCase):
             ingredients='Chickpeas (400g)',
             steps='Cook curry',
             dietary_tags='vegan',
+            cuisine_tags='Asian',
         )
 
         self.url = reverse('ai_recipe_search')
@@ -336,26 +338,29 @@ class AIRecipeSearchViewTests(TestCase):
         messages = list(response.context['messages'])
         self.assertTrue(any('Please describe your situation' in str(m) for m in messages))
 
-    def test_build_view_all_url_multiple_filters(self):
-        """test url with multiple filters same category"""
-        url = build_view_all_url('', ['breakfast', 'lunch'], [], [], [], '')
-        self.assertIn('course=breakfast', url)
-        self.assertIn('course=lunch', url)
-
-    def test_build_view_all_url_with_query(self):
-        """test url with search query"""
-        url = build_view_all_url('pasta', [], [], [], [], '')
+    def test_build_view_all_url_with_all_filter_types(self):
+        """
+        test url with all filter types including cuisine and other
+        """
+        url = build_view_all_url(
+            'pasta',
+            ['breakfast'],
+            ['vegan'],
+            ['italian'],
+            ['quick'],
+            'rating_high'
+        )
         self.assertIn('q=pasta', url)
-
-    def test_build_view_all_url_with_sorting(self):
-        """test url with sort parameter"""
-        url = build_view_all_url('', [], [], [], [], 'rating_high')
+        self.assertIn('course=breakfast', url)
+        self.assertIn('dietary=vegan', url)
+        self.assertIn('cuisine=italian', url)
+        self.assertIn('other=quick', url)
         self.assertIn('sort=rating_high', url)
 
-    def test_apply_tag_filters_multiple_dietary(self):
+    def test_apply_tag_filters_multiple_dietary_and_cuisine(self):
         """test multiple dietary filters"""
         recipes = Recipe.objects.all()
-        result = apply_tag_filters(recipes, [], ['vegan', 'vegetarian'], [], [])
+        result = apply_tag_filters(recipes, [], ['vegan', 'vegetarian'], ['Italian', 'Asian'], [])
         # Should find both recipes
         self.assertGreaterEqual(result.count(), 1)
 

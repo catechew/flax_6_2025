@@ -211,3 +211,13 @@ class RecipeFormTestCase(TestCase):
         error_msg = str(errors)
         self.assertIn('Line 1', error_msg)
         self.assertIn('Ingredient name (quantity)', error_msg)
+
+    def test_form_rejects_ingredient_with_mismatched_parentheses(self):
+        """
+        test form rejects ingredient with unequal opening and closing parentheses
+        """
+        errors = self._assert_form_invalid('ingredients', 
+            ingredients='Flour ((500g)')
+        error_msg = str(errors)
+        self.assertIn('Line 1', error_msg)
+        self.assertIn('mismatched parentheses', error_msg.lower())

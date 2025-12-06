@@ -107,7 +107,7 @@ class RecipeDetailCostContextTests(TestCase):
     def test_cost_context_error(self, mock_cost):
         mock_cost.side_effect = Exception("Boom")
 
-        request = self.factory.get("/recipe/1?show_cost=true")
+        request = self.factory.get("/recipe/1", {'show_cost': 'true'})
         request.user = self.user
 
         handler = RecipeDetailHandler(request, self.recipe.id)
