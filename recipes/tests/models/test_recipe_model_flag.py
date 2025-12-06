@@ -3,46 +3,89 @@ Recipe flag tests.
 """
 
 from django.test import TestCase
-from recipes.tests.utils import create_test_user, create_test_recipe
+from datetime import date
 from recipes.models import User, Recipe, Flag
 
 
-def test_flag_count_property(self):
-    """Test flag_count property returns correct count."""
-    from recipes.models import Flag
+class RecipeFlagCountTests(TestCase):
+    """Test Recipe flag_count property."""
 
-    user2 = User.objects.create_user(
-        username='@user2',
-        email='user2@test.com',
-        password='Password123',
-        first_name='User',
-        last_name='Two'
-    )
+    def setUp(self):
+        """Set up test data."""
+        self.user = User.objects.create_user(
+            username='@testuser',
+            email='test@example.com',
+            password='Password123'
+        )
 
-    Flag.objects.create(recipe=self.recipe, user=self.user)
-    Flag.objects.create(recipe=self.recipe, user=user2)
+        self.user2 = User.objects.create_user(
+            username='@user2',
+            email='user2@example.com',
+            password='Password123'
+        )
 
-    self.assertEqual(self.recipe.flag_count, 2)
+        self.recipe = Recipe.objects.create(
+            author=self.user,
+            title='Test Recipe',
+            publication_date=date.today(),
+            ingredients='Test (1)',
+            steps='Test step',
+        )
+
+    def test_flag_count_zero(self):
+        """Test flag_count returns 0 when no flags."""
+        self.assertEqual(self.recipe.flag_count, 0)
+
+    def test_flag_count_one(self):
+        """Test flag_count returns 1 with one flag."""
+        Flag.objects.create(recipe=self.recipe, user=self.user)
+        self.assertEqual(self.recipe.flag_count, 1)
+
+    def test_flag_count_multiple(self):
+        """Test flag_count returns correct count with multiple flags."""
+        Flag.objects.create(recipe=self.recipe, user=self.user)
+        Flag.objects.create(recipe=self.recipe, user=self.user2)
+        self.assertEqual(self.recipe.flag_count, 2)
 
 
-def test_recipe_flag_count_zero(self):
-    """Test flag_count returns 0 when no flags."""
-    self.assertEqual(self.recipe.flag_count, 0)
+class FlagModelTests(TestCase):
+    """Test Flag model methods and properties."""
 
+    def setUp(self):
+        """Set up test data."""
+        self.user = User.objects.create_user(
+            username='@testuser',
+            email='test@example.com',
+            password='Password123'
+        )
 
-def test_recipe_flag_count_multiple(self):
-    """Test flag_count returns correct count."""
-    from recipes.models import Flag
+        self.recipe = Recipe.objects.create(
+            author=self.user,
+            title='Test Recipe',
+            publication_date=date.today(),
+            ingredients='Test (1)',
+            steps='Test step',
+        )
 
-    user2 = User.objects.create_user(
-        username='@user2',
-        email='user2@test.com',
-        password='Password123',
-        first_name='User',
-        last_name='Two'
-    )
+        self.flag = Flag.objects.create(
+            recipe=self.recipe,
+            user=self.user
+        )
 
-    Flag.objects.create(recipe=self.recipe, user=self.user)
-    Flag.objects.create(recipe=self.recipe, user=user2)
+    def test_flag_str_method(self):
+        """Test Flag __str__ method."""
+        expected = f"{self.user} flagged {self.recipe}."
+        self.assertEqual(str(self.flag), expected)
 
-    self.assertEqual(self.recipe.flag_count, 2)
+    def test_flag_count_for_recipe_property(self):
+        """Test flag_count_for_recipe property."""
+        # Create another flag for same recipe
+        user2 = User.objects.create_user(
+            username='@user2',
+            email='user2@example.com',
+            password='Password123'
+        )
+        Flag.objects.create(recipe=self.recipe, user=user2)
+
+        # Should return 2 (both flags for this recipe)
+        self.assertEqual(self.flag.flag_count_for_recipe, 2)
