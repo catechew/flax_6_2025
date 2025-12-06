@@ -6,7 +6,9 @@ import io
 
 
 class UserAvatarTestCase(TestCase):
-    """ Tests for user avatar functionality. """
+    """ 
+    Tests for user avatar functionality. 
+    """
 
     def setUp(self):
         """ Set up test users. """
@@ -93,7 +95,13 @@ class UserAvatarTestCase(TestCase):
         self.user_ai.age_range = 'young'
         self.user_ai.save()
         young_url = self.user_ai.avatar_url()
-
+        
+        # Middle age range
+        self.user_ai.age_range = 'middle'
+        self.user_ai.save()
+        url = self.user_ai.avatar_url()
+        self.assertIn("randomuser.me", url)
+        
         # Senior age range
         self.user_ai.age_range = 'senior'
         self.user_ai.save()
@@ -123,6 +131,13 @@ class UserAvatarTestCase(TestCase):
             password='Password123'
         )
         self.assertEqual(user.avatar_seed, '')
+    
+    def test_user_cannot_follow_themselves(self):
+        before = self.user_initials.following.count()
+        self.user_initials.follow(self.user_initials)
+        after = self.user_initials.following.count()
+
+        self.assertEqual(before, after)
 
     def tearDown(self):
         if self.user_initials.profile_picture:
