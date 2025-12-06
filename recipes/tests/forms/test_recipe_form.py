@@ -1,4 +1,5 @@
 from django.test import TestCase
+from pydantic import ValidationError
 from recipes.forms.recipe_form import RecipeForm
 from django.utils import timezone
 from datetime import timedelta
@@ -221,3 +222,13 @@ class RecipeFormTestCase(TestCase):
         error_msg = str(errors)
         self.assertIn('Line 1', error_msg)
         self.assertIn('mismatched parentheses', error_msg.lower())
+
+    def test_form_rejects_none_ingredients(self):
+        """
+        test that clean_ingredients raises error when ingredients is none
+        """
+        form = RecipeForm(data=self.form_data)
+        form.cleaned_data = {'ingredients': None}
+        with self.assertRaises(ValidationError) as context:
+            form.clean_ingredients()
+        self.assertIn('required', str(context.exception).lower())

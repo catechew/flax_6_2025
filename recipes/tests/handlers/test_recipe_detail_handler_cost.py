@@ -79,6 +79,17 @@ class RecipeDetailCostContextTests(TestCase):
         # Should not call cost estimator
         self.assertIsNone(result["cost_estimate"])
         self.assertIsNone(result["cost_error"])
+
+    @patch("recipes.handlers.recipe_detail_handler.get_cost_estimate_data")
+    def test_get_context_cost_triggered(self, mock_cost):
+        mock_cost.return_value = {"total_cost": 5.50, "cost_per_serving": 2.75}
+        
+        request = self.factory.get("/recipe/1?show_cost=true")
+        request.user = self.user
+        
+        handler = RecipeDetailHandler(request, self.recipe.id)
+        print(f"show_cost value: {handler.request.GET.get('show_cost')}")  # Debug
+        context = handler.get_context()
     
     def test_get_context_cost_not_triggered_without_show_cost(self):
         request = self.factory.get("/recipe/1")  # No ?show_cost
