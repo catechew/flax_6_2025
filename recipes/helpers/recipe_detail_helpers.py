@@ -21,10 +21,7 @@ def scale_ingredient(ingredient, factor):
     return re.sub(pattern, replace_number, ingredient)
 
 def format_scaled_number(number):
-    if number.is_integer():
-        return str(int(number))
-    else:
-        return f"{number:.1f}"
+    return str(int(number))
 
 def get_new_number(number_str):
     parts = number_str.split('/')
@@ -52,10 +49,7 @@ def get_user_rating(recipe, user):
     # Retrieve logged in user's rating for the recipe
     if not user.is_authenticated:
         return None
-    try: 
-        return Rating.objects.filter(recipe=recipe, user=user).first()
-    except Rating.DoesNotExist:
-        return None
+    return Rating.objects.filter(recipe=recipe, user=user).first()
      
 
 def has_user_flagged_recipe(recipe, user):

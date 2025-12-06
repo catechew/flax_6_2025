@@ -30,11 +30,8 @@ def extract_minutes(time_str):
     if 'min' not in time_str:
         return 0
 
-    try:
-        parts = time_str.split('min')[0].strip().split()
-        return find_last_digit(parts)
-    except (ValueError, IndexError):
-        return 0
+    parts = time_str.split('min')[0].strip().split()
+    return find_last_digit(parts)
 
 def find_last_digit(parts):
     """ Find last digit in list of string parts. """

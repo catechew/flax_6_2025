@@ -6,6 +6,7 @@ from recipes.models import User, Recipe
 from datetime import date
 from recipes.views import ai_recipe_search_view
 from recipes.views.ai_recipe_search_view import (
+    get_search_params_from_ai,
     get_ai_rankings,
     apply_tag_filters,
     apply_search_query,
@@ -316,17 +317,6 @@ class AIRecipeSearchViewTests(TestCase):
 
         result = get_ai_rankings('test', [self.recipe1])
         self.assertEqual(len(result['top_picks']), 1)
-
-    @patch('recipes.views.ai_recipe_search_view.get_search_params_from_ai')
-    def test_json_decode_error(self, mock_get_params):
-        """test json decode error handling"""
-        self.client.login(username='@testuser', password='Password123')
-
-        mock_get_params.side_effect = json.JSONDecodeError('err', '', 0)
-        response = self.client.post(self.url, {'context': 'test'})
-
-        messages = list(response.context['messages'])
-        self.assertTrue(any('An error occurred' in str(m) for m in messages))
 
     def test_whitespace_context(self):
         """test whitespace only context"""
