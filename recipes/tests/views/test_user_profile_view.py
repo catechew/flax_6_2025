@@ -116,7 +116,7 @@ class UserProfileViewTestCase(TestCase):
 
     def test_user_profile_with_no_recipes(self):
         """ Test profile page when user has no recipes. """
-        Recipe.objects.filter(author=self.other_user).delete()
+        Recipe.objects.visible_to(self.other_user).delete()
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)

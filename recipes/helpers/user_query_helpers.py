@@ -47,7 +47,7 @@ def get_users_context(request, search_query):
     filtered_users = apply_user_search(user_queryset, search_query)
     page_object = paginate_users(filtered_users, request)
 
-    recipe_count = apply_search(Recipe.objects.filter(private=False), search_query).count()
+    recipe_count = apply_search(Recipe.objects.visible(), search_query).count()
 
     return {
         "users": page_object,

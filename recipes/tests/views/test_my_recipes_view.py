@@ -90,7 +90,7 @@ class MyRecipesViewTestCase(TestCase):
 
     def test_my_recipes_with_no_recipes(self):
         """ Test empty page view when user has no recipes. """
-        Recipe.objects.filter(author=self.user).delete()
+        Recipe.objects.visible_to(self.user).delete()
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -118,7 +118,7 @@ class MyRecipesViewTestCase(TestCase):
 
     def test_my_recipes_shows_create_recipe_link_when_empty(self):
         """ Test that create recipe link appears when no recipes exist. """
-        Recipe.objects.filter(author=self.user).delete()
+        Recipe.objects.visible_to(self.user).delete()
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         create_url = reverse('create_recipe')
@@ -156,7 +156,7 @@ class MyRecipesViewTestCase(TestCase):
 
     def test_my_recipes_pluralization(self):
         """ Test that recipe/recipes text is pluralized correctly. """
-        Recipe.objects.filter(author=self.user).delete()
+        Recipe.objects.visible_to(self.user).delete()
         create_test_recipe()
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
