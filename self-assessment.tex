@@ -96,10 +96,61 @@ An example of a use case is as follows:
 
 \begin{tabular}{|p{30mm}|p{30mm}|p{40mm}|p{40mm}|}
 \hline
-Name (\& short task description) & Actor \& trigger & Main success scenario \& outcome & Alternative flows\\
+Name (\& short task description) 
+& 
+Actor \& trigger 
+& 
+Main success scenario \& outcome 
+& 
+Alternative flows\\
+
+
+%%% Above is the structure to follow %%%
+
 \hline
- & & & \\
- \hline
+Create Recipe 
+& 
+Logged-in user selects ``Create Recipe'' from the navigation bar 
+&
+(1) System displays Step 1 form, 
+
+\vspace{1 mm}
+
+(2) User enters title, publication date, servings, ingredients, steps, optional image, visibility and times.
+
+\vspace{1 mm}
+
+(3) User clicks ``Next: Add Tags'',
+
+\vspace{1 mm}
+
+(4) System displays Step 2 tag page, 
+
+\vspace{1 mm}
+
+(5) User selects tags or adds custom tags,
+
+\vspace{1 mm}
+
+(6) User clicks ``Create Recipe''.  
+Outcome: recipe is saved and shown on the detail page with a success message. 
+&
+Missing fields $\rightarrow$ system shows validation errors. 
+
+\vspace{1 mm}
+
+Invalid date $\rightarrow$  user must enter today or earlier.
+
+\vspace{1 mm}
+
+Image upload fails user may retry or continue without image.  
+
+\vspace{1 mm}
+
+User cancels $\rightarrow$  no recipe is saved and user is taken back to main page. \\
+\hline
+
+\hline
   & & & \\
  \hline
   & & & \\
