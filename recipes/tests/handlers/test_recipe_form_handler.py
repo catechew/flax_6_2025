@@ -2,12 +2,13 @@ from django.test import TestCase, RequestFactory
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.messages.storage.fallback import FallbackStorage
 from recipes.handlers.recipe_form_handler import RecipeFormHandler
-from recipes.models import Recipe, User, recipe
+from recipes.models import Recipe, User
 from django.utils import timezone
-from unittest.mock import MagicMock
+from unittest.mock import patch, MagicMock
 
 
 class RecipeFormHandlerTestCase(TestCase):
+    """ Tests for RecipeFormHandler class. """
 
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
@@ -32,10 +33,13 @@ class RecipeFormHandlerTestCase(TestCase):
             private=False
         )
 
-    def get_request(self, user=None):
-        """ Create a GET request with session and messages. """
+    def get_request(self, user=None, method='GET'):
+        """ Create a request with session and messages. """
         factory = RequestFactory()
-        request = factory.get('/test/')
+        if method == 'GET':
+            request = factory.get('/test/')
+        else:
+            request = factory.post('/test/')
         request.user = user or self.user
         request.session = SessionStore()
         request.session.create()
@@ -46,256 +50,389 @@ class RecipeFormHandlerTestCase(TestCase):
         """ Test handler in create mode. """
         request = self.get_request()
         handler = RecipeFormHandler(request, recipe_id=None)
+        
         self.assertTrue(handler.is_create_mode)
-        self.assertFalse(handler.is_update_mode)
         self.assertIsNone(handler.recipe)
         self.assertTrue(handler.is_owner)
+        self.assertEqual(handler.mode, "create")
 
     def test_update_mode_owner(self):
         """ Test handler in update mode as owner. """
         request = self.get_request(user=self.user)
         handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
         self.assertFalse(handler.is_create_mode)
-        self.assertTrue(handler.is_update_mode)
         self.assertEqual(handler.recipe, self.recipe)
         self.assertTrue(handler.is_owner)
+        self.assertEqual(handler.mode, "update")
 
     def test_update_mode_non_owner(self):
+        """ Test handler in update mode as non-owner. """
         request = self.get_request(user=self.other_user)
         handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
         self.assertFalse(handler.is_owner)
 
-    def test_get_base_context(self):
-        request = self.get_request()
-        handler = RecipeFormHandler(request)
-        context = handler.get_base_context()
-        self.assertIn('mode', context)
-        self.assertIn('is_owner', context)
-
     def test_get_tags_context(self):
+        """ Test tags context has required fields. """
         request = self.get_request()
         handler = RecipeFormHandler(request)
         context = handler.get_tags_context()
+        
         self.assertIn('course_tags', context)
         self.assertIn('dietary_tags', context)
+        self.assertIn('cuisine_tags', context)
+        self.assertIn('other_tags', context)
         self.assertIn('has_image', context)
+        self.assertIn('mode', context)
+        self.assertIn('is_owner', context)
 
-    def test_redirect_methods(self):
+    def test_get_tags_context_with_recipe(self):
+        """ Test tags context includes recipe in update mode. """
         request = self.get_request()
-        handler = RecipeFormHandler(request)
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        context = handler.get_tags_context()
         
-        # Test each redirect returns a redirect response (status 302)
-        self.assertEqual(handler.redirect_to_form_page().status_code, 302)
-        self.assertEqual(handler.redirect_to_tags_page().status_code, 302)
-        self.assertEqual(handler.redirect_to_detail_page(1).status_code, 302)
-        self.assertEqual(handler.redirect_to_cancel_destination().status_code, 302)
-
-    def test_mark_session_modified(self):
-        # Test session modified flag is set
-        request = self.get_request()
-        handler = RecipeFormHandler(request)
-        handler.mark_session_modified()
-        self.assertTrue(request.session.modified)
-
-    def test_update_mode_with_existing_session(self):
-        request = self.get_request(user=self.user)
-        request.session[f'recipe_update_{self.recipe.id}'] = {
-            'is_owner': True,
-            'original_author': '@johndoe'
-        }
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        self.assertTrue(handler.is_owner)
-        self.assertIn('original_author', handler.session_data)
-
-    def test_get_base_context_with_recipe(self):
-        request = self.get_request()
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        context = handler.get_base_context()
         self.assertIn('recipe', context)
         self.assertIn('recipe_id', context)
-        self.assertIn('original_author', context)
+        self.assertEqual(context['recipe'], self.recipe)
 
-    def test_redirect_to_form_page_update_mode(self):
+    def test_get_tags_context_without_recipe(self):
+        """ Test tags context in create mode (no recipe). """
         request = self.get_request()
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        response = handler.redirect_to_form_page()
-        self.assertEqual(response.status_code, 302)
-        self.assertIn(str(self.recipe.id), response.url)
-
-    def test_redirect_to_tags_page_update_mode(self):
-        request = self.get_request()
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        response = handler.redirect_to_tags_page()
-        self.assertEqual(response.status_code, 302)
-        self.assertIn(str(self.recipe.id), response.url)
-
-    def test_redirect_to_cancel_destination_update_mode(self):
-        """Test cancel redirect in update mode"""
-        request = self.get_request()
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        response = handler.redirect_to_cancel_destination()
-        self.assertEqual(response.status_code, 302)
-        self.assertIn('recipe', response.url)
-
-    def test_show_success_message_non_owner_with_recipe(self):
-        """ Test show success message for non-owner with recipe """ 
-        request = self.get_request(user=self.other_user)
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        handler.session_data['original_author'] = '@johndoe'
-        handler.show_success_message(self.recipe)
-        messages = list(request._messages)
-        self.assertEqual(len(messages), 2)
-
-    # Test prepare_recipe_author for owner update
-    def test_prepare_recipe_author_owner_update(self):
-        """ Test author not changed for owner update. """
-        request = self.get_request()
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        handler.prepare_recipe_author(self.recipe, self.user, self.recipe, True)
+        handler = RecipeFormHandler(request)
+        context = handler.get_tags_context()
         
-        # Author should remain unchanged
-        self.assertEqual(self.recipe.author, self.user)
+        self.assertNotIn('recipe', context)
+        self.assertNotIn('recipe_id', context)
 
-    def test_handle_image_copy(self):
-        """ Test image is copied from original recipe. """
+    def test_redirect_to_cancel_destination_create_mode(self):
+        """ Test cancel redirect in create mode. """
         request = self.get_request()
         handler = RecipeFormHandler(request)
         
-        # Create mock recipes with images
-        original = MagicMock()
-        original.image.name = 'test.jpg'
-        original.image.file.read.return_value = b'test_data'
-        new_recipe = MagicMock()
-        handler.handle_image_copy(new_recipe, original)
+        response = handler.redirect_to_cancel_destination()
         
-        # Verify image.save was called
-        self.assertTrue(new_recipe.image.save.called)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('recipes', response.url)
+
+    def test_redirect_to_cancel_destination_update_mode(self):
+        """ Test cancel redirect in update mode. """
+        request = self.get_request()
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
+        response = handler.redirect_to_cancel_destination()
+        
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('recipe', response.url)
 
     def test_handle_form_get_with_form_data(self):
         """ Test form is pre-populated from session. """
         request = self.get_request()
         handler = RecipeFormHandler(request)
         handler.session_data['form_data'] = {'title': 'Test'}
+        
         response = handler.handle_form_get()
+        
         self.assertEqual(response.status_code, 200)
 
     def test_handle_form_get_without_form_data(self):
         """ Test form is empty when no session data. """
         request = self.get_request()
         handler = RecipeFormHandler(request)
+        
         response = handler.handle_form_get()
+        
         self.assertEqual(response.status_code, 200)
-
-    def test_create_form_without_instance(self):
-        """ Test form creation without recipe instance. """
-        request = self.get_request()
-        handler = RecipeFormHandler(request)
-        form = handler.create_form()
-        self.assertIsNone(form.instance.pk)
-
-    def test_create_form_with_instance(self):
-        """ Test form creation with recipe instance. """
-        request = self.get_request()
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        form = handler.create_form()
-        self.assertEqual(form.instance, self.recipe)
-
-    def test_prepare_recipe_author_create_mode(self):
-        """ Test author is set in create mode. """
-        request = self.get_request()
-        handler = RecipeFormHandler(request)
-        new_recipe = Recipe()
-        handler.prepare_recipe_author(new_recipe, self.user, None, True)
-        self.assertEqual(new_recipe.author, self.user)
-
-    def test_prepare_recipe_author_non_owner_copy(self):
-        """ Test recipe pk/id are cleared for non-owner copy. """
-        request = self.get_request(user=self.other_user)
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        new_recipe = Recipe(pk=999, id=999)
-        handler.prepare_recipe_author(new_recipe, self.other_user, self.recipe, False)
-        self.assertIsNone(new_recipe.pk)
-        self.assertIsNone(new_recipe.id)
-        self.assertEqual(new_recipe.author, self.other_user)
-
-    def test_handle_image_deletion_no_clear_flag(self):
-        """ Test image not deleted when image_clear is False. """
-        request = self.get_request()
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        test_recipe = Recipe()
-        test_recipe.image = 'test.jpg'
-        session_data = {'image_clear': False}
-        handler.handle_image_deletion(test_recipe, session_data, self.recipe, True)
-        
-        # Image should still exist. 
-        self.assertEqual(test_recipe.image, 'test.jpg')
-
-    def test_handle_image_deletion_non_owner(self):
-        """ Test image not deleted for non-owner. """
-        request = self.get_request(user=self.other_user)
-        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
-        test_recipe = Recipe()
-        test_recipe.image = 'test.jpg'
-        session_data = {'image_clear': True}
-        handler.handle_image_deletion(test_recipe, session_data, self.recipe, False)
-        
-        # Image should still exist - not owner
-        self.assertEqual(test_recipe.image, 'test.jpg')
-
-    def test_handle_image_deletion_no_original(self):
-        """ Test image deletion when no original recipe. """
-        request = self.get_request()
-        handler = RecipeFormHandler(request)
-        test_recipe = Recipe()
-        test_recipe.image = 'test.jpg'
-        session_data = {'image_clear': True}
-        handler.handle_image_deletion(test_recipe, session_data, None, True)
-        
-        # Image should still exist - no original recipe
-        self.assertEqual(test_recipe.image, 'test.jpg')
-
-    def test_save_form_to_session(self):
-        """ Test form data is saved to session. """
-        factory = RequestFactory()
-        request = factory.post('/test/', {'title': 'Test', 'image-clear': 'on'})
-        request.user = self.user
-        request.session = SessionStore()
-        request.session.create()
-        setattr(request, '_messages', FallbackStorage(request))
-        handler = RecipeFormHandler(request)
-        handler.save_form_to_session()
-        self.assertIn('form_data', handler.session_data)
-        self.assertEqual(handler.session_data['form_data']['title'], 'Test')
-        self.assertEqual(handler.session_data['image_clear'], 'on')
-
-    def test_handle_image_in_session_no_files(self):
-        """ Test handle_image_in_session returns False when no image. """
-        factory = RequestFactory()
-        request = factory.post('/test/')
-        request.user = self.user
-        request.session = SessionStore()
-        request.session.create()
-        setattr(request, '_messages', FallbackStorage(request))
-        handler = RecipeFormHandler(request)
-        result = handler.handle_image_in_session()
-        self.assertFalse(result)
 
     def test_session_key_create_mode(self):
         """ Test session key is correct for create mode. """
         request = self.get_request()
         handler = RecipeFormHandler(request)
+        
         self.assertEqual(handler.session_key, 'recipe_form_data')
 
     def test_session_key_update_mode(self):
         """ Test session key is correct for update mode. """
         request = self.get_request()
         handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
         self.assertEqual(handler.session_key, f'recipe_update_{self.recipe.id}')
 
     def test_show_missing_form_data_warning_message(self):
         """ Test warning message is shown. """
         request = self.get_request()
         handler = RecipeFormHandler(request)
+        
         handler.show_missing_form_data_warning()
+        
         messages = list(request._messages)
         self.assertTrue(any('fill in the recipe details' in str(m) for m in messages))
+    
+    def test_ai_dietary_tags_not_present(self):
+        """ Test when AI dietary info is not in session. """
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        
+        self.assertNotIn('ai_dietary_info', handler.session_data)
+        self.assertIsNotNone(handler.session_data)
+
+    def test_get_ai_prefill_data_returns_none_when_no_data(self):
+        """ Test AI prefill returns None when no data in session. """
+        request = self.get_request()
+        request.session['from_ai_save_button'] = True    
+        
+        handler = RecipeFormHandler(request)
+        ai_data = handler._get_ai_prefill_data()
+        
+        self.assertIsNone(ai_data)
+    
+    def test_apply_ai_tags_if_available_empty(self):
+        """ Test AI tags application with empty list. """
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        handler.session_data['ai_dietary_info'] = []
+
+        handler._apply_ai_tags_if_available(handler.session_data)
+
+        self.assertEqual(handler.session_data['ai_dietary_info'], [])
+    
+    def test_get_ai_prefill_data_flag_false(self):
+        """ Test AI prefill when flag is False. """
+        request = self.get_request()
+        request.session['from_ai_save_button'] = False
+        
+        handler = RecipeFormHandler(request)
+        self.assertIsNone(handler._get_ai_prefill_data())
+    
+    def test_get_ai_prefill_data_missing_prefill(self):
+        """ Test AI prefill when prefill data is missing. """
+        request = self.get_request()
+        request.session['from_ai_save_button'] = True
+
+        handler = RecipeFormHandler(request)
+        result = handler._get_ai_prefill_data()
+
+        self.assertIsNone(result)
+
+    @patch("recipes.handlers.recipe_form_handler.get_tag_action_from_request")
+    @patch("recipes.handlers.recipe_form_handler.handle_tag_operation", return_value=True)
+    @patch("recipes.handlers.recipe_form_handler.redirect_to_tags")
+    def test_handle_tag_action_with_valid_action(self, mock_redirect, mock_handle, mock_get_action):
+        """ Test handle_tag_action when action is valid. """
+        # Mock get_tag_action_from_request to return valid action
+        mock_get_action.return_value = ('add', 'course', 'Breakfast')
+        mock_redirect.return_value = MagicMock(status_code=302)
+        
+        request = self.get_request(method='POST')
+        handler = RecipeFormHandler(request)
+
+        response = handler.handle_tag_action()
+
+        self.assertIsNotNone(response)
+        self.assertEqual(response.status_code, 302)
+        mock_handle.assert_called_once_with(handler.session_data, 'add', 'course', 'Breakfast')
+        mock_redirect.assert_called_once()
+
+    @patch.object(RecipeFormHandler, "finalise_recipe")
+    def test_handle_tags_post_calls_finalise(self, mock_final):
+        """ Test handle_tags_post calls finalise_recipe. """
+        request = self.get_request()
+        request.POST = {"create_recipe": "1"}
+
+        handler = RecipeFormHandler(request)
+        handler.handle_tags_post()
+
+        mock_final.assert_called_once()
+    
+    @patch.object(RecipeFormHandler, "handle_tag_action", return_value="OK")
+    def test_handle_tags_post_calls_handle_tag_action(self, mock_action):
+        """ Test handle_tags_post calls handle_tag_action. """
+        request = self.get_request()
+        request.POST = {}
+
+        handler = RecipeFormHandler(request)
+        result = handler.handle_tags_post()
+
+        mock_action.assert_called_once()
+        self.assertEqual(result, "OK")
+    
+    @patch("recipes.handlers.recipe_form_handler.rebuild_form_data", return_value=({}, {}))
+    @patch("recipes.handlers.recipe_form_handler.cleanup_session")
+    @patch("recipes.handlers.recipe_form_handler.show_success_message")
+    def test_finalise_recipe_basic(self, mock_msg, mock_cleanup, mock_rebuild):
+        """ Test finalise_recipe completes successfully. """
+        request = self.get_request()
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+
+        class FakeRecipe:
+            id = 1
+            def save(self): pass
+
+        with patch("recipes.handlers.recipe_form_handler.RecipeForm") as MockForm:
+            instance = MockForm.return_value
+            instance.save.return_value = FakeRecipe()
+
+            response = handler.finalise_recipe()
+
+            self.assertEqual(response.status_code, 302)
+            mock_cleanup.assert_called_once()
+
+    def test_handle_tag_action_returns_none_when_no_action(self):
+        """ Test tag action returns None when no action in POST. """
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        result = handler.handle_tag_action()
+        
+        self.assertIsNone(result)
+
+    def test_cancel_recipe_operation_without_session(self):
+        """ Test cancel operation when session key doesn't exist. """
+        from recipes.views.recipe_cancel_view import cancel_recipe_operation
+        
+        request = self.get_request()
+        request.session.flush()
+        
+        response = cancel_recipe_operation(request, recipe_id=None)
+        
+        self.assertEqual(response.status_code, 302)
+
+    def test_update_mode_with_existing_session(self):
+        """ Test handler uses existing session data. """
+        request = self.get_request(user=self.user)
+        request.session[f'recipe_update_{self.recipe.id}'] = {
+            'is_owner': True,
+            'course_tags': ['breakfast'],
+        }
+        
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        
+        self.assertTrue(handler.is_owner)
+        self.assertIn('course_tags', handler.session_data)
+    
+    def test_set_ownership_in_session_no_recipe(self):
+        """ Test ownership not set when no recipe. """
+        request = self.get_request()
+        handler = RecipeFormHandler(request, recipe_id=None)
+
+        session_copy = dict(handler.session_data)
+        handler.set_ownership_in_session(handler.session_data)
+
+        # Should not add "is_owner"
+        self.assertEqual(handler.session_data, session_copy)
+
+    @patch("recipes.handlers.recipe_form_handler.apply_ai_dietary_tags")
+    def test_apply_ai_tags_if_available_with_data(self, mock_apply):
+        """ Test AI tags are applied when data exists. """
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        
+        # Add AI dietary info to session
+        handler.session_data['ai_dietary_info'] = ['Vegan', 'Gluten-Free']
+        
+        # Call the method
+        handler._apply_ai_tags_if_available(handler.session_data)
+        
+        # Verify apply_ai_dietary_tags was called
+        mock_apply.assert_called_once_with(
+            handler.session_data, 
+            ['Vegan', 'Gluten-Free']
+        )
+
+    @patch("recipes.helpers.ai_recipe_parser.parse_ai_recipe_data")
+    def test_get_ai_prefill_data_with_valid_data(self, mock_parse):
+        """ Test AI prefill parsing when data exists. """
+        mock_parse.return_value = {'title': 'AI Recipe'}
+        
+        request = self.get_request()
+        request.session['from_ai_save_button'] = True
+        request.session['ai_recipe_prefill'] = {'raw': 'data'}
+        
+        handler = RecipeFormHandler(request)
+        result = handler._get_ai_prefill_data()
+        
+        self.assertIsNotNone(result)
+        self.assertEqual(result, {'title': 'AI Recipe'})
+        mock_parse.assert_called_once_with({'raw': 'data'})
+
+    def test_handle_form_get_with_ai_prefill(self):
+        """ Test form rendering with AI prefill data. """
+        request = self.get_request()
+        request.session['from_ai_save_button'] = True
+        request.session['ai_recipe_prefill'] = {
+            'title': 'AI Recipe',
+            'ingredients': ['flour', 'sugar']
+        }
+        
+        with patch("recipes.helpers.ai_recipe_parser.parse_ai_recipe_data") as mock_parse:
+            mock_parse.return_value = {
+                'title': 'AI Recipe',
+                'ingredients': 'Flour (500g)\nSugar (200g)'
+            }
+            
+            handler = RecipeFormHandler(request)
+            response = handler.handle_form_get()
+            
+            self.assertEqual(response.status_code, 200)
+            # Verify AI dietary info was stored
+            self.assertTrue(request.session.modified)
+
+    def test_get_tags_context_with_temp_image(self):
+        """ Test tags context shows has_image when temp image exists. """
+        request = self.get_request()
+        handler = RecipeFormHandler(request)
+        handler.session_data['temp_image_path'] = '/tmp/test.jpg'
+        
+        context = handler.get_tags_context()
+        
+        self.assertTrue(context['has_image'])
+
+    def test_get_tags_context_with_recipe_image(self):
+        """ Test tags context shows has_image when recipe has image. """
+        request = self.get_request()
+        # Create recipe with image
+        self.recipe.image = 'recipes/test.jpg'
+        self.recipe.save()
+        
+        handler = RecipeFormHandler(request, recipe_id=self.recipe.id)
+        context = handler.get_tags_context()
+        
+        self.assertTrue(context['has_image'])
+
+    def test_handle_form_post_with_invalid_form(self):
+        """ Test form POST with invalid data. """
+        factory = RequestFactory()
+        # Create POST request with invalid data (no FILES needed)
+        request = factory.post('/test/', data={
+            'title': '',  # Empty title is invalid
+            'ingredients': 'Invalid',  # No parentheses
+        })
+        request.user = self.user
+        request.session = SessionStore()
+        request.session.create()
+        setattr(request, '_messages', FallbackStorage(request))
+        
+        handler = RecipeFormHandler(request)
+        response = handler.handle_form_post()
+        
+        # Should render form with errors, not redirect
+        self.assertEqual(response.status_code, 200)
+
+    @patch("recipes.handlers.recipe_form_handler.get_tag_action_from_request")
+    @patch("recipes.handlers.recipe_form_handler.handle_tag_operation")
+    def test_handle_tag_action_operation_fails(self, mock_handle, mock_get):
+        """ Test tag action when operation returns False. """
+        # Mock returns valid action but operation fails
+        mock_get.return_value = ('add', 'course', 'Duplicate')
+        mock_handle.return_value = False  # Operation failed
+        
+        request = self.get_request(method='POST')
+        handler = RecipeFormHandler(request)
+        
+        with patch("recipes.handlers.recipe_form_handler.redirect_to_tags") as mock_redirect:
+            mock_redirect.return_value = MagicMock(status_code=302)
+            response = handler.handle_tag_action()
+            
+            # Should still redirect even if operation failed
+            self.assertIsNotNone(response)
+            mock_redirect.assert_called_once()

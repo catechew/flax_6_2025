@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from recipes.handlers.recipe_form_handler import RecipeFormHandler
 from recipes.helpers.recipe_form_helpers import cleanup_session
 
+
 @login_required
 def cancel_recipe_operation(request, recipe_id=None):
     """
