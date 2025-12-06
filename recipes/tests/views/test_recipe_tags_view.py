@@ -69,7 +69,7 @@ class RecipeTagsViewTests(TestCase):
         # POST with no recognized action - handle_tags_post returns None
         resp = self.client.post(self.url, {"random_field": "value"})
 
-        # Should render template (THIS COVERS THE RED LINES!)
+        # Should render template
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, "recipes/recipe_tags_form.html")
 
@@ -130,7 +130,6 @@ class RecipeTagsViewTests(TestCase):
     @patch("recipes.handlers.recipe_form_handler.RecipeFormHandler.finalise_recipe")
     def test_post_create_recipe(self, mock_finalise):
         """POST to finalize recipe creation."""
-        # Mock successful recipe creation
         mock_finalise.return_value = HttpResponseRedirect("/recipes/1/")
 
         session = self.client.session
