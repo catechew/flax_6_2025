@@ -2,14 +2,15 @@ from django.test import TestCase, RequestFactory
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.messages.storage.fallback import FallbackStorage
 from recipes.handlers.recipe_form_handler import RecipeFormHandler
+from recipes.helpers.recipe_form_helpers import cleanup_session, get_tag_action_from_request, handle_tag_operation
 from recipes.models import Recipe, User
 from django.utils import timezone
 from unittest.mock import patch, MagicMock
 
 
-class RecipeFormHandlerTestCase(TestCase):
+class RecipeFormHelpersTestCase(TestCase):
     """
-    Tests for RecipeFormHandler class.
+    Tests for RecipeFormHelper class.
     """
     fixtures = ['recipes/tests/fixtures/default_user.json', 'recipes/tests/fixtures/other_users.json']
 
@@ -20,11 +21,11 @@ class RecipeFormHandlerTestCase(TestCase):
             title='Test Recipe', author=self.user, publication_date=timezone.now().date(),
             servings=4, ingredients='Test (1)', steps='Test steps', prep_time_hours=0,
             prep_time_minutes=30, cook_time_hours=1, cook_time_minutes=15, private=False)
+        self.factory = RequestFactory()
 
     def get_request(self, user=None, method='GET'):
         """ Create a request with session and messages. """
-        factory = RequestFactory()
-        request = factory.get('/test/') if method == 'GET' else factory.post('/test/')
+        request = self.factory.get('/test/') if method == 'GET' else self.factory.post('/test/')
         request.user = user or self.user
         request.session = SessionStore()
         request.session.create()
@@ -353,3 +354,68 @@ class RecipeFormHandlerTestCase(TestCase):
             handler = RecipeFormHandler(request)
             result = handler.handle_tag_action()
             self.assertIsNone(result)
+
+    def test_get_tag_action_from_request_no_valid_tag_actions(self):
+        """
+        test that function returns none tuple when post has no tag action keys
+        """
+        # Create a POST request with irrelevant data
+        request = self.factory.post('/fake-url/', {
+            'some_other_field': 'value',
+            'another_field': 'another_value'
+        })
+        
+        action, category, value = get_tag_action_from_request(request)
+        
+        self.assertIsNone(action)
+        self.assertIsNone(category)
+        self.assertIsNone(value)
+
+    def test_handle_tag_operation_empty_value_after_strip(self):
+        """
+        test that operation fails when value is empty after stripping
+        """
+        session_data = {}
+        result = handle_tag_operation(session_data, 'add', 'course', '   ')
+        
+        self.assertFalse(result)
+        self.assertEqual(session_data, {})
+
+    # TODO: 119->122, 126-138, 142-146
+
+    def test_cleanup_session_with_existing_key(self):
+        """
+        test that cleanup removes session key when it exists
+        """
+        request = self.factory.get('/test/')
+        request.session = SessionStore()
+        request.session.create()
+        
+        session_key = 'recipe_form_data'
+        session_data = {'temp_image_path': None}
+        request.session[session_key] = session_data
+        
+        with patch('recipes.helpers.recipe_form_helpers.cleanup_temp_image') as mock_cleanup:
+            cleanup_session(session_key, session_data, request)
+            
+            self.assertNotIn(session_key, request.session)
+            self.assertTrue(request.session.modified)
+            mock_cleanup.assert_called_once_with(None)
+
+    def test_cleanup_session_without_existing_key(self):
+        """
+        test that cleanup completes successfully when key doesn't exist
+        """
+        request = self.factory.get('/test/')
+        request.session = SessionStore()
+        request.session.create()
+        
+        session_key = 'recipe_form_data'
+        session_data = {'temp_image_path': '/tmp/test.jpg'}
+        
+        with patch('recipes.helpers.recipe_form_helpers.cleanup_temp_image') as mock_cleanup:
+            cleanup_session(session_key, session_data, request)
+            
+            self.assertNotIn(session_key, request.session)
+            self.assertTrue(request.session.modified)
+            mock_cleanup.assert_called_once_with('/tmp/test.jpg')
