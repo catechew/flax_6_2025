@@ -6,7 +6,9 @@ import io
 
 
 class UserAvatarTestCase(TestCase):
-    """ Tests for user avatar functionality. """
+    """ 
+    Tests for user avatar functionality. 
+    """
 
     def setUp(self):
         """ Set up test users. """
@@ -93,7 +95,13 @@ class UserAvatarTestCase(TestCase):
         self.user_ai.age_range = 'young'
         self.user_ai.save()
         young_url = self.user_ai.avatar_url()
-
+        
+        # Middle age range
+        self.user_ai.age_range = 'middle'
+        self.user_ai.save()
+        url = self.user_ai.avatar_url()
+        self.assertIn("randomuser.me", url)
+        
         # Senior age range
         self.user_ai.age_range = 'senior'
         self.user_ai.save()
@@ -101,6 +109,35 @@ class UserAvatarTestCase(TestCase):
 
         # URLs should be different
         self.assertNotEqual(young_url, senior_url)
+    
+    def test_ai_avatar_middle_male(self):
+        """ Middle-aged male AI avatar should return men path. """
+        self.user_ai.gender = 'M'
+        self.user_ai.age_range = 'middle'
+        self.user_ai.save()
+
+        url = self.user_ai.avatar_url()
+        self.assertIn("randomuser.me", url)
+        self.assertIn("men", url)
+        
+    def test_ai_block_skipped_when_avatar_type_not_ai(self):
+        """ Ensure AI block is skipped and fallback executes when avatar type is not AI."""
+        self.user_initials.avatar_type = 'random'
+        self.user_initials.avatar_seed = '' 
+        self.user_initials.profile_picture = None
+        self.user_initials.save()
+
+        url = self.user_initials.avatar_url()
+
+        self.assertIn("ui-avatars.com", url)      
+        self.assertNotIn("randomuser.me", url)    
+
+    def test_invalid_avatar_type_triggers_fallback(self):
+        self.user_initials.avatar_type = 'invalid'
+        self.user_initials.save()
+
+        url = self.user_initials.avatar_url()
+        self.assertIn("ui-avatars.com", url)
 
     def test_avatar_type_default_is_initials(self):
         """ Test that new users default to initials avatar type. """
@@ -123,8 +160,14 @@ class UserAvatarTestCase(TestCase):
             password='Password123'
         )
         self.assertEqual(user.avatar_seed, '')
+    
+    def test_user_cannot_follow_themselves(self):
+        before = self.user_initials.following.count()
+        self.user_initials.follow(self.user_initials)
+        after = self.user_initials.following.count()
+
+        self.assertEqual(before, after)
 
     def tearDown(self):
-        """ Clean up uploaded files. """
         if self.user_initials.profile_picture:
             self.user_initials.profile_picture.delete()

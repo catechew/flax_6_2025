@@ -10,15 +10,13 @@
   border-color: var(--btn-border) !important;
   color: var(--btn-text) !important;
 
-  transition: background-color 0.2s ease, 
-              transform 0.08s ease, 
-              color 0.2s ease, 
-              border-color 0.2s ease;
+  transition: 0.25s;
 }
 
 .btn:hover {
   background-color: var(--btn-bg-hover) !important;
   border-color: var(--btn-border-hover) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .btn:active {
@@ -138,13 +136,8 @@
 }
 
 .chat-submit-btn:hover {
-    background-color: #d63d1a;
+    background-color: var(--primary-colour-darker);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(241, 80, 52, 0.3);
-}
-
-.chat-submit-btn:active {
-    transform: translateY(0);
 }
 
 .chat-submit-btn:disabled {
