@@ -29,7 +29,11 @@ Recipes | Recipe #{{recipe.id}}
             {% endif %}
         <h1 class="card-title">{{ recipe.title }}</h1>
         <p class="text-muted">
-            <i class="bi bi-person"></i> By {{ recipe.author.username }} |
+            <i class="bi bi-person"></i> By 
+            <a href="{% url 'user_profile' recipe.author.id %}">
+                {{ recipe.author.get_full_name }}
+            </a>
+             |
             <i class="bi bi-calendar"></i> {{ recipe.publication_date|date:"M. j, Y" }}
         </p>
 
