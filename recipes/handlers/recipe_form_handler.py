@@ -34,7 +34,9 @@ from recipes.helpers.recipe_redirects import (
 
 
 class RecipeFormHandler:
-    """Handles recipe create/update workflow state and operations."""
+    """
+    Handles recipe create/update workflow state and operations.
+    """
 
     def __init__(self, request, recipe_id=None):
         self.request = request
@@ -46,14 +48,14 @@ class RecipeFormHandler:
         self.is_owner = determine_ownership(self.session_data)
 
     def _get_recipe(self):
-        """Get recipe or None."""
+        """ Get recipe or None. """
         return (
             get_object_or_404(Recipe, id=self.recipe_id)
             if self.recipe_id else None
         )
 
     def _init_session(self):
-        """Initialize or get existing session."""
+        """ Initialise or get existing session. """
         session = self.request.session
 
         if self.session_key in session:
@@ -62,7 +64,7 @@ class RecipeFormHandler:
         return self._create_new_session(session)
 
     def _create_new_session(self, session):
-        """Create new session data."""
+        """ Create new session data. """
         session[self.session_key] = {}
         session_data = session[self.session_key]
 
@@ -73,24 +75,24 @@ class RecipeFormHandler:
         return session_data
 
     def _apply_ai_tags_if_available(self, session_data):
-        """Apply AI dietary tags if present."""
+        """ Apply AI dietary tags if present. """
         ai_dietary = session_data.get('ai_dietary_info', [])
         if ai_dietary:
             apply_ai_dietary_tags(session_data, ai_dietary)
 
     def set_ownership_in_session(self, session_data):
-        """Set ownership flag in session if recipe exists."""
+        """ Set ownership flag in session if recipe exists. """
         if not self.recipe:
             return
         session_data["is_owner"] = (self.recipe.author == self.request.user)
 
     @property
     def is_create_mode(self):
-        """Check if in create mode."""
+        """ Check if in create mode. """
         return self.mode == "create"
 
     def handle_form_get(self):
-        """Handle GET request for form display."""
+        """ Handle GET request for form display. """
         ai_prefill = self._get_ai_prefill_data()
 
         if ai_prefill:
@@ -102,7 +104,7 @@ class RecipeFormHandler:
         return self._render_empty_form()
 
     def _get_ai_prefill_data(self):
-        """Get and parse AI prefill data."""
+        """ Get and parse AI prefill data. """
         # Only use AI data if user clicked "Save to My Recipes"
         if not self.request.session.pop('from_ai_save_button', False):
             return None
@@ -116,7 +118,7 @@ class RecipeFormHandler:
         return parse_ai_recipe_data(ai_data)
 
     def _render_form_with_ai_data(self, ai_prefill):
-        """Render form with AI prefill data."""
+        """ Render form with AI prefill data. """
         store_ai_dietary_info(self.session_data, ai_prefill)
         self.request.session.modified = True
 
@@ -125,7 +127,7 @@ class RecipeFormHandler:
         return self._render_form(form)
 
     def _render_form_from_session(self):
-        """Render form from session data."""
+        """ Render form from session data. """
         form = RecipeForm(
             self.session_data["form_data"],
             instance=self.recipe
@@ -133,18 +135,22 @@ class RecipeFormHandler:
         return self._render_form(form)
 
     def _render_empty_form(self):
-        """Render empty form."""
+        """ Render empty form. """
         form = RecipeForm(instance=self.recipe)
         return self._render_form(form)
 
     def _render_form(self, form):
-        """Render form with context."""
         context = {
             "form": form,
             "mode": self.mode,
             "is_owner": self.is_owner,
             "recipe": self.recipe,
             "session_data": self.session_data,
+            "original_author": (
+                self.recipe.author.get_full_name()
+                if self.recipe and self.recipe.author.get_full_name()
+                else (self.recipe.author.username if self.recipe else None)
+            )
         }
         return render(self.request, "recipes/recipe_form.html", context)
 
