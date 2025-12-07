@@ -16,8 +16,8 @@ from recipes.views.ai_recipe_search_view import (
 
 
 class AIRecipeSearchViewTests(TestCase):
-    """
-    Test AI recipe search view.
+    """ 
+    Test AI recipe search view. 
     """
 
     def setUp(self):
@@ -84,6 +84,7 @@ class AIRecipeSearchViewTests(TestCase):
     @patch('openai.ChatCompletion.create')
     def test_successful_search_with_results(self, mock_openai):
         """ Test successful search returns results. """
+        
         self.client.login(username='@testuser', password='Password123')
 
         # simulate the 2 AI responses
@@ -238,7 +239,7 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertEqual(response.context['user_context'], user_input)
 
     def test_apply_search_query_none(self):
-        """ Test apply_search_query with none. """
+        """ Test apply_search_query with none". ""
         recipes = Recipe.objects.all()
         result = apply_search_query(recipes, None)
         self.assertEqual(result.count(), 2)
