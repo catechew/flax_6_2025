@@ -1,10 +1,10 @@
-""" 
-Recipe data generation for database seeding. 
-"""
-
 from random import randint, choice, sample 
 from django.utils import timezone
 from datetime import timedelta 
+
+""" 
+Recipe data generation for database seeding. 
+"""
 
 DISHES = [
     "Pesto Pasta", "Tuna Pasta", "Spaghetti Bolognese", "Macaroni & Cheese",

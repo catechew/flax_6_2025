@@ -74,7 +74,6 @@ class ImageHandler:
 
         if os.path.exists(full_path):
             return ImageHandler._create_image_content(full_path, dish_type)
-
         return ImageHandler._load_default_image()
 
     @staticmethod
