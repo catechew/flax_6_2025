@@ -1,7 +1,3 @@
-""" 
-Meal plan management views. 
-"""
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -22,6 +18,9 @@ from recipes.helpers.shopping_list_helpers import (
     extract_ingredients, organise_shopping_list
 )
 
+""" 
+Meal plan management views. 
+"""
 
 class MealPlanCreateView(LoginRequiredMixin, View):
     """ 
@@ -36,10 +35,8 @@ class MealPlanCreateView(LoginRequiredMixin, View):
             user=request.user,
             week_start=week_start
         )
-
         if created:
             create_meal_slots(plan)
-
         return redirect("meal-plan-detail", plan_id=plan.id)
 
 
@@ -163,22 +160,21 @@ class ShoppingListView(LoginRequiredMixin, View):
     """
 
     def get(self, request, plan_id):
-        plan = get_object_or_404(
-            MealPlan,
-            id=plan_id,
-            user=request.user
-        )
-
-        slots = plan.entries.filter(recipe__isnull=False)
-        organised = organise_shopping_list(
-            extract_ingredients(slots)
-        )
-
+        plan = get_object_or_404(MealPlan, id=plan_id, user=request.user)
+        organised = self._get_organised_shopping_list(plan)
+        
         return render(request, "meal_plan/shopping_list.html", {
             "plan": plan,
             "shopping_list": organised,
-            "ingredients_count": sum(len(items) for _, items in organised),
+            "ingredients_count": self._count_ingredients(organised),
         })
+
+    def _get_organised_shopping_list(self, plan):
+        slots = plan.entries.filter(recipe__isnull=False)
+        return organise_shopping_list(extract_ingredients(slots))
+
+    def _count_ingredients(self, organised):
+        return sum(len(items) for _, items in organised)
 
 
 class MealSlotNotesView(LoginRequiredMixin, View):
