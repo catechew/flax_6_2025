@@ -239,7 +239,7 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertEqual(response.context['user_context'], user_input)
 
     def test_apply_search_query_none(self):
-        """ Test apply_search_query with none". ""
+        """ Test apply_search_query with none. """
         recipes = Recipe.objects.all()
         result = apply_search_query(recipes, None)
         self.assertEqual(result.count(), 2)
