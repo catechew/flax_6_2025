@@ -127,6 +127,7 @@ def _get_sort_function_map():
 def _default_sort(recipes):
     """Apply default date-based sorting."""
     return recipes.order_by("-publication_date")
+
 def _sort_by_total_time(recipes, sort_by):
     """ Sort by total time (prep + cook). """
     recipes = recipes.annotate(
@@ -190,7 +191,7 @@ def build_filter_params_string(filters, sort_by):
     return "".join(params)
 
 def _build_param_list(filters, filter_key, param_name):
-    """Build parameter list for a specific filter type."""
+    """ Build parameter list for a specific filter type. """
     return [
         f"&{param_name}={value}"
         for value in filters.get(filter_key, [])
@@ -220,7 +221,6 @@ def _apply_all_filters(recipes, search_query, filter_params, sort_by):
     return recipes
 
 def _build_context_dict(page_object, search_query, filter_params, sort_by, user_count):
-    """ Build context dictionary for template. """
     return {
         "recipes": page_object,
         "page_object": page_object,
