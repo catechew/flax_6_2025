@@ -204,7 +204,7 @@ def ai_recipe_search_view(request):
         search_params = get_search_params_from_ai(user_context)
 
         # Step 2: Filter recipes using extracted parameters
-        recipes = Recipe.objects.all()
+        recipes = Recipe.objects.visible()
         recipes = apply_search_query(recipes, search_params.get('search_query', '').strip())
         recipes = apply_tag_filters(
             recipes,
