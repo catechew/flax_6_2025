@@ -8,7 +8,7 @@ import math
 class RecipeManager(models.Manager):
     def visible_to(self, user):
         """
-        return recipes visible to a specific user (public + user's own)
+        Return recipes visible to a specific user (public + user's own).
         """
         if user.is_authenticated:
             return self.filter(
@@ -18,14 +18,11 @@ class RecipeManager(models.Manager):
     
     def visible(self):
         """
-        return recipes that are not private
+        Return recipes that are not private.
         """
         return self.filter(private=False)
     
     def public(self):
-        """
-        return only public recipes
-        """
         return self.filter(private=False)
 
 class Recipe(models.Model):

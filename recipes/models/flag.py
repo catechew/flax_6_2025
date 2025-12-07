@@ -29,7 +29,7 @@ class Flag(RecipeInteractionMixin, models.Model):
 
     @property
     def flag_count_for_recipe(self):
-        """Total flags for this recipe."""
+        """ Total flags for this recipe. """
         return self.recipe.flags.count()
 
     def __str__(self):

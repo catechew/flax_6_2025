@@ -1,8 +1,3 @@
-"""
-Tests for recipe form image helper functions.
-"""
-
-
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.files.storage import default_storage
@@ -13,6 +8,9 @@ from recipes.helpers.recipe_form_images import (
     cleanup_temp_image,
 )
 
+"""
+Tests for recipe form image helper functions.
+"""
 
 class RecipeFormImagesTestCase(TestCase):
 

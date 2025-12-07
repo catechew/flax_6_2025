@@ -1,12 +1,13 @@
-""" 
-Management command to seed the database with demo data. 
-"""
-
 from faker import Faker
 from random import choice
 from django.core.management.base import BaseCommand
 from recipes.models import User, Recipe
 from .seed_helpers import RecipeDataGenerator, TagGenerator, ImageHandler
+
+""" 
+Management command to seed the database with demo data. 
+"""
+
 
 USER_FIXTURES = [
     {
@@ -56,11 +57,15 @@ class Command(BaseCommand):
 
     def _create_fixture_users(self):
         """ Create predefined fixture users. """
-        for user_data in USER_FIXTURES:
-            if user_data['username'] == '@johndoe':
-                self._create_admin_user(user_data)
-            else:
-                self._try_create_user(user_data)
+        for user_data in USER_FIXTURES:  # Level 1 only
+            self._create_fixture_user(user_data)
+
+    def _create_fixture_user(self, user_data):
+        """ Create a single fixture user. """
+        if user_data['username'] == '@johndoe': 
+            self._create_admin_user(user_data)
+        else:
+            self._try_create_user(user_data)
 
     def _create_admin_user(self, user_data):
         """ Create admin superuser. """
@@ -138,22 +143,25 @@ class Command(BaseCommand):
             "dietary_tags": TagGenerator.generate_tags("dietary"),
             "other_tags": TagGenerator.generate_tags("other"),
         })
-
         self._try_create_recipe(data, image, filename)
 
     def _try_create_recipe(self, data, image, filename):
         """ Attempt recipe creation, ignore failures. """
-        try:
+        try:  
             recipe = Recipe.objects.create(**data)
-            if image and filename:
-                recipe.image.save(filename, image, save=True)
+            self._save_recipe_image(recipe, image, filename)
         except Exception:
             pass
 
+    def _save_recipe_image(self, recipe, image, filename):
+        """ Save image to recipe if provided. """
+        if image and filename: 
+            recipe.image.save(filename, image, save=True)
+
 def _create_username(first_name, last_name):
-    """ Create username from first and last names. """
-    return f"@{first_name.lower()}{last_name.lower()}"
+        """ Create username from first and last names. """
+        return f"@{first_name.lower()}{last_name.lower()}"
 
 def _create_email(first_name, last_name):
-    """ Create email from first and last names. """
-    return f"{first_name}.{last_name}@example.org"
+        """ Create email from first and last names. """
+        return f"{first_name}.{last_name}@example.org"

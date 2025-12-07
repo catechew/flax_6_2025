@@ -1,8 +1,8 @@
+from datetime import timedelta
+
 """ 
 Helper functions for meal plan operations. 
 """
-
-from datetime import timedelta
 
 
 def get_monday(date_obj):
