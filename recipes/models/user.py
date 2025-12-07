@@ -1,12 +1,11 @@
-"""
-Model used for user authentication, and team member related information.
-"""
-
-
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+
+"""
+Model used for user authentication, and team member related information.
+"""
 
 class User(AbstractUser):
     username = models.CharField(

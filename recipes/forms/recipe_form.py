@@ -166,22 +166,26 @@ class RecipeForm(forms.ModelForm):
         errors = self._find_ingredient_errors(ingredients)
         if errors:
             raise ValidationError(self._format_ingredient_errors(errors))
-        
         return ingredients
     
     def _find_ingredient_errors(self, text):
         lines = [line.strip() for line in text.splitlines() if line.strip()]
-        errors = []
+        return [
+            error
+            for i, line in enumerate(lines, start=1)
+            for error in [self._validate_ingredient_line(line, i)]
+            if error
+        ]
 
-        for i, line in enumerate(lines, start=1):
-            if '(' not in line or ')' not in line:
-                errors.append(f"Line {i}: missing parentheses")
-            elif not line.endswith(')'):
-                errors.append(f"Line {i}: parentheses should be at the end")
-            elif line.count('(') != line.count(')'):
-                errors.append(f"Line {i}: mismatched parentheses")
-
-        return errors
+    def _validate_ingredient_line(self, line, line_num):
+        """ Validate single ingredient line. """
+        if '(' not in line or ')' not in line:
+            return f"Line {line_num}: missing parentheses"
+        if not line.endswith(')'):
+            return f"Line {line_num}: parentheses should be at the end"
+        if line.count('(') != line.count(')'):
+            return f"Line {line_num}: mismatched parentheses"
+        return None
 
     def _format_ingredient_errors(self, errors):
         """ Format ingredient errors for display. """

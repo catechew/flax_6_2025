@@ -15,6 +15,7 @@ class MealPlan(models.Model):
     )
     week_start = models.DateField()  
 
+
     class Meta: 
         """ User can only have one meal plan per week. """
         unique_together = ('user', 'week_start') 

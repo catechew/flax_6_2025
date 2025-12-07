@@ -1,8 +1,8 @@
+import re
+
 """
 Helper functions for parsing AI-generated recipe data.
 """
-import re
-
 
 def parse_time_string(time_str):
     """ Parse '15 minutes' or '1 hour 30 minutes' to total minutes. """
