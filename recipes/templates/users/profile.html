@@ -7,6 +7,19 @@
     <div class="col-md-6 offset-md-3">
       <h1 class="mb-4">Edit Profile</h1>
 
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          <h5>Please correct the following errors:</h5>
+          <ul>
+            {% for field, errors in form.errors.items %}
+              {% for error in errors %}
+                <li>{{ field }}: {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
       <!-- Profile Picture Preview -->
       <div class="text-center mb-4">
         <img src="{{ user.avatar_url }}"
@@ -82,6 +95,9 @@
           </div>
           <div class="card-body">
             {{ form.profile_picture|add_class:"form-control" }}
+            {% if form.profile_picture.errors %}
+              <div class="text-danger small">{{ form.profile_picture.errors }}</div>
+            {% endif %}
             <small class="form-text text-muted d-block mt-2">
               Upload a custom picture to replace initials or random avatar
             </small>
