@@ -28,7 +28,6 @@ def build_week_schedule(plan):
         day_data = _build_day_data(plan, day_code, day_name, index)
         _add_meal_slots(day_data, all_slots, meals)
         schedule.append(day_data)
-    
     return schedule
 
 def _get_weekdays():
@@ -64,7 +63,6 @@ def create_meal_slots(plan):
     
     days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
     meals = ["breakfast", "lunch", "dinner", "snack"]
-    
     slots = [
         MealSlot(meal_plan=plan, day=day, meal_type=meal, recipe=None)
         for day in days

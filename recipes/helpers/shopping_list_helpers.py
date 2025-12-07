@@ -4,7 +4,6 @@ from collections import defaultdict
 Shopping list generation and categorisation. 
 """
 
-
 INGREDIENT_CATEGORIES = {
     '🧀 Dairy & Eggs': ['cheese', 'cheddar', 'butter', 
                        'milk', 'egg', 'halloumi', 
