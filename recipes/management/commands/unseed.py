@@ -9,7 +9,6 @@ class Command(BaseCommand):
     """ 
     Remove seeded users and recipes from database. 
     """
-
     help = 'Removes all non-admin seeded users from the database.'
 
     def handle(self, *args, **options):

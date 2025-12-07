@@ -8,7 +8,6 @@ from .seed_helpers import RecipeDataGenerator, TagGenerator, ImageHandler
 Management command to seed the database with demo data. 
 """
 
-
 USER_FIXTURES = [
     {
         'username': '@johndoe',
