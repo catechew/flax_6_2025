@@ -4,7 +4,6 @@ from datetime import timedelta
 Helper functions for meal plan operations. 
 """
 
-
 def get_monday(date_obj):
     """ Return the Monday of the week for a given date. """
     return date_obj - timedelta(days=date_obj.weekday())
@@ -13,7 +12,6 @@ def calculate_completion(plan):
     """ Calculate meal plan completion percentage. """
     required_meals = ["breakfast", "lunch", "dinner"]
     required_slots = plan.entries.filter(meal_type__in=required_meals)
-    
     filled = required_slots.filter(recipe__isnull=False).count()
     total = required_slots.count()
     
@@ -67,14 +65,12 @@ def create_meal_slots(plan):
     days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
     meals = ["breakfast", "lunch", "dinner", "snack"]
     
-    for day in days:
-        for meal in meals:
-            MealSlot.objects.create(
-                meal_plan=plan,
-                day=day,
-                meal_type=meal,
-                recipe=None
-            )
+    slots = [
+        MealSlot(meal_plan=plan, day=day, meal_type=meal, recipe=None)
+        for day in days
+        for meal in meals
+    ]
+    MealSlot.objects.bulk_create(slots)
 
 def reuse_prev_week(plan):
     """ Copy all entries from the previous week's meal plan into the current plan. """
@@ -103,12 +99,9 @@ def calculate_meals_logged(plan):
     have been logged with recipes for the week.
     """
     meal_types = ["breakfast", "lunch", "dinner"]
-
     logged = plan.entries.filter(
         meal_type__in=meal_types,
         recipe__isnull=False
     ).count()
-
     total = 7 * len(meal_types)  # 7 days × 3 meals
-
     return logged, total

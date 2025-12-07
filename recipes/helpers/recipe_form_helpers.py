@@ -28,7 +28,6 @@ def get_tag_action_from_request(request):
 
     if not valid_results:
         return None, None, None
-
     return valid_results[0]
 
 def check_category_for_tag_action(request, category):
@@ -60,14 +59,23 @@ def handle_tag_operation(session_data, action, category, value):
     session_data.setdefault(tag_key, [])
 
     if action == "add":
-        # If tag already exists then it is success (no duplicate added)
-        if value in session_data[tag_key]:
-            return True
-        session_data[tag_key].append(value)
-        return True
+        return _add_tag_to_list(session_data[tag_key], value)
 
-    if action == "remove" and value in session_data[tag_key]:
-        session_data[tag_key].remove(value)
+    if action == "remove":
+        return _remove_tag_from_list(session_data[tag_key], value)
+    
+    return False
+
+def _add_tag_to_list(tag_list, value):
+    """Add tag if not already present. Returns True (idempotent)."""
+    if value not in tag_list:
+        tag_list.append(value)
+    return True
+
+def _remove_tag_from_list(tag_list, value):
+    """Remove tag if present."""
+    if value in tag_list:
+        tag_list.remove(value)
         return True
     return False
 
@@ -87,7 +95,6 @@ def get_tag_context(session_data):
 def initialise_tag_session(session_data, recipe=None):
     """ Initialise tags in session. """
     keys = ("course", "dietary", "cuisine", "other")
-
     for key in keys:
         session_data[f"{key}_tags"] = get_tag_list_for_key(recipe, key)
 
@@ -118,28 +125,24 @@ def cleanup_session(session_key, session_data, request):
     request.session.modified = True
 
 def apply_ai_dietary_tags(session_data, ai_dietary_info):
-    """ Apply AI dietary tags to session. """
     from recipes.helpers.ai_recipe_parser import map_ai_dietary_tags
-
     if not ai_dietary_info:
         return
-
+    
     mapped_tags = map_ai_dietary_tags(ai_dietary_info)
     existing_tags = session_data.get('dietary_tags', [])
-
-    for tag in mapped_tags:
-        if tag not in existing_tags:
-            existing_tags.append(tag)
+    
+    # Add only new tags (no level 2 nesting)
+    new_tags = [tag for tag in mapped_tags if tag not in existing_tags]
+    existing_tags.extend(new_tags)
     session_data['dietary_tags'] = existing_tags
 
 def get_ai_prefill_from_session(request):
     """ Get AI prefill data from session if available. """
     if not request.session.pop('from_ai_save_button', False):
         return None
-
     ai_data = request.session.pop('ai_recipe_prefill', None)
     return ai_data
-
 
 def store_ai_dietary_info(session_data, ai_prefill):
     """ Store AI dietary info in session for tags page. """

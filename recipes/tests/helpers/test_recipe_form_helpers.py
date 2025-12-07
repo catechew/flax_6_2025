@@ -2,7 +2,7 @@ from django.test import TestCase, RequestFactory
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.messages.storage.fallback import FallbackStorage
 from recipes.handlers.recipe_form_handler import RecipeFormHandler
-from recipes.helpers.recipe_form_helpers import get_tag_action_from_request
+from recipes.helpers.recipe_form_helpers import get_tag_action_from_request, handle_tag_operation
 from recipes.models import Recipe, User
 from django.utils import timezone
 from unittest.mock import patch, MagicMock
@@ -359,9 +359,7 @@ class RecipeFormHelpersTestCase(TestCase):
             self.assertIsNone(result)
 
     def test_get_tag_action_from_request_no_valid_tag_actions(self):
-        """
-        test that function returns none tuple when post has no tag action keys
-        """
+        """ Test that function returns none tuple when post has no tag action keys. """
         # Create a POST request with irrelevant data
         factory = RequestFactory()
         request = factory.post('/fake-url/', {
@@ -374,3 +372,18 @@ class RecipeFormHelpersTestCase(TestCase):
         self.assertIsNone(action)
         self.assertIsNone(category)
         self.assertIsNone(value)
+        
+    def test_handle_tag_operation_invalid_action(self):
+        """ Test handle_tag_operation returns False for invalid action. """
+        session_data = {'course_tags': []}
+        
+        result = handle_tag_operation(
+            session_data, 
+            'invalid_action',  # ← Not "add" or "remove"
+            'course', 
+            'breakfast'
+        )
+        
+        self.assertFalse(result)
+        # Tag list should remain unchanged
+        self.assertEqual(session_data['course_tags'], [])
