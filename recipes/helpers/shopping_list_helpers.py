@@ -6,24 +6,30 @@ Shopping list generation and categorisation.
 
 
 INGREDIENT_CATEGORIES = {
+    '🧀 Dairy & Eggs': ['cheese', 'cheddar', 'butter', 
+                       'milk', 'egg', 'halloumi', 
+                       'tofu', 'bread', 'yogurt'],
+    
+    '🍎 Fruits': ['apple', 'banana', 'lemon', 
+                 'strawberries', 'blueberries'],
+    
+    '🥬 Vegetables': ['avocado', 'onion', 'garlic', 
+                     'tomatoes', 'lemon', 'spinach', 
+                     'ginger', 'broccoli', 'bell pepper', 
+                     'mushrooms', 'cauliflower', 'cucumber'],
+
+     '🌾 Grains & Pasta': ['rice', 'flour', 'penne', 
+                         'pasta', 'beans', 'chickpeas'],
+    
     '🥩 Meat & Poultry': ['chicken', 'beef'],
     
     '🐟 Seafood': ['salmon', 'tuna'],
     
-    '🧀 Dairy & Eggs': ['cheese', 'cheddar', 'butter', 
-                       'milk', 'egg', 'halloumi', 'tofu', 'bread', 'yogurt'],
+    '🌶️ Spices & Herbs': ['black pepper', 'basil', 'leaves', 
+                          'cilantro', 'chili'],
     
-    '🥬 Vegetables': ['avocado', 'onion', 'garlic', 'tomatoes', 'lemon',
-                        'spinach', 'ginger', 'broccoli', 'bell pepper', 
-                        'mushrooms', 'cauliflower', 'cucumber'],
-    
-    '🍎 Fruits': ['apple', 'banana', 'lemon', 'strawberries', 'blueberries'],
-    
-    '🌾 Grains & Pasta': ['rice', 'flour', 'penne', 'pasta', 'beans', 'chickpeas'],
-    
-    '🌶️ Spices & Herbs': ['black pepper', 'basil', 'leaves', 'cilantro', 'chili'],
-    
-    '🧂 Condiments': ['oil', 'sugar', 'sauce', 'sauce', 'salt'],
+    '🧂 Condiments': ['oil', 'sugar', 'sauce', 
+                     'sauce', 'salt'],
 }
 
 CATEGORY_ORDER = [
@@ -41,7 +47,6 @@ CATEGORY_ORDER = [
 def categorise_ingredient(ingredient):
     """ Categorise ingredient by type. """
     ingredient_lower = ingredient.lower()
-    
     matched_category = next(
         (category for category, keywords in INGREDIENT_CATEGORIES.items()
          if _matches_category(ingredient_lower, keywords)),
@@ -56,7 +61,6 @@ def _matches_category(ingredient_lower, keywords):
 def extract_ingredients(slots):
     """ Extract all ingredients from meal slots. """
     shopping_list = defaultdict(list)
-    
     for slot in slots:
         _add_recipe_ingredients(shopping_list, slot)
     return shopping_list
@@ -65,7 +69,6 @@ def _add_recipe_ingredients(shopping_list, slot):
     """ Add ingredients from a single recipe slot. """
     recipe = slot.recipe
     ingredients = _get_cleaned_ingredients(recipe)
-    
     for ingredient in ingredients:
         _add_single_ingredient(shopping_list, ingredient, recipe, slot)
 
@@ -87,7 +90,6 @@ def _add_single_ingredient(shopping_list, ingredient, recipe, slot):
 def consolidate_ingredients(items):
     """ Group identical items and calculate quantities. """
     from recipes.helpers.recipe_detail_helpers import scale_ingredient
-    
     consolidated = _build_consolidated_dict(items)
     return _format_consolidated_results(consolidated, scale_ingredient)
 
@@ -96,10 +98,8 @@ def _build_consolidated_dict(items):
     consolidated = defaultdict(
         lambda: {'count': 0, 'recipes': [], 'base_item': None}
     )
-    
     for item in items:
         _update_consolidated_entry(consolidated, item)
-    
     return consolidated
 
 def _update_consolidated_entry(consolidated, item):
@@ -109,6 +109,7 @@ def _update_consolidated_entry(consolidated, item):
     
     if consolidated[key]['count'] == 0:
         consolidated[key]['base_item'] = ingredient
+        
     consolidated[key]['count'] += 1
     recipe_info = f"{item['day']} {item['meal']}: {item['recipe']}"
     consolidated[key]['recipes'].append(recipe_info)
