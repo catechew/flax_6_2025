@@ -18,7 +18,6 @@ def dashboard(request):
         current_user, recent_recipes, most_saved_recipes,
         highest_rated_recipes, followed_recipes
     )
-    
     return render(request, "dashboard/dashboard.html", context)
 
 def get_recent_recipes(user, limit=3):

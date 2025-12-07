@@ -24,7 +24,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def form_invalid(self, form):
-        """Handle invalid form submission - DEBUG."""
+        """ Handle invalid form submission - DEBUG."""
         print("=" * 50)
         print("FORM IS INVALID!")
         print(f"Errors: {form.errors}")
