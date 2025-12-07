@@ -8,7 +8,6 @@ from .seed_helpers import RecipeDataGenerator, TagGenerator, ImageHandler
 Management command to seed the database with demo data. 
 """
 
-
 USER_FIXTURES = [
     {
         'username': '@johndoe',
@@ -29,6 +28,7 @@ USER_FIXTURES = [
         'last_name': 'Johnson'
     }
 ]
+
 
 class Command(BaseCommand):
     """ 
@@ -57,7 +57,7 @@ class Command(BaseCommand):
 
     def _create_fixture_users(self):
         """ Create predefined fixture users. """
-        for user_data in USER_FIXTURES:  # Level 1 only
+        for user_data in USER_FIXTURES:
             self._create_fixture_user(user_data)
 
     def _create_fixture_user(self, user_data):
@@ -136,13 +136,8 @@ class Command(BaseCommand):
         image, filename = ImageHandler.load_image(title)
 
         data = RecipeDataGenerator.build_recipe_payload(title, prep, cook)
-        data.update({
-            "author": choice(users),
-            "course_tags": TagGenerator.generate_tags("course"),
-            "cuisine_tags": TagGenerator.generate_tags("cuisine"),
-            "dietary_tags": TagGenerator.generate_tags("dietary"),
-            "other_tags": TagGenerator.generate_tags("other"),
-        })
+        data["author"] = choice(users)
+        _add_tags_to_recipe_data(data)
         self._try_create_recipe(data, image, filename)
 
     def _try_create_recipe(self, data, image, filename):
@@ -158,10 +153,18 @@ class Command(BaseCommand):
         if image and filename: 
             recipe.image.save(filename, image, save=True)
 
+
+def _add_tags_to_recipe_data(data):
+    """ Add all tag categories to recipe data. """
+    data["course_tags"] = TagGenerator.generate_tags("course")
+    data["cuisine_tags"] = TagGenerator.generate_tags("cuisine")
+    data["dietary_tags"] = TagGenerator.generate_tags("dietary")
+    data["other_tags"] = TagGenerator.generate_tags("other")
+
 def _create_username(first_name, last_name):
-        """ Create username from first and last names. """
-        return f"@{first_name.lower()}{last_name.lower()}"
+    """ Create username from first and last names. """
+    return f"@{first_name.lower()}{last_name.lower()}"
 
 def _create_email(first_name, last_name):
-        """ Create email from first and last names. """
-        return f"{first_name}.{last_name}@example.org"
+    """ Create email from first and last names. """
+    return f"{first_name}.{last_name}@example.org"

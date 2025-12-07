@@ -7,9 +7,7 @@ import math
 
 class RecipeManager(models.Manager):
     def visible_to(self, user):
-        """
-        Return recipes visible to a specific user (public + user's own).
-        """
+        """ Return recipes visible to a specific user (public + user's own). """
         if user.is_authenticated:
             return self.filter(
                 models.Q(private=False) | models.Q(author=user)
@@ -17,9 +15,7 @@ class RecipeManager(models.Manager):
         return self.filter(private=False)
     
     def visible(self):
-        """
-        Return recipes that are not private.
-        """
+        """ Return recipes that are not private. """
         return self.filter(private=False)
     
     def public(self):
@@ -226,17 +222,16 @@ class Recipe(models.Model):
         return math.floor(self.average_rating() + 0.5)
 
     def rating_count(self):
-        """Return the number of ratings for this recipe"""
+        """ Return the number of ratings for this recipe. """
         return self.ratings.count()
 
     @property
     def rating_display(self):
-        """Display average rating for admin."""
+        """ Display average rating for admin. """
         return round(self.average_rating(), 2)
 
     @property
     def flag_count(self):
-        """Total flags for this recipe."""
         return self.flags.count()
     
     objects = RecipeManager()
