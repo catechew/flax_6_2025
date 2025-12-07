@@ -1,11 +1,11 @@
-""" 
-Unit tests of the log in form. 
-"""
 from django import forms
 from django.test import TestCase
 from recipes.forms import LogInForm
 from recipes.models import User
 
+""" 
+Unit tests of the log in form. 
+"""
 
 class LogInFormTestCase(TestCase):
     

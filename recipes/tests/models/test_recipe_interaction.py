@@ -4,7 +4,9 @@ from datetime import date
 
 
 class RecipeInteractionMixinTests(TestCase):
-    """Test RecipeInteractionMixin properties."""
+    """
+    Test RecipeInteractionMixin properties.
+    """
 
     def setUp(self):
         """Set up test data."""

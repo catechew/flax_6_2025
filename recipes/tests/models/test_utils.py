@@ -11,7 +11,6 @@ from recipes.tests.utils import (
     get_default_user,
 )
 
-
 class TestUtilsTests(TestCase):
     """Test utility functions."""
 

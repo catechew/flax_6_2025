@@ -5,6 +5,9 @@ from django.utils import timezone
 from datetime import timedelta
 from recipes.tests.utils import create_test_user, create_test_form_data, create_test_image
 
+""" 
+Test suite for RecipeForm validation and fuctionality. 
+"""
 
 class RecipeFormTestCase(TestCase):
     fixtures = ['recipes/tests/fixtures/default_user.json']

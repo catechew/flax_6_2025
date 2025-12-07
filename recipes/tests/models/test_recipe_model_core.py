@@ -1,7 +1,3 @@
-"""
-Core Recipe model behaviour tests.
-"""
-
 from django.test import TestCase
 from django.contrib.auth.models import AnonymousUser
 from recipes.models import User, Recipe, Flag
@@ -9,7 +5,9 @@ from datetime import date
 
 
 class RecipeManagerTests(TestCase):
-    """Test Recipe manager methods."""
+    """
+    Test Recipe manager methods.
+    """
 
     def setUp(self):
         """Set up test data."""

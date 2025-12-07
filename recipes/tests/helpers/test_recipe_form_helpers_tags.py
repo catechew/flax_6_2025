@@ -7,7 +7,9 @@ from unittest.mock import patch, MagicMock
 
 
 class GetTagActionFromRequestTests(TestCase):
-    """Test get_tag_action_from_request function."""
+    """
+    Test get_tag_action_from_request function.
+    """
 
     def setUp(self):
         """Set up test request factory."""
@@ -48,7 +50,9 @@ class GetTagActionFromRequestTests(TestCase):
 
 
 class HandleTagOperationTests(TestCase):
-    """Test handle_tag_operation function."""
+    """
+    Test handle_tag_operation function.
+    """
 
     def setUp(self):
         """Set up session data."""
@@ -149,7 +153,9 @@ class HandleTagOperationTests(TestCase):
 
 
 class GetTagContextTests(TestCase):
-    """Test get_tag_context function."""
+    """
+    Test get_tag_context function.
+    """
 
     def test_returns_all_tag_categories(self):
         """Returns context with all tag categories."""
@@ -183,7 +189,9 @@ class GetTagContextTests(TestCase):
 
 
 class InitialiseTagSessionTests(TestCase):
-    """Test initialise_tag_session function."""
+    """
+    Test initialise_tag_session function.
+    """
 
     def setUp(self):
         """Set up test data."""
@@ -228,7 +236,9 @@ class InitialiseTagSessionTests(TestCase):
 
 
 class ApplyTagsToRecipeTests(TestCase):
-    """Test apply_tags_to_recipe function."""
+    """
+    Test apply_tags_to_recipe function.
+    """
 
     def setUp(self):
         """Set up test data."""
@@ -280,7 +290,9 @@ class ApplyTagsToRecipeTests(TestCase):
 
 
 class GetSessionKeyTests(TestCase):
-    """Test get_session_key function."""
+    """
+    Test get_session_key function.
+    """
 
     def test_returns_create_key_when_no_id(self):
         """Returns create key when recipe_id is None."""
@@ -294,7 +306,9 @@ class GetSessionKeyTests(TestCase):
 
 
 class CleanupSessionTests(TestCase):
-    """Test cleanup_session function."""
+    """
+    Test cleanup_session function.
+    """
 
     @patch('recipes.helpers.recipe_form_helpers.cleanup_temp_image')
     def test_cleans_up_temp_image(self, mock_cleanup):
@@ -353,7 +367,8 @@ class CleanupSessionTests(TestCase):
 
 
 class ApplyAIDietaryTagsTests(TestCase):
-    """Test apply_ai_dietary_tags function."""
+    """
+    Test apply_ai_dietary_tags function."""
 
     def test_does_nothing_when_no_ai_info(self):
         """Does nothing when ai_dietary_info is empty."""
@@ -483,7 +498,7 @@ class StoreAIDietaryInfoTests(TestCase):
         self.assertNotIn('ai_description', ai_prefill)
 
     def test_handles_missing_description(self):
-        """Handles missing ai_description gracefully."""
+        """ Handles missing ai_description gracefully. """
         session_data = {}
         ai_prefill = {'ai_dietary_info': ['vegan']}
 
