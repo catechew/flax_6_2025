@@ -3,49 +3,56 @@ from django.shortcuts import render
 from django.db.models import Q, Avg, Count
 from recipes.models.recipe import Recipe
 
+
 @login_required
 def dashboard(request):
-    """
-    Display the current user's dashboard.
-
-    This view renders the dashboard page for the authenticated user.
-    It ensures that only logged-in users can access the page. 
-    If a user is not authenticated, they are automatically redirected to the login
-    page.
-    """
-
+    """ Display the current user's dashboard. """
     current_user = request.user
-    # Get the 3 most recent recipes (public recipes + user's own private recipes)
-    limit = 3
-    recent_recipes = Recipe.objects.visible_to(current_user).order_by('-publication_date')[:3]
+    
+    recent_recipes = get_recent_recipes(current_user)
+    most_saved_recipes = get_most_saved_recipes(current_user)
+    highest_rated_recipes = get_highest_rated_recipes()
+    followed_recipes = get_followed_recipes(current_user)
+    
+    context = build_dashboard_context(
+        current_user, recent_recipes, most_saved_recipes,
+        highest_rated_recipes, followed_recipes
+    )
+    
+    return render(request, "dashboard/dashboard.html", context)
 
-    most_saved_recipes = (
-        Recipe.objects.visible_to(current_user)
+def get_recent_recipes(user, limit=3):
+    return Recipe.objects.visible_to(user).order_by('-publication_date')[:limit]
+
+def get_most_saved_recipes(user, limit=3):
+    return (
+        Recipe.objects.visible_to(user)
         .annotate(save_count=Count("saved_by"))
         .order_by("-save_count", "-publication_date")[:limit]
     )
 
-    # Highest rated public recipes, ordered by average rating (descending)
-    highest_rated_recipes = (
+def get_highest_rated_recipes(limit=3):
+    return (
         Recipe.objects.visible()
         .annotate(avg_rating=Avg("ratings__stars"))
         .order_by("-avg_rating", "-publication_date")[:limit]
     )
 
-    # Recipes from users being followed
-    following_users = current_user.following.all()
-    followed_recipes = (
+def get_followed_recipes(user, limit=3):
+    """ Get recent recipes from users being followed. """
+    following_users = user.following.all()
+    return (
         Recipe.objects.visible()
         .filter(author__in=following_users)
-        .order_by('-publication_date')[:3]
+        .order_by('-publication_date')[:limit]
     )
 
-    context = {
-        "user": current_user,
-        "recent_recipes": recent_recipes,
-        "most_saved_recipes": most_saved_recipes,
-        "highest_rated_recipes": highest_rated_recipes,
-        "followed_recipes": followed_recipes,
+def build_dashboard_context(user, recent, saved, rated, followed):
+    """ Build context dictionary for dashboard template. """
+    return {
+        "user": user,
+        "recent_recipes": recent,
+        "most_saved_recipes": saved,
+        "highest_rated_recipes": rated,
+        "followed_recipes": followed,
     }
-
-    return render(request, "dashboard/dashboard.html", context)
