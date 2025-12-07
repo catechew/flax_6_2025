@@ -60,7 +60,6 @@ def format_single_ingredient(ingredient):
         return format_matched_ingredient(match)
     return f"{ingredient} (as needed)"
 
-
 def try_parse_ingredient(ingredient):
     """Try to parse ingredient with regex."""
     pattern = r'^([\d./]+\s*(?:g|kg|ml|l|tsp|tbsp|cup|cups|oz|lb|cloves?|pieces?)?)\s+(.+)$'

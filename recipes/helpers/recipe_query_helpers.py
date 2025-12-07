@@ -107,7 +107,13 @@ def apply_sort(recipes, sort_by):
     if sort_by in SORT_FIELD_MAP:
         return recipes.order_by(SORT_FIELD_MAP[sort_by])
     
-    sort_map = {
+    sort_map = _get_sort_function_map()
+    sort_func = sort_map.get(sort_by, _default_sort)
+    return sort_func(recipes)
+
+def _get_sort_function_map():
+    """ Get mapping of sort options to functions. """
+    return {
         "total_least": lambda r: _sort_by_total_time(r, "total_least"),
         "total_most": lambda r: _sort_by_total_time(r, "total_most"),
         "prep_least": lambda r: _sort_by_prep_time(r, "prep_least"),
@@ -117,9 +123,10 @@ def apply_sort(recipes, sort_by):
         "most_saved": _sort_by_saves,
         "rating_highest": _sort_by_rating,
     }
-    
-    return sort_map.get(sort_by, lambda r: r.order_by("-publication_date"))(recipes)
 
+def _default_sort(recipes):
+    """Apply default date-based sorting."""
+    return recipes.order_by("-publication_date")
 def _sort_by_total_time(recipes, sort_by):
     """ Sort by total time (prep + cook). """
     recipes = recipes.annotate(
