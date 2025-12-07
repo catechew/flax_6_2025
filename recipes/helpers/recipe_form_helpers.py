@@ -1,8 +1,3 @@
-"""
-Helper functions for recipe create/update forms
-"""
-
-
 from recipes.helpers.recipe_filter_options import (
     COURSE_OPTIONS,
     DIETARY_OPTIONS,
@@ -11,13 +6,17 @@ from recipes.helpers.recipe_filter_options import (
 )
 from recipes.helpers.recipe_form_images import cleanup_temp_image
 
+
+"""
+Helper functions for recipe create/update forms
+"""
+
 TAG_CATEGORIES = {
     "course": COURSE_OPTIONS,
     "dietary": DIETARY_OPTIONS,
     "cuisine": CUISINE_OPTIONS,
     "other": OTHER_OPTIONS,
 }
-
 
 def get_tag_action_from_request(request):
     """ Parse POST request to determine tag action. """
@@ -33,7 +32,7 @@ def get_tag_action_from_request(request):
     return valid_results[0]
 
 def check_category_for_tag_action(request, category):
-    """Check if a specific category has a tag action"""
+    """ Check if a specific category has a tag action. """
     key = f"add_{category}_tag"
     if key in request.POST:
         return "add", category, request.POST.get(key)
@@ -47,7 +46,6 @@ def check_category_for_tag_action(request, category):
         return "remove", category, request.POST.get(key)
     
     return None, None, None
-
 
 def handle_tag_operation(session_data, action, category, value):
     """ Add or remove a tag from session data. """
@@ -65,14 +63,12 @@ def handle_tag_operation(session_data, action, category, value):
         # If tag already exists then it is success (no duplicate added)
         if value in session_data[tag_key]:
             return True
-
         session_data[tag_key].append(value)
         return True
 
     if action == "remove" and value in session_data[tag_key]:
         session_data[tag_key].remove(value)
         return True
-
     return False
 
 def get_tag_context(session_data):
@@ -134,7 +130,6 @@ def apply_ai_dietary_tags(session_data, ai_dietary_info):
     for tag in mapped_tags:
         if tag not in existing_tags:
             existing_tags.append(tag)
-
     session_data['dietary_tags'] = existing_tags
 
 def get_ai_prefill_from_session(request):
@@ -150,6 +145,5 @@ def store_ai_dietary_info(session_data, ai_prefill):
     """ Store AI dietary info in session for tags page. """
     if 'ai_dietary_info' not in ai_prefill:
         return
-
     session_data['ai_dietary_info'] = ai_prefill.pop('ai_dietary_info')
     session_data['ai_description'] = ai_prefill.pop('ai_description', '')

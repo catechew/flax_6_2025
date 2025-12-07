@@ -1,7 +1,3 @@
-"""
-Helper functions for searching, filtering, sorting and paginating recipes.
-"""
-
 from django.db.models import Q, Avg, Count, F
 from django.db.models.functions import Concat
 from django.db.models import Value
@@ -18,6 +14,10 @@ from recipes.helpers.recipe_filter_options import (
 )
 
 
+"""
+Helper functions for searching, filtering, sorting and paginating recipes.
+"""
+
 ITEMS_PER_PAGE = 25
 
 SORT_FIELD_MAP = {
@@ -27,11 +27,9 @@ SORT_FIELD_MAP = {
     "title_za": "-title",
 }
 
-
 def get_search_query(request):
      """ Return cleaned search term from request. """
      return request.GET.get("q", "").strip()
-
 
 def get_filter_params(request):
      """ Extract tag-based filters from request. """
@@ -41,7 +39,6 @@ def get_filter_params(request):
       "cuisine_filters": request.GET.getlist("cuisine", []),
       "other_filters": request.GET.getlist("other", []),
      }
-
 
 def apply_search(recipes, search_query):
  """ Apply free-text search on multiple recipe fields. """
@@ -70,14 +67,12 @@ def apply_search(recipes, search_query):
 
  return recipes.filter(base_query | ingredient_query)
 
-
 def _build_ingredient_query(words):
  """ Build AND-based ingredient filter. """
  query = Q()
  for word in words:
   query &= Q(ingredients__icontains=word)
  return query
-
 
 def apply_filters(recipes, filters):
  """ Apply tag filters to queryset. """
