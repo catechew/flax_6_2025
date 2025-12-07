@@ -153,15 +153,158 @@ User cancels $\rightarrow$  no recipe is saved and user is taken back to main pa
 \hline
 
 
-
+%%% Use Case 2
 \hline
-  & & & \\
+Filter Recipe
+&
+Logged-in user opens the all recipes page by clicking view all on the dashboard page or clicking Discover/All Recipes in the navigation bar.
+&
+(1) System displays all public recipes (default: in publication order (starting from most recent))
+
+\vspace{1 mm}
+(2) User can filter recipes shown based on tags (Course, Dietary, Cuisine, Others).
+&
+Each of these tag categories have sub-categories the user can choose from.
+&
+The user can choose more than one filter at a time.
+
+\vspace{1 mm}
+(3) Upon clicking the filter(s) they want to filter the recipes with, they can either press return on their keyboard or click apply on the screen.
+Outcome: Active filters will be shown above all the recipes and below the filter buttons.
+&
+number of filters selected is shown next to each tag category (if 1 or more selected)
+&
+Recipes that contain the tag(s) selected will be shown.
+
+\vspace{1 mm}
+(4) User can clear the filters by clicking the clear buttons,
+    or by unchecking the filters.
+Outcome: All recipes will be shown again
+
+\vspace{1 mm}
+(5) User can add to the filters by clicking (checking) more filters
+Outcome: Recipes shown gets further filtered to show recipes that contain all tag(s) selected
+
+
+%%% Use Case 3
  \hline
-  & & & \\
+Sort Recipes
+&
+Logged-in user opens the all recipes page by clicking view all on the dashboard page or clicking Discover/All Recipes in the navigation bar.
+&
+(1) Users click the the drop down that is default "Newest First".
+
+\vspace{1 mm}
+(2) From the dropdown options (publication date, title, time, most saved, highest rated) the user will click what they want to sort the recipes by.
+*Sorting recipes can be done on filtered results too.
+Outcome: System displays recipes sorted based on the sort by option selected.
+&
+e.g. if "Prep Time (Least)" was selected, the recipes shown will start from the recipe with the shortest prep time.
+
+\vspace{1 mm}
+(3) If a filter selected before or after sorting, the filtered recipes will be sorted.
+
+
+%%% Use Case 4
  \hline
-  & & & \\
+Update my own recipe
+&
+Logged-in User opens My Kitchen/My Recipes in the navigation bar to view all their own recipes. 
+&
+User clicks edit for the recipe they want to Update
+&
+(1) System displays the first page (Step 1) of the same form as the create recipe form, 
+but with the fields already filled in with the existing recipe's details.
+
+\vspace{1 mm}
+(2) User can update any field they want by simply deleting and/or adding words/numbers.
+If there's an image present, it will be shown at the bottom of the page with a checkbox "Delete image".
+
+\vspace{1 mm}
+(3) Click the delete image checkbox to delete the image.
+
+\vspace{1 mm}
+(4) To replace the existing image, add a new image under the image field.
+
+\vspace{1 mm}
+(5) Click "Next: Add Tags" 
+Outcome: System displays "Step 2" tags page. 
+&
+Missing fields $\rightarrow$ system shows validation errors. 
+
+\vspace{1 mm}
+
+Invalid date $\rightarrow$  user must enter today or earlier.
+
+\vspace{1 mm}
+
+Image upload fails user may retry or continue without image.  
+
+\vspace{1 mm}
+
+User cancels $\rightarrow$  recipe remains the same with no updates
+
+\vspace{1 mm}
+(6) In Step 2, the user can delete/add tags.
+
+\vspace{1 mm}
+(7) User clicks "Update Recipe"
+Outcome: System displays the recipe detail page for the updated Recipe.
+&
+At the top of the page it will show that the recipe was successfully updated.
+
+%%% Use Case 5
  \hline
-  & & & \\
+Create a modification of another user's recipe
+&
+Logged-in user views a recipe by clicking on it. 
+&
+If the recipe doesn't belong to them, they can create a modication by clicking "Create My Version" at the bottom of the page.
+&
+(1) System displays the "Step 1" of the create recipe form, but with the fields filled in with the existing recipe's details.
+At the top of the form, it will tell the user that it is creating a modified version 
+of the original author's (showing the actual username) recipe.
+
+\vspace{1 mm}
+(2) User can add/delete to the fields. 
+If there's an image present, it will be shown at the bottom of the page with a checkbox "Delete image".
+
+\vspace{1 mm}
+(3) Click the delete image checkbox to delete the image.
+
+\vspace{1 mm}
+(4) To replace the existing image, add a new image under the image field.
+
+\vspace{1 mm}
+(5) Click "Next: Add Tags" 
+Outcome: System displays "Step 2" tags page. 
+&
+Missing fields $\rightarrow$ system shows validation errors. 
+
+\vspace{1 mm}
+
+Invalid date $\rightarrow$  user must enter today or earlier.
+
+\vspace{1 mm}
+
+Image upload fails user may retry or continue without image.  
+
+\vspace{1 mm}
+
+User cancels $\rightarrow$  recipe remains the same with no updates
+
+\vspace{1 mm}
+(6) In Step 2, the user can delete/add tags.
+
+\vspace{1 mm}
+(7) User clicks "Create My Version"
+Outcome: System displays the recipe detail page for the new Recipe created.
+&
+At the top of the page it will show that the recipe was successfully created (authored by the user).
+&
+The original recipe will remain untouched.
+
+   & & \\
  \hline
   & & & \\
  \hline
