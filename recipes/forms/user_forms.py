@@ -17,6 +17,15 @@ class UserForm(forms.ModelForm):
 
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'gender', 'age_range', 'profile_picture']
+        widgets = {
+            'profile_picture': forms.FileInput(attrs={
+                'accept': 'image/png,image/jpeg,image/jpg',
+                'class': 'form-control'
+            })
+        }
+        help_texts = {
+            'profile_picture': 'Upload PNG or JPEG images (max 5MB)'
+        }
 
 class NewPasswordMixin(forms.Form):
     """
