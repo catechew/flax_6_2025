@@ -66,15 +66,15 @@ class CalculateCompletionHelperTests(TestCase):
         )
         self.assertEqual(calculate_completion(self.plan), 0)
 
-        def test_returns_full_completion_when_all_meals_filled(self):
-            for meal in ("breakfast", "lunch", "dinner"):
-                MealSlot.objects.create(
-                    meal_plan=self.plan,
-                    day="mon",
-                    meal_type=meal,
-                    recipe=self.recipe,
-                )
-            self.assertEqual(calculate_completion(self.plan), 100)
+    def test_returns_full_completion_when_all_meals_filled(self):
+        for meal in ("breakfast", "lunch", "dinner"):
+            MealSlot.objects.create(
+                meal_plan=self.plan,
+                day="mon",
+                meal_type=meal,
+                recipe=self.recipe,
+            )
+        self.assertEqual(calculate_completion(self.plan), 100)
 
 
 class CreateMealSlotsHelperTests(TestCase):

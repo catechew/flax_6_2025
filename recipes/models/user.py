@@ -93,13 +93,10 @@ class User(AbstractUser):
         """ Return avatar URL based on user preference. """
         if self.profile_picture:
             return self.profile_picture.url
-
         if self.avatar_type == 'initials':
             return self._get_initials_avatar_url(size)
-
         if self.avatar_type == 'random' and self.avatar_seed:
             return f"https://api.dicebear.com/7.x/avataaars/svg?seed={self.avatar_seed}&size={size}"
-
         if self.avatar_type == 'ai':
             return self._get_ai_avatar_url(size)
 

@@ -9,9 +9,7 @@ class RecipeManager(models.Manager):
     def visible_to(self, user):
         """ Return recipes visible to a specific user (public + user's own). """
         if user.is_authenticated:
-            return self.filter(
-                models.Q(private=False) | models.Q(author=user)
-            )
+            return self.filter(models.Q(private=False) | models.Q(author=user))
         return self.filter(private=False)
     
     def visible(self):
