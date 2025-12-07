@@ -99,7 +99,7 @@ def initialise_tag_session(session_data, recipe=None):
         session_data[f"{key}_tags"] = get_tag_list_for_key(recipe, key)
 
 def get_tag_list_for_key(recipe, key):
-    """Get tag list for a specific key from recipe or return empty list"""
+    """ Get tag list for a specific key from recipe or return empty list. """
     if recipe is None:
         return []
     return getattr(recipe, f"get_{key}_tags_list")()
@@ -121,7 +121,6 @@ def cleanup_session(session_key, session_data, request):
 
     if session_key in request.session:
         del request.session[session_key]
-
     request.session.modified = True
 
 def apply_ai_dietary_tags(session_data, ai_dietary_info):

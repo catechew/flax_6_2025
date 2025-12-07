@@ -26,7 +26,6 @@ def load_temp_image(temp_path, user_id, recipe_id=None):
     """ Load temp image and return as SimpleUploadedFile in dict. """
     if not temp_path or not default_storage.exists(temp_path):
         return {}
-
     with default_storage.open(temp_path, "rb") as f:
         prefix = _get_temp_file_prefix(user_id, recipe_id)
         filename = os.path.basename(temp_path).replace(prefix, "")
