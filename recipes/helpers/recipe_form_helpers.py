@@ -28,7 +28,6 @@ def get_tag_action_from_request(request):
 
     if not valid_results:
         return None, None, None
-
     return valid_results[0]
 
 def check_category_for_tag_action(request, category):
@@ -60,14 +59,23 @@ def handle_tag_operation(session_data, action, category, value):
     session_data.setdefault(tag_key, [])
 
     if action == "add":
-        # If tag already exists then it is success (no duplicate added)
-        if value in session_data[tag_key]:
-            return True
-        session_data[tag_key].append(value)
-        return True
+        return _add_tag_to_list(session_data[tag_key], value)
 
-    if action == "remove" and value in session_data[tag_key]:
-        session_data[tag_key].remove(value)
+    if action == "remove":
+        return _remove_tag_from_list(session_data[tag_key], value)
+    
+    return False
+
+def _add_tag_to_list(tag_list, value):
+    """Add tag if not already present. Returns True (idempotent)."""
+    if value not in tag_list:
+        tag_list.append(value)
+    return True
+
+def _remove_tag_from_list(tag_list, value):
+    """Remove tag if present."""
+    if value in tag_list:
+        tag_list.remove(value)
         return True
     return False
 
@@ -87,7 +95,6 @@ def get_tag_context(session_data):
 def initialise_tag_session(session_data, recipe=None):
     """ Initialise tags in session. """
     keys = ("course", "dietary", "cuisine", "other")
-
     for key in keys:
         session_data[f"{key}_tags"] = get_tag_list_for_key(recipe, key)
 
@@ -134,7 +141,6 @@ def get_ai_prefill_from_session(request):
     """ Get AI prefill data from session if available. """
     if not request.session.pop('from_ai_save_button', False):
         return None
-
     ai_data = request.session.pop('ai_recipe_prefill', None)
     return ai_data
 

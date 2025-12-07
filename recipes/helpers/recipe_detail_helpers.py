@@ -51,7 +51,6 @@ def get_user_rating(recipe, user):
         return None
     return Rating.objects.filter(recipe=recipe, user=user).first()
      
-
 def has_user_flagged_recipe(recipe, user):
     if not user.is_authenticated:
         return False
@@ -92,7 +91,6 @@ def create_cost_prompt(scaled_ingredients, servings):
     }}
 
     Use typical UK supermarket prices. Return only JSON."""
-
 
 def call_openai_for_cost(prompt):
     """ Call OpenAI API for cost estimation. """
