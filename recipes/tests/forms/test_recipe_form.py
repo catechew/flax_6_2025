@@ -1,5 +1,5 @@
 from django.test import TestCase
-from pydantic import ValidationError
+from django.core.exceptions import ValidationError
 from recipes.forms.recipe_form import RecipeForm
 from django.utils import timezone
 from datetime import timedelta
