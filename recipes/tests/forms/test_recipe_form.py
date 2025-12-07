@@ -85,6 +85,24 @@ class RecipeFormTestCase(TestCase):
 
     def test_form_rejects_blank_ingredients(self):
         self._assert_form_invalid('ingredients', ingredients='')
+        
+    def test_form_rejects_whitespace_only_ingredients(self):
+        errors = self._assert_form_invalid('ingredients', ingredients='   ')
+        self.assertIn('required', str(errors).lower())
+        
+    def test_form_rejects_none_ingredients(self):
+        """ Test form rejects None ingredients. """
+        data = {**self.form_data, 'ingredients': None}
+        form = RecipeForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('ingredients', form.errors)
+
+    def test_form_rejects_ingredient_with_unmatched_parenthesis_count(self):
+        errors = self._assert_form_invalid('ingredients', 
+            ingredients='Flour ((500g)')
+        error_msg = str(errors)
+        self.assertIn('Line 1', error_msg)
+        self.assertIn('mismatched', error_msg.lower())
 
     def test_form_rejects_ingredient_without_parentheses(self):
         errors = self._assert_form_invalid('ingredients', ingredients='Flour 500g')
