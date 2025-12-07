@@ -171,8 +171,7 @@ def get_ai_rankings(user_context, top_recipes):
 def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_filters, other_filters, sort_by):
     url_params = []
 
-    if search_query:
-        url_params.append(f'q={search_query}')
+    url_params.append(f'q={search_query}')
     for course in course_filters:
         url_params.append(f'course={course}')
     for dietary in dietary_filters:
@@ -181,8 +180,7 @@ def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_fi
         url_params.append(f'cuisine={cuisine}')
     for other in other_filters:
         url_params.append(f'other={other}')
-    if sort_by:
-        url_params.append(f'sort={sort_by}')
+    url_params.append(f'sort={sort_by}')
 
     return '/all_recipes/?' + '&'.join(url_params)
 
