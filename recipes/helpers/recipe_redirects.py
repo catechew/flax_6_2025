@@ -8,11 +8,9 @@ def redirect_to_form(handler):
     return redirect("update_recipe", recipe_id=handler.recipe_id)
 
 def redirect_to_tags(handler):
-    """ Redirect to step 2 (tags) based on mod e"""
-
+    """ Redirect to step 2 (tags) based on mode. """
     if handler.is_create_mode:
         return redirect("create_recipe_tags")
-
     return redirect(
         "update_recipe_tags",
         recipe_id=handler.recipe_id
