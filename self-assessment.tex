@@ -29,14 +29,14 @@
 \item Kausar Khan
 \end{itemize}
 
-\noindent\textbf{If the team agrees on an effective team size, specify it here.  Otherwise, state that the team does not agree.} 
+\noindent\textbf{If the team agrees on an effective team size, specify it here.  Otherwise, state that the team does not agree.}
 
 \vspace{2mm}
 
 \hspace{-7mm} The team agrees that the effective team size was five.
 
 
-%%% Submisison Checklist 
+%%% Submisison Checklist
 \section*{Submission checklist}
 \begin{tabular}{|p{15mm}|p{13cm}|}
 \hline
@@ -57,25 +57,25 @@ Check & Task \\
 
 %%% Business Objectives
 \section*{Objective}
-\textbf{Briefly outline the business objective of the system you have built.  
-Aim to identify what the system you developed aims to achieve 
-(do not regurgitate the overall assignment).  
+\textbf{Briefly outline the business objective of the system you have built.
+Aim to identify what the system you developed aims to achieve
+(do not regurgitate the overall assignment).
 This section should consist of a single paragraph.  Aim for less than 100 words.}
 
 \vspace{2mm}
 
-\hspace{-7mm} This project aims to deliver a functional recipe management platform 
+\hspace{-7mm} This project aims to deliver a functional recipe management platform
 for students in shared accommodation who struggle with scattered recipe sources
-and meal planning. 
-Our system integrates three core workflows: 
-users can create and discover recipes with tags, 
-plan weekly meals with a reusable calendar interface, 
-and generate categorised shopping lists automatically from their meal plans. 
-We incorporated AI-powered recipe generation to reduce decision fatigue 
-and added social features, allowing users to follow others and 
-discover popular recipes. 
-The platform combines practical cooking with community features, 
-making consistent home cooking more achievable for students 
+and meal planning.
+Our system integrates three core workflows:
+users can create and discover recipes with tags,
+plan weekly meals with a reusable calendar interface,
+and generate categorised shopping lists automatically from their meal plans.
+We incorporated AI-powered recipe generation to reduce decision fatigue
+and added social features, allowing users to follow others and
+discover popular recipes.
+The platform combines practical cooking with community features,
+making consistent home cooking more achievable for students
 managing budgets and busy schedules.
 
 
@@ -98,24 +98,24 @@ An example of a use case is as follows:
 \begin{longtable}{|p{30mm}|p{30mm}|p{40mm}|p{40mm}|}
 \hline
 \textbf{Name (\& short task description)}
-& 
+&
 \textbf{Actor \& trigger}
-& 
+&
 \textbf{Main success scenario \& outcome}
-& 
+&
 \textbf{Alternative flows}\\
 
 
 %%% Above is the structure to follow %%%
 
-%%% Use Case 1 
+%%% Use Case 1
 
 \hline
-Create Recipe 
-& 
-Logged-in user selects ``Create Recipe'' from the navigation bar 
+Create Recipe
 &
-(1) System displays Step 1 form, 
+Logged-in user selects ``Create Recipe'' from the navigation bar
+&
+(1) System displays Step 1 form,
 
 \vspace{1 mm}
 
@@ -127,7 +127,7 @@ Logged-in user selects ``Create Recipe'' from the navigation bar
 
 \vspace{1 mm}
 
-(4) System displays Step 2 tag page, 
+(4) System displays Step 2 tag page,
 
 \vspace{1 mm}
 
@@ -135,10 +135,10 @@ Logged-in user selects ``Create Recipe'' from the navigation bar
 
 \vspace{1 mm}
 
-(6) User clicks ``Create Recipe''.  
-Outcome: recipe is saved and shown on the detail page with a success message. 
+(6) User clicks ``Create Recipe''.
+Outcome: recipe is saved and shown on the detail page with a success message.
 &
-Missing fields $\rightarrow$ system shows validation errors. 
+Missing fields $\rightarrow$ system shows validation errors.
 
 \vspace{1 mm}
 
@@ -146,7 +146,7 @@ Invalid date $\rightarrow$  user must enter today or earlier.
 
 \vspace{1 mm}
 
-Image upload fails user may retry or continue without image.  
+Image upload fails user may retry or continue without image.
 
 \vspace{1 mm}
 
@@ -158,7 +158,7 @@ User cancels $\rightarrow$  no recipe is saved and user is taken back to main pa
 \hline
 Filter Recipe
 &
-Logged-in user opens the all recipes page by clicking "View All" on the dashboard page  
+Logged-in user opens the all recipes page by clicking "View All" on the dashboard page
 or by clicking "Discover $\rightarrow$ All Recipes" in the navigation bar.
 &
 (1) System displays all public recipes (default: newest first).
@@ -169,7 +169,7 @@ or by clicking "Discover $\rightarrow$ All Recipes" in the navigation bar.
 
 \vspace{1 mm}
 
-(3) User applies filters by pressing Return or clicking "Apply".  
+(3) User applies filters by pressing Return or clicking "Apply".
 
 Outcome: Active filters will be shown above all the recipes and below the filter buttons.
 
@@ -213,11 +213,11 @@ e.g. if "Prep Time (Least)" was selected, the recipes shown will start from the 
 \hline
 Update my own recipe
 &
-Logged-in User opens My Kitchen/My Recipes in the navigation bar to view all their own recipes. 
+Logged-in User opens My Kitchen/My Recipes in the navigation bar to view all their own recipes.
 
 User clicks edit for the recipe they want to Update
 &
-(1) System displays the first page (Step 1) of the same form as the create recipe form, 
+(1) System displays the first page (Step 1) of the same form as the create recipe form,
 but with the fields already filled in with the existing recipe's details.
 
 \vspace{1 mm}
@@ -236,9 +236,9 @@ If there's an image present, it will be shown at the bottom of the page with a c
 
 \vspace{1 mm}
 
-(5) Click "Next: Add Tags" 
+(5) Click "Next: Add Tags"
 
-Outcome: System displays "Step 2" tags page. 
+Outcome: System displays "Step 2" tags page.
 
 \vspace{1 mm}
 
@@ -252,7 +252,7 @@ Outcome: System displays the recipe detail page for the updated Recipe.
 
 At the top of the page it will show that the recipe was successfully updated.
 &
-Missing fields $\rightarrow$ system shows validation errors. 
+Missing fields $\rightarrow$ system shows validation errors.
 
 \vspace{1 mm}
 
@@ -260,7 +260,7 @@ Invalid date $\rightarrow$  user must enter today or earlier.
 
 \vspace{1 mm}
 
-Image upload fails user may retry or continue without image.  
+Image upload fails user may retry or continue without image.
 
 \vspace{1 mm}
 
@@ -271,18 +271,18 @@ User cancels $\rightarrow$  recipe remains the same with no updates. \\
 \hline
 Create a modification of another user's recipe
 &
-Logged-in user views a recipe by clicking on it. 
+Logged-in user views a recipe by clicking on it.
 
 If the recipe doesn't belong to them, they can create a modication by clicking "Create My Version" at the bottom of the page.
 &
 (1) System displays the "Step 1" of the create recipe form, but with the fields filled in with the existing recipe's details.
 
-At the top of the form, it will tell the user that it is creating a modified version 
+At the top of the form, it will tell the user that it is creating a modified version
 of the original author's (showing the actual username) recipe.
 
 \vspace{1 mm}
 
-(2) User can add/delete to the fields. 
+(2) User can add/delete to the fields.
 
 If there's an image present, it will be shown at the bottom of the page with a checkbox "Delete image".
 
@@ -296,9 +296,9 @@ If there's an image present, it will be shown at the bottom of the page with a c
 
 \vspace{1 mm}
 
-(5) Click "Next: Add Tags" 
+(5) Click "Next: Add Tags"
 
-Outcome: System displays "Step 2" tags page. 
+Outcome: System displays "Step 2" tags page.
 
 \vspace{1 mm}
 
@@ -314,7 +314,7 @@ At the top of the page it will show that the recipe was successfully created (au
 
 The original recipe will remain untouched.
 &
-Missing fields $\rightarrow$ system shows validation errors. 
+Missing fields $\rightarrow$ system shows validation errors.
 
 \vspace{1 mm}
 
@@ -322,7 +322,7 @@ Invalid date $\rightarrow$  user must enter today or earlier.
 
 \vspace{1 mm}
 
-Image upload fails user may retry or continue without image.  
+Image upload fails user may retry or continue without image.
 
 \vspace{1 mm}
 
@@ -333,12 +333,12 @@ User cancels $\rightarrow$  original recipe remains unchanged. \\
 \hline
 Browse and Search Users
 &
-Logged-in user clicks "View All" in dashboard page 
+Logged-in user clicks "View All" in dashboard page
 or Discover/All Recipes in navigation bar.
 
 System displays the all recipes page.
 
-User clicks the user tab 
+User clicks the user tab
 &
 (1) System displays all users
 
@@ -409,7 +409,7 @@ System shows details about the recipe, on a new page.
 Outcome: System displays details about the recipe, such as the steps to make it, the ingredients needed, ratings, tags, time for preparation + cooking.
 
 &
-You can click 'View' on a recipe shown in other similar pages, such as the somerecipes page. \\
+You can click 'View' on a recipe shown in other similar pages, such as the some recipes page. \\
 
 %%% Use case 9
 \hline
@@ -466,6 +466,46 @@ Outcome: The meal is added to the relevant part of the meal plan page, where the
 No alternate workflow. \\
 
 %%% Use case 11
+\hline
+Generate Recipe with AI
+&
+Logged-in users can click on the 'Discover' button in the navbar and will then click on "Chef AI".
+
+The user writes a prompt to the AI describing what recipe they want and clicks the 'Submit' button labeled as an arrow right next to the prompt bar.
+&
+(1) User logs in and is directed to the dashboard
+
+\vspace{1 mm}
+
+(2) User clicks on the 'Discover' button in the nav bar.
+
+A drop-down menu with two options appears.
+
+\vspace{1 mm}
+
+(3) User clicks on the 'Chef AI' button in the drop-down menu.
+
+Outcome: System displays a user interface with a prompt bar, prompting the user to enter a description of what they want to eat.
+
+\vspace{1 mm}
+
+(4) User writes a prompt describing what they want to eat and press the submit button labeled as an arrow.
+
+Outcome: An API call is made to OpenAI model gpt-4o-mini, which answers the prompt. The page reloads and shows a UI with the recipe information. Including: The user prompt as a chat message; the title of the generated recipe; a short description of the recipe; Prep Time, Cook Time, Serving Size, Difficulty; Dietary Info (matched with tags from the existing tag system); ingredients; instructions; chef's tips.
+
+\vspace{1 mm}
+
+(5) User is able to generate another recipe by clicking on the "Generate Another Recipe" button.
+Outcome: The page reloads to a new, clear chat, prompting the user to describe what they want to eat.
+&
+(5) User can generate another recipe by either clicking on the button, or typing in another prompt in the prompt box.
+Outcome: The page reloads with a new, generated recipe based on the prompt submitted.
+
+\vspace{1 mm}
+(6) User can click the button "Save This Recipe". This will load and auto-fill in the recipe information into a Create Recipe form (Step 1), which the user will be able to edit and post. \\
+
+%%% Use case 12
+
 \hline
 
 \end{longtable}
