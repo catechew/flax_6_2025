@@ -16,10 +16,12 @@ from recipes.views.ai_recipe_search_view import (
 
 
 class AIRecipeSearchViewTests(TestCase):
-    """Test AI recipe search view."""
+    """ 
+    Test AI recipe search view. 
+    """
 
     def setUp(self):
-        """Set up test data."""
+        """ Set up test data. """
         self.client = Client()
         self.user = User.objects.create_user(
             username='@testuser',
@@ -53,12 +55,12 @@ class AIRecipeSearchViewTests(TestCase):
         self.url = reverse('ai_recipe_search')
 
     def test_redirect_if_not_logged_in(self):
-        """Test redirect to login if not authenticated."""
+        """ Test redirect to login if not authenticated. """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
 
     def test_get_displays_form(self):
-        """Test GET displays search form."""
+        """ Test GET displays search form. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
 
@@ -66,14 +68,14 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertTemplateUsed(response, 'ai/ai_recipe_search.html')
 
     def test_post_without_context_shows_error(self):
-        """test post without context shows error"""
+        """ Test post without context shows error. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.post(self.url, {})
         messages = list(response.context['messages'])
         self.assertTrue(any('Please describe your situation' in str(m) for m in messages))
 
     def test_post_with_empty_context_shows_error(self):
-        """test post with empty context shows error"""
+        """ Test post with empty context shows error. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.post(self.url, {'context': ''})
         messages = list(response.context['messages'])
@@ -81,7 +83,8 @@ class AIRecipeSearchViewTests(TestCase):
 
     @patch('openai.ChatCompletion.create')
     def test_successful_search_with_results(self, mock_openai):
-        """test successful search returns results"""
+        """ Test successful search returns results. """
+        
         self.client.login(username='@testuser', password='Password123')
 
         # simulate the 2 AI responses
@@ -116,7 +119,7 @@ class AIRecipeSearchViewTests(TestCase):
 
     @patch('openai.ChatCompletion.create')
     def test_search_with_no_results(self, mock_openai):
-        """test search with no matching recipes"""
+        """ Test search with no matching recipes. """
         self.client.login(username='@testuser', password='Password123')
 
         search_params = MagicMock()
@@ -137,7 +140,7 @@ class AIRecipeSearchViewTests(TestCase):
 
     @patch('openai.ChatCompletion.create')
     def test_all_context_variables_present(self, mock_openai):
-        """test all required context variables are present"""
+        """ Test all required context variables are present. """
         self.client.login(username='@testuser', password='Password123')
 
         search_params = MagicMock()
@@ -172,7 +175,7 @@ class AIRecipeSearchViewTests(TestCase):
 
     @patch('openai.ChatCompletion.create')
     def test_user_context_preserved(self, mock_openai):
-        """test user input is preserved in context"""
+        """ Test user input is preserved in context. """
         self.client.login(username='@testuser', password='Password123')
 
         search_params = MagicMock()
@@ -200,7 +203,7 @@ class AIRecipeSearchViewTests(TestCase):
 
     @patch('openai.ChatCompletion.create')
     def test_openai_api_error(self, mock_openai):
-        """test openai api error shows error message"""
+        """ Test openai api error shows error message. """
         self.client.login(username='@testuser', password='Password123')
         mock_openai.side_effect = Exception('API Error')
 
@@ -211,7 +214,7 @@ class AIRecipeSearchViewTests(TestCase):
 
     @patch('openai.ChatCompletion.create')
     def test_invalid_json_response(self, mock_openai):
-        """test invalid json from ai shows error"""
+        """ Test invalid json from ai shows error. """
         self.client.login(username='@testuser', password='Password123')
 
         invalid = MagicMock()
@@ -226,7 +229,7 @@ class AIRecipeSearchViewTests(TestCase):
 
     @patch('openai.ChatCompletion.create')
     def test_exception_preserves_user_context(self, mock_openai):
-        """test user context preserved on error"""
+        """ Test user context preserved on error. """
         self.client.login(username='@testuser', password='Password123')
         mock_openai.side_effect = Exception('Error')
 
@@ -236,25 +239,25 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertEqual(response.context['user_context'], user_input)
 
     def test_apply_search_query_none(self):
-        """test apply_search_query with none"""
+        """ Test apply_search_query with none". ""
         recipes = Recipe.objects.all()
         result = apply_search_query(recipes, None)
         self.assertEqual(result.count(), 2)
 
     def test_apply_search_query_empty(self):
-        """test apply_search_query with empty string"""
+        """ Test apply_search_query with empty string. """
         recipes = Recipe.objects.all()
         result = apply_search_query(recipes, '')
         self.assertEqual(result.count(), 2)
 
     def test_apply_tag_filters_empty(self):
-        """test apply_tag_filters with empty lists"""
+        """ Test apply_tag_filters with empty lists. """
         recipes = Recipe.objects.all()
         result = apply_tag_filters(recipes, [], [], [], [])
         self.assertEqual(result.count(), 2)
 
     def test_apply_tag_filters_single_course(self):
-        """test apply_tag_filters with course filter"""
+        """ Test apply_tag_filters with course filter. """
         Recipe.objects.create(
             author=self.user,
             title='Breakfast',
@@ -269,7 +272,7 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertEqual(result.count(), 1)
 
     def test_apply_sorting_total_most(self):
-        """test sorting by total time most"""
+        """ Test sorting by total time most. """
         Recipe.objects.create(
             author=self.user,
             title='Long',
@@ -287,14 +290,14 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertEqual(result.first().title, 'Long')
 
     def test_apply_sorting_invalid(self):
-        """test sorting with invalid option"""
+        """ Test sorting with invalid option. """
         recipes = Recipe.objects.all()
         result = apply_sorting(recipes, 'invalid')
         self.assertIsNotNone(result)
 
     @patch('openai.ChatCompletion.create')
     def test_get_ai_rankings_empty_list(self, mock_openai):
-        """test rankings with empty recipe list"""
+        """ Test rankings with empty recipe list. """
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = json.dumps({
@@ -308,7 +311,7 @@ class AIRecipeSearchViewTests(TestCase):
 
     @patch('openai.ChatCompletion.create')
     def test_get_ai_rankings_single_recipe(self, mock_openai):
-        """test rankings with single recipe"""
+        """ Test rankings with single recipe. """
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = json.dumps({
@@ -321,7 +324,7 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertEqual(len(result['top_picks']), 1)
 
     def test_whitespace_context(self):
-        """test whitespace only context"""
+        """ Test whitespace only context. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.post(self.url, {'context': '   \n\t   '})
 
@@ -329,9 +332,7 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertTrue(any('Please describe your situation' in str(m) for m in messages))
 
     def test_build_view_all_url_with_all_filter_types(self):
-        """
-        test url with all filter types including cuisine and other
-        """
+        """ Test url with all filter types including cuisine and other. """
         url = build_view_all_url(
             'pasta',
             ['breakfast'],
@@ -348,33 +349,33 @@ class AIRecipeSearchViewTests(TestCase):
         self.assertIn('sort=rating_high', url)
 
     def test_apply_tag_filters_multiple_dietary_and_cuisine(self):
-        """test multiple dietary filters"""
+        """ Test multiple dietary filters. """
         recipes = Recipe.objects.all()
         result = apply_tag_filters(recipes, [], ['vegan', 'vegetarian'], ['Italian', 'Asian'], [])
         # Should find both recipes
         self.assertGreaterEqual(result.count(), 1)
 
     def test_apply_sorting_rating_high(self):
-        """test sorting by rating high"""
+        """ Test sorting by rating high. """
         recipes = Recipe.objects.all()
         result = apply_sorting(recipes, 'rating_high')
         self.assertIsNotNone(result)
 
     def test_apply_sorting_date_oldest(self):
-        """test sorting by date oldest"""
+        """ Test sorting by date oldest. """
         recipes = Recipe.objects.all()
         result = apply_sorting(recipes, 'date_oldest')
         self.assertIsNotNone(result)
 
     def test_apply_search_query_matches_title(self):
-        """test search query matches title"""
+        """ Test search query matches title. """
         recipes = Recipe.objects.all()
         result = apply_search_query(recipes, 'Pasta')
         self.assertEqual(result.count(), 1)
         self.assertEqual(result.first().title, 'Pasta Carbonara')
 
     def test_apply_search_query_matches_ingredients(self):
-        """test search query matches ingredients"""
+        """ Test search query matches ingredients. """
         recipes = Recipe.objects.all()
         result = apply_search_query(recipes, 'Chickpeas')
         self.assertEqual(result.count(), 1)
