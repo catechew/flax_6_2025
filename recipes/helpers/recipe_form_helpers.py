@@ -48,23 +48,26 @@ def check_category_for_tag_action(request, category):
 
 def handle_tag_operation(session_data, action, category, value):
     """ Add or remove a tag from session data. """
-    if not all([action, category, value]):
+    if not _is_valid_tag_input(action, category, value):
         return False
-
-    value = value.strip()
-    if not value or len(value) > 50:
-        return False
-
+    
     tag_key = f"{category}_tags"
     session_data.setdefault(tag_key, [])
-
+    
     if action == "add":
         return _add_tag_to_list(session_data[tag_key], value)
-
     if action == "remove":
         return _remove_tag_from_list(session_data[tag_key], value)
     
     return False
+
+def _is_valid_tag_input(action, category, value):
+    """ Validate tag operation inputs. """
+    if not all([action, category, value]):
+        return False
+    
+    value = value.strip()
+    return value and len(value) <= 50
 
 def _add_tag_to_list(tag_list, value):
     """Add tag if not already present. Returns True (idempotent)."""
@@ -73,7 +76,7 @@ def _add_tag_to_list(tag_list, value):
     return True
 
 def _remove_tag_from_list(tag_list, value):
-    """Remove tag if present."""
+    """ Remove tag if present. """
     if value in tag_list:
         tag_list.remove(value)
         return True
@@ -130,8 +133,6 @@ def apply_ai_dietary_tags(session_data, ai_dietary_info):
     
     mapped_tags = map_ai_dietary_tags(ai_dietary_info)
     existing_tags = session_data.get('dietary_tags', [])
-    
-    # Add only new tags (no level 2 nesting)
     new_tags = [tag for tag in mapped_tags if tag not in existing_tags]
     existing_tags.extend(new_tags)
     session_data['dietary_tags'] = existing_tags
