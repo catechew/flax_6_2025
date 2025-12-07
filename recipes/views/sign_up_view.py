@@ -33,7 +33,5 @@ class SignUpView(LoginProhibitedMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        """
-        Determine the redirect URL after successful registration.
-        """
+        """ Determine the redirect URL after successful registration. """
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
