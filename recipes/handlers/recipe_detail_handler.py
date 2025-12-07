@@ -57,7 +57,6 @@ class RecipeDetailHandler:
                 cost_estimate = get_cost_estimate_data(scaled_ingredients, self.desired_servings)
             except Exception as e:
                 cost_error = str(e)
-        
         return{
             'cost_estimate' : cost_estimate,
             'cost_error' : cost_error
@@ -70,19 +69,11 @@ class RecipeDetailHandler:
             'steps': self.recipe.get_step_list(),
             'is_owner': self.is_owner,
         }
-
-        # Add tag display
         context.update(get_recipe_tag_display_context(self.recipe))
-        
-        #Add time display
         context.update(get_recipe_time_display_context(self.recipe))
-        
-        #Add scaled ingredients
         scaling_context = get_scaled_ingredients_context(self.recipe, self.desired_servings)
         context.update(scaling_context)
         context.update(self.get_cost_context(scaling_context['scaled_ingredients']))
-        
-        #Add user data
         context.update(self.get_user_context())
-
+        
         return context

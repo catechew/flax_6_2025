@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 from recipes.models.meal_plan import MealPlan, MealSlot
+from recipes.models.recipe import Recipe
 from recipes.helpers.meal_plan_helpers import (
     get_monday,
     calculate_completion,
@@ -32,8 +33,8 @@ class GetMondayHelperTests(TestCase):
 
 
 class CalculateCompletionHelperTests(TestCase):
-    """ 
-    Tests for calculate_completion helper. 
+    """
+    Tests for calculate_completion helper.
     """
 
     def setUp(self):
@@ -45,6 +46,13 @@ class CalculateCompletionHelperTests(TestCase):
         self.plan = MealPlan.objects.create(
             user=self.user,
             week_start=date(2025, 11, 24),
+        )
+        self.recipe = Recipe.objects.create(
+            title="Helper Test Recipe",
+            author=self.user,
+            publication_date=date(2025, 11, 24),
+            ingredients="Salt\nPepper",
+            steps="Cook",
         )
 
     def test_returns_zero_when_no_slots_exist(self):
@@ -58,15 +66,15 @@ class CalculateCompletionHelperTests(TestCase):
         )
         self.assertEqual(calculate_completion(self.plan), 0)
 
-    def test_returns_full_completion_when_all_meals_filled(self):
-        for meal in ("breakfast", "lunch", "dinner"):
-            MealSlot.objects.create(
-                meal_plan=self.plan,
-                day="mon",
-                meal_type=meal,
-                recipe_id=1,
-            )
-        self.assertEqual(calculate_completion(self.plan), 100)
+        def test_returns_full_completion_when_all_meals_filled(self):
+            for meal in ("breakfast", "lunch", "dinner"):
+                MealSlot.objects.create(
+                    meal_plan=self.plan,
+                    day="mon",
+                    meal_type=meal,
+                    recipe=self.recipe,
+                )
+            self.assertEqual(calculate_completion(self.plan), 100)
 
 
 class CreateMealSlotsHelperTests(TestCase):
@@ -137,6 +145,6 @@ class ReusePrevWeekHelperTests(TestCase):
     def test_returns_false_when_no_previous_plan_exists(self):
         new_plan = MealPlan.objects.create(
             user=self.user,
-            week_start=date(2025, 12, 1),
+            week_start=date(2026, 1, 1),  
         )
         self.assertFalse(reuse_prev_week(new_plan))

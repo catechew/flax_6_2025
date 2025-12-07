@@ -17,6 +17,7 @@ class MealPlanModelTests(TestCase):
     """Create a base user and week_start date used in multiple tests."""
     self.user = User.objects.create_user(
         username="@mealuser",
+        email="mealuser@example.com",
         password="Password123",
     )
     self.week_start = date(2025, 11, 24)
@@ -44,22 +45,23 @@ class MealPlanModelTests(TestCase):
           )
 
   def test_same_week_allowed_for_different_users(self):
-      """Different users may create meal plans for the same week."""
-      other_user = User.objects.create_user(
-          username="@otheruser",
-          password="Password123",
-      )
+        """Different users may create meal plans for the same week."""
+        other_user = User.objects.create_user(
+            username="@otheruser",
+            email="otheruser@example.com",
+            password="Password123",
+        )
 
-      plan_one = MealPlan.objects.create(
-          user=self.user,
-          week_start=self.week_start,
-      )
-      plan_two = MealPlan.objects.create(
-          user=other_user,
-          week_start=self.week_start,
-      )
+        plan_one = MealPlan.objects.create(
+            user=self.user,
+            week_start=self.week_start,
+        )
+        plan_two = MealPlan.objects.create(
+            user=other_user,
+            week_start=self.week_start,
+        )
 
-      self.assertNotEqual(plan_one.user, plan_two.user)
+        self.assertNotEqual(plan_one.user, plan_two.user)
 
   def test_string_representation_is_readable(self):
       """Test that __str__ returns a clear, readable description."""

@@ -60,14 +60,12 @@ class RecipeFormHandler:
 
         if self.session_key in session:
             return session[self.session_key]
-
         return self._create_new_session(session)
 
     def _create_new_session(self, session):
         """ Create new session data. """
         session[self.session_key] = {}
         session_data = session[self.session_key]
-
         initialise_tag_session(session_data, self.recipe)
         self._apply_ai_tags_if_available(session_data)
         self.set_ownership_in_session(session_data)
@@ -168,50 +166,74 @@ class RecipeFormHandler:
         return redirect_to_tags(self)
 
     def finalise_recipe(self):
+        """Finalise and save recipe."""
+        recipe = self._prepare_recipe_for_save()
+        self._apply_recipe_modifications(recipe)
+        recipe.save()
+        
+        self._complete_recipe_workflow(recipe)
+        return redirect("recipe_detail", recipe_id=recipe.id)
+
+    def _prepare_recipe_for_save(self):
+        """Build recipe instance from form data."""
         form_data, files = rebuild_form_data(
             self.session_data, self.request, self.recipe
         )
         form = RecipeForm(form_data, files, instance=self.recipe)
         recipe = form.save(commit=False)
-
+        
         prepare_recipe_author(
             recipe, self.request.user, self.recipe, self.is_owner
         )
+        return recipe
+
+    def _apply_recipe_modifications(self, recipe):
+        """ Apply image and tag modifications to recipe. """
         copy_original_image(recipe, self.recipe)
         delete_image_if_requested(
             recipe, self.session_data, self.recipe, self.is_owner
         )
-
         apply_tags_to_recipe(recipe, self.session_data)
-        recipe.save()
 
+    def _complete_recipe_workflow(self, recipe):
+        """ Clean up session and show success message. """
         cleanup_session(self.session_key, self.session_data, self.request)
         show_success_message(self.request, self, recipe)
-
-        return redirect("recipe_detail", recipe_id=recipe.id)
     
     def get_tags_context(self):
         """ Build context for tags template. """
-        context = {
+        context = self._build_base_context()
+        
+        if self.recipe:
+            context.update(self._get_recipe_context())
+        
+        tag_data = get_tag_context(self.session_data)
+        context.update(tag_data)
+        
+        context["has_image"] = self._check_has_image()
+        return context
+
+    def _build_base_context(self):
+        """Build base context with mode and ownership."""
+        return {
             "mode": self.mode,
             "is_owner": self.is_owner,
         }
 
-        if self.recipe:
-            context.update({
-                "recipe": self.recipe,
-                "recipe_id": self.recipe.id,
-            })
+    def _get_recipe_context(self):
+        """Get recipe-specific context data."""
+        return {
+            "recipe": self.recipe,
+            "recipe_id": self.recipe.id,
+        }
 
-        tag_data = get_tag_context(self.session_data)
-        context.update(tag_data)
-
-        context["has_image"] = (
+    def _check_has_image(self):
+        """Check if recipe has temp image or existing image."""
+        return (
             "temp_image_path" in self.session_data
             or (self.recipe and self.recipe.image)
         )
-        return context
-    
+        
     def handle_tag_action(self):
         """ Handle add/remove tag actions from the tags page. 
             Returns a redirect if an action was processed.
