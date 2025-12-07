@@ -63,7 +63,7 @@ Recipes | Recipe #{{recipe.id}}
             
             <!-- Rating form for logged in users -->
             {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="d-flex align-items-center gap-3 mb-2">
+            <form method="POST" action="{% url 'rate_recipe' recipe.id %}" class="d-flex align-items-center gap-3 mb-2 rating-form-responsive">
                 {% csrf_token %}
 
                 <span class="fw-bold">Your Rating:</span>

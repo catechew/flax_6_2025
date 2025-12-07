@@ -46,20 +46,31 @@
 
 .rating-input label {
     cursor: pointer;
-    color: var(--primary-colour-darker);
+    color: var(--black-colour);
 }
 
 .rating-input label:hover,
 .rating-input label:hover ~ label {
-    color: #f0ad4e !important;
+    color: var(--star) !important;
 }
 
 .rating-input input[type="radio"]:checked ~ label {
-    color: #f0ad4e !important;
+    color: var(--star) !important;
 }
 
 .rating-input {
+    white-space: nowrap;
     direction: rtl;
+}
+
+@media (max-width: 768px) {
+    .rating-form-responsive {
+        flex-wrap: wrap;
+    }
+
+    .rating-form-responsive button {
+        margin-top: 0px;
+    }
 }
 
 /* Favourites heart */
