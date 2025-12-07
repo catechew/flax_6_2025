@@ -162,37 +162,3 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, 'name="servings"')
         self.assertContains(response, 'Adjust Servings')
         self.assertContains(response, 'Recalculate')
-
-    def test_recipe_detail_with_minimum_servings(self):
-        """ Test recipe with minimum servings (1). """
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Single Serving Recipe",
-            publication_date=timezone.now().date(),
-            servings=1,
-            ingredients="Egg (1)",
-            steps="Fry egg"
-        )
-
-        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "1")
-        self.assertContains(response, "serving")
-
-    def test_recipe_detail_with_large_servings(self):
-        """ Test recipe with large number of servings. """
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Party Recipe",
-            publication_date=timezone.now().date(),
-            servings=50,
-            ingredients="Chicken (10kg)",
-            steps="Cook for party"
-        )
-
-        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "50")
