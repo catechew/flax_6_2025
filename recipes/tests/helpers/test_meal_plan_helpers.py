@@ -1,6 +1,3 @@
-"""
-Tests for meal plan helper functions.
-"""
 from datetime import date
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -16,6 +13,9 @@ from recipes.helpers.meal_plan_helpers import (
 
 User = get_user_model()
 
+"""
+Tests for meal plan helper functions.
+"""
 
 class GetMondayHelperTests(TestCase):
     """ 

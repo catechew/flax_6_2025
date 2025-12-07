@@ -1,7 +1,3 @@
-"""
-Utility functions for creating test data in tests
-"""
-
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from recipes.models import Recipe
@@ -10,6 +6,9 @@ from PIL import Image
 from io import BytesIO
 import uuid
 
+"""
+Utility functions for creating test data in tests
+"""
 
 User = get_user_model()
 

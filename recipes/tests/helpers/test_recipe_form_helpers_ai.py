@@ -10,7 +10,9 @@ from unittest.mock import patch, MagicMock
 
 
 class CleanupSessionTests(TestCase):
-    """Test cleanup_session function."""
+    """
+    Test cleanup_session function.
+    """
 
     @patch('recipes.helpers.recipe_form_helpers.cleanup_temp_image')
     def test_cleans_up_temp_image(self, mock_cleanup):
@@ -47,7 +49,9 @@ class CleanupSessionTests(TestCase):
 
 
 class ApplyAIDietaryTagsTests(TestCase):
-    """Test apply_ai_dietary_tags function."""
+    """
+    Test apply_ai_dietary_tags function.
+    """
 
     def test_does_nothing_when_no_ai_info(self):
         session_data = {'dietary_tags': ['existing']}
@@ -65,7 +69,6 @@ class ApplyAIDietaryTagsTests(TestCase):
         session_data = {'dietary_tags': []}
 
         apply_ai_dietary_tags(session_data, ['vegan', 'gluten-free'])
-
         self.assertIn('Vegan', session_data['dietary_tags'])
         self.assertIn('Gluten-Free', session_data['dietary_tags'])
 
@@ -79,7 +82,9 @@ class ApplyAIDietaryTagsTests(TestCase):
 
 
 class GetAIPrefillFromSessionTests(TestCase):
-    """Test get_ai_prefill_from_session function."""
+    """
+    Test get_ai_prefill_from_session function.
+    """
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -125,7 +130,9 @@ class GetAIPrefillFromSessionTests(TestCase):
 
 
 class StoreAIDietaryInfoTests(TestCase):
-    """Test store_ai_dietary_info function."""
+    """
+    Test store_ai_dietary_info function.
+    """
 
     def test_does_nothing_when_no_ai_info(self):
         session_data = {}
@@ -150,7 +157,6 @@ class StoreAIDietaryInfoTests(TestCase):
         }
 
         store_ai_dietary_info(session_data, ai_prefill)
-
         self.assertEqual(session_data['ai_description'], 'A delicious recipe')
         self.assertNotIn('ai_description', ai_prefill)
 
