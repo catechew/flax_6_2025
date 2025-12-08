@@ -150,6 +150,20 @@ class HandleTagOperationTests(TestCase):
         self.assertTrue(result)
         self.assertIn('dietary_tags', session)
         self.assertIn('vegan', session['dietary_tags'])
+        
+    def test_invalid_action_returns_false(self):
+        """Test handle_tag_operation returns False for invalid action."""
+        session_data = {'course_tags': []}
+        
+        result = handle_tag_operation(
+            session_data, 
+            'invalid_action',  # ← Not "add" or "remove"
+            'course', 
+            'breakfast'
+        )
+        
+        self.assertFalse(result)
+        self.assertEqual(session_data['course_tags'], [])
 
 
 class GetTagContextTests(TestCase):
