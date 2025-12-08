@@ -85,30 +85,6 @@ class RecipeTagsViewTests(TestCase):
         resp = self.client.post(self.url, {"remove_course_tag": "breakfast"})
         self.assertEqual(resp.status_code, 302)
 
-    def test_post_create_recipe(self):
-        """POST to finalize recipe creation."""
-        session = self.client.session
-        session["recipe_form_data"] = {
-            "form_data": {
-                "title": "Test Recipe",
-                "ingredients": "Test (1)",
-                "steps": "Test step",
-                "servings": 4,
-                "prep_time_hours": 0,
-                "prep_time_minutes": 30,
-                "cook_time_hours": 1,
-                "cook_time_minutes": 0,
-            },
-            "course_tags": ["breakfast"],
-            "dietary_tags": [],
-            "cuisine_tags": [],
-            "other_tags": [],
-        }
-        session.save()
-
-        resp = self.client.post(self.url, {"create_recipe": "1"})
-        self.assertEqual(resp.status_code, 302)
-
     def test_context_includes_tag_data(self):
         """Context includes all tag categories and options."""
         session = self.client.session
@@ -129,7 +105,7 @@ class RecipeTagsViewTests(TestCase):
 
     @patch("recipes.handlers.recipe_form_handler.RecipeFormHandler.finalise_recipe")
     def test_post_create_recipe(self, mock_finalise):
-        """POST to finalize recipe creation."""
+        """POST to finalise recipe creation."""
         mock_finalise.return_value = HttpResponseRedirect("/recipes/1/")
 
         session = self.client.session

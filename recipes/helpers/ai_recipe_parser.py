@@ -69,10 +69,10 @@ def format_matched_ingredient(match):
     """ Format parsed ingredient match. """
     quantity = match.group(1).strip()
     name = match.group(2).strip()
-    name = capitalize_first(name)
+    name = capitalise_first(name)
     return f"{name} ({quantity})"
 
-def capitalize_first(text):
+def capitalise_first(text):
     """ Capitalise first letter. """
     return text[0].upper() + text[1:] if text else text
 

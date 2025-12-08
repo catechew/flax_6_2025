@@ -95,7 +95,7 @@ class PasswordForm(NewPasswordMixin):
 
     def __init__(self, user=None, **kwargs):
         """
-        Initialize the password form with the current user instance.
+        Initialise the password form with the current user instance.
 
         Args:
             user (User, optional): The authenticated user who wants to change
