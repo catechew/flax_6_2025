@@ -703,6 +703,39 @@ they will be prompted to confirm the deletion of the recipe.
 This change will then be reflected everywhere else in the app. 
 The recipe will be permanently deleted from the database. \\
 
+%%% Use case 10
+\hline
+Rate Recipes
+&
+Logged-in user clicks a star rating and submits the “Save Rating” button.
+
+System displays the user's rating, and the average rating of all users rounded to the nearest star.
+&
+(1) User clicks on their desired star rating along the star icons inside the recipe card.
+Outcome: System displays their currently clicked rating, but without submitting yet.
+
+\vspace{1 mm}
+
+(2) User clicks on the 'Save Rating' button next to the icons.
+
+Outcome: The rating is saved, and displayed on the user's rating stars and also contributes towards the average rating. 
+
+\vspace{1 mm}
+
+(3) User can click on the 'Edit' button for any day, select any of the meals to edit.
+
+Outcome: System brings up a choice of all recipes for the user to insert.
+
+\vspace{1 mm}
+
+(4) User can choose any of the recipes in the menu.
+
+Outcome: The meal is added to the relevant part of the meal plan page, where the user is directed to.
+
+&
+No alternate workflow. \\
+
+
 \hline
 
 \end{longtable}
