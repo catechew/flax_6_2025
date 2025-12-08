@@ -136,7 +136,7 @@
 .meal-label {
   color: var(--grey-colour);
   margin-bottom: 6px;
-  display: block; 
+  display: block;
 }
 
 .slot-line {
@@ -267,6 +267,7 @@
 }
 
 @media print {
+
   .btn,
   nav {
     display: none !important;
