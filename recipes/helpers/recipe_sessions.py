@@ -25,7 +25,8 @@ def _handle_image_clear_checkbox(session_data, post_data):
     """ Handle image-clear checkbox state. """
     if 'image-clear' in post_data:
         session_data['image_clear'] = True
-    elif 'image_clear' in session_data:
+        return 
+    if 'image_clear' in session_data:
         del session_data['image_clear']
 
 def _save_temp_image_if_present(session_data, files):
