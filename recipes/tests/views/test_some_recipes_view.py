@@ -41,6 +41,20 @@ class SomeRecipesViewTestCase(TestCase):
             ingredients="Test",
             steps="Test"
         )
+    
+    def _create_numbered_recipes(self, count):
+        """ Helper to create multiple numbered recipes. """
+        recipe_ids = []
+        for i in range(count):
+            recipe = Recipe.objects.create(
+                author=self.user,
+                title=f"Recipe {i}",
+                publication_date=timezone.now().date(),
+                ingredients="Test",
+                steps="Test"
+            )
+            recipe_ids.append(str(recipe.id))
+        return recipe_ids
 
     def test_login_required(self):
         """ Unauthenticated users are redirected. """
