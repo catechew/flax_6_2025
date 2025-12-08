@@ -86,7 +86,7 @@ def apply_search_query(recipes, search_query):
 
 def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters):
     """
-    Apply tag-based filters to recipes.
+    apply tag-based filters to recipes
     """
     filter_map = {
         'course_tags': course_filters,
@@ -96,18 +96,21 @@ def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters,
     }
     
     for tag_field, filter_values in filter_map.items():
-        build_or_query(tag_field, filter_values)
+        if filter_values: recipes = build_or_query(recipes, tag_field, filter_values) 
     
     return recipes
 
-def build_or_query(tag_field, filter_values):
-    if filter_values:
-        # build OR query for all values in this tag type
-        tag_q = reduce(
-            operator.or_,
-            [Q(**{f'{tag_field}__icontains': value}) for value in filter_values]
-        )
-        recipes = recipes.filter(tag_q)
+
+def build_or_query(recipes, tag_field, filter_values):
+    """
+    build and apply OR query for a tag field
+    """
+    # Build OR query for all values in this tag type
+    tag_q = reduce(
+        operator.or_,
+        [Q(**{f'{tag_field}__icontains': value}) for value in filter_values]
+    )
+    return recipes.filter(tag_q)
 
 
 # Apply sorting to recipes based on sort_by parameter
@@ -178,12 +181,20 @@ def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_fi
     }
     
     for param_name, filter_values in filter_map.items():
-        for value in filter_values:  
-            url_params.append(f'{param_name}={value}')
+        url_params = add_params_to_url(param_name, filter_values, url_params)  # ← Get return value
     
     url_params.append(f'sort={sort_by}')
     
     return '/all_recipes/?' + '&'.join(url_params)
+
+
+def add_params_to_url(param_name, filter_values, url_params):
+    """
+    add filter parameters to url params list
+    """
+    for value in filter_values:  
+        url_params.append(f'{param_name}={value}')
+    return url_params
 
 
 # Use AI to find recipes based on context that users input
