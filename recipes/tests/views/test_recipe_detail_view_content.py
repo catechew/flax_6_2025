@@ -65,14 +65,13 @@ class RecipeDetailViewTestCase(TestCase):
     
     def test_recipe_detail_from_different_author(self):
         """ Test viewing recipe created by a different user. """
-        try:
-            other_user = User.objects.get(username='@janedoe')
-        except User.DoesNotExist:
-            other_user = User.objects.create_user(
-                username='@janedoe',
-                email='jane@example.com',
-                password='Password123'
-            )
+        other_user, created = User.objects.get_or_create(
+            username='@janedoe',
+            defaults={
+                'email': 'jane@example.com',
+                'password': 'Password123'
+            }
+        )
         other_recipe = Recipe.objects.create(
             author=other_user,
             title="Jane's Recipe",
