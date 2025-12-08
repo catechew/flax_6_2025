@@ -121,19 +121,41 @@ class Recipe(models.Model):
 
     def save(self, *args, **kwargs):
         """ Auto-populate adjectives from tag fields. """
-        all_tags = []
-
-        if self.course_tags:
-            all_tags.extend([tag.strip() for tag in self.course_tags.split(',') if tag.strip()])
-        if self.dietary_tags:
-            all_tags.extend([tag.strip() for tag in self.dietary_tags.split(',') if tag.strip()])
-        if self.cuisine_tags:
-            all_tags.extend([tag.strip() for tag in self.cuisine_tags.split(',') if tag.strip()])
-        if self.other_tags:
-            all_tags.extend([tag.strip() for tag in self.other_tags.split(',') if tag.strip()])
-
-        self.adjectives = ', '.join(all_tags) if all_tags else 'none'
+        self.adjectives = self._build_adjectives_field()
         super().save(*args, **kwargs)
+
+    def _build_adjectives_field(self):
+        """
+        Extract and combine all tags from tag fields into adjectives field.
+        
+        Returns:
+            str: Comma-separated list of all tags, or 'none' if no tags exist.
+        """
+        all_tags = []
+        tag_fields = [
+            self.course_tags,
+            self.dietary_tags,
+            self.cuisine_tags,
+            self.other_tags
+        ]
+        
+        for tag_field in tag_fields:
+            if tag_field:
+                all_tags.extend(self._parse_tags(tag_field))
+        
+        return ', '.join(all_tags) if all_tags else 'none'
+
+    def _parse_tags(self, tag_string):
+        """
+        Parse comma-separated tag string into list of cleaned tags.
+        
+        Args:
+            tag_string (str): Comma-separated tags
+            
+        Returns:
+            list: List of stripped, non-empty tags
+        """
+        return [tag.strip() for tag in tag_string.split(',') if tag.strip()]
 
     class Meta: 
         ordering = ['-publication_date']  # Newest first
