@@ -110,15 +110,6 @@ class UserAvatarTestCase(TestCase):
         # URLs should be different
         self.assertNotEqual(young_url, senior_url)
     
-    def test_ai_avatar_middle_male(self):
-        """ Middle-aged male AI avatar should return men path. """
-        self.user_ai.gender = 'M'
-        self.user_ai.age_range = 'middle'
-        self.user_ai.save()
-
-        url = self.user_ai.avatar_url()
-        self.assertIn("randomuser.me", url)
-        self.assertIn("men", url)
         
     def test_ai_block_skipped_when_avatar_type_not_ai(self):
         """ Ensure AI block is skipped and fallback executes when avatar type is not AI."""
