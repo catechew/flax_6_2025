@@ -15,12 +15,8 @@ def flag_recipe(request, recipe_id):
     if existing_flag:
         messages.warning(request, "You've already flagged this recipe.")
     else:
-        Flag.objects.create(
-            recipe=recipe,
-            user=request.user,
-        )
+        Flag.objects.create(recipe=recipe, user=request.user,)
         messages.success(request, "Recipe has been flagged for review. Thank you for helping keep Recipify safe!")
-
     return redirect('recipe_detail', recipe_id=recipe.id)
 
 
@@ -28,12 +24,10 @@ def flag_recipe(request, recipe_id):
 def unflag_recipe(request, recipe_id):
     """ Allow users to unflag/unreport a recipe. """
     recipe = get_object_or_404(Recipe, id=recipe_id)
-
     deleted_count, _ = Flag.objects.filter(recipe=recipe, user=request.user).delete()
 
     if deleted_count > 0:
         messages.success(request, "Flag removed.")
     else:
         messages.warning(request, "You haven't flagged this recipe.")
-
     return redirect('recipe_detail', recipe_id=recipe.id)
