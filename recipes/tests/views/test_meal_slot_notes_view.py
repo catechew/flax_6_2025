@@ -1,6 +1,3 @@
-"""
-Tests for MealSlotNotesView.
-"""
 from datetime import date
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -8,6 +5,9 @@ from django.urls import reverse
 from recipes.models.meal_plan import MealPlan
 from recipes.helpers.meal_plan_helpers import create_meal_slots
 
+"""
+Tests for MealSlotNotesView.
+"""
 
 User = get_user_model()
 
