@@ -20,15 +20,17 @@ TAG_CATEGORIES = {
 
 def get_tag_action_from_request(request):
     """ Parse POST request to determine tag action. """
-    if request.method != "POST":
+    if request.method != "POST":            
         return None, None, None
 
     results = [check_category_for_tag_action(request, cat) for cat in TAG_CATEGORIES]
-    valid_results = [r for r in results if r != (None, None, None)]
+    valid_results = _get_valid_results(results)
+    
+    return valid_results[0] if valid_results else (None, None, None)
 
-    if not valid_results:
-        return None, None, None
-    return valid_results[0]
+def _get_valid_results(results):
+    """ Filter out None tuples from results. """
+    return [r for r in results if r != (None, None, None)]
 
 def check_category_for_tag_action(request, category):
     """ Check if a specific category has a tag action. """
