@@ -554,21 +554,21 @@ Outcome: System generates a comprehensive shopping list by aggregating all ingre
 
 \vspace{1 mm}
 
-(4) User can check off items as they shop.
+(4) User can check off items as they shop. 
 
 \vspace{1 mm}
 
-(5) User can print the shopping list using the 'Print' button.
+(5) User can print the shopping list using the 'Print' button.  
 
 Outcome: Shopping list is formatted for printing.
 &
-If no meals are added $\rightarrow$ system displays message indicating the shopping list is empty.
+If no meals are added $\rightarrow$ system displays message indicating the shopping list is empty.  
 
 \vspace{1 mm}
 
 
 User can return to meal plan page using 'Back to Meal Plan' button. \\
-
+    
 
 
 
@@ -649,14 +649,14 @@ A user cannot flag their own recipes. \\
 
 %%% Use case 15
 \hline
-Remove or Edit Users and Recipes
+Remove or Edit Users and Recipes 
 &
 Admin logs in with Admin credentials and directs to the URL extension /admin. i.e. https://hamed54.py
-thonanywhere.com/admin/
+thonanywhere.com/admin/ 
 
-Admin can see Flags, Ratings, Recipes, Users and can edit or delete correspinding data.
+Admin can see Flags, Ratings, Recipes, Users and can edit or delete correspinding data.  
 &
-(1) Admin logs in with their credentials and is directed to the Dashboard.
+(1) Admin logs in with their credentials and is directed to the Dashboard.  
 
 \vspace{1 mm}
 
@@ -666,7 +666,7 @@ anywhere.com/admin
 
 \vspace{1 mm}
 
-(3) Admin will be able to see 4 sections: Flags, Ratings, Recipes, Users.
+(3) Admin will be able to see 4 sections: Flags, Ratings, Recipes, Users. 
 
 \vspace{1 mm}
 
@@ -703,41 +703,57 @@ they will be prompted to confirm the deletion of the recipe.
 This change will then be reflected everywhere else in the app. 
 The recipe will be permanently deleted from the database. \\
 
-%%% Use case 10
+
+
+
+
+
+
+%%% Use case 16
 \hline
 Rate Recipes
 &
+
 Logged-in user clicks a star rating and submits the “Save Rating” button.
 
 System displays the user's rating, and the average rating of all users rounded to the nearest star.
 &
+
 (1) User clicks on their desired star rating along the star icons inside the recipe card.
 Outcome: System displays their currently clicked rating, but without submitting yet.
 
 \vspace{1 mm}
 
-(2) User clicks on the 'Save Rating' button next to the icons.
+(2) User clicks on the 'Save Rating' button next to the icons. 
+Outcome: The system shows a success message (“Your rating has been saved.”). The rating is saved, and displayed on the user's rating stars and also contributes towards the average rating. 
+&
 
-Outcome: The rating is saved, and displayed on the user's rating stars and also contributes towards the average rating. 
+A user cannot rate own recipe. The system prevents rating and redirects back with a warning message. \\
 
-\vspace{1 mm}
 
-(3) User can click on the 'Edit' button for any day, select any of the meals to edit.
 
-Outcome: System brings up a choice of all recipes for the user to insert.
 
-\vspace{1 mm}
 
-(4) User can choose any of the recipes in the menu.
 
-Outcome: The meal is added to the relevant part of the meal plan page, where the user is directed to.
+
+%%% Use case 17
+\hline
+Save Recipes
+&
+Logged-in user clicks save button to save a recipe to be quickly accessed later. System displays a list of saved recipes, and whether or not a recipe is saved.
+&
+(1) User clicks on their save button on the recipe page, or the recipe card.
+Outcome: If the user has saved the recipe before, the system then removes it from saved recipes, if not saved before, then it is added to saved recipes with the icon displaying correspondingly.
 
 &
-No alternate workflow. \\
+No alternative workflow. \\
+
+
+
+
 
 
 \hline
-
 \end{longtable}
 
 \end{document}
