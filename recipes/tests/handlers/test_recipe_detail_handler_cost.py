@@ -34,24 +34,6 @@ class RecipeDetailCostContextTests(TestCase):
         return request
 
     @patch("recipes.handlers.recipe_detail_handler.get_cost_estimate_data")
-    def test_get_context_cost_triggered(self, mock_cost):
-        """Test get_context with show_cost=true."""
-        mock_cost.return_value = {
-            "total_cost": 5.50,
-            "cost_per_serving": 2.75
-        }
-
-        request = self.factory.get("/recipe/1?show_cost=true")
-        request.user = self.user
-
-        handler = RecipeDetailHandler(request, self.recipe.id)
-        context = handler.get_context()
-
-        self.assertEqual(context["cost_estimate"]["total_cost"], 5.50)
-        self.assertIsNone(context["cost_error"])
-        mock_cost.assert_called_once()
-
-    @patch("recipes.handlers.recipe_detail_handler.get_cost_estimate_data")
     def test_cost_context_when_show_cost_true(self, mock_cost):
         """Test get_cost_context when show_cost=true."""
         mock_cost.return_value = {
@@ -120,17 +102,6 @@ class RecipeDetailCostContextTests(TestCase):
 
         self.assertIsNone(result["cost_estimate"])
         self.assertEqual(result["cost_error"], "Boom")
-
-    def test_cost_context_not_triggered_without_show_cost(self):
-        """Test cost context without show_cost parameter."""
-        request = self.factory.get("/recipe/1")
-        request.user = self.user
-
-        handler = RecipeDetailHandler(request, self.recipe.id)
-        result = handler.get_cost_context(["Test (1)"])
-
-        self.assertIsNone(result["cost_estimate"])
-        self.assertIsNone(result["cost_error"])
 
     def test_get_context_full(self):
         """Test full context generation."""

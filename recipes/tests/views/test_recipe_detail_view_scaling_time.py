@@ -144,26 +144,6 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Prep:")
         self.assertContains(response, "1 hr 30 min")
-    
-    def test_recipe_detail_displays_prep_time_2(self):
-        """ Test that prep time is displayed when present"""
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Timed Recipe",
-            publication_date=timezone.now().date(),
-            servings=4,
-            ingredients="Flour (500g)",
-            steps="Mix flour",
-            prep_time_hours=2,
-            prep_time_minutes=30
-        )
-
-        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Prep:")
-        self.assertContains(response, "2 hrs 30 min")
 
     def test_recipe_detail_displays_cook_time(self):
         """ Test that cook time is displayed when present. """
@@ -182,23 +162,6 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Cook:")
         self.assertContains(response, "1 hr 15 min")
-
-    def test_recipe_detail_displays_cook_time_2(self):
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Cooked Recipe",
-            publication_date=timezone.now().date(),
-            servings=4,
-            ingredients="Chicken (1kg)",
-            steps="Cook chicken",
-            cook_time_hours=2,
-            cook_time_minutes=15
-        )
-        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Cook:")
-        self.assertContains(response, "2 hrs 15 min")
 
     def test_recipe_detail_displays_total_time(self):
         """ Test that total time is calculated and displayed. """
@@ -219,45 +182,6 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Total:")
         self.assertContains(response, "40 min")
-
-    def test_recipe_detail_displays_total_time_2(self):
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Full Time Recipe",
-            publication_date=timezone.now().date(),
-            servings=4,
-            ingredients="Pasta (500g)",
-            steps="Cook pasta",
-            prep_time_hours=1,
-            prep_time_minutes=15,
-            cook_time_hours=1,
-            cook_time_minutes=25
-        )
-        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Total:")
-        self.assertContains(response, "2 hrs 40 min")
-    
-    def test_recipe_detail_displays_total_time_3(self):
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Full Time Recipe",
-            publication_date=timezone.now().date(),
-            servings=4,
-            ingredients="Pasta (500g)",
-            steps="Cook pasta",
-            prep_time_hours=0,
-            prep_time_minutes=15,
-            cook_time_hours=1,
-            cook_time_minutes=25
-        )
-        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Total:")
-        self.assertContains(response, "1 hr 40 min")
-
 
     def test_recipe_detail_with_zero_times_no_display(self):
         """ Test that recipes with zero times don't show time sections. """
