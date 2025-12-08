@@ -96,15 +96,10 @@ def _has_any_recipes(prev_plan):
     """ Check if previous plan has any recipes. """
     return prev_plan.entries.filter(recipe__isnull=False).exists()
 
-
 def _copy_all_meal_slots(plan, prev_plan):
     """ Copy all slots from previous plan. """
-    meals_copied = 0
-    for slot in plan.entries.all():
-        if _copy_single_meal_slot(slot, prev_plan):
-            meals_copied += 1
-    return meals_copied
-
+    results = [_copy_single_meal_slot(slot, prev_plan) for slot in plan.entries.all()]
+    return sum(results)
 
 def _copy_single_meal_slot(slot, prev_plan):
     """ Copy recipe and notes from matching previous slot. """
