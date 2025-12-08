@@ -71,20 +71,59 @@ def create_meal_slots(plan):
     MealSlot.objects.bulk_create(slots)
 
 def reuse_prev_week(plan):
-    """ Copy all entries from the previous week's meal plan into the current plan. """
-    prev_week = plan.week_start - timedelta(days=7)
-    
-    try:
-        prev_plan = plan.user.meal_plans.get(week_start=prev_week)
-    except plan.user.meal_plans.model.DoesNotExist:
+    """ Copy all entries from the previous week's meal plan. """
+    prev_plan = _get_previous_week_plan(plan)
+    if not prev_plan:
         return False
     
+    if not _has_any_recipes(prev_plan):
+        return False
+    
+    meals_copied = _copy_all_meal_slots(plan, prev_plan)
+    return meals_copied > 0
+
+
+def _get_previous_week_plan(plan):
+    """ Get meal plan from previous week. """
+    prev_week = plan.week_start - timedelta(days=7)
+    try:
+        return plan.user.meal_plans.get(week_start=prev_week)
+    except plan.user.meal_plans.model.DoesNotExist:
+        return None
+
+
+def _has_any_recipes(prev_plan):
+    """ Check if previous plan has any recipes. """
+    return prev_plan.entries.filter(recipe__isnull=False).exists()
+
+
+def _copy_all_meal_slots(plan, prev_plan):
+    """ Copy all slots from previous plan. """
+    meals_copied = 0
     for slot in plan.entries.all():
-        prev_slot = prev_plan.entries.filter(day=slot.day, meal_type=slot.meal_type).first()
-        slot.recipe = prev_slot.recipe if prev_slot else None
-        slot.notes = prev_slot.notes if prev_slot else ''
-        slot.save()
-    return True
+        if _copy_single_meal_slot(slot, prev_plan):
+            meals_copied += 1
+    return meals_copied
+
+
+def _copy_single_meal_slot(slot, prev_plan):
+    """ Copy recipe and notes from matching previous slot. """
+    prev_slot = _find_matching_slot(prev_plan, slot)
+    if not prev_slot:
+        return False
+    
+    slot.recipe = prev_slot.recipe
+    slot.notes = prev_slot.notes
+    slot.save()
+    return prev_slot.recipe is not None
+
+
+def _find_matching_slot(prev_plan, slot):
+    """ Find slot in previous plan matching day and meal type. """
+    return prev_plan.entries.filter(
+        day=slot.day,
+        meal_type=slot.meal_type
+    ).first()
 
 def calculate_meals_logged(plan):
     """
