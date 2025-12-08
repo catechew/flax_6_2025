@@ -125,7 +125,7 @@ def _get_sort_function_map():
     }
 
 def _default_sort(recipes):
-    """Apply default date-based sorting."""
+    """ Apply default date-based sorting. """
     return recipes.order_by("-publication_date")
 
 def _sort_by_total_time(recipes, sort_by):
@@ -141,17 +141,13 @@ def _sort_by_total_time(recipes, sort_by):
 
 def _sort_by_prep_time(recipes, sort_by):
     """ Sort by preparation time. """
-    recipes = recipes.annotate(
-        prep_minutes=F("prep_time_hours") * 60 + F("prep_time_minutes")
-    )
+    recipes = recipes.annotate(prep_minutes=F("prep_time_hours") * 60 + F("prep_time_minutes"))
     order = "prep_minutes" if sort_by == "prep_least" else "-prep_minutes"
     return recipes.order_by(order)
 
 def _sort_by_cook_time(recipes, sort_by):
     """ Sort by cooking time. """
-    recipes = recipes.annotate(
-        cook_minutes=F("cook_time_hours") * 60 + F("cook_time_minutes")
-    )
+    recipes = recipes.annotate(cook_minutes=F("cook_time_hours") * 60 + F("cook_time_minutes"))
     order = "cook_minutes" if sort_by == "cook_least" else "-cook_minutes"
     return recipes.order_by(order)
 
@@ -184,6 +180,7 @@ def build_filter_params_string(filters, sort_by):
         ("cuisine_filters", "cuisine"),
         ("other_filters", "other"),
     ]
+    
     params = []
     for filter_key, param_name in filter_keys:
         params.extend(_build_param_list(filters, filter_key, param_name))
@@ -203,15 +200,11 @@ def get_recipes_context(request, search_query):
     filter_params = get_filter_params(request)
     sort_by = request.GET.get("sort", "date_newest")
 
-    filtered_recipes = _apply_all_filters(
-        base_queryset, search_query, filter_params, sort_by
-    )
+    filtered_recipes = _apply_all_filters(base_queryset, search_query, filter_params, sort_by)
     page_object = paginate(filtered_recipes, request)
     user_count = apply_user_search(User.objects.all(), search_query).count()
 
-    return _build_context_dict(
-        page_object, search_query, filter_params, sort_by, user_count
-    )
+    return _build_context_dict(page_object, search_query, filter_params, sort_by, user_count)
 
 def _apply_all_filters(recipes, search_query, filter_params, sort_by):
     """ Apply search, filters, and sorting to recipes. """
