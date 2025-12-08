@@ -16,7 +16,6 @@ def follow_user(request, user_id):
     else:
         request.user.follow(user_to_follow)
         messages.success(request, f"You are now following {user_to_follow.get_full_name()}.")
-
     return redirect('user_profile', user_id=user_id)
 
 
@@ -30,5 +29,4 @@ def unfollow_user(request, user_id):
     else:
         request.user.unfollow(user_to_unfollow)
         messages.success(request, f"You unfollowed {user_to_unfollow.get_full_name()}.")
-
     return redirect('user_profile', user_id=user_id)

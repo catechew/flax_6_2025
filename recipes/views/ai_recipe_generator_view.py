@@ -12,7 +12,6 @@ load_dotenv()
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 
-
 def generate_recipe_with_ai(user_prompt):
     """
     Generate a complete recipe based on user's description/request.
