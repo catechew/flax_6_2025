@@ -199,38 +199,38 @@ class Recipe(models.Model):
         return (self.cook_time_hours * 60) + self.cook_time_minutes
 
     def format_time(self, hours, minutes):
-        """ Format time as a readable strin. """
+        """ Format time as a readable string. """
         if hours == 0 and minutes == 0:
             return "Not specified"
+        
         parts = []
         if hours > 0:
-            parts.append(f"{hours} hr" if hours == 1 else f"{hours} hrs")
+            parts.append(self._format_hours(hours))
         if minutes > 0:
             parts.append(f"{minutes} min")
         return " ".join(parts)
+    
+    def _format_hours(self, hours):
+        """ Format hours component with singular/plural. """
+        return f"{hours} hr" if hours == 1 else f"{hours} hrs"
 
     def get_prep_time_display(self):
-        return self.format_time(self.prep_time_hours, self.prep_time_minutes)
+        return self.format_time(self.cook_time_hours, self.cook_time_minutes)
 
     def get_cook_time_display(self):
         return self.format_time(self.cook_time_hours, self.cook_time_minutes)
     
     def get_total_time_minutes(self):
-        return self.get_total_cook_time_minutes() + self.get_total_prep_time_minutes()
+         return self.get_total_cook_time_minutes() + self.get_total_prep_time_minutes()
     
     def get_total_time_display(self):
         total_minutes = self.get_total_time_minutes()
+        if total_minutes == 0:
+            return None
+        
         total_hours = total_minutes // 60
         total_mins_remainder = total_minutes % 60
-
-        if total_hours > 0 and total_mins_remainder > 0:
-            return f"{total_hours} hr {total_mins_remainder} min" if total_hours == 1 else f"{total_hours} hrs {total_mins_remainder} min"
-        elif total_hours > 0:
-            return f"{total_hours} hr" if total_hours == 1 else f"{total_hours} hrs"
-        elif total_mins_remainder > 0:
-            return f"{total_mins_remainder} min"
-        else:
-            return None
+        return self.format_time(total_hours, total_mins_remainder)
         
     def get_save_count(self):
         return self.saved_by.count()
