@@ -11,9 +11,8 @@ def recipe_delete(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     
     if not _can_delete_recipe(request.user, recipe):
-        return HttpResponseForbidden(
-            "You don't have permission to delete this recipe."
-        )
+        return HttpResponseForbidden("You don't have permission to delete this recipe.")
+    
     if request.method == "POST":
         recipe.delete()
         return HttpResponseRedirect(reverse('all_recipes'))
