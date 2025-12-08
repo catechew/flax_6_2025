@@ -35,23 +35,31 @@ from recipes.views.recipe_detail_view import recipe_detail
 from recipes.views.recipe_delete_view import recipe_delete
 from recipes.views.my_recipes_view import my_recipes
 
-from recipes.views.follow_view import follow_user, unfollow_user
 from recipes.views.user_profile_view import user_profile
-from recipes.views.followers_list_view import followers_list, following_list
-
-from recipes.views.saved_recipe_view import toggle_save_recipe, saved_recipe_list
-
 from recipes.views.rating_view import rate_recipe
-
 from recipes.views.recipe_form_view import recipe_form_view
 from recipes.views.recipe_tags_view import recipe_tags_view
 from recipes.views.recipe_cancel_view import cancel_recipe_operation
-
 from recipes.views.some_recipes_view import some_recipes
-from recipes.views.ai_recipe_generator_view import ai_recipe_generator_view
 
+from recipes.views.ai_recipe_generator_view import ai_recipe_generator_view
 from recipes.views.ai_recipe_search_view import ai_recipe_search_view
 from recipes.views.save_ai_recipe_view import save_ai_recipe_view
+
+from recipes.views.follow_view import (
+    follow_user, 
+    unfollow_user
+)
+
+from recipes.views.followers_list_view import (
+    followers_list, 
+    following_list
+)
+
+from recipes.views.saved_recipe_view import (
+    toggle_save_recipe, 
+    saved_recipe_list
+)
 
 from recipes.views.meal_plan_view import (
     MealPlanCreateView,
