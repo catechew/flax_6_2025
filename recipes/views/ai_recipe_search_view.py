@@ -96,15 +96,18 @@ def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters,
     }
     
     for tag_field, filter_values in filter_map.items():
-        if filter_values:
-            # build OR query for all values in this tag type
-            tag_q = reduce(
-                operator.or_,
-                [Q(**{f'{tag_field}__icontains': value}) for value in filter_values]
-            )
-            recipes = recipes.filter(tag_q)
+        build_or_query(tag_field, filter_values)
     
     return recipes
+
+def build_or_query(tag_field, filter_values):
+    if filter_values:
+        # build OR query for all values in this tag type
+        tag_q = reduce(
+            operator.or_,
+            [Q(**{f'{tag_field}__icontains': value}) for value in filter_values]
+        )
+        recipes = recipes.filter(tag_q)
 
 
 # Apply sorting to recipes based on sort_by parameter
