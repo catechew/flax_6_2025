@@ -1,12 +1,13 @@
-"""
-Tests of the log in view.
-"""
 from django.contrib import messages
 from django.test import TestCase
 from django.urls import reverse
 from recipes.forms import LogInForm
 from recipes.models import User
 from recipes.tests.test_helpers_base import LogInTester, MenuTesterMixin, reverse_with_next
+
+"""
+Tests of the log in view.
+"""
 
 class LogInViewTestCase(TestCase, LogInTester, MenuTesterMixin):
 

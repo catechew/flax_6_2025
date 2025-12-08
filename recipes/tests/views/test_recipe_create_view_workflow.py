@@ -17,14 +17,26 @@ class RecipeCreateWorkflowTestCase(TestCase):
         self.url = reverse('create_recipe')
         self.form_data = create_test_form_data()
 
+    def _create_recipe(self, title):
+        """Helper to create a single recipe."""
+        self.form_data['title'] = title
+        response = self.client.post(self.url, self.form_data, follow=True)
+        response = self.client.post(
+            reverse('create_recipe_tags'), 
+            {'create_recipe': 'true'}, 
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+
     def test_creating_multiple_recipes(self):
         """test creating multiple recipes one after another"""
         initial_recipe_count = Recipe.objects.count()
-        for i in range(5):
-            self.form_data['title'] = f'Test Recipe {i}'
-            response = self.client.post(self.url, self.form_data, follow=True)
-            response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
-            self.assertEqual(response.status_code, 200)
+        
+        self._create_recipe('Test Recipe 0')
+        self._create_recipe('Test Recipe 1')
+        self._create_recipe('Test Recipe 2')
+        self._create_recipe('Test Recipe 3')
+        self._create_recipe('Test Recipe 4')
         
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 5)
 

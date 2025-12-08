@@ -1,7 +1,3 @@
-"""
-Tests for recipe cancel view.
-"""
-
 from django.test import TestCase, RequestFactory
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.messages.storage.fallback import FallbackStorage
@@ -12,6 +8,9 @@ from recipes.models import Recipe, User
 from recipes.views.recipe_cancel_view import cancel_recipe_operation
 from django.utils import timezone
 
+"""
+Tests for recipe cancel view.
+"""
 
 class RecipeCancelViewTestCase(TestCase):
     """Tests for cancel recipe operation."""

@@ -1,12 +1,12 @@
-"""
-Tests for the star rating feature.
-"""
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 from recipes.models import User, Recipe
 from recipes.models.rating import Rating
 
+"""
+Tests for the star rating feature.
+"""
 
 class RatingViewTestCase(TestCase):
     """
