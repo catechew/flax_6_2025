@@ -154,6 +154,8 @@ User cancels $\rightarrow$  no recipe is saved and user is taken back to main pa
 \hline
 
 
+
+
 %%% Use Case 2
 \hline
 Filter Recipe
@@ -500,8 +502,40 @@ No alternate workflow. \\
 
 
 
-
 %%% Use case 11
+\hline
+Reuse Previous Meal Plans
+&
+Logged-in user is on the Weekly Meal Plan page and clicks the 'Reuse Last Week' button in the top right corner.
+
+System displays a list of the 7 days of the week with options to add recipes for breakfast, lunch and dinner, on a new page.
+&
+(1) User navigates to the Weekly Meal Plan page.
+
+\vspace{1 mm}
+
+(2) User clicks the 'Reuse Last Week' button.
+
+Outcome: System copies all meals from the previous week into the current week's meal plan slots.
+
+\vspace{1 mm}
+
+(3) User can edit or modify any of the copied meals.
+
+Outcome: Changes are saved to the current week only. Previous week remains unchanged.
+
+\vspace{1 mm}
+
+(4)Progress bar updates to show percentage of meals logged.
+
+&
+If no previous week exists $\rightarrow$ system displays message indicating no previous meal plan is available. \\
+
+
+
+
+
+%%% Use case 13
 \hline
 Generate Recipe with AI
 &
@@ -545,7 +579,7 @@ Outcome: The page reloads with a new, generated recipe based on the prompt submi
 
 
 
-%%% Use case 12
+%%% Use case 14
 \hline
 Reporting Inappropriate Recipes
 &
@@ -575,7 +609,7 @@ A user cannot flag their own recipes. \\
 
 
 
-%%% Use case 12
+%%% Use case 15
 \hline
 Remove or Edit Users and Recipes
 &
