@@ -528,6 +528,57 @@ Outcome: The recipe gets a Flag count of +1. An admin will be able to see flagge
 &
 A user cannot flag their own recipes. \\
 
+%%% Use case 12
+\hline
+Remove or Edit Users and Recipes
+&
+Admin logs in with Admin credentials and directs to the URL extension /admin. i.e. https://hamed54.py
+thonanywhere.com/admin/
+
+Admin can see Flags, Ratings, Recipes, Users and can edit or delete correspinding data.
+&
+(1) Admin logs in with their credentials and is directed to the Dashboard.
+
+\vspace{1 mm}
+
+(2) Admin replaces /dashboard with /admin to the link, directing him to the admin panel. i.e. https://hamed54.pythonan
+ywhere.com/dashboard -> https://hamed54.python
+anywhere.com/admin
+
+\vspace{1 mm}
+
+(3) Admin will be able to see 4 sections: Flags, Ratings, Recipes, Users.
+
+\vspace{1 mm}
+
+(4) Flags will show flagged recipes, including Recipe title, Recipe author, User (who flagged the recipe), Recipe rating, Flag count for recipe.
+
+\vspace{1 mm}
+
+(5) Ratings will show all rated recipes, including Recipe title, Recipe author, User (who rated), Recipe rating, Stars.
+
+\vspace{1 mm}
+
+(6) Recipes will show all information regarding a recipe. Clicking the name of the recipe will show all the meta tags associated, including the publication date, the steps, the image, tags, saved by, etc.
+
+\vspace{1 mm}
+
+(7) Users will show all information related to the user, including their name, email, age, gender, profile picture, followings.
+
+\vspace{1 mm}
+
+(8) By clicking on any of these fields, an admin has the ability to change whichever field they wanted to, and either "Save" changes, "Save and add another" change, "Save and continue editing", or "Delete", which will permanently delete the flag, rating, recipe or user.
+
+&
+- It's possible to go directly to
+https://hamed54.python
+anywhere.com/admin/
+(or localhost/admin - depending on what version is tested) - to access the admin panel, where the user will be prompted to enter the admin log-in credentials.
+
+\vspace{1 mm}
+
+- An admin can directly delete recipes from the normal user interface. When clicking on "View" a recipe, by scrolling down all the way to the bottom, a button "Delete this recipe" can be triggered. When clicked by an admin, they will be prompted to confirm the deletion of the recipe. This change will then be reflected everywhere else in the app. The recipe will be permanently deleted from the database.
+
 \hline
 
 \end{longtable}
