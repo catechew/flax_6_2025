@@ -1,11 +1,12 @@
-"""
-Tests for the recipe detail view.
-"""
 from django.test import TestCase
 from django.urls import reverse
 from recipes.models import Recipe, User
 from django.utils import timezone 
 from unittest.mock import patch
+
+"""
+Tests for the recipe detail view.
+"""
 
 class RecipeDetailViewTestCase(TestCase):
 
