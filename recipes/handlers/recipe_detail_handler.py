@@ -69,14 +69,12 @@ class RecipeDetailHandler:
 
     def get_context(self):
         """ Create full context for recipe.html. """
-        context = {
-            'recipe': self.recipe,
-            'steps': self.recipe.get_step_list(),
-            'is_owner': self.is_owner,
-        }
+        context = {'recipe': self.recipe, 'steps': self.recipe.get_step_list(), 'is_owner': self.is_owner,}
         context.update(get_recipe_tag_display_context(self.recipe))
         context.update(get_recipe_time_display_context(self.recipe))
+        
         scaling_context = get_scaled_ingredients_context(self.recipe, self.desired_servings)
+        
         context.update(scaling_context)
         context.update(self.get_cost_context(scaling_context['scaled_ingredients']))
         context.update(self.get_user_context())
