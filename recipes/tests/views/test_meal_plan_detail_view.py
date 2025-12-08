@@ -82,16 +82,25 @@ class MealPlanReuseLastWeekViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         
     def test_reuse_last_week_with_previous_plan(self):
+        from recipes.models.recipe import Recipe
+        
         # Create previous week's plan
-        prev_plan = MealPlan.objects.create(
-            user=self.user,
-            week_start=date(2025, 11, 17),
-        )
+        prev_plan = MealPlan.objects.create(user=self.user, week_start=date(2025, 11, 17),)
 
         create_meal_slots(prev_plan)
 
-        # Add some data to previous plan
+        # Create a recipe to add to previous week
+        recipe = Recipe.objects.create(
+            title="Test Recipe",
+            author=self.user,
+            publication_date=date(2025, 11, 17),
+            ingredients="Test ingredients",
+            steps="Test steps"
+        )
+
+        # Add recipe and notes to previous plan
         slot = prev_plan.entries.first()
+        slot.recipe = recipe 
         slot.notes = "Copied note"
         slot.save()
 
@@ -99,9 +108,10 @@ class MealPlanReuseLastWeekViewTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-        # Confirm notes were copied
+        # Confirm both recipe and notes were copied
         new_slot = self.plan.entries.first()
-        self.assertEqual(new_slot.notes, "Copied note")
+        self.assertEqual(new_slot.recipe, recipe)  # Check recipe copied
+        self.assertEqual(new_slot.notes, "Copied note")  # Check notes copied
     
     def test_reuse_last_week_shows_warning_when_none_available(self):
         # Ensure no previous plan exists

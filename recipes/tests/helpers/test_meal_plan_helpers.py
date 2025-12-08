@@ -126,21 +126,26 @@ class ReusePrevWeekHelperTests(TestCase):
         create_meal_slots(self.current_plan)
 
     def test_copies_meals_from_previous_week(self):
-        previous_slot = self.previous_plan.entries.filter(
-            day="mon",
-            meal_type="breakfast",
-        ).first()
+        # Create a recipe to add to previous week
+        recipe = Recipe.objects.create(
+            title="Breakfast Recipe",
+            author=self.user,
+            publication_date=date(2025, 11, 17),
+            ingredients="Eggs\nBread",
+            steps="Cook eggs",
+        )
+        
+        previous_slot = self.previous_plan.entries.filter(day="mon", meal_type="breakfast",).first()
+        previous_slot.recipe = recipe  
         previous_slot.notes = "Test notes"
         previous_slot.save()
 
         result = reuse_prev_week(self.current_plan)
         self.assertTrue(result)
 
-        new_slot = self.current_plan.entries.filter(
-            day="mon",
-            meal_type="breakfast",
-        ).first()
-        self.assertEqual(new_slot.notes, "Test notes")
+        new_slot = self.current_plan.entries.filter(day="mon", meal_type="breakfast",).first()
+        self.assertEqual(new_slot.recipe, recipe)  # Check recipe copied
+        self.assertEqual(new_slot.notes, "Test notes")  # Check notes copied
 
     def test_returns_false_when_no_previous_plan_exists(self):
         new_plan = MealPlan.objects.create(
@@ -148,3 +153,38 @@ class ReusePrevWeekHelperTests(TestCase):
             week_start=date(2026, 1, 1),  
         )
         self.assertFalse(reuse_prev_week(new_plan))
+    
+    def test_returns_false_when_previous_week_has_no_recipes(self):
+        """ Test that reuse returns False when previous week is empty. """
+        # Previous week exists but has no recipes (all slots are None)
+        result = reuse_prev_week(self.current_plan)
+        self.assertFalse(result)
+        
+    def test_handles_missing_slots_in_previous_week(self):
+        """ Test copying when previous week is missing some slots. """
+        from recipes.models.recipe import Recipe
+        
+        # Create a recipe
+        recipe = Recipe.objects.create(
+            title="Test Recipe",
+            author=self.user,
+            publication_date=date(2025, 11, 17),
+            ingredients="Ingredients",
+            steps="Steps"
+        )
+        
+        # Add recipe to one slot in previous week
+        prev_slot = self.previous_plan.entries.filter(day='mon', meal_type='breakfast').first()
+        prev_slot.recipe = recipe
+        prev_slot.save()
+        
+        # Delete another slot from previous week to create mismatch
+        self.previous_plan.entries.filter(day='tue', meal_type='lunch').delete()
+        
+        # Reuse should still work (copies what exists)
+        result = reuse_prev_week(self.current_plan)
+        self.assertTrue(result)
+        
+        # Monday breakfast should be copied
+        current_mon = self.current_plan.entries.filter(day='mon', meal_type='breakfast').first()
+        self.assertEqual(current_mon.recipe, recipe)
