@@ -29,7 +29,4 @@ def saved_recipe_list(request):
     # Access the recipes via the related_name we defined in the model
     saved_recipes = current_user.saved_recipes.all().order_by('-publication_date')
 
-    return render(request, 'recipes/saved_recipes.html', {
-        'user': current_user,
-        'recipes': saved_recipes,
-    })
+    return render(request, 'recipes/saved_recipes.html', {'user': current_user,'recipes': saved_recipes,})

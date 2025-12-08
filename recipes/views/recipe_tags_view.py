@@ -7,7 +7,7 @@ def recipe_tags_view(request, recipe_id=None):
     """
     Step 2: Tags
     If recipe_id is None: create
-    else: update
+    Else: update
     """
 
     handler = RecipeFormHandler(request, recipe_id)
