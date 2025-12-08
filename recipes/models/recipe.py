@@ -131,7 +131,6 @@ class Recipe(models.Model):
         Returns:
             str: Comma-separated list of all tags, or 'none' if no tags exist.
         """
-        all_tags = []
         tag_fields = [
             self.course_tags,
             self.dietary_tags,
@@ -139,9 +138,9 @@ class Recipe(models.Model):
             self.other_tags
         ]
         
+        all_tags = []
         for tag_field in tag_fields:
-            if tag_field:
-                all_tags.extend(self._parse_tags(tag_field))
+            all_tags.extend(self._parse_tags(tag_field))
         
         return ', '.join(all_tags) if all_tags else 'none'
 
