@@ -20,11 +20,11 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "users/profile.html"
 
     def get_object(self):
-        """Return the authenticated user."""
+        """ Return the authenticated user. """
         return self.request.user
 
     def form_valid(self, form):
-        """Handle successful form submission."""
+        """ Handle successful form submission. """
         response = super().form_valid(form)
 
         messages.add_message(
@@ -35,5 +35,5 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         return response
 
     def get_success_url(self):
-        """Redirect user after successful profile update."""
+        """ Redirect user after successful profile update. """
         return reverse(settings.REDIRECT_URL_WHEN_LOGGED_IN)
