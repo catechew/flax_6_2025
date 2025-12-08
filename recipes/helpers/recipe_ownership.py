@@ -8,5 +8,7 @@ def prepare_recipe_author(recipe, user, original_recipe, is_owner):
         recipe.pk = None
         recipe.id = None
         recipe.author = user
-    elif not original_recipe:
+        return 
+
+    if not original_recipe:
         recipe.author = user
