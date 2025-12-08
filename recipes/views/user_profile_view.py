@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from recipes.models import User, Recipe, Rating
 
+
 @login_required
 def user_profile(request, user_id):
     """ Display any user's profile (including your own). """
@@ -9,9 +10,7 @@ def user_profile(request, user_id):
     user_recipes = _get_user_recipes(request.user, profile_user)
     user_ratings = _get_user_ratings(profile_user)
     
-    context = _build_profile_context(
-        request.user, profile_user, user_recipes, user_ratings
-    )
+    context = _build_profile_context(request.user, profile_user, user_recipes, user_ratings)
     return render(request, 'users/user_profile.html', context)
 
 def _get_user_recipes(viewer, profile_user):
