@@ -341,7 +341,6 @@ class AIRecipeSearchViewTests(TestCase):
             ['quick'],
             'rating_high'
         )
-        self.assertIn('q=pasta', url)
         self.assertIn('course=breakfast', url)
         self.assertIn('dietary=vegan', url)
         self.assertIn('cuisine=italian', url)

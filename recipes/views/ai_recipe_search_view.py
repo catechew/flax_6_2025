@@ -181,7 +181,7 @@ def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_fi
     """
     build url for view all results button with all search parameters
     """
-    url_params = [f'q={search_query}']
+    url_params = []
     
     filter_map = {
         'course': course_filters,
@@ -191,7 +191,7 @@ def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_fi
     }
     
     for param_name, filter_values in filter_map.items():
-        url_params = add_params_to_url(param_name, filter_values, url_params)  # ← Get return value
+        url_params = add_params_to_url(param_name, filter_values, url_params)
     
     url_params.append(f'sort={sort_by}')
     
