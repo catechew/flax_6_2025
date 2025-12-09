@@ -5,6 +5,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from PIL import Image
 from io import BytesIO
 import uuid
+import json
+from unittest.mock import MagicMock
 
 """
 Utility functions for creating test data in tests
@@ -171,7 +173,54 @@ def get_default_user():
     return User.objects.get(username='@johndoe')
 
 
-    
+class AISearchTestMixin:
+    """Mixin for AI search view tests."""
+
+    def create_mock_search_params(self, query='', dietary=None, cuisine=None, other=None, sort='date_newest'):
+        """Create mock search params response."""
+        mock = MagicMock()
+        mock.choices = [MagicMock()]
+        mock.choices[0].message.content = json.dumps({
+            "search_query": query,
+            "dietary_filters": dietary or [],
+            "cuisine_filters": cuisine or [],
+            "other_filters": other or [],
+            "sort_by": sort
+        })
+        return mock
+
+    def create_mock_ranking(self, recipe_id, title='Recipe', reason='Match'):
+        """Create mock ranking response."""
+        mock = MagicMock()
+        mock.choices = [MagicMock()]
+        mock.choices[0].message.content = json.dumps({
+            "top_picks": [{"recipe_id": recipe_id, "title": title, "reason": reason}],
+            "search_explanation": "Found recipes"
+        })
+        return mock
 
 
+class AIRecipeTestMixin:
+    """Mixin for AI recipe generator tests."""
 
+    def create_mock_recipe_data(self, title='Test Recipe'):
+        """Create mock AI recipe data."""
+        return {
+            "title": title,
+            "description": "Test description",
+            "prep_time": "10 minutes",
+            "cook_time": "15 minutes",
+            "servings": 2,
+            "difficulty": "Easy",
+            "ingredients": ["200g pasta", "2 cloves garlic"],
+            "steps": ["Boil water", "Cook pasta"],
+            "tips": ["Fresh ingredients"],
+            "dietary_info": ["vegetarian"]
+        }
+
+    def create_mock_openai_response(self, recipe_data):
+        """Create mock OpenAI API response."""
+        mock = MagicMock()
+        mock.choices = [MagicMock()]
+        mock.choices[0].message.content = json.dumps(recipe_data)
+        return mock
