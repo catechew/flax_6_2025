@@ -82,15 +82,30 @@ class MealPlanReuseLastWeekViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         
     def test_reuse_last_week_with_previous_plan(self):
-        from recipes.models.recipe import Recipe
-        
-        # Create previous week's plan
-        prev_plan = MealPlan.objects.create(user=self.user, week_start=date(2025, 11, 17),)
+        prev_plan = self._create_previous_plan()
+        recipe = self._create_test_recipe()
+        self._setup_slot_with_recipe(prev_plan, recipe, "Copied note")
 
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        new_slot = self.plan.entries.first()
+        self.assertEqual(new_slot.recipe, recipe)
+        self.assertEqual(new_slot.notes, "Copied note")
+
+    def _create_previous_plan(self):
+        """ Create previous week's meal plan with slots. """
+        prev_plan = MealPlan.objects.create(
+            user=self.user,
+            week_start=date(2025, 11, 17)
+        )
         create_meal_slots(prev_plan)
+        return prev_plan
 
-        # Create a recipe to add to previous week
-        recipe = Recipe.objects.create(
+    def _create_test_recipe(self):
+        """ Create a test recipe. """
+        from recipes.models.recipe import Recipe
+        return Recipe.objects.create(
             title="Test Recipe",
             author=self.user,
             publication_date=date(2025, 11, 17),
@@ -98,20 +113,12 @@ class MealPlanReuseLastWeekViewTests(TestCase):
             steps="Test steps"
         )
 
-        # Add recipe and notes to previous plan
-        slot = prev_plan.entries.first()
-        slot.recipe = recipe 
-        slot.notes = "Copied note"
+    def _setup_slot_with_recipe(self, plan, recipe, notes):
+        """ Add recipe and notes to first slot in plan. """
+        slot = plan.entries.first()
+        slot.recipe = recipe
+        slot.notes = notes
         slot.save()
-
-        response = self.client.post(self.url)
-
-        self.assertEqual(response.status_code, 302)
-
-        # Confirm both recipe and notes were copied
-        new_slot = self.plan.entries.first()
-        self.assertEqual(new_slot.recipe, recipe)  # Check recipe copied
-        self.assertEqual(new_slot.notes, "Copied note")  # Check notes copied
     
     def test_reuse_last_week_shows_warning_when_none_available(self):
         # Ensure no previous plan exists
