@@ -4,6 +4,7 @@ import re
 Helper functions for parsing AI-generated recipe data.
 """
 
+
 def parse_time_string(time_str):
     """ Parse '15 minutes' or '1 hour 30 minutes' to total minutes. """
     if not time_str:
@@ -13,6 +14,7 @@ def parse_time_string(time_str):
     hours = extract_hours(time_str)
     minutes = extract_minutes(time_str)
     return (hours * 60) + minutes
+
 
 def extract_hours(time_str):
     """ Extract hours from time string. """
@@ -25,6 +27,7 @@ def extract_hours(time_str):
     except (ValueError, IndexError):
         return 0
 
+
 def extract_minutes(time_str):
     """ Extract minutes from time string. """
     if 'min' not in time_str:
@@ -33,9 +36,11 @@ def extract_minutes(time_str):
     parts = time_str.split('min')[0].strip().split()
     return find_last_digit(parts)
 
+
 def find_last_digit(parts):
     """ Find last digit in list of string parts. """
     return next((int(part) for part in reversed(parts) if part.isdigit()), 0)
+
 
 def format_ingredients_for_form(ingredients_list):
     """ Convert AI format to app format: '400g spaghetti' → 'Spaghetti (400g)'. """
@@ -55,10 +60,12 @@ def format_single_ingredient(ingredient):
         return format_matched_ingredient(match)
     return f"{ingredient} (as needed)"
 
+
 def try_parse_ingredient(ingredient):
     """Try to parse ingredient with regex."""
     pattern = r'^([\d./]+\s*(?:g|kg|ml|l|tsp|tbsp|cup|cups|oz|lb|cloves?|pieces?)?)\s+(.+)$'
     return re.match(pattern, ingredient, re.IGNORECASE)
+
 
 def format_matched_ingredient(match):
     """ Format parsed ingredient match. """
@@ -67,17 +74,24 @@ def format_matched_ingredient(match):
     name = capitalise_first(name)
     return f"{name} ({quantity})"
 
+
 def capitalise_first(text):
     """ Capitalise first letter. """
     return text[0].upper() + text[1:] if text else text
 
-def parse_ai_recipe_data(ai_data):
-    """ Parse AI data into form-ready format. """
+
+def _parse_time_fields(ai_data):
+    """Parse time fields from AI data."""
     prep_minutes = parse_time_string(ai_data.get('prep_time', ''))
     cook_minutes = parse_time_string(ai_data.get('cook_time', ''))
-
     prep_hours, prep_mins = divmod(prep_minutes, 60)
     cook_hours, cook_mins = divmod(cook_minutes, 60)
+    return prep_hours, prep_mins, cook_hours, cook_mins
+
+
+def parse_ai_recipe_data(ai_data):
+    """Parse AI data into form-ready format."""
+    prep_hours, prep_mins, cook_hours, cook_mins = _parse_time_fields(ai_data)
 
     return {
         'title': ai_data.get('title', ''),
@@ -92,6 +106,7 @@ def parse_ai_recipe_data(ai_data):
         'ai_description': ai_data.get('description', ''),
     }
 
+
 def get_dietary_tag_mapping():
     """ Get AI dietary tag to system tag mapping. """
     return {
@@ -102,6 +117,7 @@ def get_dietary_tag_mapping():
         'halal': 'Halal',
         'kosher': 'Kosher',
     }
+
 
 def map_ai_dietary_tags(ai_dietary_list):
     """ Map AI dietary tags to system tags. """
