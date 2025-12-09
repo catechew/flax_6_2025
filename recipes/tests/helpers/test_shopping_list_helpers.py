@@ -1,7 +1,3 @@
-"""
-Tests for shopping list helper functions.
-"""
-
 from collections import defaultdict
 from datetime import date
 
@@ -17,6 +13,10 @@ from recipes.helpers.shopping_list_helpers import (
 )
 from recipes.models.meal_plan import MealPlan, MealSlot
 from recipes.models.recipe import Recipe
+
+"""
+Tests for shopping list helper functions.
+"""
 
 User = get_user_model()
 

@@ -1,13 +1,13 @@
-"""
-Tests for the follow/unfollow functionality.
-"""
 from django.test import TestCase
 from django.urls import reverse
 from recipes.models import User
 
+"""
+Tests for the follow/unfollow functionality.
+"""
+
 
 class FollowViewTestCase(TestCase):
-    """ Tests for follow and unfollow views. """
 
     fixtures = ['recipes/tests/fixtures/default_user.json']
 

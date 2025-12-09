@@ -58,19 +58,15 @@ class RecipeCreateImagesTestCase(TestCase):
     def test_temp_image_deleted_after_creation(self):
         """test that temporary image is deleted after recipe creation"""
         uploaded_file = create_test_image()
-
         data = self.form_data.copy()
         data['image'] = uploaded_file
-
         self.client.post(self.url, data, format='multipart', follow=True)
-
         session = self.client.session
         temp_path = session.get('recipe_form_data', {}).get('temp_image_path')
-
         self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
-
-        if temp_path:
-            self.assertFalse(default_storage.exists(temp_path))
+        
+        self.assertIsNotNone(temp_path)
+        self.assertFalse(default_storage.exists(temp_path))
 
     def test_cancel_deletes_temp_image(self):
         """test that cancelling deletes temporary image"""

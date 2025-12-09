@@ -136,7 +136,7 @@
 .meal-label {
   color: var(--grey-colour);
   margin-bottom: 6px;
-  display: block; 
+  display: block;
 }
 
 .slot-line {
@@ -173,6 +173,7 @@
   height: 64px;
   border-radius: 50%;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   background: conic-gradient(var(--colour-3) var(--progress, 0%),
@@ -266,6 +267,7 @@
 }
 
 @media print {
+
   .btn,
   nav {
     display: none !important;

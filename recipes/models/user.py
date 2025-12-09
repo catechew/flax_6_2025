@@ -1,12 +1,11 @@
-"""
-Model used for user authentication, and team member related information.
-"""
-
-
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from libgravatar import Gravatar
+
+"""
+Model used for user authentication, and team member related information.
+"""
 
 class User(AbstractUser):
     username = models.CharField(
@@ -83,51 +82,50 @@ class User(AbstractUser):
         blank=True
     )
 
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"    # Shows every user's first and last name in admin panel
-
-
     class Meta:
-        """
-        Model options.
-        """
+        """ Model options. """
         ordering = ['last_name', 'first_name']
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
     def avatar_url(self, size=120):
         """ Return avatar URL based on user preference. """
-
-        # 1. If user uploads custom picture, use it (highest priority)
         if self.profile_picture:
             return self.profile_picture.url
 
-        # 2. User chooses initials
-        if self.avatar_type == 'initials':
-            name = f"{self.first_name} {self.last_name}".strip()
-            return f"https://ui-avatars.com/api/?name={name}&size={size}&background=f15034&color=fff&bold=true&rounded=true"
-
-        # 3. User chooses random avatar
         if self.avatar_type == 'random' and self.avatar_seed:
-            return f"https://api.dicebear.com/7.x/avataaars/svg?seed={self.avatar_seed}&size={size}"
+            return self._get_random_avatar_url(size)
 
-        # 4. User has AI type (seeded users)
         if self.avatar_type == 'ai':
-            import hashlib
-            seed = int(hashlib.md5(self.username.encode()).hexdigest()[:8], 16)
+            return self._get_ai_avatar_url(size)
 
-            gender_path = 'men' if self.gender == 'M' else 'women'
+        return self._get_initials_avatar_url(size)
 
-            if self.age_range == 'young':
-                photo_num = (seed % 33) + 1
-            elif self.age_range == 'middle':
-                photo_num = (seed % 33) + 34
-            else:  # senior
-                photo_num = (seed % 33) + 67
-
-            return f"https://randomuser.me/api/portraits/{gender_path}/{photo_num}.jpg"
-
-        # 5. Fallback: initials
+    def _get_initials_avatar_url(self, size):
+        """ Generate initials-based avatar URL. """
         name = f"{self.first_name} {self.last_name}".strip()
         return f"https://ui-avatars.com/api/?name={name}&size={size}&background=f15034&color=fff&bold=true&rounded=true"
+
+    def _get_random_avatar_url(self, size):
+        """ Generate random avatar URL. """
+        return f"https://api.dicebear.com/7.x/avataaars/svg?seed={self.avatar_seed}&size={size}"
+
+    def _get_ai_avatar_url(self, size):
+        """ Generate AI avatar URL based on age and gender. """
+        import hashlib
+        seed = int(hashlib.md5(self.username.encode()).hexdigest()[:8], 16)
+        gender_path = 'men' if self.gender == 'M' else 'women'
+        photo_num = self._get_photo_number_for_age(seed)
+        return f"https://randomuser.me/api/portraits/{gender_path}/{photo_num}.jpg"
+
+    def _get_photo_number_for_age(self, seed):
+        """ Calculate photo number based on age range. """
+        if self.age_range == 'young':
+            return (seed % 33) + 1
+        if self.age_range == 'middle':
+            return (seed % 33) + 34
+        return (seed % 33) + 67
 
     def mini_gravatar(self):
         """ Return a URL to a miniature version of the user's gravatar. """
@@ -136,7 +134,7 @@ class User(AbstractUser):
     def follow(self, user):
         if user != self:
             self.following.add(user)
-            
+
     def unfollow(self, user):
         self.following.remove(user)
 

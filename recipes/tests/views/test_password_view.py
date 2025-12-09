@@ -1,6 +1,3 @@
-"""
-Tests for the password view.
-"""
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
@@ -8,6 +5,10 @@ from django.urls import reverse
 from recipes.forms import PasswordForm
 from recipes.models import User
 from recipes.tests.test_helpers_base import reverse_with_next
+
+"""
+Tests for the password view.
+"""
 
 class PasswordViewTest(TestCase):
 

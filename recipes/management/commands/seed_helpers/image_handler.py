@@ -36,17 +36,21 @@ DISH_TYPE_MAPPING = {
 }
 
 class ImageHandler:
-    """ Handles recipe image loading. """
+    """ 
+    Handles recipe image loading. 
+    """
 
     @staticmethod
     def get_dish_type(title):
         """ Map recipe title to dish type. """
         title_lower = title.lower()
-        for dish_type, keywords in DISH_TYPE_MAPPING.items():
-            for keyword in keywords:
-                if keyword in title_lower:
-                    return dish_type
-        return 'default'
+        
+        matches = [
+            dish_type 
+            for dish_type, keywords in DISH_TYPE_MAPPING.items()
+            if any(keyword in title_lower for keyword in keywords)
+        ]
+        return matches[0] if matches else 'default'
 
     @staticmethod
     def load_image(title):
@@ -74,7 +78,6 @@ class ImageHandler:
 
         if os.path.exists(full_path):
             return ImageHandler._create_image_content(full_path, dish_type)
-
         return ImageHandler._load_default_image()
 
     @staticmethod

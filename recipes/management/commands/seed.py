@@ -1,12 +1,12 @@
-""" 
-Management command to seed the database with demo data. 
-"""
-
 from faker import Faker
 from random import choice
 from django.core.management.base import BaseCommand
 from recipes.models import User, Recipe
 from .seed_helpers import RecipeDataGenerator, TagGenerator, ImageHandler
+
+""" 
+Management command to seed the database with demo data. 
+"""
 
 USER_FIXTURES = [
     {
@@ -28,6 +28,7 @@ USER_FIXTURES = [
         'last_name': 'Johnson'
     }
 ]
+
 
 class Command(BaseCommand):
     """ 
@@ -57,21 +58,19 @@ class Command(BaseCommand):
     def _create_fixture_users(self):
         """ Create predefined fixture users. """
         for user_data in USER_FIXTURES:
-            if user_data['username'] == '@johndoe':
-                self._create_admin_user(user_data)
-            else:
-                self._try_create_user(user_data)
+            self._create_fixture_user(user_data)
+
+    def _create_fixture_user(self, user_data):
+        """ Create a single fixture user. """
+        if user_data['username'] == '@johndoe': 
+            self._create_admin_user(user_data)
+        else:
+            self._try_create_user(user_data)
 
     def _create_admin_user(self, user_data):
         """ Create admin superuser. """
         try:
-            user = User.objects.create_superuser(
-                username=user_data['username'],
-                email=user_data['email'],
-                password=self.DEFAULT_PASSWORD,
-                first_name=user_data['first_name'],
-                last_name=user_data['last_name']
-            )
+            user = User.objects.create_superuser(**self._get_user_creation_params(user_data))
             user.is_staff = True
             user.save()
         except Exception:
@@ -100,15 +99,19 @@ class Command(BaseCommand):
     def _try_create_user(self, user_data):
         """ Attempt user creation, ignore failures. """
         try:
-            User.objects.create_user(
-                username=user_data['username'],
-                email=user_data['email'],
-                password=self.DEFAULT_PASSWORD,
-                first_name=user_data['first_name'],
-                last_name=user_data['last_name']
-            )
+            User.objects.create_user(**self._get_user_creation_params(user_data))
         except Exception:
             pass
+
+    def _get_user_creation_params(self, user_data):
+        """Extract common parameters for user creation."""
+        return {
+            'username': user_data['username'],
+            'email': user_data['email'],
+            'password': self.DEFAULT_PASSWORD,
+            'first_name': user_data['first_name'],
+            'last_name': user_data['last_name']
+        }
 
     def _seed_recipes(self):
         """ Generate recipes up to target count. """
@@ -131,24 +134,29 @@ class Command(BaseCommand):
         image, filename = ImageHandler.load_image(title)
 
         data = RecipeDataGenerator.build_recipe_payload(title, prep, cook)
-        data.update({
-            "author": choice(users),
-            "course_tags": TagGenerator.generate_tags("course"),
-            "cuisine_tags": TagGenerator.generate_tags("cuisine"),
-            "dietary_tags": TagGenerator.generate_tags("dietary"),
-            "other_tags": TagGenerator.generate_tags("other"),
-        })
-
+        data["author"] = choice(users)
+        _add_tags_to_recipe_data(data)
         self._try_create_recipe(data, image, filename)
 
     def _try_create_recipe(self, data, image, filename):
         """ Attempt recipe creation, ignore failures. """
-        try:
+        try:  
             recipe = Recipe.objects.create(**data)
-            if image and filename:
-                recipe.image.save(filename, image, save=True)
+            self._save_recipe_image(recipe, image, filename)
         except Exception:
             pass
+
+    def _save_recipe_image(self, recipe, image, filename):
+        """ Save image to recipe if provided. """
+        if image and filename: 
+            recipe.image.save(filename, image, save=True)
+
+def _add_tags_to_recipe_data(data):
+    """ Add all tag categories to recipe data. """
+    data["course_tags"] = TagGenerator.generate_tags("course")
+    data["cuisine_tags"] = TagGenerator.generate_tags("cuisine")
+    data["dietary_tags"] = TagGenerator.generate_tags("dietary")
+    data["other_tags"] = TagGenerator.generate_tags("other")
 
 def _create_username(first_name, last_name):
     """ Create username from first and last names. """

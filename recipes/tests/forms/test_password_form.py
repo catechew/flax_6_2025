@@ -1,11 +1,11 @@
-"""
-Tests for the PasswordForm
-"""
-
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
 from recipes.models import User
 from recipes.forms import PasswordForm
+
+"""
+Tests for the PasswordForm
+"""
 
 class PasswordFormTestCase(TestCase):
 

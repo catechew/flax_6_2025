@@ -1,3 +1,5 @@
+from functools import reduce
+import operator
 import os
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -83,34 +85,31 @@ def apply_search_query(recipes, search_query):
 
 
 def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters):
-    """
-    Apply tag-based filters to recipes.
-    """
+    """Apply tag-based filters to recipes."""
     if course_filters:
-        course_q = Q()
-        for course in course_filters:
-            course_q |= Q(course_tags__icontains=course)
-        recipes = recipes.filter(course_q)
+        recipes = build_or_query(recipes, 'course_tags', course_filters)
 
     if dietary_filters:
-        dietary_q = Q()
-        for dietary in dietary_filters:
-            dietary_q |= Q(dietary_tags__icontains=dietary)
-        recipes = recipes.filter(dietary_q)
+        recipes = build_or_query(recipes, 'dietary_tags', dietary_filters)
 
     if cuisine_filters:
-        cuisine_q = Q()
-        for cuisine in cuisine_filters:
-            cuisine_q |= Q(cuisine_tags__icontains=cuisine)
-        recipes = recipes.filter(cuisine_q)
+        recipes = build_or_query(recipes, 'cuisine_tags', cuisine_filters)
 
     if other_filters:
-        other_q = Q()
-        for other in other_filters:
-            other_q |= Q(other_tags__icontains=other)
-        recipes = recipes.filter(other_q)
+        recipes = build_or_query(recipes, 'other_tags', other_filters)
 
     return recipes
+
+def build_or_query(recipes, tag_field, filter_values):
+    """
+    build and apply OR query for a tag field
+    """
+    # Build OR query for all values in this tag type
+    tag_q = reduce(
+        operator.or_,
+        [Q(**{f'{tag_field}__icontains': value}) for value in filter_values]
+    )
+    return recipes.filter(tag_q)
 
 
 # Apply sorting to recipes based on sort_by parameter
@@ -167,24 +166,34 @@ def get_ai_rankings(user_context, top_recipes):
     return json.loads(ranking_text)
 
 
-# Build URL for "View All Results" button with all search parameters
 def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_filters, other_filters, sort_by):
-    url_params = []
-
-    if search_query:
-        url_params.append(f'q={search_query}')
-    for course in course_filters:
-        url_params.append(f'course={course}')
-    for dietary in dietary_filters:
-        url_params.append(f'dietary={dietary}')
-    for cuisine in cuisine_filters:
-        url_params.append(f'cuisine={cuisine}')
-    for other in other_filters:
-        url_params.append(f'other={other}')
-    if sort_by:
-        url_params.append(f'sort={sort_by}')
-
+    """
+    build url for view all results button with all search parameters
+    """
+    url_params = [f'q={search_query}']
+    
+    filter_map = {
+        'course': course_filters,
+        'dietary': dietary_filters,
+        'cuisine': cuisine_filters,
+        'other': other_filters,
+    }
+    
+    for param_name, filter_values in filter_map.items():
+        url_params = add_params_to_url(param_name, filter_values, url_params)  # ← Get return value
+    
+    url_params.append(f'sort={sort_by}')
+    
     return '/all_recipes/?' + '&'.join(url_params)
+
+
+def add_params_to_url(param_name, filter_values, url_params):
+    """
+    add filter parameters to url params list
+    """
+    for value in filter_values:  
+        url_params.append(f'{param_name}={value}')
+    return url_params
 
 
 # Use AI to find recipes based on context that users input
@@ -200,68 +209,78 @@ def ai_recipe_search_view(request):
         return render(request, 'ai/ai_recipe_search.html')
 
     try:
-        # Step 1: Get search parameters from AI
-        search_params = get_search_params_from_ai(user_context)
-
-        # Step 2: Filter recipes using extracted parameters
-        recipes = Recipe.objects.all()
-        recipes = apply_search_query(recipes, search_params.get('search_query', '').strip())
-        recipes = apply_tag_filters(
-            recipes,
-            search_params.get('course_filters', []),
-            search_params.get('dietary_filters', []),
-            search_params.get('cuisine_filters', []),
-            search_params.get('other_filters', [])
-        )
-        recipes = apply_sorting(recipes, search_params.get('sort_by', 'date_newest'))
-
-        total_count = recipes.count()
-
-        # Step 3: Handle no results
-        if total_count == 0:
-            context = {
-                'user_context': user_context,
-                'search_params': search_params,
-                'no_results': True,
-                'show_results': True
-            }
-            return render(request, 'ai/ai_recipe_search.html', context)
-
-        # Step 4: Get AI to rank top results
-        top_recipes = recipes[:10]
-        ranking_data = get_ai_rankings(user_context, top_recipes)
-
-        top_picks = ranking_data.get('top_picks', [])
-        search_explanation = ranking_data.get('search_explanation', '')
-
-        # Extract recipe IDs for "View Top Picks" button
-        recipe_ids = [pick['recipe_id'] for pick in top_picks]
-        top_pick_ids = ','.join(map(str, recipe_ids))
-
-        # Build URL for "View All Results" button
-        view_all_url = build_view_all_url(
-            search_params.get('search_query', ''),
-            search_params.get('course_filters', []),
-            search_params.get('dietary_filters', []),
-            search_params.get('cuisine_filters', []),
-            search_params.get('other_filters', []),
-            search_params.get('sort_by', '')
-        )
-
-        # Step 5: Render results
-        context = {
-            'user_context': user_context,
-            'search_params': search_params,
-            'search_explanation': search_explanation,
-            'top_picks': top_picks,
-            'top_pick_ids': top_pick_ids,
-            'total_count': total_count,
-            'view_all_url': view_all_url,
-            'show_results': True
-        }
-
-        return render(request, 'ai/ai_recipe_search.html', context)
-
+        return process_ai_search(request, user_context)
     except Exception as e:
         messages.error(request, f'An error occurred: {str(e)}')
         return render(request, 'ai/ai_recipe_search.html', {'user_context': user_context})
+
+def process_ai_search(request, user_context):
+    # Get search parameters from AI
+    search_params = get_search_params_from_ai(user_context)
+
+    # Filter recipes using extracted parameters
+    recipes = filter_recipes(search_params)
+
+    total_count = recipes.count()
+
+    # handle no results
+    if total_count == 0:
+        context = {
+            'user_context': user_context,
+            'search_params': search_params,
+            'no_results': True,
+            'show_results': True
+        }
+        return render(request, 'ai/ai_recipe_search.html', context)
+
+    # get AI to rank the results + then render them
+    return render_search_results(recipes, request, user_context, search_params, total_count)
+
+def filter_recipes(search_params):
+    recipes = Recipe.objects.visible()
+    recipes = apply_search_query(recipes, search_params.get('search_query', '').strip())
+    recipes = apply_tag_filters(
+        recipes,
+        search_params.get('course_filters', []),
+        search_params.get('dietary_filters', []),
+        search_params.get('cuisine_filters', []),
+        search_params.get('other_filters', [])
+    )
+    recipes = apply_sorting(recipes, search_params.get('sort_by', 'date_newest'))
+    return recipes
+
+def render_search_results(recipes, request, user_context, search_params, total_count):
+    #Get AI to rank top results
+    top_recipes = recipes[:10]
+    ranking_data = get_ai_rankings(user_context, top_recipes)
+
+    top_picks = ranking_data.get('top_picks', [])
+    search_explanation = ranking_data.get('search_explanation', '')
+
+    # Extract recipe IDs for "View Top Picks" button
+    recipe_ids = [pick['recipe_id'] for pick in top_picks]
+    top_pick_ids = ','.join(map(str, recipe_ids))
+
+    # Build URL for "View All Results" button
+    view_all_url = build_view_all_url(
+        search_params.get('search_query', ''),
+        search_params.get('course_filters', []),
+        search_params.get('dietary_filters', []),
+        search_params.get('cuisine_filters', []),
+        search_params.get('other_filters', []),
+        search_params.get('sort_by', '')
+    )
+
+    # Render results
+    context = {
+        'user_context': user_context,
+        'search_params': search_params,
+        'search_explanation': search_explanation,
+        'top_picks': top_picks,
+        'top_pick_ids': top_pick_ids,
+        'total_count': total_count,
+        'view_all_url': view_all_url,
+        'show_results': True
+    }
+
+    return render(request, 'ai/ai_recipe_search.html', context)

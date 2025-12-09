@@ -1,9 +1,9 @@
+from django.test import TestCase
+from recipes.tests.utils import create_test_user, create_test_recipe
+
 """ 
 Recipe tag and adjective tests.
 """
-
-from django.test import TestCase
-from recipes.tests.utils import create_test_user, create_test_recipe
 
 class RecipeModelTagTests(TestCase):
     def setUp(self):

@@ -4,9 +4,7 @@ import openai
 import json
 
 def scale_ingredient(ingredient, factor):
-    """
-    Scale ingredient quantities by the given factor
-    """
+    """ Scale ingredient quantities by the given factor. """
 
     # Pattern to match numbers (including decimals and fractions)
     pattern = r'(\d+/\d+|\d+\.?\d*)'
@@ -38,7 +36,6 @@ def get_scaled_ingredients_context(recipe, desired_servings):
         scale_ingredient(ingredient, scaling_factor)
         for ingredient in recipe.get_ingredient_list()
     ]
-
     return {
         'scaled_ingredients':scaled_ingredients,
         'desired_servings':desired_servings,
@@ -51,11 +48,9 @@ def get_user_rating(recipe, user):
         return None
     return Rating.objects.filter(recipe=recipe, user=user).first()
      
-
 def has_user_flagged_recipe(recipe, user):
     if not user.is_authenticated:
         return False
-   
     return Flag.objects.filter(recipe=recipe, user=user).exists()
 
 def get_recipe_tag_display_context(recipe):
@@ -92,7 +87,6 @@ def create_cost_prompt(scaled_ingredients, servings):
     }}
 
     Use typical UK supermarket prices. Return only JSON."""
-
 
 def call_openai_for_cost(prompt):
     """ Call OpenAI API for cost estimation. """

@@ -1,65 +1,80 @@
 /* Recipe Cards*/
 .recipe-card {
-  padding: 0.75rem;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+    padding: 0.75rem;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .recipe-card:hover {
-  transform: translateY(-4px);
-  color: var(--primary-colour);
+    transform: translateY(-4px);
+    color: var(--primary-colour);
 }
 
 .recipe-card i.bi-tag,
 .recipe-card i.bi-people {
-  color: var(--primary-colour) !important;
-  text-shadow:
-    0.2px 0 0 var(--primary-colour),
-    -0.2px 0 0 var(--primary-colour),
-    0 0.2px 0 var(--primary-colour),
-    0 -0.2px 0 var(--primary-colour);
+    color: var(--primary-colour) !important;
+    text-shadow:
+        0.2px 0 0 var(--primary-colour),
+        -0.2px 0 0 var(--primary-colour),
+        0 0.2px 0 var(--primary-colour),
+        0 -0.2px 0 var(--primary-colour);
 }
 
 .recipe-card-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 2px;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 2px;
 }
 
 .recipe-card .card-body {
-  padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.75rem;
 }
 
 .recipe-card .card-text {
-  line-height: 1.2;
+    line-height: 1.2;
 }
 
 .recipe-card .mt-auto {
-  margin-top: 0.5rem !important;
+    margin-top: 0.5rem !important;
 }
 
 
-/* Rating input */ 
+/* Rating input */
 .rating-input input[type="radio"] {
     display: none;
 }
 
 .rating-input label {
     cursor: pointer;
-    color: var(--primary-colour-darker);
+    color: var(--black-colour);
 }
 
 .rating-input label:hover,
-.rating-input label:hover ~ label {
-    color: #f0ad4e !important;
+.rating-input label:hover~label {
+    color: var(--star) !important;
 }
 
-.rating-input input[type="radio"]:checked ~ label {
-    color: #f0ad4e !important;
+.rating-input input[type="radio"]:checked~label {
+    color: var(--star) !important;
 }
 
 .rating-input {
+    white-space: nowrap;
     direction: rtl;
+}
+
+@media (max-width: 768px) {
+    .star-ratings i {
+        font-size: 10px !important;
+    }
+
+    .rating-form-responsive {
+        flex-wrap: wrap;
+    }
+
+    .rating-form-responsive button {
+        margin-top: 0px;
+    }
 }
 
 /* Favourites heart */
@@ -79,7 +94,7 @@
 
 .heart-btn i {
     font-size: 1.2rem;
-    color: var(--black-colour); 
+    color: var(--black-colour);
 }
 
 .heart-btn:hover i {
@@ -96,17 +111,17 @@
 }
 
 /* Recipe detail checkbox strikethrough */
-.ingredient-checkbox:checked ~ .ingredient-text {
+.ingredient-checkbox:checked~.ingredient-text {
     text-decoration: line-through;
     opacity: 0.6;
 }
 
-.step-checkbox:checked ~ div .step-text {
+.step-checkbox:checked~div .step-text {
     text-decoration: line-through;
     opacity: 0.6;
 }
 
-/* Recipe tags */ 
+/* Recipe tags */
 .tag-chip {
     display: inline-flex;
     align-items: center;
@@ -119,10 +134,21 @@
     gap: 4px;
 }
 
-.tag-chip-course   { background-color: var(--colour-1); } 
-.tag-chip-cuisine  { background-color: var(--colour-2); } 
-.tag-chip-dietary  { background-color: var(--colour-3); }
-.tag-chip-other    { background-color: var(--colour-4); } 
+.tag-chip-course {
+    background-color: var(--colour-1);
+}
+
+.tag-chip-cuisine {
+    background-color: var(--colour-2);
+}
+
+.tag-chip-dietary {
+    background-color: var(--colour-3);
+}
+
+.tag-chip-other {
+    background-color: var(--colour-4);
+}
 
 .tag-remove {
     background: none;
@@ -170,4 +196,4 @@
 
 .recipe-card-placeholder-icon {
     font-size: 3rem;
-}
+} 

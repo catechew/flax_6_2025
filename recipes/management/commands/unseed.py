@@ -1,15 +1,14 @@
+from django.core.management.base import BaseCommand
+from recipes.models import User, Recipe
+
 """ 
 Management command to remove seeded data from the database. 
 """
 
-
-from django.core.management.base import BaseCommand
-from recipes.models import User, Recipe
-
-
 class Command(BaseCommand):
-    """ Remove seeded users and recipes from database. """
-
+    """ 
+    Remove seeded users and recipes from database. 
+    """
     help = 'Removes all non-admin seeded users from the database.'
 
     def handle(self, *args, **options):

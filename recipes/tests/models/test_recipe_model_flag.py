@@ -1,7 +1,3 @@
-"""
-Recipe flag tests.
-"""
-
 from django.test import TestCase
 from datetime import date
 from recipes.models import User, Recipe, Flag

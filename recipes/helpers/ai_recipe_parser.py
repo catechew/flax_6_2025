@@ -1,8 +1,8 @@
+import re
+
 """
 Helper functions for parsing AI-generated recipe data.
 """
-import re
-
 
 def parse_time_string(time_str):
     """ Parse '15 minutes' or '1 hour 30 minutes' to total minutes. """
@@ -18,7 +18,6 @@ def extract_hours(time_str):
     """ Extract hours from time string. """
     if 'hour' not in time_str:
         return 0
-
     try:
         parts = time_str.split('hour')[0].strip().split()
         return int(parts[-1]) if parts else 0
@@ -35,20 +34,15 @@ def extract_minutes(time_str):
 
 def find_last_digit(parts):
     """ Find last digit in list of string parts. """
-    for part in reversed(parts):
-        if part.isdigit():
-            return int(part)
-    return 0
+    return next((int(part) for part in reversed(parts) if part.isdigit()), 0)
 
 def format_ingredients_for_form(ingredients_list):
     """ Convert AI format to app format: '400g spaghetti' → 'Spaghetti (400g)'. """
-    formatted = []
-
-    for ingredient in ingredients_list:
-        if not ingredient.strip():
-            continue
-        formatted.append(format_single_ingredient(ingredient.strip()))
-
+    formatted = [
+        format_single_ingredient(ingredient.strip())
+        for ingredient in ingredients_list
+        if ingredient.strip()
+    ]
     return '\n'.join(formatted)
 
 
@@ -60,7 +54,6 @@ def format_single_ingredient(ingredient):
         return format_matched_ingredient(match)
     return f"{ingredient} (as needed)"
 
-
 def try_parse_ingredient(ingredient):
     """Try to parse ingredient with regex."""
     pattern = r'^([\d./]+\s*(?:g|kg|ml|l|tsp|tbsp|cup|cups|oz|lb|cloves?|pieces?)?)\s+(.+)$'
@@ -70,10 +63,10 @@ def format_matched_ingredient(match):
     """ Format parsed ingredient match. """
     quantity = match.group(1).strip()
     name = match.group(2).strip()
-    name = capitalize_first(name)
+    name = capitalise_first(name)
     return f"{name} ({quantity})"
 
-def capitalize_first(text):
+def capitalise_first(text):
     """ Capitalise first letter. """
     return text[0].upper() + text[1:] if text else text
 
@@ -112,11 +105,9 @@ def get_dietary_tag_mapping():
 def map_ai_dietary_tags(ai_dietary_list):
     """ Map AI dietary tags to system tags. """
     mapping = get_dietary_tag_mapping()
-    mapped_tags = []
-
-    for ai_tag in ai_dietary_list:
-        system_tag = mapping.get(ai_tag.lower())
-        if system_tag:
-            mapped_tags.append(system_tag)
-
+    mapped_tags = [
+        mapping[ai_tag.lower()]
+        for ai_tag in ai_dietary_list
+        if ai_tag.lower() in mapping
+    ]
     return mapped_tags

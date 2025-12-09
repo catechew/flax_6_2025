@@ -1,9 +1,9 @@
+from django.test import TestCase
+from recipes.tests.utils import create_test_recipe
+
 """
 Recipe time calculation tests.
 """
-
-from django.test import TestCase
-from recipes.tests.utils import create_test_recipe
 
 class RecipeModelTimeTests(TestCase):
     def setUp(self):

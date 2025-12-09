@@ -11,10 +11,6 @@ def cancel_recipe_operation(request, recipe_id=None):
     else: cancel update (redirect to recipe_detail)
     """
     handler = RecipeFormHandler(request, recipe_id)
-
-    # Cleanup temp files
     cleanup_session(handler.session_key, handler.session_data, request)
-
-    # Show message and redirect
     return handler.redirect_to_cancel_destination()
     

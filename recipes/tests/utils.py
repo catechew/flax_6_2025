@@ -1,7 +1,3 @@
-"""
-Utility functions for creating test data in tests
-"""
-
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from recipes.models import Recipe
@@ -10,6 +6,9 @@ from PIL import Image
 from io import BytesIO
 import uuid
 
+"""
+Utility functions for creating test data in tests
+"""
 
 User = get_user_model()
 
@@ -73,10 +72,7 @@ def create_test_recipe(author=None, **kwargs):
     """
 
     if author is None:
-        try:
-            author = User.objects.get(username='@johndoe')
-        except User.DoesNotExist:
-            author = create_test_user(username='@johndoe')
+        author = _get_or_create_default_author()
     
     defaults = {
         'title': 'Test Recipe',
@@ -86,13 +82,18 @@ def create_test_recipe(author=None, **kwargs):
         'servings': 4
     }
     defaults.update(kwargs)
-
     return Recipe.objects.create(author=author, **defaults)
+
+def _get_or_create_default_author():
+    """ Get existing @johndoe user or create if it does not exist. """
+    try:
+        return User.objects.get(username='@johndoe')
+    except User.DoesNotExist:
+        return create_test_user(username='@johndoe')
 
 def create_test_recipes(count=3, author=None, **kwargs):
     """
     Create multiple test recipes.
-    
     Returns list of recipe instances.
     """
     recipes = []
@@ -105,7 +106,6 @@ def create_test_recipes(count=3, author=None, **kwargs):
 def create_test_form_data(**kwargs):
     """
     Create form data dictionary for RecipeForm.
-    
     Returns dictionary of form data
     """
 
@@ -165,7 +165,6 @@ def create_invalid_image(name='invalid.txt'):
 def get_default_user():
     """
     Get the defaul test user (@johndoe) from fixture.
-    
     Returns user instance
     """
 

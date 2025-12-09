@@ -16,7 +16,7 @@ class ShoppingListViewTests(TestCase):
   """ 
   Tests for generating a shopping list from a meal plan. 
   """
-
+  
   def setUp(self):
     self.user = User.objects.create_user(
       username="@shopuser",
@@ -36,7 +36,6 @@ class ShoppingListViewTests(TestCase):
       ingredients="Salt\nRice",
       steps="Cook",
     )
-
     slot = self.plan.entries.filter(meal_type="dinner").first()
     slot.recipe = self.recipe
     slot.save()
@@ -46,7 +45,6 @@ class ShoppingListViewTests(TestCase):
       "shopping-list",
       args=[self.plan.id],
     )
-
     response = self.client.get(url)
     self.assertEqual(response.status_code, 200)
 
@@ -55,10 +53,8 @@ class ShoppingListViewTests(TestCase):
       "shopping-list",
       args=[self.plan.id],
     )
-
     response = self.client.get(url)
     content = response.content.decode()
-
     self.assertIn("Salt", content)
     self.assertIn("Rice", content)
 
@@ -69,6 +65,5 @@ class ShoppingListViewTests(TestCase):
       "shopping-list",
       args=[self.plan.id],
     )
-
     response = self.client.get(url)
     self.assertEqual(response.status_code, 302)

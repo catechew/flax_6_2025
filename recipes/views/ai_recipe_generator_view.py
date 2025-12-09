@@ -12,7 +12,6 @@ load_dotenv()
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 
-
 def generate_recipe_with_ai(user_prompt):
     """
     Generate a complete recipe based on user's description/request.
@@ -54,20 +53,49 @@ IMPORTANT: Return ONLY the JSON object, no markdown code blocks, no extra text."
                 "content": ai_prompt
             }
         ],
-        response_format={"type": "json_object"},  # Force JSON mode
+        response_format={"type": "json_object"},
         temperature=0.7,
         max_tokens=1000,
         timeout=30
     )
 
     ai_response = response.choices[0].message.content.strip()
-
-    # Remove markdown code blocks if present (just in case)
-    ai_response = re.sub(r'^```json\s*', '', ai_response)
-    ai_response = re.sub(r'\s*```$', '', ai_response)
-    ai_response = ai_response.strip()
+    ai_response = _clean_json_response(ai_response)
 
     return json.loads(ai_response)
+
+
+def _clean_json_response(response):
+    """Remove markdown code blocks from AI response."""
+    response = re.sub(r'^```json\s*', '', response)
+    response = re.sub(r'\s*```$', '', response)
+    return response.strip()
+
+
+def _get_error_message(exception):
+    """Map exception types to user-friendly error messages."""
+    if isinstance(exception, json.JSONDecodeError):
+        return 'AI returned invalid format. Please try again.'
+
+    if isinstance(exception, openai.error.Timeout):
+        return 'Request timed out. Please try again.'
+
+    if isinstance(exception, openai.error.APIError):
+        return f'OpenAI API error: {str(exception)}'
+
+    return f'An error occurred: {str(exception)}'
+
+
+def _handle_recipe_generation(user_prompt, request):
+    """Handle recipe generation and return context."""
+    recipe_data = generate_recipe_with_ai(user_prompt)
+    request.session['last_ai_recipe'] = recipe_data
+
+    return {
+        'user_prompt': user_prompt,
+        'recipe': recipe_data,
+        'show_results': True
+    }
 
 
 @login_required
@@ -83,31 +111,10 @@ def ai_recipe_generator_view(request):
         return render(request, 'ai/ai_recipe_generator.html')
 
     try:
-        # Generate recipe using AI
-        recipe_data = generate_recipe_with_ai(user_prompt)
-
-        context = {
-            'user_prompt': user_prompt,
-            'recipe': recipe_data,
-            'show_results': True
-        }
-
-        request.session['last_ai_recipe'] = recipe_data
-
+        context = _handle_recipe_generation(user_prompt, request)
         return render(request, 'ai/ai_recipe_generator.html', context)
 
-    except json.JSONDecodeError as e:
-        messages.error(request, 'AI returned invalid format. Please try again.')
-        return render(request, 'ai/ai_recipe_generator.html', {'user_prompt': user_prompt})
-
-    except openai.error.Timeout:
-        messages.error(request, 'Request timed out. Please try again.')
-        return render(request, 'ai/ai_recipe_generator.html', {'user_prompt': user_prompt})
-
-    except openai.error.APIError as e:
-        messages.error(request, f'OpenAI API error: {str(e)}')
-        return render(request, 'ai/ai_recipe_generator.html', {'user_prompt': user_prompt})
-
     except Exception as e:
-        messages.error(request, f'An error occurred: {str(e)}')
+        error_message = _get_error_message(e)
+        messages.error(request, error_message)
         return render(request, 'ai/ai_recipe_generator.html', {'user_prompt': user_prompt})

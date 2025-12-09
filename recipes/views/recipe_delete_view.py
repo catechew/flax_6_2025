@@ -1,22 +1,24 @@
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from recipes.models.recipe import Recipe
-from recipes.models.user import User
 
+
+@login_required
 def recipe_delete(request, recipe_id):
-	try:
-		recipe = Recipe.objects.get(id=recipe_id)
-	except Recipe.DoesNotExist:
-		raise Http404(f"Could not find recipe with primary key {recipe_id}") 
-	
-	# Only the recipe's author or an admin can delete it
-	if recipe.author != request.user and not request.user.is_staff:
-		return HttpResponseForbidden("You don't have permission to delete this recipe.\nYou must be an admin or author of this recipe.")
+    """ Delete a recipe (author or admin only). """
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    
+    if not _can_delete_recipe(request.user, recipe):
+        return HttpResponseForbidden("You don't have permission to delete this recipe.")
+    
+    if request.method == "POST":
+        recipe.delete()
+        return HttpResponseRedirect(reverse('all_recipes'))
+    
+    return render(request, 'recipes/delete_recipe.html', {'recipe': recipe})
 
-	if request.method == "POST":
-		recipe.delete()
-		path = reverse('all_recipes')
-		return HttpResponseRedirect(path)
-	else:
-		return render(request, 'recipes/delete_recipe.html', {'recipe': recipe})
+def _can_delete_recipe(user, recipe):
+    """ Check if user can delete recipe (author or admin). """
+    return recipe.author == user or user.is_staff

@@ -7,25 +7,32 @@ from django.contrib import messages
 
 @login_required
 def rate_recipe(request, recipe_id):
-    """
-    Handle submission of a user's star rating for a recipe.
-    If user has already rated this recipe, rating is updated.
-    """
+    """ Handle submission of a user's star rating for a recipe. """
     recipe = get_object_or_404(Recipe, id=recipe_id)
 
-    # Prevent authors from rating their own recipes
     if recipe.author == request.user:
         messages.warning(request, "You cannot rate your own recipe.")
         return redirect("recipe_detail", recipe_id=recipe.id)
 
     if request.method == "POST":
-        stars = int(request.POST.get("stars", 0))
-        if 1 <= stars <= 5:
-            Rating.objects.update_or_create(
-                recipe=recipe,
-                user=request.user,
-                defaults={"stars": stars}
-            )
-            messages.success(request, "Your rating has been saved.")
+        _process_rating(request, recipe)
 
     return redirect("recipe_detail", recipe_id=recipe.id)
+
+def _process_rating(request, recipe):
+    """ Process and save the rating. """
+    stars = int(request.POST.get("stars", 0))
+    
+    if not _is_valid_rating(stars):
+        return
+    
+    Rating.objects.update_or_create(
+        recipe=recipe,
+        user=request.user,
+        defaults={"stars": stars}
+    )
+    messages.success(request, "Your rating has been saved.")
+
+def _is_valid_rating(stars):
+    """ Check if rating is valid (1-5 stars). """
+    return 1 <= stars <= 5

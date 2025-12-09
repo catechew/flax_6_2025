@@ -1,10 +1,10 @@
-"""
-Recipe save tests.
-"""
-
 from django.test import TestCase
 from recipes.tests.utils import create_test_user, create_test_recipe
 from recipes.models import User, Recipe
+
+"""
+Recipe save tests.
+"""
 
 class RecipeModelSaveTests(TestCase):
 

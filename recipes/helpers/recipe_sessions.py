@@ -15,22 +15,25 @@ def rebuild_form_data(session_data, request, recipe):
     )
     return form_data, files
 
-from django.core.files.storage import default_storage
-
 def save_form_to_session(session_data, post_data, files=None):
     """ Save recipe form data (and temp image) to session. """
-    
     session_data["form_data"] = post_data.dict()
+    _handle_image_clear_checkbox(session_data, post_data)
+    _save_temp_image_if_present(session_data, files)
 
-    # Save image-clear checkbox state
+def _handle_image_clear_checkbox(session_data, post_data):
+    """ Handle image-clear checkbox state. """
     if 'image-clear' in post_data:
         session_data['image_clear'] = True
-    elif 'image_clear' in session_data:
-        # Remove it if checkbox was previously checked but now unchecked
+        return 
+    if 'image_clear' in session_data:
         del session_data['image_clear']
 
-    if files and 'image' in files:
-        image = files['image']
-        temp_path = default_storage.save(f"temp/{image.name}", image)
-        session_data['temp_image_path'] = temp_path
-
+def _save_temp_image_if_present(session_data, files):
+    """ Save uploaded image to temporary storage if present. """
+    if not files or 'image' not in files:
+        return
+    
+    image = files['image']
+    temp_path = default_storage.save(f"temp/{image.name}", image)
+    session_data['temp_image_path'] = temp_path

@@ -53,36 +53,30 @@ class RecipeDetailHandler:
         cost_error = None
 
         if self.request.GET.get('show_cost') == 'true':
-            try:
-                cost_estimate = get_cost_estimate_data(scaled_ingredients, self.desired_servings)
-            except Exception as e:
-                cost_error = str(e)
-        
-        return{
-            'cost_estimate' : cost_estimate,
-            'cost_error' : cost_error
+            cost_estimate, cost_error = self._calculate_cost(scaled_ingredients)
+        return {
+            'cost_estimate': cost_estimate,
+            'cost_error': cost_error
         }
+
+    def _calculate_cost(self, scaled_ingredients):
+        """ Calculate cost with error handling. """
+        try:
+            cost = get_cost_estimate_data(scaled_ingredients, self.desired_servings)
+            return cost, None
+        except Exception as e:
+            return None, str(e)
 
     def get_context(self):
         """ Create full context for recipe.html. """
-        context = {
-            'recipe': self.recipe,
-            'steps': self.recipe.get_step_list(),
-            'is_owner': self.is_owner,
-        }
-
-        # Add tag display
+        context = {'recipe': self.recipe, 'steps': self.recipe.get_step_list(), 'is_owner': self.is_owner,}
         context.update(get_recipe_tag_display_context(self.recipe))
-        
-        #Add time display
         context.update(get_recipe_time_display_context(self.recipe))
         
-        #Add scaled ingredients
         scaling_context = get_scaled_ingredients_context(self.recipe, self.desired_servings)
+        
         context.update(scaling_context)
         context.update(self.get_cost_context(scaling_context['scaled_ingredients']))
-        
-        #Add user data
         context.update(self.get_user_context())
-
+        
         return context

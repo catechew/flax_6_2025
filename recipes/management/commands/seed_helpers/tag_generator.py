@@ -1,8 +1,8 @@
+from random import randint, sample
+
 """ 
 Tag generation for recipe seeding. 
 """
-
-from random import randint, sample
 
 TAG_OPTIONS = {
     'course': ['dessert', 'main', 'appetiser', 'breakfast', 'snack'],

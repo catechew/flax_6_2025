@@ -23,19 +23,24 @@ class LogInView(LoginProhibitedMixin, View):
     def post(self, request):
         self.next = request.POST.get("next") or ""
         form = LogInForm(request.POST)
-
-        if not form.is_valid():
-            messages.error(request, "The credentials provided were invalid!")
-            return self.render()
-
-        user = form.get_user()
+        
+        user = self._validate_and_get_user(form)
         if user is None:
-            messages.error(request, "The credentials provided were invalid!")
             return self.render()
-
         login(request, user)
         redirect_url = self.next or self.redirect_when_logged_in_url
-        return redirect(redirect_url)   
+        return redirect(redirect_url)
+
+    def _validate_and_get_user(self, form):
+        """ Validate form and return user or None. """
+        if not form.is_valid():
+            messages.error(self.request, "The credentials provided were invalid!")
+            return None
+        
+        user = form.get_user()
+        if user is None:
+            messages.error(self.request, "The credentials provided were invalid!")
+        return user
     
     def render(self, form=None):
         return render(
