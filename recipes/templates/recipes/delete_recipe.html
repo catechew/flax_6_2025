@@ -20,7 +20,7 @@ Delete Recipe
 
 <form action="{% url 'delete_recipe' recipe.id %}" method="post">
     {% csrf_token %}
-    <button class="btn-primary" type="submit">Yes, delete this recipe</button>
+    <button class="btn btn-primary" type="submit">Yes, delete this recipe</button>
     <a href="{% url 'all_recipes' %}" style="margin-left: 1rem;">Cancel</a>
 </form>
 
