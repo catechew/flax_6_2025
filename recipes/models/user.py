@@ -93,10 +93,10 @@ class User(AbstractUser):
         """ Return avatar URL based on user preference. """
         if self.profile_picture:
             return self.profile_picture.url
-        if self.avatar_type == 'initials':
-            return self._get_initials_avatar_url(size)
+
         if self.avatar_type == 'random' and self.avatar_seed:
-            return f"https://api.dicebear.com/7.x/avataaars/svg?seed={self.avatar_seed}&size={size}"
+            return self._get_random_avatar_url(size)
+
         if self.avatar_type == 'ai':
             return self._get_ai_avatar_url(size)
 
@@ -106,6 +106,10 @@ class User(AbstractUser):
         """ Generate initials-based avatar URL. """
         name = f"{self.first_name} {self.last_name}".strip()
         return f"https://ui-avatars.com/api/?name={name}&size={size}&background=f15034&color=fff&bold=true&rounded=true"
+
+    def _get_random_avatar_url(self, size):
+        """ Generate random avatar URL. """
+        return f"https://api.dicebear.com/7.x/avataaars/svg?seed={self.avatar_seed}&size={size}"
 
     def _get_ai_avatar_url(self, size):
         """ Generate AI avatar URL based on age and gender. """
