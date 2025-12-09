@@ -100,16 +100,6 @@ def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters,
 
     return recipes
 
-
-def build_or_query(recipes, tag_field, filter_values):
-    """Build and apply OR query for a tag field."""
-    tag_q = reduce(
-        operator.or_,
-        [Q(**{f'{tag_field}__icontains': value}) for value in filter_values]
-    )
-    return recipes.filter(tag_q)
-
-
 def build_or_query(recipes, tag_field, filter_values):
     """
     build and apply OR query for a tag field
