@@ -21,7 +21,7 @@ def toggle_save_recipe(request, recipe_id):
 @login_required
 def saved_recipe_list(request):
     """
-    Display recipes saved by the current user.
+    Display the recipes saved by the current user.
     """
     current_user = request.user
     

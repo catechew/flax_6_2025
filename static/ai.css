@@ -188,7 +188,6 @@ body:has(.ai-chat-container) {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Center welcome state */
 .chat-messages:has(.welcome-section):not(:has(.message-bubble)) {
     display: flex;
     align-items: center;

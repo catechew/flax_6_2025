@@ -15,7 +15,8 @@
   --black-colour: #202323;
   --grey-colour: #9da4aa;
   --bg-colour: #f7f3eb;
-  --white-colour: #FAF9F5;
+  --white-colour: #fefdf9;
+  --dark-white-colour: #d7d7cf;
 }
 
 /* Alerts */
@@ -33,7 +34,7 @@
 .card-base {
   background: var(--white-colour) !important;
   border-radius: 8px;
-  border: none !important;
+  border: 1px solid var(--dark-white-colour) !important;
   box-shadow: 0 4px 5px rgba(0,0,0,0.1);
   overflow: hidden;
   transition: 0.2s ease;
