@@ -29,8 +29,12 @@ class MenuTesterMixin(AssertHTMLMixin):
     def assert_menu(self, response):
         """ Check that menu is present. """
         for url in self.menu_urls:
-            with self.assertHTML(response, f'a[href="{url}"]'):
-                pass
+            self._assert_menu_link(response, url)
+    
+    def _assert_menu_link(self, response, url):
+        """ Assert a single menu link is present. """
+        with self.assertHTML(response, f'a[href="{url}"]'):
+            pass
 
     def assert_no_menu(self, response):
         """ Check that no menu is present. """
