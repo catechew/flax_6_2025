@@ -5,7 +5,7 @@ from recipes.tests.views.test_helpers_base import BaseRecipeViewTestCase
 Tests for the recipe detail view - content display.
 """
 
-class RecipeDetailViewTestCase(BaseRecipeViewTestCase):
+class RecipeDetailViewContentTests(BaseRecipeViewTestCase):
 
     def setUp(self):
         super().setUp()

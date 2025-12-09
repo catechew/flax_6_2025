@@ -5,7 +5,7 @@ from recipes.tests.views.test_helpers_base import BaseRecipeViewTestCase
 Tests for the recipe detail view - scaling and time display.
 """
 
-class RecipeDetailViewTestCase(BaseRecipeViewTestCase): 
+class RecipeDetailViewScalingTests(BaseRecipeViewTestCase): 
 
     def setUp(self):
         super().setUp()

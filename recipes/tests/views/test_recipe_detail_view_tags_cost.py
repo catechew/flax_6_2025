@@ -5,7 +5,7 @@ from recipes.tests.views.test_helpers_base import BaseRecipeViewTestCase
 Tests for the recipe detail view - tags and cost estimation.
 """
 
-class RecipeDetailViewTestCase(BaseRecipeViewTestCase):
+class RecipeDetailViewTagsCostTests(BaseRecipeViewTestCase):
 
     def setUp(self):
         super().setUp()
