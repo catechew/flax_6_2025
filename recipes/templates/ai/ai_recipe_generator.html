@@ -6,15 +6,16 @@
     <div class="chat-messages" id="chatMessages">
         {% if not show_results and not is_generating %}
             <!-- Welcome Message -->
-            <div class="welcome-section">
-                <h1 class="welcome-title">What do you want to eat?</h1>
-                <p class="welcome-subtitle">Describe what you want to cook and Chef AI will create a recipe for you!</p>
-                    <!-- Link to AI Recipe Search -->
-                <div class="ai-search-link-top">
-                    <a href="{% url 'ai_recipe_search' %}" class="ai-search-btn">
-                        <i class="bi bi-search"></i>
+            <div class="welcome-container">
+                <div class="welcome-section">
+                    <h1 class="welcome-title">What do you want to eat?</h1>
+
+                    <p class="welcome-subtitle">
+                        Describe what you want to cook and Chef AI will create a recipe for you!
+                    </p>
+
+                    <a href="/ai/search" class="ai-search-btn">
                         Search existing recipes using AI
-                        <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -40,29 +41,29 @@
             </div>
 
             <!-- AI Response -->
-            <div class="message-bubble ai-message">
+            <div class="message-bubble ai-message card-base">
                 <div class="message-content">
                     <div class="recipe-result">
                         <h2 class="recipe-title">{{ recipe.title }}</h2>
                         <p class="recipe-description">{{ recipe.description }}</p>
 
                         <div class="recipe-stats-grid">
-                            <div class="recipe-stat">
+                            <div class="recipe-stat card-base">
                                 <i class="bi bi-clock"></i>
                                 <div class="stat-label">Prep Time</div>
                                 <div class="stat-value">{{ recipe.prep_time }}</div>
                             </div>
-                            <div class="recipe-stat">
-                                <i class="bi bi-fire"></i>
+                            <div class="recipe-stat card-base">
+                                <i class="bi bi-clock-fill"></i>
                                 <div class="stat-label">Cook Time</div>
                                 <div class="stat-value">{{ recipe.cook_time }}</div>
                             </div>
-                            <div class="recipe-stat">
+                            <div class="recipe-stat card-base">
                                 <i class="bi bi-people"></i>
                                 <div class="stat-label">Servings</div>
                                 <div class="stat-value">{{ recipe.servings }}</div>
                             </div>
-                            <div class="recipe-stat">
+                            <div class="recipe-stat card-base">
                                 <i class="bi bi-speedometer2"></i>
                                 <div class="stat-label">Difficulty</div>
                                 <div class="stat-value">{{ recipe.difficulty }}</div>
@@ -140,7 +141,7 @@
                         placeholder="e.g., I'm a student on a budget and only have £3 for tonight. What can I make?"
                         required
                     ></textarea>
-                    <button type="submit" class="chat-submit-btn">
+                    <button type="submit" class="btn btn-primary chat-submit-btn">
                         <i class="bi bi-arrow-up"></i>
                     </button>
                 </div>

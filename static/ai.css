@@ -1,27 +1,32 @@
-/* Chef AI */
+/*
+AI Chat
+*/
 
 /* Welcome Section */
 .welcome-section {
     text-align: center;
-    max-height: 50%;
+    margin: 0 auto;
 }
 
 .welcome-title {
+    font-size: 3rem;
     font-weight: 700;
     color: var(--black-colour);
-}
-
-.welcome-subtitle {
-    color: var(--grey-colour);
+    margin-bottom: 1rem;
 }
 
 /* Messages */
-.messages-wrapper,
+.messages-wrapper {
+    max-width: 850px;
+    margin: 0 auto 1rem auto;
+}
+
 .message-bubble {
     max-width: 850px;
     margin: 1rem auto;
 }
 
+/* User Message */
 .user-message {
     display: flex;
     justify-content: flex-end;
@@ -36,15 +41,12 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* AI Response */
 .ai-message .message-content {
-    background-color: var(--white-colour);
-    border: 1px solid #dee2e6;
     padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Recipe Stats */
+/* Recipe Stats Grid */
 .recipe-stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -54,12 +56,11 @@
 
 .recipe-stat {
     padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 8px;
     text-align: center;
 }
 
 .recipe-stat i {
+    display: block;
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
     color: var(--primary-colour);
@@ -71,10 +72,10 @@
 }
 
 .stat-value {
-    color: #6c757d;
+    color: var(--grey-colour)
 }
 
-/* Recipe Content*/
+/* Recipe Content */
 .recipe-title {
     font-size: 2rem;
     font-weight: 700;
@@ -82,14 +83,15 @@
 }
 
 .recipe-description {
-    color: #6c757d;
+    color: var(--grey-colour);
     margin-bottom: 2rem;
 }
 
 .recipe-section-title {
     font-size: 1.5rem;
     font-weight: 600;
-    margin: 2rem 0 1rem 0;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
 }
 
 .recipe-section-title i {
@@ -121,12 +123,12 @@
     margin-top: 2rem;
 }
 
-/* Chat input area*/
+/* Chat Input */
 .chat-textarea {
     flex: 1;
     border-radius: 24px;
     padding: 1rem 1.5rem;
-    border: 1px solid var(--white-colour);
+    border: 1px solid var(--grey-colour);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     resize: none;
 }
@@ -138,13 +140,14 @@
 }
 
 .input-helper-text {
+    display: block;
     text-align: center;
     margin-top: 0.75rem;
-    color: var(--grey-colour);
+    color: #6c757d;
     font-size: 0.85rem;
 }
 
-/* Responsive Adjustments */
+/* Responsive */
 @media (max-width: 768px) {
     .welcome-title {
         font-size: 2rem;
@@ -159,7 +162,7 @@
     }
 }
 
-/* Layout */
+/* Chat Layout */
 html:has(.ai-chat-container),
 body:has(.ai-chat-container) {
     overflow: hidden;
@@ -170,41 +173,39 @@ body:has(.ai-chat-container) {
 
 .ai-chat-container {
     position: fixed;
-    top: 56px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 56px 0 0 0;
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-colour);
+    background: var(--bg-colour);
     overflow: hidden;
 }
 
 .chat-messages {
     flex: 1;
-    padding: 2rem 1rem 0 1rem;
+    padding: 2rem 1rem 0;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
 }
 
-/* Centered welcome state */
+/* Center welcome state */
 .chat-messages:has(.welcome-section):not(:has(.message-bubble)) {
-    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    padding: 0 !important;
 }
 
 .chat-input-container {
     flex-shrink: 0;
     padding: 1.5rem 1rem;
-    background: transparent;
     pointer-events: none;
+    background: transparent;
 }
 
-/* Move input up on welcome state */
-.chat-messages:has(.welcome-section):not(:has(.message-bubble)) ~ .chat-input-container {
-    padding-bottom: 16rem;
+.chat-messages:has(.welcome-section):not(:has(.message-bubble))~.chat-input-container {
+    padding-bottom: 2rem;
 }
 
 .chat-input-wrapper {
@@ -215,21 +216,6 @@ body:has(.ai-chat-container) {
 
 .input-group-chat {
     display: flex;
-    gap: 0.75rem;
+    gap: .75rem;
     align-items: center;
-}
-
-/* Search tabs navigation */
-.search-tabs .nav-item {
-    flex: 1;
-}
-
-.search-tabs .nav-link {
-    padding: 0.75rem 1rem;
-    color: var(--black-colour);
-    border-bottom: 3px solid transparent;
-}
-
-.search-tabs .nav-link.active {
-    border-bottom-color: var(--primary-colour);
 }
