@@ -19,7 +19,10 @@ def redirect_to_tags(handler):
 def show_success_message(request, handler, recipe):
     if handler.is_create_mode:
         messages.success(request, "Recipe created successfully!")
-    elif handler.is_owner:
+        return 
+
+    if handler.is_owner:
         messages.success(request, f"Successfully updated recipe: {recipe.title}")
-    else:
-        messages.success(request, f"Created your modified version: {recipe.title}")
+        return 
+    
+    messages.success(request, f"Created your modified version: {recipe.title}")
