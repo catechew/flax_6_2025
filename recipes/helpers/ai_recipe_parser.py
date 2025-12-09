@@ -18,7 +18,6 @@ def extract_hours(time_str):
     """ Extract hours from time string. """
     if 'hour' not in time_str:
         return 0
-
     try:
         parts = time_str.split('hour')[0].strip().split()
         return int(parts[-1]) if parts else 0

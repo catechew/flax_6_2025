@@ -70,13 +70,7 @@ class Command(BaseCommand):
     def _create_admin_user(self, user_data):
         """ Create admin superuser. """
         try:
-            user = User.objects.create_superuser(
-                username=user_data['username'],
-                email=user_data['email'],
-                password=self.DEFAULT_PASSWORD,
-                first_name=user_data['first_name'],
-                last_name=user_data['last_name']
-            )
+            user = User.objects.create_superuser(**self._get_user_creation_params(user_data))
             user.is_staff = True
             user.save()
         except Exception:
@@ -105,15 +99,19 @@ class Command(BaseCommand):
     def _try_create_user(self, user_data):
         """ Attempt user creation, ignore failures. """
         try:
-            User.objects.create_user(
-                username=user_data['username'],
-                email=user_data['email'],
-                password=self.DEFAULT_PASSWORD,
-                first_name=user_data['first_name'],
-                last_name=user_data['last_name']
-            )
+            User.objects.create_user(**self._get_user_creation_params(user_data))
         except Exception:
             pass
+
+    def _get_user_creation_params(self, user_data):
+        """Extract common parameters for user creation."""
+        return {
+            'username': user_data['username'],
+            'email': user_data['email'],
+            'password': self.DEFAULT_PASSWORD,
+            'first_name': user_data['first_name'],
+            'last_name': user_data['last_name']
+        }
 
     def _seed_recipes(self):
         """ Generate recipes up to target count. """
@@ -152,7 +150,6 @@ class Command(BaseCommand):
         """ Save image to recipe if provided. """
         if image and filename: 
             recipe.image.save(filename, image, save=True)
-
 
 def _add_tags_to_recipe_data(data):
     """ Add all tag categories to recipe data. """
