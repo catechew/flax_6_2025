@@ -117,5 +117,4 @@ def map_ai_dietary_tags(ai_dietary_list):
         system_tag = mapping.get(ai_tag.lower())
         if system_tag:
             mapped_tags.append(system_tag)
-
     return mapped_tags

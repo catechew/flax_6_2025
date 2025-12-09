@@ -51,10 +51,7 @@ def _build_day_data(plan, day_code, day_name, index):
 def _add_meal_slots(day_data, all_slots, meals):
     """ Add meal slots to day data. """
     for meal in meals:
-        slot = all_slots.filter(
-            day=day_data['day_code'],
-            meal_type=meal
-        ).first()
+        slot = all_slots.filter(day=day_data['day_code'], meal_type=meal).first()
         day_data['slots'][meal] = slot
 
 def create_meal_slots(plan):
@@ -63,11 +60,10 @@ def create_meal_slots(plan):
     
     days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
     meals = ["breakfast", "lunch", "dinner", "snack"]
-    slots = [
-        MealSlot(meal_plan=plan, day=day, meal_type=meal, recipe=None)
-        for day in days
-        for meal in meals
-    ]
+    slots = [MealSlot(meal_plan=plan, day=day, meal_type=meal, recipe=None)
+                for day in days
+                for meal in meals
+            ]
     MealSlot.objects.bulk_create(slots)
 
 def reuse_prev_week(plan):
@@ -78,7 +74,6 @@ def reuse_prev_week(plan):
     
     if not _has_any_recipes(prev_plan):
         return False
-    
     meals_copied = _copy_all_meal_slots(plan, prev_plan)
     return meals_copied > 0
 
@@ -115,10 +110,7 @@ def _copy_single_meal_slot(slot, prev_plan):
 
 def _find_matching_slot(prev_plan, slot):
     """ Find slot in previous plan matching day and meal type. """
-    return prev_plan.entries.filter(
-        day=slot.day,
-        meal_type=slot.meal_type
-    ).first()
+    return prev_plan.entries.filter(day=slot.day, meal_type=slot.meal_type).first()
 
 def calculate_meals_logged(plan):
     """
@@ -126,9 +118,6 @@ def calculate_meals_logged(plan):
     have been logged with recipes for the week.
     """
     meal_types = ["breakfast", "lunch", "dinner"]
-    logged = plan.entries.filter(
-        meal_type__in=meal_types,
-        recipe__isnull=False
-    ).count()
+    logged = plan.entries.filter(meal_type__in=meal_types, recipe__isnull=False).count()
     total = 7 * len(meal_types)  # 7 days × 3 meals
     return logged, total

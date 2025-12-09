@@ -159,7 +159,7 @@ class RecipeFormHandler:
         return redirect_to_tags(self)
 
     def finalise_recipe(self):
-        """Finalise and save recipe."""
+        """ Finalise and save recipe. """
         recipe = self._prepare_recipe_for_save()
         self._apply_recipe_modifications(recipe)
         recipe.save()
@@ -168,7 +168,7 @@ class RecipeFormHandler:
         return redirect("recipe_detail", recipe_id=recipe.id)
 
     def _prepare_recipe_for_save(self):
-        """Build recipe instance from form data."""
+        """ Build recipe instance from form data. """
         form_data, files = rebuild_form_data(self.session_data, self.request, self.recipe)
         form = RecipeForm(form_data, files, instance=self.recipe)
         recipe = form.save(commit=False)
