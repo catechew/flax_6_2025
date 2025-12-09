@@ -17,7 +17,7 @@ Recipes | Recipe #{{recipe.id}}
             <div class="position-relative">
                 <img src="{{ recipe.image.url }}" class="card-img-top recipe-detail-image" alt="{{ recipe.title }}">
                 <div class="position-absolute bottom-0 end-0 m-3">
-                    {% include 'partials/save_recipe_button.html' with button_class='btn-light btn-lg rounded-circle' icon_class_filled='text-danger' icon_class_empty='text-muted' %}
+                    {% include 'partials/save_recipe_button.html' with button_class='heart-btn btn-light btn-lg rounded-circle favourited' %}
                 </div>
             </div>
         {% endif %}

@@ -110,6 +110,23 @@
     color: #ff4d88 !important;
 }
 
+.heart-btn.btn-light i {
+    color: #6c757d !important;
+}
+
+.heart-btn.btn-light {
+    background: white !important;
+}
+
+.heart-btn.btn-light.favourited i {
+    color: #ff4d88 !important;
+}
+
+.heart-btn.btn-light:hover i {
+    color: #ff4d88 !important;
+}
+
+
 /* Recipe detail checkbox strikethrough */
 .ingredient-checkbox:checked~.ingredient-text {
     text-decoration: line-through;

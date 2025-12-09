@@ -2,7 +2,7 @@
 <form action="{% url 'toggle_save_recipe' recipe.id %}" method="POST" class="{{ form_class }}">
     {% csrf_token %}
     {% if user in recipe.saved_by.all %}
-    <button type="submit" class="btn {{ button_class|default:'heart-btn' }}" title="Unsave recipe">
+    <button type="submit" class="btn {{ button_class|default:'heart-btn favourited' }}" title="Unsave recipe">
         <i class="bi bi-heart-fill {{ icon_class_filled|default:'' }}"></i>
     </button>
     {% else %}
