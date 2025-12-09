@@ -9,10 +9,11 @@ from django.db.models.functions import Concat
 from dotenv import load_dotenv
 import json
 import openai
+from openai import error
 
 from recipes.models.recipe import Recipe
 
-# Constants
+# constants
 SORT_OPTIONS = {
     'date_newest': '-publication_date',
     'date_oldest': 'publication_date',
@@ -23,6 +24,15 @@ SORT_OPTIONS = {
     'title_az': 'title',
     'title_za': '-title',
 }
+
+# error messages for common errors when making an api call
+ERROR_MESSAGES = {
+    json.JSONDecodeError: 'Unable to process AI response. Please try again.',
+    error.AuthenticationError: 'AI service configuration error. Please contact support.',
+    error.RateLimitError: 'AI service is busy. Please wait a moment and try again.',
+    error.APIConnectionError: 'Unable to connect to AI service. Please check your connection.',
+}
+DEFAULT_ERROR = 'Something went wrong. Please try again.'
 
 # Load .env file to get API key
 load_dotenv()
@@ -212,7 +222,8 @@ def ai_recipe_search_view(request):
     try:
         return process_ai_search(request, user_context)
     except Exception as e:
-        messages.error(request, f'An error occurred: {str(e)}')
+        message = ERROR_MESSAGES.get(type(e), DEFAULT_ERROR)
+        messages.error(request, message)
         return render(request, 'ai/ai_recipe_search.html', {'user_context': user_context})
 
 def process_ai_search(request, user_context):
