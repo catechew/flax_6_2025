@@ -85,21 +85,20 @@ def apply_search_query(recipes, search_query):
 
 
 def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters):
-    """
-    apply tag-based filters to recipes
-    """
-    filter_map = {
-        'course_tags': course_filters,
-        'dietary_tags': dietary_filters,
-        'cuisine_tags': cuisine_filters,
-        'other_tags': other_filters,
-    }
-    
-    for tag_field, filter_values in filter_map.items():
-        if filter_values: recipes = build_or_query(recipes, tag_field, filter_values) 
-    
-    return recipes
+    """Apply tag-based filters to recipes."""
+    if course_filters:
+        recipes = build_or_query(recipes, 'course_tags', course_filters)
 
+    if dietary_filters:
+        recipes = build_or_query(recipes, 'dietary_tags', dietary_filters)
+
+    if cuisine_filters:
+        recipes = build_or_query(recipes, 'cuisine_tags', cuisine_filters)
+
+    if other_filters:
+        recipes = build_or_query(recipes, 'other_tags', other_filters)
+
+    return recipes
 
 def build_or_query(recipes, tag_field, filter_values):
     """
