@@ -39,6 +39,10 @@
     -webkit-text-stroke: 5px var(--bg-colour);
 }
 
+.dropdown-filter {
+    min-width: 200px;
+}
+
 @media (max-width: 769px) {
     .home-title {
         font-size: 14vw;

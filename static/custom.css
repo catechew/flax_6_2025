@@ -41,22 +41,27 @@
 }
 
 /* Card Headers */
-.card-header.bg-primary {
+.bg-primary {
   background-color: var(--primary-colour) !important;
   color: var(--bg-colour) !important;
 }
 
-.card-header.bg-success {
+.bg-success {
   background-color: var(--primary-colour-darker) !important;
   color: var(--bg-colour) !important;
 }
 
-.card-header.bg-info {
+.bg-info {
   background-color: var(--primary-colour-darkest) !important;
   color: var(--bg-colour) !important;
 }
 
-.card-header.bg-warning {
+.bg-warning {
   background-color: var(--primary-colour-lighter) !important;
   color: var(--black-colour) !important;
+}
+
+/* h2 */
+h1, h2 {
+  font-weight: bold;
 }

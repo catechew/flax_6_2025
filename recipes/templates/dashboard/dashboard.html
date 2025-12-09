@@ -8,16 +8,16 @@
 
   <div class="row mb-4">
     <div class="col-12">
-      <h1 style="font-weight: bold">
+      <h1>
         Welcome to Recipify,
-        <span style="color: var(--primary-colour);">{{ user.username }}</span>
+        <span class="bg-primary">{{ user.username }}</span>
       </h1>
     </div>
   </div>
 
   <div class="row mb-3">
     <div class="col-12 d-flex justify-content-between align-items-center">
-      <h2 style="font-weight: bolder">Latest Additions</h2>
+      <h2>Latest Additions</h2>
       <a href="{% url 'all_recipes' %}" class="btn btn-outline-primary btn-sm">View All</a>
     </div>
   </div>
@@ -41,7 +41,7 @@
 <!-- Highest rated recipes -->
 <div class="row mb-3">
     <div class="col-12 d-flex justify-content-between align-items-center">
-        <h2 style="font-weight: bolder">Highest Rated</h2>
+        <h2>Highest Rated</h2>
         <a href="{% url 'all_recipes' %}?sort=rating" class="btn btn-outline-primary btn-sm">
             View All
         </a>
@@ -67,7 +67,7 @@
 <!-- Most saved recipes -->
 <div class="row mb-3">
     <div class="col-12 d-flex justify-content-between align-items-center">
-        <h2 style="font-weight: bolder">Most Saved</h2>
+        <h2>Most Saved</h2>
         <a href="{% url 'all_recipes' %}?sort=saved" class="btn btn-outline-primary btn-sm">View All</a>
     </div>
 </div>
@@ -93,7 +93,7 @@
 <!-- Recipes from people being followed -->
 <div class="row mb-3">
     <div class="col-12 d-flex justify-content-between align-items-center">
-        <h2 style="font-weight: bolder">People You Follow</h2>
+        <h2>People You Follow</h2>
         <a href="{% url 'all_recipes' %}?filter=following" class="btn btn-outline-primary btn-sm">
             View All
         </a>

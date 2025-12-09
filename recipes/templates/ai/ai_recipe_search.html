@@ -66,11 +66,11 @@
             {% endif %}
 
             <!-- Search Parameters Used -->
-            <div class="card-base card-body mb-3 border-secondary">
-              <div class="card-header bg-light">
+            <div class="card-base card-body mb-3">
+              <div class="card-header bg-primary">
                 <h5 class="mb-0"><i class="bi bi-sliders"></i> Search Parameters Used</h5>
               </div>
-              <div class="card-body card-base">
+              <div class="card-body">
                 <div class="row">
                   {% if search_params.search_query %}
                   <div class="col-md-6 mb-2">
@@ -169,8 +169,7 @@
             </div>
             {% else %}
             <div class="alert alert-warning">
-              <i class="bi bi-exclamation-triangle"></i> No recipes found matching your criteria. Try broadening your
-              search.
+              <i class="bi bi-exclamation-triangle"></i> No recipes found matching your criteria. Try broadening your search.
             </div>
             {% endif %}
           </div>
