@@ -164,12 +164,12 @@ class RecipeForm(forms.ModelForm):
     
     def _find_ingredient_errors(self, text):
         lines = [line.strip() for line in text.splitlines() if line.strip()]
-        return [
-            error
-            for i, line in enumerate(lines, start=1)
-            for error in [self._validate_ingredient_line(line, i)]
-            if error
-        ]
+        errors = []
+        for i, line in enumerate(lines, start=1):
+            error = self._validate_ingredient_line(line, i)
+            if error:
+                errors.append(error)
+        return errors
 
     def _validate_ingredient_line(self, line, line_num):
         """ Validate single ingredient line. """
