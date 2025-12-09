@@ -74,15 +74,14 @@ def _clean_json_response(response):
 
 def _get_error_message(exception):
     """Map exception types to user-friendly error messages."""
-    error_messages = {
-        json.JSONDecodeError: 'AI returned invalid format. Please try again.',
-        openai.error.Timeout: 'Request timed out. Please try again.',
-        openai.error.APIError: lambda e: f'OpenAI API error: {str(e)}',
-    }
+    if isinstance(exception, json.JSONDecodeError):
+        return 'AI returned invalid format. Please try again.'
 
-    for exc_type, message in error_messages.items():
-        if isinstance(exception, exc_type):
-            return message(exception) if callable(message) else message
+    if isinstance(exception, openai.error.Timeout):
+        return 'Request timed out. Please try again.'
+
+    if isinstance(exception, openai.error.APIError):
+        return f'OpenAI API error: {str(exception)}'
 
     return f'An error occurred: {str(exception)}'
 

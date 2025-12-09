@@ -35,20 +35,15 @@ def extract_minutes(time_str):
 
 def find_last_digit(parts):
     """ Find last digit in list of string parts. """
-    for part in reversed(parts):
-        if part.isdigit():
-            return int(part)
-    return 0
+    return next((int(part) for part in reversed(parts) if part.isdigit()), 0)
 
 def format_ingredients_for_form(ingredients_list):
     """ Convert AI format to app format: '400g spaghetti' → 'Spaghetti (400g)'. """
-    formatted = []
-
-    for ingredient in ingredients_list:
-        if not ingredient.strip():
-            continue
-        formatted.append(format_single_ingredient(ingredient.strip()))
-
+    formatted = [
+        format_single_ingredient(ingredient.strip())
+        for ingredient in ingredients_list
+        if ingredient.strip()
+    ]
     return '\n'.join(formatted)
 
 
@@ -111,10 +106,9 @@ def get_dietary_tag_mapping():
 def map_ai_dietary_tags(ai_dietary_list):
     """ Map AI dietary tags to system tags. """
     mapping = get_dietary_tag_mapping()
-    mapped_tags = []
-
-    for ai_tag in ai_dietary_list:
-        system_tag = mapping.get(ai_tag.lower())
-        if system_tag:
-            mapped_tags.append(system_tag)
+    mapped_tags = [
+        mapping[ai_tag.lower()]
+        for ai_tag in ai_dietary_list
+        if ai_tag.lower() in mapping
+    ]
     return mapped_tags
