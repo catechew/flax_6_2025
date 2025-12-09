@@ -1,138 +1,91 @@
-from django.test import TestCase
 from django.urls import reverse
-from recipes.models import Recipe, User
-from django.utils import timezone 
-from unittest.mock import patch
+from recipes.tests.views.test_helpers_base import BaseRecipeViewTestCase  
 
 """
-Tests for the recipe detail view.
+Tests for the recipe detail view - scaling and time display.
 """
 
-class RecipeDetailViewTestCase(TestCase):
-
-    fixtures = [
-        'recipes/tests/fixtures/default_user.json'
-    ]
+class RecipeDetailViewScalingTests(BaseRecipeViewTestCase): 
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
-        self.client.login(username='@johndoe', password='Password123')
-
-        self.recipe = Recipe.objects.create(
-            author=self.user,
-            title="Korean Noodles",                        
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
-        )
+        super().setUp()
+        self.recipe = self.create_test_recipe(title="Korean Noodles")
         self.url = reverse('recipe_detail', kwargs={'recipe_id': self.recipe.id})
 
     def test_servings_scaling_doubles_ingredients(self):
-          """ Test that doubling servings doubles ingredient quantities. """
-          recipe = Recipe.objects.create(
-              author=self.user,
-              title="Scalable Recipe",
-              publication_date=timezone.now().date(),
-              servings=2,
-              ingredients="Sugar (100g)\nFlour (200g)",
-              steps="Mix ingredients"
-          )
-
-          url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-          # Request with 4 servings (double the original 2)
-          response = self.client.get(url, {'servings': 4})
-
-          self.assertEqual(response.status_code, 200)
-          # Check that quantities are doubled
-          self.assertContains(response, "200")  # Sugar doubled from 100g
-          self.assertContains(response, "400")  # Flour doubled from 200g
+        """ Test that doubling servings doubles ingredient quantities. """
+        recipe = self.create_test_recipe(
+            title="Scalable Recipe",
+            servings=2,
+            ingredients="Sugar (100g)\nFlour (200g)",
+            steps="Mix ingredients"
+        )
+        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
+        response = self.client.get(url, {'servings': 4})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "200")
+        self.assertContains(response, "400")
 
     def test_servings_scaling_halves_ingredients(self):
         """ Test that halving servings halves ingredient quantities. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed to use helper
             title="Halvable Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Butter (200g)\nMilk (400ml)",
             steps="Mix ingredients"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        # Request with 2 servings (half the original 4)
         response = self.client.get(url, {'servings': 2})
-
         self.assertEqual(response.status_code, 200)
-        # Check that quantities are halved
-        self.assertContains(response, "100")  # Butter halved from 200g
-        self.assertContains(response, "200")  # Milk halved from 400ml
+        self.assertContains(response, "100")
+        self.assertContains(response, "200")
 
     def test_servings_with_invalid_value_uses_default(self):
         """ Test that invalid servings value falls back to recipe default. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="Default Servings Recipe",
-            publication_date=timezone.now().date(),
             servings=3,
             ingredients="Rice (300g)",
             steps="Cook rice"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        # Request with invalid servings
         response = self.client.get(url, {'servings': 'invalid'})
-
         self.assertEqual(response.status_code, 200)
-        # Should use original 3 servings, so rice stays at 300g
         self.assertContains(response, "300")
         self.assertContains(response, "3")
 
     def test_servings_with_empty_value_uses_default(self):
         """ Test that empty servings value falls back to recipe default. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="Empty Servings Test",
-            publication_date=timezone.now().date(),
             servings=5,
             ingredients="Pasta (500g)",
             steps="Boil pasta"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        # Request with empty servings
         response = self.client.get(url, {'servings': ''})
-
         self.assertEqual(response.status_code, 200)
-        # Should use original 5 servings
         self.assertContains(response, "500")
         self.assertContains(response, "5")
 
     def test_servings_scaling_factor_displayed(self):
         """ Test that scaling factor is displayed when servings are adjusted. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="Scaling Display Test",
-            publication_date=timezone.now().date(),
             servings=2,
             ingredients="Salt (2g)",
             steps="Add salt"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
-        # Request with 6 servings (3x the original)
         response = self.client.get(url, {'servings': 6})
-
         self.assertEqual(response.status_code, 200)
-        # Check that scaling factor message appears
         self.assertContains(response, "scaled by")
-        self.assertContains(response, "3.00")  # 6/2 = 3
+        self.assertContains(response, "3.00")
 
     def test_recipe_detail_displays_prep_time(self):
         """ Test that prep time is displayed when present. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="Timed Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Flour (500g)",
             steps="Mix flour",
@@ -147,10 +100,8 @@ class RecipeDetailViewTestCase(TestCase):
 
     def test_recipe_detail_displays_cook_time(self):
         """ Test that cook time is displayed when present. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="Cooked Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Chicken (1kg)",
             steps="Cook chicken",
@@ -165,10 +116,8 @@ class RecipeDetailViewTestCase(TestCase):
 
     def test_recipe_detail_displays_total_time(self):
         """ Test that total time is calculated and displayed. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="Full Time Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Pasta (500g)",
             steps="Cook pasta",
@@ -185,10 +134,8 @@ class RecipeDetailViewTestCase(TestCase):
 
     def test_recipe_detail_with_zero_times_no_display(self):
         """ Test that recipes with zero times don't show time sections. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="No Time Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Water (1L)",
             steps="Pour water",
@@ -197,20 +144,16 @@ class RecipeDetailViewTestCase(TestCase):
             cook_time_hours=0,
             cook_time_minutes=0
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        # Time sections should not appear
         self.assertNotContains(response, "Prep:")
         self.assertNotContains(response, "Cook:")
 
     def test_recipe_with_only_prep_time_minutes(self):
         """ Test recipe with only minutes (no hours) displays correctly. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="Quick Prep Recipe",
-            publication_date=timezone.now().date(),
             servings=2,
             ingredients="Salad (1 bowl)",
             steps="Mix salad",
@@ -224,10 +167,8 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertNotContains(response, "0 hr")
 
     def test_recipe_with_only_hours_no_minutes(self):
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(  # ← Changed
             title="Long Cook Recipe",
-            publication_date=timezone.now().date(),
             servings=6,
             ingredients="Stew (1 pot)",
             steps="Simmer stew",
