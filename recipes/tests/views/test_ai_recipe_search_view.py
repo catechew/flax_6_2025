@@ -4,7 +4,7 @@ from django.urls import reverse
 from unittest.mock import patch, MagicMock
 from recipes.models import User, Recipe
 from datetime import date
-from recipes.views import ai_recipe_search_view
+from django.contrib.messages import constants as message_constants
 from recipes.views.ai_recipe_search_view import (
     get_search_params_from_ai,
     get_ai_rankings,
@@ -210,7 +210,8 @@ class AIRecipeSearchViewTests(TestCase):
         response = self.client.post(self.url, {'context': 'I want pasta'})
 
         messages = list(response.context['messages'])
-        self.assertTrue(any('An error occurred' in str(m) for m in messages))
+        # Check that there is any message that is at least as severe as an error
+        self.assertTrue(any(m.level >= message_constants.ERROR for m in messages))
 
     @patch('openai.ChatCompletion.create')
     def test_invalid_json_response(self, mock_openai):
@@ -225,7 +226,7 @@ class AIRecipeSearchViewTests(TestCase):
         response = self.client.post(self.url, {'context': 'I want pasta'})
 
         messages = list(response.context['messages'])
-        self.assertTrue(any('An error occurred' in str(m) for m in messages))
+        self.assertTrue(any(m.level >= message_constants.ERROR for m in messages))
 
     @patch('openai.ChatCompletion.create')
     def test_exception_preserves_user_context(self, mock_openai):
