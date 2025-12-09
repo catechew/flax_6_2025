@@ -1,39 +1,21 @@
-from django.test import TestCase
 from django.urls import reverse
-from recipes.models import Recipe, User
-from django.utils import timezone 
-from unittest.mock import patch
+from recipes.tests.views.test_helpers_base import BaseRecipeViewTestCase
 
-class RecipeDetailViewTestCase(TestCase):
-    """
-    Tests for the recipe detail view.
-    """
+"""
+Tests for the recipe detail view - content display.
+"""
 
-    fixtures = [
-        'recipes/tests/fixtures/default_user.json'
-    ]
+class RecipeDetailViewTestCase(BaseRecipeViewTestCase):
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
-        self.client.login(username='@johndoe', password='Password123')
-
-        self.recipe = Recipe.objects.create(
-            author=self.user,
-            title="Korean Noodles",                        
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
-        )
+        super().setUp()
+        self.recipe = self.create_test_recipe(title="Korean Noodles")
         self.url = reverse('recipe_detail', kwargs={'recipe_id': self.recipe.id})
 
     def test_recipe_detail_with_long_title(self):
         """ Test displaying recipe with maximum length title. """
         long_title = "A" * 255
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title=long_title,
-            publication_date=timezone.now().date()
-        )
+        recipe = self.create_test_recipe(title=long_title)
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -41,11 +23,7 @@ class RecipeDetailViewTestCase(TestCase):
     
     def test_recipe_detail_with_minimum_length_title(self):
         """ Test displaying recipe with minimum valid title (4 chars). """
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="ABCD",
-            publication_date=timezone.now().date()
-        )
+        recipe = self.create_test_recipe(title="ABCD")
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -53,10 +31,8 @@ class RecipeDetailViewTestCase(TestCase):
     
     def test_recipe_detail_with_special_characters(self):
         """ Test displaying recipe with special characters in title. """
-        recipe = Recipe.objects.create(
-            author=self.user,
-            title="Grandmother's Secret Recipe! (The Best)",
-            publication_date=timezone.now().date()
+        recipe = self.create_test_recipe(
+            title="Grandmother's Secret Recipe! (The Best)"
         )
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
@@ -65,6 +41,7 @@ class RecipeDetailViewTestCase(TestCase):
     
     def test_recipe_detail_from_different_author(self):
         """ Test viewing recipe created by a different user. """
+        from recipes.models import User
         other_user, created = User.objects.get_or_create(
             username='@janedoe',
             defaults={
@@ -72,10 +49,9 @@ class RecipeDetailViewTestCase(TestCase):
                 'password': 'Password123'
             }
         )
-        other_recipe = Recipe.objects.create(
+        other_recipe = self.create_test_recipe(
             author=other_user,
-            title="Jane's Recipe",
-            publication_date=timezone.now().date()
+            title="Jane's Recipe"
         )
         url = reverse('recipe_detail', kwargs={'recipe_id': other_recipe.id})
         response = self.client.get(url)
@@ -108,10 +84,8 @@ class RecipeDetailViewTestCase(TestCase):
 
     def _create_recipe_with_image(self):
         """ Create a recipe with an attached image. """
-        return Recipe.objects.create(
-            author=self.user,
+        return self.create_test_recipe(
             title="Recipe with Image",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Tomato (2)",
             steps="Cook it",
@@ -120,37 +94,28 @@ class RecipeDetailViewTestCase(TestCase):
 
     def test_recipe_detail_without_image_shows_no_image_tag(self):
         """ Test that no image tag appears when recipe has no image. """
-        recipe_without_image = Recipe.objects.create(
-            author=self.user,
+        recipe_without_image = self.create_test_recipe(
             title="Recipe without Image",
-            publication_date=timezone.now().date(),
             servings=2,
             ingredients="Salt (1 pinch)",
             steps="Add salt"
         )
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe_without_image.id})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
-        # The recipe title should be there, but image-related tags should not
         self.assertContains(response, "Recipe without Image")
-        # Check that the img tag for recipe.image.url is not present
         self.assertNotContains(response, 'recipe_images/')
     
     def test_recipe_detail_displays_servings(self):
         """ Test that recipe servings are displayed. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(
             title="Four Serving Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Pasta (500g)",
             steps="Boil pasta"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "4")
         self.assertContains(response, "servings")
@@ -158,7 +123,6 @@ class RecipeDetailViewTestCase(TestCase):
     def test_recipe_detail_servings_adjustment_form(self):
         """ Test that servings adjustment form is present. """
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
         # Check for servings input field
         self.assertContains(response, 'name="servings"')

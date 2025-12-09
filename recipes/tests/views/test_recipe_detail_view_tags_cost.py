@@ -1,38 +1,21 @@
-from django.test import TestCase
 from django.urls import reverse
-from recipes.models import Recipe, User
-from django.utils import timezone 
-from unittest.mock import patch
+from recipes.tests.views.test_helpers_base import BaseRecipeViewTestCase
 
 """
-Tests for the recipe detail view.
+Tests for the recipe detail view - tags and cost estimation.
 """
 
-class RecipeDetailViewTestCase(TestCase):
-
-    fixtures = [
-        'recipes/tests/fixtures/default_user.json'
-    ]
+class RecipeDetailViewTestCase(BaseRecipeViewTestCase):
 
     def setUp(self):
-        self.user = User.objects.get(username='@johndoe')
-        self.client.login(username='@johndoe', password='Password123')
-
-        self.recipe = Recipe.objects.create(
-            author=self.user,
-            title="Korean Noodles",                        
-            publication_date=timezone.now().date(),
-            ingredients="test (1)",
-            steps="test"
-        )
+        super().setUp()
+        self.recipe = self.create_test_recipe(title="Korean Noodles")
         self.url = reverse('recipe_detail', kwargs={'recipe_id': self.recipe.id})
 
     def test_recipe_detail_displays_course_tags(self):
         """ Test that course tags are displayed. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(
             title="Tagged Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Eggs (2)",
             steps="Fry eggs",
@@ -45,10 +28,8 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "main")
 
     def test_recipe_detail_displays_dietary_tags(self):
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(
             title="Dietary Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Tofu (200g)",
             steps="Cook tofu",
@@ -61,10 +42,8 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "gluten-free")
 
     def test_recipe_detail_displays_cuisine_tags(self):
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(
             title="Cuisine Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Pasta (300g)",
             steps="Cook pasta",
@@ -78,29 +57,23 @@ class RecipeDetailViewTestCase(TestCase):
 
     def test_recipe_detail_displays_other_tags(self):
         """ Test that other tags are displayed. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(
             title="Quick Recipe",
-            publication_date=timezone.now().date(),
             servings=2,
             ingredients="Bread (2 slices)",
             steps="Toast bread",
             other_tags="quick,budget"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "quick")
         self.assertContains(response, "budget")
 
     def test_recipe_detail_with_all_tags(self):
         """ Test recipe with all tag types displays correctly. """
-        recipe = Recipe.objects.create(
-            author=self.user,
+        recipe = self.create_test_recipe(
             title="Fully Tagged Recipe",
-            publication_date=timezone.now().date(),
             servings=4,
             ingredients="Rice (200g)",
             steps="Cook rice",
