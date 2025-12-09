@@ -8,10 +8,15 @@ class DashboardViewTests(TestCase):
     """Test dashboard view functionality."""
 
     def setUp(self):
-        """Set up test data."""
+        """ Set up test data. """
         self.client = Client()
+        self._create_users()
+        self._create_user_recipes()
+        self._create_other_user_recipes()
+        self.url = reverse('dashboard')
 
-        # Create users
+    def _create_users(self):
+        """ Create test users. """
         self.user = User.objects.create_user(
             username='@testuser',
             email='test@example.com',
@@ -19,7 +24,6 @@ class DashboardViewTests(TestCase):
             first_name='Test',
             last_name='User'
         )
-
         self.other_user = User.objects.create_user(
             username='@otheruser',
             email='other@example.com',
@@ -27,7 +31,6 @@ class DashboardViewTests(TestCase):
             first_name='Other',
             last_name='User'
         )
-
         self.followed_user = User.objects.create_user(
             username='@followed',
             email='followed@example.com',
@@ -35,11 +38,10 @@ class DashboardViewTests(TestCase):
             first_name='Followed',
             last_name='User'
         )
-
-        # User follows followed_user
         self.user.follow(self.followed_user)
-
-        # Create recipes
+    
+    def _create_user_recipes(self):
+        """ Create recipes for main test user. """
         self.public_recipe = Recipe.objects.create(
             author=self.user,
             title='Public Recipe',
@@ -48,7 +50,6 @@ class DashboardViewTests(TestCase):
             steps='Test step',
             private=False
         )
-
         self.private_recipe = Recipe.objects.create(
             author=self.user,
             title='Private Recipe',
@@ -58,6 +59,8 @@ class DashboardViewTests(TestCase):
             private=True
         )
 
+    def _create_other_user_recipes(self):
+        """ Create recipes for other users. """
         self.other_recipe = Recipe.objects.create(
             author=self.other_user,
             title='Other User Recipe',
@@ -66,7 +69,6 @@ class DashboardViewTests(TestCase):
             steps='Test step',
             private=False
         )
-
         self.followed_recipe = Recipe.objects.create(
             author=self.followed_user,
             title='Followed User Recipe',
@@ -75,25 +77,22 @@ class DashboardViewTests(TestCase):
             steps='Test step',
             private=False
         )
-
-        self.url = reverse('dashboard')
-
+    
     def test_requires_login(self):
-        """Dashboard requires authentication."""
+        """ Dashboard requires authentication. """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertIn('/log_in/', response.url)
 
     def test_authenticated_user_can_access(self):
-        """Authenticated user can access dashboard."""
+        """ Authenticated user can access dashboard. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
-
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
     def test_shows_most_saved_recipes(self):
-        """Dashboard shows most saved recipes."""
+        """ Dashboard shows most saved recipes. """
         # Make recipes saved
         self.public_recipe.saved_by.add(self.user)
         self.public_recipe.saved_by.add(self.other_user)
@@ -109,23 +108,20 @@ class DashboardViewTests(TestCase):
         self.assertEqual(most_saved[0], self.public_recipe)
 
     def test_shows_highest_rated_recipes(self):
-        """Dashboard shows highest rated recipes."""
+        """ Dashboard shows highest rated recipes. """
         # Add ratings
         Rating.objects.create(
             recipe=self.public_recipe,
             user=self.user,
             stars=5
         )
-
         Rating.objects.create(
             recipe=self.other_recipe,
             user=self.user,
             stars=3
         )
-
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
-
         highest_rated = response.context['highest_rated_recipes']
 
         # public_recipe has 5 stars, should be first
@@ -133,7 +129,7 @@ class DashboardViewTests(TestCase):
         self.assertEqual(highest_rated[0], self.public_recipe)
 
     def test_shows_followed_user_recipes(self):
-        """Dashboard shows recipes from followed users."""
+        """ Dashboard shows recipes from followed users. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
 
@@ -146,7 +142,7 @@ class DashboardViewTests(TestCase):
         self.assertNotIn(self.other_recipe, followed_recipes)
 
     def test_does_not_show_private_recipes_from_others(self):
-        """Dashboard does not show private recipes from other users."""
+        """ Dashboard does not show private recipes from other users. """
         private_other = Recipe.objects.create(
             author=self.other_user,
             title='Private Other Recipe',
@@ -155,17 +151,15 @@ class DashboardViewTests(TestCase):
             steps='Test step',
             private=True
         )
-
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
-
         recent_recipes = response.context['recent_recipes']
 
         # Should not see other user's private recipe
         self.assertNotIn(private_other, recent_recipes)
 
     def test_limits_to_three_recipes_each(self):
-        """Each section shows max 3 recipes."""
+        """ Each section shows max 3 recipes. """
         # Create 5 recipes
         for i in range(5):
             Recipe.objects.create(
@@ -176,14 +170,13 @@ class DashboardViewTests(TestCase):
                 steps='Test step',
                 private=False
             )
-
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
 
         self.assertEqual(len(response.context['recent_recipes']), 3)
 
     def test_context_has_all_required_keys(self):
-        """Context contains all required data."""
+        """ Context contains all required data. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
 
@@ -194,14 +187,14 @@ class DashboardViewTests(TestCase):
         self.assertIn('followed_recipes', response.context)
 
     def test_user_context_is_current_user(self):
-        """User in context is the logged-in user."""
+        """ User in context is the logged-in user. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
 
         self.assertEqual(response.context['user'], self.user)
 
     def test_empty_followed_list(self):
-        """Dashboard works when user follows nobody."""
+        """ Dashboard works when user follows nobody. """
         # Create new user with no follows
         lonely_user = User.objects.create_user(
             username='@lonely',
@@ -213,12 +206,11 @@ class DashboardViewTests(TestCase):
 
         self.client.login(username='@lonely', password='Password123')
         response = self.client.get(self.url)
-
         followed_recipes = response.context['followed_recipes']
         self.assertEqual(len(followed_recipes), 0)
 
     def test_no_ratings_exist(self):
-        """Dashboard works when no ratings exist."""
+        """ Dashboard works when no ratings exist. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
 

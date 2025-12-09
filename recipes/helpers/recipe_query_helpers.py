@@ -214,19 +214,17 @@ def _apply_all_filters(recipes, search_query, filter_params, sort_by):
     return recipes
 
 def _build_context_dict(page_object, search_query, filter_params, sort_by, user_count):
-    return {
-        "recipes": page_object,
-        "page_object": page_object,
-        "search_query": search_query,
-        "filters": filter_params,
-        "total_filters": sum(len(v) for v in filter_params.values()),
-        "sort_by": sort_by,
-        "course_options": COURSE_OPTIONS,
-        "dietary_options": DIETARY_OPTIONS,
-        "cuisine_options": CUISINE_OPTIONS,
-        "other_options": OTHER_OPTIONS,
-        "sort_options": SORT_OPTIONS,
-        "recipe_count": page_object.paginator.count,
-        "user_count": user_count, 
-        "pagination_extra_params": build_filter_params_string(filter_params, sort_by)
-    }
+    return {"recipes": page_object,
+            "page_object": page_object,
+            "search_query": search_query,
+            "filters": filter_params,
+            "total_filters": sum(len(v) for v in filter_params.values()),
+            "sort_by": sort_by,
+            "course_options": COURSE_OPTIONS,
+            "dietary_options": DIETARY_OPTIONS,
+            "cuisine_options": CUISINE_OPTIONS,
+            "other_options": OTHER_OPTIONS,
+            "sort_options": SORT_OPTIONS,
+            "recipe_count": page_object.paginator.count,
+            "user_count": user_count, 
+            "pagination_extra_params": build_filter_params_string(filter_params, sort_by)}
