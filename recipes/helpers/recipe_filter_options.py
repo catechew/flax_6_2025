@@ -2,7 +2,7 @@
 Filter option constants for recipe filtering UI.
 """
 
-COURSE_OPTIONS = ["dessert", "main", "appetiser", "breakfast", "snack"]
+COURSE_OPTIONS = ["dessert", "main", "appetiser", "breakfast", "snack", "beverage"]
 
 DIETARY_OPTIONS = [
  "vegetarian", "vegan", "halal", "kosher",

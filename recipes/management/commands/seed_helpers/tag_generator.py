@@ -5,7 +5,7 @@ Tag generation for recipe seeding.
 """
 
 TAG_OPTIONS = {
-    'course': ['dessert', 'main', 'appetiser', 'breakfast', 'snack'],
+    'course': ['dessert', 'main', 'appetiser', 'breakfast', 'snack', 'beverage'],
     
     'cuisine': [
         'Japanese', 'Italian', 'Chinese', 'Asian', 'Persian',
