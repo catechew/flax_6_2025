@@ -48,6 +48,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """ Execute seeding workflow. """
         self._seed_users()
+        self._setup_ai_avatars()
         self._seed_recipes()
 
     def _seed_users(self):
@@ -104,7 +105,7 @@ class Command(BaseCommand):
             pass
 
     def _get_user_creation_params(self, user_data):
-        """Extract common parameters for user creation."""
+        """ Extract common parameters for user creation. """
         return {
             'username': user_data['username'],
             'email': user_data['email'],
@@ -112,7 +113,29 @@ class Command(BaseCommand):
             'first_name': user_data['first_name'],
             'last_name': user_data['last_name']
         }
-
+    
+    def _setup_ai_avatars(self):
+        """ Configure AI avatars for seeded users. """
+        try:
+            import gender_guesser.detector as gender
+        except ImportError:
+           print("⚠️  gender-guesser not installed.")
+           return 
+       
+        import random
+        
+        d = gender.Detector()
+        seeded_users = User.objects.filter(is_superuser=False)
+        
+        for user in seeded_users:
+            user.avatar_type = 'ai'
+            detected = d.get_gender(user.first_name)
+            user.gender = 'M' if detected in ['male', 'mostly_male'] else 'F'
+            user.age_range = random.choice(['young', 'middle', 'senior'])
+            user.save()
+            
+        print(f"✅ {seeded_users.count()} users configured with AI avatars")
+    
     def _seed_recipes(self):
         """ Generate recipes up to target count. """
         users = list(User.objects.all())
