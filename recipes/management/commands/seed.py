@@ -116,25 +116,33 @@ class Command(BaseCommand):
     
     def _setup_ai_avatars(self):
         """ Configure AI avatars for seeded users. """
+        detector = self._get_gender_detector()
+        if not detector:
+            return 
+        
+        seeded_users = User.objects.filter(is_superuser=False)
+        self._configure_user_avatars(seeded_users, detector)
+        print(f"{seeded_users.count()} users configured with AI avatars")
+        
+    def _get_gender_detector(self):
+        """ Initialize gender detector or return None if unavailable. """
         try:
             import gender_guesser.detector as gender
+            return gender.Detector()
         except ImportError:
-           print("⚠️  gender-guesser not installed.")
-           return 
-       
+            print("⚠️  gender-guesser not installed.")
+            return None
+
+    def _configure_user_avatars(self, users, detector):
+        """ Configure AI avatars and gender for users. """
         import random
         
-        d = gender.Detector()
-        seeded_users = User.objects.filter(is_superuser=False)
-        
-        for user in seeded_users:
+        for user in users:
             user.avatar_type = 'ai'
-            detected = d.get_gender(user.first_name)
+            detected = detector.get_gender(user.first_name)
             user.gender = 'M' if detected in ['male', 'mostly_male'] else 'F'
             user.age_range = random.choice(['young', 'middle', 'senior'])
             user.save()
-            
-        print(f"✅ {seeded_users.count()} users configured with AI avatars")
     
     def _seed_recipes(self):
         """ Generate recipes up to target count. """
