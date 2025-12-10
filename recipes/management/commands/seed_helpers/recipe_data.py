@@ -78,7 +78,6 @@ DISHES = [
             "Ranch Chicken Burger",
             "Veggie Bean Burger",
 
-            "Air Fryer Fish & Chips",
             "Baked Sea Bass with Wedges",
             "British Fish and Chips",
             "Cod & Chips",
@@ -122,10 +121,9 @@ DISHES = [
 
 ADJECTIVES = [
     "Easy", "Quick", "Budget", "Simple", "Gordon Ramsey's", "Jamie Oliver's", "Cheap", 
-    "Lazy", "Viral", "Microwave", "Leftover",  "Meal Prep",  "TikTok Style", 
-    "Comfort", "Pinterest Worthy", "Creamy", "Vegan", "Light", "Special"
-    "15 Minute", "Aesthetic", "Homemade", "Zesty", "Rich", "Fresh", "Leftover Friendly", 
-    "Restaurant Style"
+    "Lazy", "Viral", "Microwave", "Leftover", "TikTok Style", "Comfort", 
+    "Pinterest Worthy", "Creamy", "Vegan", "Light", "Special", "15 Minute", "Aesthetic", 
+    "Homemade", "Zesty", "Rich", "Fresh", "Leftover Friendly", "Restaurant Style"
 ]
 
 PROTEIN = [

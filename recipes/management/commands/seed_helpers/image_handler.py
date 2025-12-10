@@ -84,7 +84,7 @@ DISH_TYPE_MAPPING = {
     ],
     
     'acai': [
-        'acai bowl', 'parfait', 'acai'
+        'acai bowl', 'acai'
     ],
     
     'stir-fry': [
