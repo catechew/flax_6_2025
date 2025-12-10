@@ -28,7 +28,7 @@ INGREDIENT_CATEGORIES = {
                           'cilantro', 'chili'],
     
     '🧂 Condiments': ['oil', 'sugar', 'sauce', 
-                     'sauce', 'salt'],
+                     'sauce', 'salt', 'pepper'],
 }
 
 CATEGORY_ORDER = [
