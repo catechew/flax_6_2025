@@ -11,35 +11,23 @@ class RecipeForm(forms.ModelForm):
 
     publication_date = forms.DateField(
         widget=forms.DateInput(
-            attrs={
-                "type": "date",
-                "class": "form-control",
-            }
+            attrs={"type": "date", "class": "form-control",}
         ),
         help_text="Select publication date (today or earlier)"
     )
-
     image = forms.ImageField(
         required=False,
         widget=forms.FileInput(
-            attrs={
-                "class": "form-control",
-                "accept": "image/*",
-            }
+            attrs={"class": "form-control", "accept": "image/*",}
         ),
         help_text="Upload an image of the dish (optional).",
     )
-
     servings = forms.IntegerField(
         min_value=1,
         initial=4,
         required=True,
         widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-                "min": "1",
-                "required": "required",
-            }
+            attrs={"class": "form-control", "min": "1", "required": "required",}
         ),
         help_text="How many servings does this recipe make?",
         error_messages={
@@ -48,7 +36,6 @@ class RecipeForm(forms.ModelForm):
             "min_value": "Servings must be at least 1.",
         }
     )
-
     ingredients = forms.CharField(
         widget=forms.Textarea(
             attrs={
@@ -64,7 +51,6 @@ class RecipeForm(forms.ModelForm):
         ),
         help_text="List each ingredient on a new line with quantities in parentheses",
     )
-
     steps = forms.CharField(
         widget=forms.Textarea(
             attrs={
@@ -80,7 +66,6 @@ class RecipeForm(forms.ModelForm):
         ),
         help_text="List each step on a new line",
     )
-
     private = forms.ChoiceField(
         choices=[(True, "private"), (False, "public")],
         widget=forms.Select(attrs={"class": "form-control"}),
@@ -88,14 +73,12 @@ class RecipeForm(forms.ModelForm):
         required=True,
         label="Recipe Visibility",
     )
-
     prep_time_hours = forms.IntegerField(
         min_value=0,
         initial=0,
         required=False,
         widget=forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
     )
-    
     prep_time_minutes = forms.IntegerField(
         min_value=0,
         max_value=59,
@@ -105,14 +88,12 @@ class RecipeForm(forms.ModelForm):
             attrs={"class": "form-control", "min": "0", "max": "59"}
         ),
     )
-    
     cook_time_hours = forms.IntegerField(
         min_value=0,
         initial=0,
         required=False,
         widget=forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
     )
-    
     cook_time_minutes = forms.IntegerField(
         min_value=0,
         max_value=59,
@@ -125,7 +106,6 @@ class RecipeForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Set max date dynamically to today
         self.fields['publication_date'].widget.attrs['max'] = timezone.now().date().isoformat()
     
     class Meta:
@@ -164,12 +144,12 @@ class RecipeForm(forms.ModelForm):
     
     def _find_ingredient_errors(self, text):
         lines = [line.strip() for line in text.splitlines() if line.strip()]
-        errors = []
-        for i, line in enumerate(lines, start=1):
-            error = self._validate_ingredient_line(line, i)
-            if error:
-                errors.append(error)
-        return errors
+        return [
+            error
+            for i, line in enumerate(lines, start=1)
+            for error in [self._validate_ingredient_line(line, i)]
+            if error
+        ]
 
     def _validate_ingredient_line(self, line, line_num):
         """ Validate single ingredient line. """
