@@ -12,6 +12,10 @@ DISH_TYPE_MAPPING = {
         'pasta', 'spaghetti', 'bolognese', 'pasta bake'
     ],
     
+    'pesto': [
+        'pesto pasta'
+    ],
+    
     'mac-and-cheese': [
         'macaroni', 'penne', 'baked four cheese mac'
     ],
@@ -35,12 +39,16 @@ DISH_TYPE_MAPPING = {
     ],
     
     'katsu': [
-        'katsu'
+        'katsu', 'japanese curry'
     ],
     
     'curry': [
-        'curry', 'thai curry', 'butter chicken', 
+        'curry', 'thai curry', 
         'chickpea curry', 'aloo gobi', 'dal', 'tarka'
+    ],
+    
+    'butter-chicken': [
+        'butter chicken'
     ],
     
     'soup': [
@@ -68,11 +76,12 @@ DISH_TYPE_MAPPING = {
     ],
     
     'potato-wedges': [
-        'potato wedges', 'garlic butter potatoes'
+        'potato wedges', 'garlic butter wedges'
     ],
     
     'fish-and-chips': [
-        'fish and chips', 'british fish and chips', 'cod & chips'
+        'fish and chips', 'british fish and chips', 'cod & chips', 
+        'sea bass with wedges'
     ],
 
     'wrap': [
@@ -93,7 +102,10 @@ DISH_TYPE_MAPPING = {
 
     'dessert': [
         'cake', 'mug cake', 'chocolate banana jar cake', 'double chocolate parfait', 
-        'nutella cheesecake cup'
+    ],
+    
+    'cheesecake':[
+      'cheesecake'  
     ],
     
     'tanghulu':[
@@ -113,7 +125,8 @@ DISH_TYPE_MAPPING = {
     ],
 
     'drink': [
-        'smoothie', 'very berry hibiscus refresher', 'raspberry coconut cooler'
+        'smoothie', 'very berry hibiscus refresher', 'raspberry coconut cooler', 
+        'raspberry ripple milkshake'
     ],
     
     'bubble-tea': [
@@ -121,15 +134,11 @@ DISH_TYPE_MAPPING = {
     ],
     
     'iced-drink': [
-        'sweet iced tea', 'iced tea', 'ribena mocktail', 'lemonade'
+        'sweet iced tea', 'iced tea', 'peach mocktail', 'strawberry lemonade'
     ],
     
     'detox-water': [
-        'detox water', 
-    ],
-    
-    'milkshake': [
-        'milkshake', 
+        'detox water', 'summer berries cooler'
     ],
     
     'matcha': [

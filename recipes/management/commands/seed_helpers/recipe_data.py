@@ -46,6 +46,7 @@ DISHES = [
             "Chickpea Curry",
             "Katsu Curry",
             "Tarka Dal",
+            "Japanese Curry"
 
             "Breakfast Toast",
             "Honey Banana Toast",
@@ -59,13 +60,14 @@ DISHES = [
             "Detox Water",
             "Dragonfruit Smoothie",
             "Hot Chocolate",
-            "Lemonade",
+            "Strawberry Lemonade",
             "Mocha Frappé",
             "Oat Cappuccino",
             "Peach Iced Tea",
+            "Summer Berries Cooler",
             "Raspberry Coconut Cooler",
             "Raspberry Ripple Milkshake",
-            "Ribena Mocktail",
+            "Peach Mocktail",
             "Strawberry Banana Smoothie",
             "Sweet Iced Tea",
             "Vanilla Matcha",
@@ -122,7 +124,7 @@ DISHES = [
 ADJECTIVES = [
     "Easy", "Quick", "Budget", "Simple", "Gordon Ramsey's", "Jamie Oliver's", "Cheap", 
     "Lazy", "Viral", "Microwave", "Leftover", "TikTok Style", "Comfort", 
-    "Pinterest Worthy", "Creamy", "Vegan", "Light", "Special", "15 Minute", "Aesthetic", 
+    "Pinterest Worthy", "Creamy", "Vegan", "Light", "Special ", "15 Minute", "Aesthetic", 
     "Homemade", "Zesty", "Rich", "Fresh", "Leftover Friendly", "Restaurant Style"
 ]
 
