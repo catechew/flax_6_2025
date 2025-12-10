@@ -157,7 +157,6 @@ class FormatIngredientsTests(TestCase):
         ingredients = ['400g pasta', '   ', '', '2 eggs', '\t', '\n']
         result = format_ingredients_for_form(ingredients)
 
-        # Should only have 2 lines (pasta and eggs)
         lines = [line for line in result.split('\n') if line.strip()]
         self.assertEqual(len(lines), 2)
         self.assertIn('Pasta (400g)', result)
@@ -175,7 +174,6 @@ class FormatIngredientsTests(TestCase):
         result = format_ingredients_for_form(ingredients)
 
         lines = result.split('\n')
-        # Should have exactly 3 ingredients
         self.assertEqual(len(lines), 3)
         self.assertIn('Flour (400g)', result)
         self.assertIn('Sugar (2 cups)', result)

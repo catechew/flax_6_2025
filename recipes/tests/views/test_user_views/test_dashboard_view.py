@@ -93,23 +93,17 @@ class DashboardViewTests(TestCase):
 
     def test_shows_most_saved_recipes(self):
         """ Dashboard shows most saved recipes. """
-        # Make recipes saved
         self.public_recipe.saved_by.add(self.user)
         self.public_recipe.saved_by.add(self.other_user)
         self.other_recipe.saved_by.add(self.user)
-
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
-
         most_saved = response.context['most_saved_recipes']
-
-        # public_recipe has 2 saves, should be first
         self.assertGreater(len(most_saved), 0)
         self.assertEqual(most_saved[0], self.public_recipe)
 
     def test_shows_highest_rated_recipes(self):
         """ Dashboard shows highest rated recipes. """
-        # Add ratings
         Rating.objects.create(
             recipe=self.public_recipe,
             user=self.user,
@@ -123,8 +117,6 @@ class DashboardViewTests(TestCase):
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
         highest_rated = response.context['highest_rated_recipes']
-
-        # public_recipe has 5 stars, should be first
         self.assertGreater(len(highest_rated), 0)
         self.assertEqual(highest_rated[0], self.public_recipe)
 
@@ -132,13 +124,8 @@ class DashboardViewTests(TestCase):
         """ Dashboard shows recipes from followed users. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
-
         followed_recipes = response.context['followed_recipes']
-
-        # Should include recipe from followed user
         self.assertIn(self.followed_recipe, followed_recipes)
-
-        # Should not include recipes from non-followed users
         self.assertNotIn(self.other_recipe, followed_recipes)
 
     def test_does_not_show_private_recipes_from_others(self):
@@ -155,12 +142,10 @@ class DashboardViewTests(TestCase):
         response = self.client.get(self.url)
         recent_recipes = response.context['recent_recipes']
 
-        # Should not see other user's private recipe
         self.assertNotIn(private_other, recent_recipes)
 
     def test_limits_to_three_recipes_each(self):
         """ Each section shows max 3 recipes. """
-        # Create 5 recipes
         for i in range(5):
             Recipe.objects.create(
                 author=self.user,
@@ -195,7 +180,6 @@ class DashboardViewTests(TestCase):
 
     def test_empty_followed_list(self):
         """ Dashboard works when user follows nobody. """
-        # Create new user with no follows
         lonely_user = User.objects.create_user(
             username='@lonely',
             email='lonely@example.com',
@@ -203,7 +187,6 @@ class DashboardViewTests(TestCase):
             first_name='Lonely',
             last_name='User'
         )
-
         self.client.login(username='@lonely', password='Password123')
         response = self.client.get(self.url)
         followed_recipes = response.context['followed_recipes']
@@ -213,6 +196,4 @@ class DashboardViewTests(TestCase):
         """ Dashboard works when no ratings exist. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url)
-
-        # Should not crash
         self.assertEqual(response.status_code, 200)

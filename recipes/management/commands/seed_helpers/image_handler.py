@@ -9,9 +9,24 @@ Image handling for recipe seeding.
 
 DISH_TYPE_MAPPING = {
     'pasta': [
-        'pasta', 'spaghetti', 'macaroni', 'cheese', 'bolognese', 'penne',
-        'pasta bake', 'ramen', 'noodles', 'mee goreng', 'buldak',
-        'pad thai', 'instant noodles', 'cup noodles', 'noodle', 'pot noodle'
+        'pasta', 'spaghetti', 'bolognese', 'pasta bake'
+    ],
+    
+    'mac-and-cheese': [
+        'macaroni', 'penne', 'baked four cheese mac'
+    ],
+    
+    'risotto': [
+      'risotto'  
+    ],
+    
+    'ramen': [
+        'ramen', 'mee goreng', 'buldak', 'instant noodles', 
+        'cup noodles', 'noodle', 'pot noodle'
+    ],
+    
+    'pad-thai': [
+        'pad thai',
     ],
     
     'rice': [
@@ -19,17 +34,25 @@ DISH_TYPE_MAPPING = {
         'microwave rice', 'nasi lemak'
     ],
     
+    'katsu': [
+        'katsu'
+    ],
+    
     'curry': [
-        'curry', 'katsu', 'thai curry', 'butter chicken', 'mushroom curry',
+        'curry', 'thai curry', 'butter chicken', 
         'chickpea curry', 'aloo gobi', 'dal', 'tarka'
     ],
     
     'soup': [
-        'soup', 'tomato soup', 'pho', 'gyoza'
+        'pho', 'gyoza', 'chicken noodle soup', 'lemongrass soup'
+    ],
+    
+    'tomato-soup': [
+        'tomato soup'
     ],
 
     'pizza': [
-        'pizza', 'margherita', 'frozen pizza'
+        'pizza'
     ],
 
     'toast': [
@@ -37,7 +60,19 @@ DISH_TYPE_MAPPING = {
     ],
 
     'burger': [
-        'burger', 'cheeseburger', 'fish and chips', 'oven chips', 'potato wedges',
+        'burger', 'cheeseburger'
+    ],
+    
+    'chips': [
+      'oven chips'  
+    ],
+    
+    'potato-wedges': [
+        'potato wedges', 'garlic butter potatoes'
+    ],
+    
+    'fish-and-chips': [
+        'fish and chips', 'british fish and chips', 'cod & chips'
     ],
 
     'wrap': [
@@ -45,24 +80,81 @@ DISH_TYPE_MAPPING = {
     ],
     
     'salad': [
-        'salad', 'acai bowl', 'bowl', 'stir-fry', 'stir fry',
-        'vegetable stir-fry'
+        'salad'
+    ],
+    
+    'acai': [
+        'acai bowl', 'parfait', 'acai'
+    ],
+    
+    'stir-fry': [
+        'stir fry', 'stir-fry'
     ],
 
     'dessert': [
-        'dessert', 'cake', 'mug cake', 'muffins', 'banana split',
-        's\'mores', 'apple pie', 'tanghulu', 'overnight oats',
-        'cereal snack', 'parfait'
+        'cake', 'mug cake', 'chocolate banana jar cake', 'double chocolate parfait', 
+        'nutella cheesecake cup'
+    ],
+    
+    'tanghulu':[
+        'tanghulu'
+    ],
+    
+    'apple-pie': [
+        'apple pie'
+    ],
+    
+    'banana-split': [
+        'banana split'
+    ],
+    
+    'oats': [
+        'overnight oats', 'cereal snack'
     ],
 
     'drink': [
-        'smoothie', 'milkshake', 'latte', 'matcha', 'hot chocolate',
-        'bubble tea', 'mocktail', 'frappé', 'frappe', 'detox water',
-        'tea', 'iced tea', 'macchiato'
+        'smoothie', 'very berry hibiscus refresher', 'raspberry coconut cooler'
+    ],
+    
+    'bubble-tea': [
+        'bubble tea', 'brown sugar boba'
+    ],
+    
+    'iced-drink': [
+        'sweet iced tea', 'iced tea', 'ribena mocktail', 'lemonade'
+    ],
+    
+    'detox-water': [
+        'detox water', 
+    ],
+    
+    'milkshake': [
+        'milkshake', 
+    ],
+    
+    'matcha': [
+      'matcha', 'vanilla matcha'
+    ],
+    
+    'coffee': [
+        'latte', 'macchiato', 'mocha', 'frappé', 'frappe', 
+        'coffee', 'cappuccino'
+    ],
+    
+    'hot-choc':[
+        'hot chocolate'
     ],
     
     'side': [
-        'hummus', 'mashed', 'mushy peas', 'baked beans'
+        'mashed', 'pub style mash'
+    ],
+    
+    'baked-beans':[
+        'baked beans'
+    ],
+    
+    'hummus': [
+        'hummus'
     ],
 }
 

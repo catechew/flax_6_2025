@@ -7,35 +7,125 @@ Recipe data generation for database seeding.
 """
 
 DISHES = [
-    "Pesto Pasta", "Tuna Pasta", "Spaghetti Bolognese", "Macaroni & Cheese",
-    "Pasta Bake", "Lentil Bolognese", "Fried Rice", "Egg Fried Rice", 
-    "Salmon Rice Bowl", "Tofu Fried Rice", "Microwave Rice", "Nasi Lemak",
-    "Buldak Ramen", "Mee Goreng", "Instant Noodles", "Cup Noodles", 
-    "Pot Noodle Upgrade", "Pad Thai", "Tomato Soup", "Gyoza Soup", "Pho", 
-    "Katsu Curry", "Tofu Thai Curry", "Butter Chicken", "Mushroom Curry",
-    "Chickpea Curry", "Tarka Dal", "Pizza Toast", "Chilli Cheese Toast", 
-    "Margherita Pizza", "Frozen Pizza", "Cheeseburger", "Fish and Chips", 
-    "Stir-fry", "Vegetable Stir-fry", "Chicken Fajitas", "Chili Con Carne", 
-    "Bean Chili", "Hummus", "Mashed Potatoes", "Mushy Peas", "Oven Chips",
-    "Potato Wedges", "Baked Beans", "Microwave Mug Cake", "Ready Meal Upgrade",
-    "Chocolate Chip Muffins", "Overnight Oats", "Cereal Snack", "Banana Split", 
-    "S'mores dip", "Apple Pie", "Caesar Salad", "Acai Bowl", "Breakfast Parfait",
-    "Chai Latte", "Hot Chocolate", "Vanilla Matcha", "Strawberry Banana Smoothie", 
-    "Raspberry Ripple Milkshake", "Mango Bubble Tea", "Mocha Frappé", "Ribena Mocktail", 
-    "Detox Water", "Aloo Gobi", "Cauliflower Risotto", "Tanghulu", "Lemondade", 
-    "Caramel Macchiato", "Sweet Iced Tea", 
+            "Arrabbiata Pasta",
+            "Lentil Bolognese",
+            "Pasta Bake",
+            "Spaghetti Bolognese",
+            "Tomato Pasta",
+            "Tuna Pasta",
+            "Macaroni & Cheese",
+            "Baked Four Cheese Mac",
+            "Garlic Butter Macaroni",
+            
+            "Chicken Fried Rice",
+            "Egg Fried Rice",
+            "Lemon Herb Rice",
+            "Nasi Lemak",
+            "Thai Basil Rice",
+            "Tofu Fried Rice",
+            "Veggie Fried Rice",
+            
+            "Buldak Ramen",
+            "Instant Noodles",
+            "Mee Goreng",
+            "Pad Thai",
+            "Pot Noodle Upgrade",
+            "Spicy Miso Ramen",
+            
+            "Beef Pho",
+            "Chicken Noodle Soup",
+            "Gyoza Soup",
+            "Lemongrass Soup",
+            "Pho",
+            "Tomato Soup",
+            "Tofu Pho",
+            "Miso Ginger Noodle Soup",
+
+            "Aloo Gobi",
+            "Butter Chicken",
+            "Chickpea Curry",
+            "Katsu Curry",
+            "Tarka Dal",
+
+            "Breakfast Toast",
+            "Honey Banana Toast",
+            "Pancake Toast",
+
+            "Brown Sugar Boba",
+            "Bubble Tea",
+            "Caramel Macchiato",
+            "Chai Latte",
+            "Coffee",
+            "Detox Water",
+            "Dragonfruit Smoothie",
+            "Hot Chocolate",
+            "Lemonade",
+            "Mocha Frappé",
+            "Oat Cappuccino",
+            "Peach Iced Tea",
+            "Raspberry Coconut Cooler",
+            "Raspberry Ripple Milkshake",
+            "Ribena Mocktail",
+            "Strawberry Banana Smoothie",
+            "Sweet Iced Tea",
+            "Vanilla Matcha",
+            "Very Berry Hibiscus Refresher",
+
+            "Classic Cheeseburger",
+            "Diner Style Cheeseburger",
+            "Double Smashburger",
+            "No Meat Burger",
+            "Ranch Chicken Burger",
+            "Veggie Bean Burger",
+
+            "Air Fryer Fish & Chips",
+            "Baked Sea Bass with Wedges",
+            "British Fish and Chips",
+            "Cod & Chips",
+
+            "Lemon Herb Steak",
+            "Pan-Seared Steak",
+            "Steak",
+
+            "Chicken Fajitas",
+            "Stir-fry",
+            "Vegetable Stir-fry",
+
+            "Baked Beans",
+            "Garlic Butter Wedges",
+            "Mashed Potatoes",
+            "Oven Chips",
+            "Potato Wedges",
+            "Pub Style Mash",
+
+            "Acai Bowl",
+            "Breakfast Parfait",
+            "Caesar Salad",
+            "Greek Salad",
+            "Halloumi Salad Bowl",
+
+            "Apple Pie",
+            "Banana Split",
+            "Chocolate Banana Jar Cake",
+            "Double Chocolate Parfait",
+            "Microwave Mug Cake",
+            "Nutella Cheesecake Cup",
+            "Tanghulu",
+
+            "Cereal Snack",
+            "Overnight Oats",
+
+            "Hummus",
+
+            "Mushroom Risotto",
 ]
 
 ADJECTIVES = [
-    "Easy", "Quick", "Budget", "Simple", "Cheap", "5-Minute", "Dorm Room",
-    "One-Pot", "Viral", "Microwave", "Leftover", "Late Night", "Study Snack",
-    "Protein-Packed", "Vegetarian", "Meal Prep", "Batch Cook",
-    "Freezer Friendly", "TikTok", "Instagram-Worthy", "Comfort Food",
-    "Pinterest Worthy", "Spicy", "Creamy", "Healthy", "High Protein",
-    "Low Carb", "Trending", "Aesthetic", "Weekend", "Brunch", "Midweek",
-    "Fancy", "Gourmet", "Homemade", "Restaurant-Style", "Summer", 
-    "Michelin Style", "Vegan", "Gluten Free", "Hot", "Cold", 
-    "Trendy", "Comfort", "Protein Packed"
+    "Easy", "Quick", "Budget", "Simple", "Gordon Ramsey's", "Jamie Oliver's", "Cheap", 
+    "Lazy", "Viral", "Microwave", "Leftover",  "Meal Prep",  "TikTok Style", 
+    "Comfort", "Pinterest Worthy", "Creamy", "Vegan", "Light", "Special"
+    "15 Minute", "Aesthetic", "Homemade", "Zesty", "Rich", "Fresh", "Leftover Friendly", 
+    "Restaurant Style"
 ]
 
 PROTEIN = [
@@ -79,7 +169,8 @@ PREP_STEPS = [
     "Whisk eggs and milk together",
     "Chop the onion and bell pepper",
     "Slice apples into thin cubes",
-    "Marinate salmon with lemon zest, salt and pepper"
+    "Marinate salmon with lemon zest, salt and pepper",
+    "Whisk Coffee Powder and Milk"
 ]
 
 COOK_STEPS = [

@@ -145,8 +145,8 @@ class MyRecipesViewTestCase(TestCase):
         self.client.login(username='@johndoe', password='Password123')
         response = self.client.get(self.url, follow=True)
         recipes = list(response.context['recipes'])
-        self.assertEqual(recipes[0].title, 'Test Recipe One') #has publication date as 17th
-        self.assertEqual(recipes[1].title, 'Test Recipe Two') #has publication date as 16th
+        self.assertEqual(recipes[0].title, 'Test Recipe One') 
+        self.assertEqual(recipes[1].title, 'Test Recipe Two') 
 
     def test_my_recipes_displays_avatar(self):
         """ Test that user's avatar is displayed. """

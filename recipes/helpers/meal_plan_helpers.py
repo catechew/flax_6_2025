@@ -86,7 +86,6 @@ def _get_previous_week_plan(plan):
     except plan.user.meal_plans.model.DoesNotExist:
         return None
 
-
 def _has_any_recipes(prev_plan):
     """ Check if previous plan has any recipes. """
     return prev_plan.entries.filter(recipe__isnull=False).exists()
@@ -106,7 +105,6 @@ def _copy_single_meal_slot(slot, prev_plan):
     slot.notes = prev_slot.notes
     slot.save()
     return prev_slot.recipe is not None
-
 
 def _find_matching_slot(prev_plan, slot):
     """ Find slot in previous plan matching day and meal type. """

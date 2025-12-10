@@ -20,7 +20,6 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=50, blank=False)
     email = models.EmailField(unique=True, blank=False)
 
-    # Gender field for AI avatar
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
@@ -33,7 +32,6 @@ class User(AbstractUser):
         blank=True
     )
 
-    # Age field for AI avatar
     AGE_CHOICES = [
         ('young', '18-30'),
         ('middle', '31-50'),
@@ -60,21 +58,18 @@ class User(AbstractUser):
         help_text='Type of avatar to display'
     )
 
-    # Profile picture upload
     profile_picture = models.ImageField(
         upload_to='profile_pictures/',
         blank=True,
         null=True
     )
 
-    # Random avatar seed (for random avatars)
     avatar_seed = models.CharField(
         max_length=50,
         blank=True,
         help_text='Seed for random avatar generation'
     )
 
-    # Following relationship - many to many
     following = models.ManyToManyField(
         'self',
         symmetrical=False,
@@ -83,7 +78,9 @@ class User(AbstractUser):
     )
 
     class Meta:
-        """ Model options. """
+        """ 
+        Model options. 
+        """
         ordering = ['last_name', 'first_name']
 
     def __str__(self):

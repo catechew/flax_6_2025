@@ -35,7 +35,6 @@ class RecipeDetailHandler:
             return self.recipe.servings
         
     def determine_ownership(self):
-        """ Check if current user owns the recipe. """
         if not self.request.user.is_authenticated:
             return False
         return self.recipe.author == self.request.user

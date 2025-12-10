@@ -19,8 +19,6 @@ class RecipeSessionHelperTests(TestCase):
         post["image-clear"] = "on"
 
         save_form_to_session(session, post)
-        
-        # image_clear should be True when flag is present
         self.assertTrue(session["image_clear"])
 
     def test_save_form_removes_image_clear(self):
@@ -32,6 +30,4 @@ class RecipeSessionHelperTests(TestCase):
         post = QueryDict("", mutable=True)
 
         save_form_to_session(session, post)
-        
-        # image_clear sould no longer exist in the session
         self.assertNotIn("image_clear", session)

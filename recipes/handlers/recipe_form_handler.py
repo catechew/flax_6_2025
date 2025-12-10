@@ -103,7 +103,6 @@ class RecipeFormHandler:
 
     def _get_ai_prefill_data(self):
         """ Get and parse AI prefill data. """
-        # Only use AI data if user clicked "Save to My Recipes"
         if not self.request.session.pop('from_ai_save_button', False):
             return None
 

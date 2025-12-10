@@ -124,7 +124,6 @@ class RecipeDetailViewContentTests(BaseRecipeViewTestCase):
         """ Test that servings adjustment form is present. """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        # Check for servings input field
         self.assertContains(response, 'name="servings"')
         self.assertContains(response, 'Adjust Servings')
         self.assertContains(response, 'Recalculate')

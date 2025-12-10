@@ -9,7 +9,6 @@ from recipes.models import User
 class RandomiseAvatarViewTestCase(TestCase):
 
     def setUp(self):
-        """ Set up test user and client. """
         self.user = User.objects.create_user(
             username='@testuser',
             first_name='Test',
@@ -30,16 +29,11 @@ class RandomiseAvatarViewTestCase(TestCase):
     def test_randomise_avatar_generates_seed(self):
         """ Test that randomise avatar generates a new seed. """
         self.client.login(username='@testuser', password='Password123')
-
-        # Initially no seed
         self.assertEqual(self.user.avatar_seed, '')
 
         response = self.client.post(self.url)
 
-        # Refresh from database
         self.user.refresh_from_db()
-
-        # Should have seed now
         self.assertNotEqual(self.user.avatar_seed, '')
         self.assertEqual(self.user.avatar_type, 'random')
         self.assertEqual(response.status_code, 302)
@@ -48,13 +42,11 @@ class RandomiseAvatarViewTestCase(TestCase):
         """ Test that randomise avatar removes uploaded picture. """
         self.client.login(username='@testuser', password='Password123')
 
-        # Simulate uploaded picture
         from django.core.files.uploadedfile import SimpleUploadedFile
         self.user.profile_picture = SimpleUploadedFile(
             'test.png', b'file_content', content_type='image/png'
         )
         self.user.save()
-
         response = self.client.post(self.url)
 
         self.user.refresh_from_db()
@@ -105,7 +97,6 @@ class UseInitialsAvatarViewTestCase(TestCase):
         """ Test that use initials clears the avatar seed. """
         self.client.login(username='@testuser', password='Password123')
 
-        # User has random avatar
         self.assertNotEqual(self.user.avatar_seed, '')
         response = self.client.post(self.url)
         self.user.refresh_from_db()

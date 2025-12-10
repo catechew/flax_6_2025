@@ -19,8 +19,6 @@ class SavedRecipesViewTestCase(TestCase):
         self.other_user = User.objects.get(username='@janedoe')
         
         self.client.login(username='@johndoe', password='Password123')
-
-        # Create a recipe by the other user
         self.recipe = create_test_recipe(
             author=self.other_user,
             title="Delicious Pasta",
@@ -28,7 +26,6 @@ class SavedRecipesViewTestCase(TestCase):
             steps="Boil pasta\nAdd sauce",
             course_tags="main"
         )
-
         self.list_url = reverse('saved_recipe_list')
         self.toggle_url = reverse('toggle_save_recipe', kwargs={'recipe_id': self.recipe.id})
 
@@ -57,31 +54,20 @@ class SavedRecipesViewTestCase(TestCase):
 
     def test_save_recipe_functionality(self):
         """ Test saving a recipe adds it to the user's saved list. """
-        # Check initial state
         self.assertEqual(self.user.saved_recipes.count(), 0)
-
-        # Post to toggle URL
         response = self.client.post(self.toggle_url, follow=True)
 
-        # Verify recipe is saved
         self.assertEqual(self.user.saved_recipes.count(), 1)
         self.assertEqual(self.user.saved_recipes.first(), self.recipe)
-        
-        # Verify it appears on the list page
         response = self.client.get(self.list_url)
         self.assertContains(response, "Delicious Pasta")
         self.assertIn(self.recipe, response.context['recipes'])
 
     def test_unsave_recipe_functionality(self):
         """Test clicking save again removes the recipe (unsave)."""
-        # Manually save recipe first
         self.recipe.saved_by.add(self.user)
         self.assertEqual(self.user.saved_recipes.count(), 1)
-
-        # Post to toggle URL 
         self.client.post(self.toggle_url, follow=True)
-
-        # Verify recipe removed
         self.assertEqual(self.user.saved_recipes.count(), 0)
 
     def test_toggle_save_redirects_back_to_referer(self):
@@ -111,10 +97,7 @@ class SavedRecipesViewTestCase(TestCase):
 
     def test_saved_recipes_does_not_show_unsaved_ones(self):
         """ Test that the list only shows explicitly saved recipes. """
-        # Create a second recipe
         recipe2 = create_test_recipe(author=self.other_user)
-
-        # Save only the first recipe
         self.recipe.saved_by.add(self.user)
         response = self.client.get(self.list_url)
         recipes = list(response.context['recipes'])

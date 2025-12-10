@@ -14,8 +14,7 @@ def toggle_save_recipe(request, recipe_id):
         recipe.saved_by.remove(request.user)
     else:
         recipe.saved_by.add(request.user)
-        
-    return redirect(request.META.get('HTTP_REFERER', 'dashboard')) # Redirect back to the previous page
+    return redirect(request.META.get('HTTP_REFERER', 'dashboard')) 
 
 
 @login_required
@@ -24,7 +23,5 @@ def saved_recipe_list(request):
     Display the recipes saved by the current user.
     """
     current_user = request.user
-    
     saved_recipes = current_user.saved_recipes.all().order_by('-publication_date')
-
     return render(request, 'recipes/saved_recipes.html', {'user': current_user,'recipes': saved_recipes,})

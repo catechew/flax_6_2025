@@ -55,7 +55,6 @@ class Recipe(models.Model):
         help_text="Comma-separated other tags (e.g., 'high protein,low calorie')"
     )
 
-    # Auto-populated combined tags field (for backward compatibility)
     adjectives = models.CharField(
         max_length=255,
         blank=True,
@@ -157,7 +156,7 @@ class Recipe(models.Model):
         return [tag.strip() for tag in tag_string.split(',') if tag.strip()]
 
     class Meta: 
-        ordering = ['-publication_date']  # Newest first
+        ordering = ['-publication_date']  
         
     def __str__(self):
         # Format ingredients and steps as multi-line text for readability. 

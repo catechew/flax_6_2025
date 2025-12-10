@@ -30,10 +30,8 @@ class RecipeCreateImagesTestCase(TestCase):
         response = self.client.post(reverse('create_recipe_tags'), {'create_recipe': 'true'}, follow=True)
 
         self.assertEqual(response.status_code, 200)
-        # Recipe should be created
         self.assertEqual(Recipe.objects.count(), initial_recipe_count + 1)
         created_recipe = Recipe.objects.latest('id')
-        # Image field should be populated
         self.assertTrue(bool(created_recipe.image))
 
     def test_has_image_context_variable(self):

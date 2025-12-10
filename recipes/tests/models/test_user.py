@@ -132,7 +132,6 @@ class UserModelTestCase(TestCase):
         self.assertEqual(actual_url, expected_url)
 
     def test_avatar_url_with_initials(self):
-        # user has default avatar_type='initials', so expect UI Avatars URL
         expected_url = "https://ui-avatars.com/api/?name=John Doe&size=100&background=f15034&color=fff&bold=true&rounded=true"
         actual_url = self.user.avatar_url(size=100)
         self.assertEqual(actual_url, expected_url)

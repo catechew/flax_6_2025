@@ -120,7 +120,6 @@ class AIRecipeSearchViewTests(AISearchTestMixin, TestCase):
         mock_openai.side_effect = Exception('API Error')
         response = self.client.post(self.url, {'context': 'I want pasta'})
         messages = list(response.context['messages'])
-        # Check for any messages sent by the system that are of severity of 'error' or above
         self.assertTrue(any(m.level == message_constants.ERROR for m in messages))
 
     @patch('openai.ChatCompletion.create')
@@ -201,7 +200,6 @@ class AIRecipeSearchViewTests(AISearchTestMixin, TestCase):
     @patch('openai.ChatCompletion.create')
     def test_get_ai_rankings_empty_list(self, mock_openai):
         """Test rankings with empty recipe list."""
-        # Create empty mock response
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = json.dumps({

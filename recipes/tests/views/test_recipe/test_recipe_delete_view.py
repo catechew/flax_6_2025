@@ -34,7 +34,7 @@ class RecipeDeleteViewTestCase(TestCase):
         self.client.login(username='@otheruser', password='Password123')
         
         response = self.client.post(self.url)
-        # Check if view returns 403 or 404 (both are valid for unauthorized access)
+        # Check if view returns 403 or 404 (both are valid for unauthorised access)
         self.assertIn(response.status_code, [403, 404])
 
     def test_delete_nonexistent_recipe_returns_error(self):

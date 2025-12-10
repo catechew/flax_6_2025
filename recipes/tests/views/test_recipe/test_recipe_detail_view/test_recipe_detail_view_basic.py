@@ -29,30 +29,25 @@ class RecipeDetailViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'recipes/recipe.html')
 
-    # Test recipe object is passed in context
     def test_recipe_detail_context(self):
         response = self.client.get(self.url)
         self.assertEqual(response.context['recipe'], self.recipe)
 
-    # Test accessing non-existent recipe returns 404
     def test_invalid_recipe_id_returns_404(self):
         url = reverse('recipe_detail', kwargs={'recipe_id': 9999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
-    
 
     def test_recipe_detail_displays_title(self):
         response = self.client.get(self.url)
         self.assertContains(response, "Korean Noodles")
 
     def test_recipe_detail_displays_ingredients(self):
-        """ Test that recipe ingredients are displayed on the page. """
         response = self.client.get(self.url)
         self.assertContains(response, "test (1)")
         self.assertContains(response, self.recipe.ingredients)
 
     def test_recipe_detail_displays_steps(self):
-        """ Test that recipe steps are displayed on the page. """
         response = self.client.get(self.url)
         self.assertContains(response, "test")
         self.assertContains(response, self.recipe.steps)
@@ -65,7 +60,6 @@ class RecipeDetailViewTestCase(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        # Check that the formatted date appears
         formatted_date = self.recipe.publication_date.strftime('%b. %-d, %Y')
         self.assertContains(response, formatted_date)
     
@@ -74,7 +68,6 @@ class RecipeDetailViewTestCase(TestCase):
         recipe = create_test_recipe(
             ingredients="Flour (500g)\nSugar (200g)\nEggs (3)\nMilk (250ml)\nButter (100g)"
         )
-
         url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
         response = self.client.get(url)
 
@@ -103,7 +96,6 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "Simmer for 10 minutes")
         self.assertContains(response, "Serve hot")
 
-    # Test that update button is present
     def test_recipe_detail_has_update_button(self):
         """ Test that update button is present. """
         response = self.client.get(self.url)
@@ -114,7 +106,6 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, update_url)
 
     def test_recipe_detail_has_delete_button(self):
-        """ Test that delete button is present. """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Delete this recipe')
@@ -122,7 +113,6 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, delete_url)
 
     def test_recipe_detail_has_back_button(self):
-        """ Test that back to home button is present. """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Go back home')
@@ -130,8 +120,6 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, home_url)
 
     def test_determine_ownership_unauthenticated_user(self):
-        """Test ownership check for unauthenticated user"""
         self.client.logout()
         response = self.client.get(self.url)
-        # Should still work but determine_ownership returns False
         self.assertEqual(response.status_code, 200)

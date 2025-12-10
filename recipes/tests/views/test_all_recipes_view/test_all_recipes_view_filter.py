@@ -5,28 +5,27 @@ from recipes.tests.utils import get_default_user, create_test_recipe
 
 
 class AllRecipesFilterTestCase(TestCase):
-    """tests for filter functionality in all recipes view"""
+    """
+    Tests for filter functionality in all recipes view.
+    """
     fixtures = [
         'recipes/tests/fixtures/default_user.json',
         'recipes/tests/fixtures/other_users.json'
     ]
-
     def setUp(self):
         self.user = get_default_user()
         self.url = reverse('all_recipes')
         self.client.login(username='@johndoe', password='Password123')
 
     def test_filter_by_course_tag(self):
-        """test filtering recipes by course tag"""
+        """ Test filtering recipes by course tag. """
         Recipe.objects.all().delete()
         breakfast_recipe = create_test_recipe(
             course_tags="breakfast"
         )
-
         dinner_recipe = create_test_recipe(
             course_tags="main"
         )
-
         response = self.client.get(self.url, {'course': 'breakfast'})
         recipes = list(response.context['recipes'])
 
@@ -35,16 +34,13 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(dinner_recipe, recipes)
 
     def test_filter_by_dietary_tag(self):
-        """test filtering recipes by dietary tag"""
         Recipe.objects.all().delete()
         vegan_recipe = create_test_recipe(
             dietary_tags="vegan"
         )
-
         non_vegan_recipe = create_test_recipe(
             dietary_tags=""
         )
-
         response = self.client.get(self.url, {'dietary': 'vegan'})
         recipes = list(response.context['recipes'])
 
@@ -53,16 +49,13 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(non_vegan_recipe, recipes)
 
     def test_filter_by_cuisine_tag(self):
-        """test filtering recipes by cuisine tag"""
         Recipe.objects.all().delete()
         italian_recipe = create_test_recipe(
             cuisine_tags="Italian"
         )
-
         japanese_recipe = create_test_recipe(
             cuisine_tags="Japanese"
         )
-
         response = self.client.get(self.url, {'cuisine': 'Italian'})
         recipes = list(response.context['recipes'])
 
@@ -71,25 +64,20 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(japanese_recipe, recipes)
 
     def test_filter_by_other_tag(self):
-        """test filtering recipes by other tag"""
         Recipe.objects.all().delete()
         quick_recipe = create_test_recipe(
             other_tags="quick"
         )
-
         slow_recipe = create_test_recipe(
             other_tags=""
         )
-
         response = self.client.get(self.url, {'other': 'quick'})
         recipes = list(response.context['recipes'])
-
         self.assertEqual(response.status_code, 200)
         self.assertIn(quick_recipe, recipes)
         self.assertNotIn(slow_recipe, recipes)
 
     def test_filter_multiple_tags_same_category(self):
-        """test filtering with multiple tags from same category"""
         Recipe.objects.all().delete()
         breakfast_recipe = create_test_recipe(
             course_tags="breakfast"
@@ -100,7 +88,6 @@ class AllRecipesFilterTestCase(TestCase):
         main_recipe = create_test_recipe(
             course_tags="main"
         )
-
         response = self.client.get(self.url, {'course': ['breakfast', 'dessert']})
         recipes = list(response.context['recipes'])
 
@@ -110,7 +97,7 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertNotIn(main_recipe, recipes)
 
     def test_filter_context_variables(self):
-        """test that filter parameters are passed to context"""
+        """ Test that filter parameters are passed to context. """
         response = self.client.get(self.url, {'course': 'main', 'dietary': 'vegan'})
 
         self.assertIn('filters', response.context)
@@ -120,7 +107,7 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertIn('vegan', response.context['filters']['dietary_filters'])
 
     def test_filter_options_in_context(self):
-        """test that filter options are available in context"""
+        """ Test that filter options are available in context. """
         response = self.client.get(self.url)
 
         self.assertIn('course_options', response.context)
@@ -129,56 +116,42 @@ class AllRecipesFilterTestCase(TestCase):
         self.assertIn('other_options', response.context)
 
     def test_sort_by_most_saved(self):
-        """test sorting recipes by most saved"""
+        """ Test sorting recipes by most saved. """
         Recipe.objects.all().delete()
 
         recipe1 = create_test_recipe(title="Recipe 1")
         recipe2 = create_test_recipe(title="Recipe 2")
 
-        # Create another user
         user2 = User.objects.create_user(
             username='@user2',
             email='user2@example.com',
             password='Password123'
         )
-
-        # Recipe1 gets 2 saves
         recipe1.saved_by.add(self.user)
         recipe1.saved_by.add(user2)
-
-        # Recipe2 gets 1 save
         recipe2.saved_by.add(self.user)
 
         response = self.client.get(self.url, {'sort': 'most_saved'})
         recipes = list(response.context['recipes'])
 
-        # Recipe1 should be first (2 saves > 1 save)
         self.assertEqual(recipes[0], recipe1)
         self.assertEqual(recipes[1], recipe2)
 
     def test_sort_by_rating_highest(self):
-        """test sorting recipes by highest rating"""
         Recipe.objects.all().delete()
 
         recipe1 = create_test_recipe(title="Recipe 1")
         recipe2 = create_test_recipe(title="Recipe 2")
-
-        # Create another user
         user2 = User.objects.create_user(
             username='@user2',
             email='user2@example.com',
             password='Password123'
         )
-
-        # Recipe1 gets 5 stars
         Rating.objects.create(recipe=recipe1, user=self.user, stars=5)
-
-        # Recipe2 gets 3 stars
         Rating.objects.create(recipe=recipe2, user=user2, stars=3)
 
         response = self.client.get(self.url, {'sort': 'rating_highest'})
         recipes = list(response.context['recipes'])
 
-        # Recipe1 should be first (5 stars > 3 stars)
         self.assertEqual(recipes[0], recipe1)
         self.assertEqual(recipes[1], recipe2)

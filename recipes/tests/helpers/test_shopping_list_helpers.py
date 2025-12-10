@@ -153,7 +153,6 @@ class ConsolidateIngredientsTests(TestCase):
         
         consolidated = consolidate_ingredients(items)
         self.assertEqual(consolidated[0]["count"], 2)
-        # The scaled ingredient should contain "4"
         self.assertIn("4", consolidated[0]["item"])
 
     @patch("recipes.helpers.recipe_detail_helpers.scale_ingredient")

@@ -72,7 +72,6 @@ class HandleTagOperationTests(TestCase):
             self.session_data, 'add', 'course', 'breakfast'
         )
         self.assertTrue(result)
-        # Should only appear once
         self.assertEqual(
             self.session_data['course_tags'].count('breakfast'), 1
         )
@@ -123,28 +122,28 @@ class HandleTagOperationTests(TestCase):
         self.assertTrue(result)
 
     def test_none_action_returns_false(self):
-        """None action returns False."""
+        """ None action returns False. """
         result = handle_tag_operation(
             self.session_data, None, 'course', 'lunch'
         )
         self.assertFalse(result)
 
     def test_none_category_returns_false(self):
-        """None category returns False."""
+        """ None category returns False. """
         result = handle_tag_operation(
             self.session_data, 'add', None, 'lunch'
         )
         self.assertFalse(result)
 
     def test_none_value_returns_false(self):
-        """None value returns False."""
+        """ None value returns False. """
         result = handle_tag_operation(
             self.session_data, 'add', 'course', None
         )
         self.assertFalse(result)
 
     def test_creates_tag_key_if_missing(self):
-        """Creates tag key if it doesn't exist."""
+        """ Creates tag key if it doesn't exist. """
         session = {}
         result = handle_tag_operation(session, 'add', 'dietary', 'vegan')
         self.assertTrue(result)
@@ -152,12 +151,12 @@ class HandleTagOperationTests(TestCase):
         self.assertIn('vegan', session['dietary_tags'])
         
     def test_invalid_action_returns_false(self):
-        """Test handle_tag_operation returns False for invalid action."""
+        """ Test handle_tag_operation returns False for invalid action. """
         session_data = {'course_tags': []}
         
         result = handle_tag_operation(
             session_data, 
-            'invalid_action',  # ← Not "add" or "remove"
+            'invalid_action', 
             'course', 
             'breakfast'
         )
@@ -172,7 +171,6 @@ class GetTagContextTests(TestCase):
     """
 
     def test_returns_all_tag_categories(self):
-        """Returns context with all tag categories."""
         session_data = {
             'course_tags': ['breakfast'],
             'dietary_tags': ['vegan'],
@@ -186,14 +184,12 @@ class GetTagContextTests(TestCase):
         self.assertEqual(result['cuisine_tags'], ['Italian'])
         self.assertEqual(result['other_tags'], ['quick'])
 
-        # Check options are present
         self.assertIn('course_options', result)
         self.assertIn('dietary_options', result)
         self.assertIn('cuisine_options', result)
         self.assertIn('other_options', result)
 
     def test_returns_empty_lists_when_no_tags(self):
-        """Returns empty lists when tags not in session."""
         result = get_tag_context({})
 
         self.assertEqual(result['course_tags'], [])
@@ -208,7 +204,6 @@ class InitialiseTagSessionTests(TestCase):
     """
 
     def setUp(self):
-        """Set up test data."""
         self.user = User.objects.create_user(
             username='@testuser',
             email='test@example.com',
@@ -228,7 +223,7 @@ class InitialiseTagSessionTests(TestCase):
         )
 
     def test_initialises_empty_tags_for_new_recipe(self):
-        """Initialises empty tag lists for new recipe."""
+        """ Initialises empty tag lists for new recipe. """
         session_data = {}
         initialise_tag_session(session_data, recipe=None)
 
@@ -238,7 +233,6 @@ class InitialiseTagSessionTests(TestCase):
         self.assertEqual(session_data['other_tags'], [])
 
     def test_initialises_tags_from_existing_recipe(self):
-        """Initialises tags from existing recipe."""
         session_data = {}
         initialise_tag_session(session_data, recipe=self.recipe)
 
@@ -255,13 +249,12 @@ class ApplyTagsToRecipeTests(TestCase):
     """
 
     def setUp(self):
-        """Set up test data."""
+        """ Set up test data. """
         self.user = User.objects.create_user(
             username='@testuser',
             email='test@example.com',
             password='Password123'
         )
-
         self.recipe = Recipe.objects.create(
             author=self.user,
             title='Test Recipe',
@@ -271,7 +264,7 @@ class ApplyTagsToRecipeTests(TestCase):
         )
 
     def test_applies_tags_to_recipe(self):
-        """Applies tags from session to recipe."""
+        """ Applies tags from session to recipe. """
         session_data = {
             'course_tags': ['breakfast', 'lunch'],
             'dietary_tags': ['vegan'],
@@ -280,14 +273,13 @@ class ApplyTagsToRecipeTests(TestCase):
         }
 
         apply_tags_to_recipe(self.recipe, session_data)
-
         self.assertEqual(self.recipe.course_tags, 'breakfast,lunch')
         self.assertEqual(self.recipe.dietary_tags, 'vegan')
         self.assertEqual(self.recipe.cuisine_tags, 'Italian')
         self.assertEqual(self.recipe.other_tags, 'quick')
 
     def test_handles_empty_tags(self):
-        """Handles empty tag lists."""
+        """ Handles empty tag lists. """
         session_data = {
             'course_tags': [],
             'dietary_tags': [],
@@ -296,7 +288,6 @@ class ApplyTagsToRecipeTests(TestCase):
         }
 
         apply_tags_to_recipe(self.recipe, session_data)
-
         self.assertEqual(self.recipe.course_tags, '')
         self.assertEqual(self.recipe.dietary_tags, '')
         self.assertEqual(self.recipe.cuisine_tags, '')
@@ -309,11 +300,9 @@ class GetSessionKeyTests(TestCase):
     """
 
     def test_returns_create_key_when_no_id(self):
-        """Returns create key when recipe_id is None."""
         result = get_session_key(recipe_id=None)
         self.assertEqual(result, 'recipe_form_data')
 
     def test_returns_update_key_with_id(self):
-        """Returns update key with recipe_id."""
         result = get_session_key(recipe_id=123)
         self.assertEqual(result, 'recipe_update_123')

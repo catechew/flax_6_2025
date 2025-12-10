@@ -9,12 +9,10 @@ def randomise_avatar(request):
     """ Generate a new random avatar seed for the user. """
     user = request.user
 
-    # Clear uploaded picture if any
     if user.profile_picture and user.avatar_type != "ai":
         user.profile_picture.delete()
         user.profile_picture = None
 
-    # Generate new random seed and set type
     user.avatar_seed = str(uuid.uuid4())
     user.avatar_type = 'random'
     user.save()
@@ -26,13 +24,11 @@ def randomise_avatar(request):
 def use_initials_avatar(request):
     """ Reset avatar to initials (default). """
     user = request.user
-
-    # Clear uploaded picture if any
+    
     if user.profile_picture:
         user.profile_picture.delete()
         user.profile_picture = None
 
-    # Clear random seed and set type to initials
     user.avatar_seed = ''
     user.avatar_type = 'initials'
     user.save()

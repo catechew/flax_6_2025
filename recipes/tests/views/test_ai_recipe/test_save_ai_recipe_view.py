@@ -4,10 +4,11 @@ from recipes.models import User
 
 
 class SaveAIRecipeViewTests(TestCase):
-    """Test save AI recipe view functionality."""
+    """
+    Test save AI recipe view functionality.
+    """
 
     def setUp(self):
-        """Set up test client and user."""
         self.client = Client()
         self.user = User.objects.create_user(
             username='@testuser',
@@ -19,13 +20,13 @@ class SaveAIRecipeViewTests(TestCase):
         self.url = reverse('save_ai_recipe')
 
     def test_requires_login(self):
-        """View requires authentication."""
+        """ View requires authentication. """
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
         self.assertIn('/log_in/', response.url)
 
     def test_no_ai_recipe_redirects(self):
-        """Redirect to generator when no AI recipe in session."""
+        """ Redirect to generator when no AI recipe in session. """
         self.client.login(username='@testuser', password='Password123')
         response = self.client.get(self.url, follow=True)
 
@@ -36,7 +37,7 @@ class SaveAIRecipeViewTests(TestCase):
         )
 
     def test_successful_transfer_to_form(self):
-        """AI recipe successfully transferred to form."""
+        """ AI recipe successfully transferred to form. """
         self.client.login(username='@testuser', password='Password123')
 
         # Add AI recipe to session
@@ -51,7 +52,6 @@ class SaveAIRecipeViewTests(TestCase):
             'dietary_info': ['vegetarian'],
         }
         session.save()
-
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 302)
@@ -62,19 +62,15 @@ class SaveAIRecipeViewTests(TestCase):
         self.assertTrue(session.get('from_ai_save_button'))
 
     def test_cleans_up_last_ai_recipe(self):
-        """last_ai_recipe removed from session after transfer."""
         self.client.login(username='@testuser', password='Password123')
-
         session = self.client.session
         session['last_ai_recipe'] = {'title': 'Test'}
         session.save()
 
         self.client.get(self.url)
-
         self.assertNotIn('last_ai_recipe', self.client.session)
 
     def test_shows_success_message(self):
-        """Success message shown on transfer."""
         self.client.login(username='@testuser', password='Password123')
 
         session = self.client.session

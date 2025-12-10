@@ -13,7 +13,6 @@ from openai import error
 
 from recipes.models.recipe import Recipe
 
-# constants
 SORT_OPTIONS = {
     'date_newest': '-publication_date',
     'date_oldest': 'publication_date',
@@ -25,7 +24,6 @@ SORT_OPTIONS = {
     'title_za': '-title',
 }
 
-# error messages for common errors when making an api call
 ERROR_MESSAGES = {
     json.JSONDecodeError: 'Unable to process AI response. Please try again.',
     error.AuthenticationError: 'AI service configuration error. Please contact support.',
@@ -39,14 +37,14 @@ openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 
 def _build_search_prompt(user_context):
-    """Build prompt for extracting search parameters."""
+    """ Build prompt for extracting search parameters. """
     return f"""Context: "{user_context}"
 Extract: {{"search_query":"keywords","dietary_filters":[],"cuisine_filters":[],"other_filters":[],"sort_by":"date_newest"}}
 Only relevant filters."""
 
 
 def get_search_params_from_ai(user_context):
-    """Call OpenAI to extract search parameters."""
+    """ Call OpenAI to extract search parameters. """
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[
@@ -61,7 +59,7 @@ def get_search_params_from_ai(user_context):
 
 
 def _build_word_queries(word):
-    """Build Q objects for a single search word."""
+    """ Build Q objects for a single search word. """
     return (
             Q(title__icontains=word) |
             Q(adjectives__icontains=word) |
@@ -72,7 +70,6 @@ def _build_word_queries(word):
             Q(author__last_name__icontains=word) |
             Q(full_name__icontains=word)
     )
-
 
 def apply_search_query(recipes, search_query):
     """Apply text search across recipe fields."""
@@ -89,9 +86,8 @@ def apply_search_query(recipes, search_query):
 
     return recipes.filter(combined_q)
 
-
 def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters, other_filters):
-    """Apply tag-based filters to recipes."""
+    """ Apply tag-based filters to recipes. """
     if course_filters:
         recipes = build_or_query(recipes, 'course_tags', course_filters)
     if dietary_filters:
@@ -104,16 +100,15 @@ def apply_tag_filters(recipes, course_filters, dietary_filters, cuisine_filters,
 
 
 def build_or_query(recipes, tag_field, filter_values):
-    """Build and apply OR query for a tag field."""
+    """ Build and apply OR query for a tag field. """
     tag_q = reduce(
         operator.or_,
         [Q(**{f'{tag_field}__icontains': value}) for value in filter_values]
     )
     return recipes.filter(tag_q)
 
-
 def apply_sorting(recipes, sort_by):
-    """Apply sorting to recipes."""
+    """ Apply sorting to recipes. """
     if sort_by in SORT_OPTIONS:
         return recipes.order_by(SORT_OPTIONS[sort_by])
 
@@ -126,9 +121,8 @@ def apply_sorting(recipes, sort_by):
 
     return recipes.order_by('-publication_date')
 
-
 def _build_recipe_list(top_recipes):
-    """Build recipe list for AI ranking."""
+    """ Build recipe list for AI ranking. """
     return [
         {
             'id': recipe.id,
@@ -138,16 +132,14 @@ def _build_recipe_list(top_recipes):
         for recipe in top_recipes
     ]
 
-
 def _build_ranking_prompt(user_context, recipe_list):
-    """Build prompt for AI ranking."""
+    """ Build prompt for AI ranking. """
     return f"""Context: "{user_context}"
 Recipes: {json.dumps(recipe_list, indent=2)}
 Rank top 3. Return: {{"top_picks":[{{"recipe_id":123,"title":"Name","reason":"Why"}}],"search_explanation":"Strategy"}}"""
 
-
 def get_ai_rankings(user_context, top_recipes):
-    """Get AI to rank top recipes."""
+    """ Get AI to rank top recipes. """
     recipe_list = _build_recipe_list(top_recipes)
     ranking_response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
@@ -160,9 +152,8 @@ def get_ai_rankings(user_context, top_recipes):
     )
     return json.loads(ranking_response.choices[0].message.content.strip())
 
-
 def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_filters, other_filters, sort_by):
-    """Build URL for view all results button."""
+    """ Build URL for view all results button. """
     url_params = [f'q={search_query}']
 
     filter_map = {
@@ -171,32 +162,28 @@ def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_fi
         'cuisine': cuisine_filters,
         'other': other_filters,
     }
-
     for param_name, filter_values in filter_map.items():
         url_params = add_params_to_url(param_name, filter_values, url_params)
-
+    
     url_params.append(f'sort={sort_by}')
     return '/all_recipes/?' + '&'.join(url_params)
 
-
 def add_params_to_url(param_name, filter_values, url_params):
-    """Add filter parameters to url params list."""
+    """ Add filter parameters to url params list. """
     for value in filter_values:
         url_params.append(f'{param_name}={value}')
     return url_params
 
-
 @login_required
 def ai_recipe_search_view(request):
-    """AI recipe search view."""
+    """ AI recipe search view. """
     if request.method != 'POST':
         return render(request, 'ai/ai_recipe_search.html')
-
     user_context = request.POST.get('context', '').strip()
+    
     if not user_context:
         messages.error(request, 'Please describe your situation')
         return render(request, 'ai/ai_recipe_search.html')
-
     try:
         return process_ai_search(request, user_context)
     except Exception as e:
@@ -204,9 +191,8 @@ def ai_recipe_search_view(request):
         messages.error(request, message)
         return render(request, 'ai/ai_recipe_search.html', {'user_context': user_context})
 
-
 def process_ai_search(request, user_context):
-    """Process AI search request."""
+    """ Process AI search request. """
     search_params = get_search_params_from_ai(user_context)
     recipes = filter_recipes(search_params)
 
@@ -217,12 +203,10 @@ def process_ai_search(request, user_context):
             'no_results': True,
             'show_results': True
         })
-
     return render_search_results(recipes, request, user_context, search_params)
 
-
 def filter_recipes(search_params):
-    """Filter recipes using search parameters."""
+    """ Filter recipes using search parameters. """
     recipes = Recipe.objects.visible()
     recipes = apply_search_query(recipes, search_params.get('search_query', '').strip())
     recipes = apply_tag_filters(
@@ -234,9 +218,8 @@ def filter_recipes(search_params):
     )
     return apply_sorting(recipes, search_params.get('sort_by', 'date_newest'))
 
-
 def _build_result_context(user_context, search_params, ranking_data, total_count, view_all_url):
-    """Build context for search results."""
+    """ Build context for search results. """
     top_picks = ranking_data.get('top_picks', [])
     recipe_ids = [pick['recipe_id'] for pick in top_picks]
 
@@ -251,9 +234,8 @@ def _build_result_context(user_context, search_params, ranking_data, total_count
         'show_results': True
     }
 
-
 def render_search_results(recipes, request, user_context, search_params):
-    """Render search results with AI rankings."""
+    """ Render search results with AI rankings. """
     ranking_data = get_ai_rankings(user_context, recipes[:10])
     view_all_url = build_view_all_url(
         search_params.get('search_query', ''),

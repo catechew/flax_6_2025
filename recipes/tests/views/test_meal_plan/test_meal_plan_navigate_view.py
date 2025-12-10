@@ -72,12 +72,7 @@ class MealPlanNavigateViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         
     def test_navigate_next_week_existing_plan_does_not_create_new_one(self):
-        # First navigation - creates next week plan
         url = reverse("meal-plan-navigate", args=[self.plan.id, "next"])
         self.client.get(url)
-
-        # Second navigation - same next week already exists
         self.client.get(url)
-
-        # Still only 2 plans total
         self.assertEqual(MealPlan.objects.count(), 2)

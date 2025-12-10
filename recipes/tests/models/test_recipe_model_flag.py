@@ -75,13 +75,10 @@ class FlagModelTests(TestCase):
 
     def test_flag_count_for_recipe_property(self):
         """Test flag_count_for_recipe property."""
-        # Create another flag for same recipe
         user2 = User.objects.create_user(
             username='@user2',
             email='user2@example.com',
             password='Password123'
         )
         Flag.objects.create(recipe=self.recipe, user=user2)
-
-        # Should return 2 (both flags for this recipe)
         self.assertEqual(self.flag.flag_count_for_recipe, 2)

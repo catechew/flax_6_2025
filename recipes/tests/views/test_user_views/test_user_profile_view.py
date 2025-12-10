@@ -91,8 +91,8 @@ class UserProfileViewTestCase(TestCase):
         self.client.login(username='@johndoe', password='Password123')
         own_url = reverse('user_profile', kwargs={'user_id': self.user.id})
         response = self.client.get(own_url)
-        self.assertContains(response, 'Edit Profile')       # Should show edit button
-        self.assertNotContains(response, 'follow_user')  # No follow URL
+        self.assertContains(response, 'Edit Profile')      
+        self.assertNotContains(response, 'follow_user')  
         self.assertNotContains(response, 'unfollow_user')
 
     def test_user_profile_shows_unfollow_if_already_following(self):

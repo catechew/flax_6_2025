@@ -16,7 +16,6 @@ class RecipeFormTestCase(TestCase):
         self.user = create_test_user()
         self.form_data = create_test_form_data()
 
-    # Helper: assert form is valid with given field overrides
     def _assert_form_valid(self, **kwargs):
         data = {**self.form_data, **kwargs}
         form = RecipeForm(data=data)
@@ -24,7 +23,6 @@ class RecipeFormTestCase(TestCase):
             print(f"Form errors: {form.errors}")
         self.assertTrue(form.is_valid())
 
-    # Helper: assert form is invalid and field has error
     def _assert_form_invalid(self, field, **kwargs):
         data = {**self.form_data, **kwargs}
         form = RecipeForm(data=data)

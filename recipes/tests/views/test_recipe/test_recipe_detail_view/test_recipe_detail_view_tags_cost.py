@@ -112,6 +112,5 @@ class RecipeDetailViewTagsCostTests(BaseRecipeViewTestCase):
         response = self.client.get(self.url, {'show_cost': 'true', 'servings': 6})
         
         self.assertEqual(response.status_code, 200)
-        # Form should preserve show_cost parameter
         self.assertContains(response, 'name="show_cost"')
         self.assertContains(response, 'value="true"')

@@ -13,7 +13,9 @@ class UserForm(forms.ModelForm):
     """
 
     class Meta:
-        """Form options."""
+        """
+        Form options.
+        """
 
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'gender', 'age_range', 'profile_picture']

@@ -126,7 +126,6 @@ class ReusePrevWeekHelperTests(TestCase):
         create_meal_slots(self.current_plan)
 
     def test_copies_meals_from_previous_week(self):
-        # Create a recipe to add to previous week
         recipe = Recipe.objects.create(
             title="Breakfast Recipe",
             author=self.user,
@@ -144,8 +143,8 @@ class ReusePrevWeekHelperTests(TestCase):
         self.assertTrue(result)
 
         new_slot = self.current_plan.entries.filter(day="mon", meal_type="breakfast",).first()
-        self.assertEqual(new_slot.recipe, recipe)  # Check recipe copied
-        self.assertEqual(new_slot.notes, "Test notes")  # Check notes copied
+        self.assertEqual(new_slot.recipe, recipe)  
+        self.assertEqual(new_slot.notes, "Test notes")  
 
     def test_returns_false_when_no_previous_plan_exists(self):
         new_plan = MealPlan.objects.create(
@@ -156,7 +155,6 @@ class ReusePrevWeekHelperTests(TestCase):
     
     def test_returns_false_when_previous_week_has_no_recipes(self):
         """ Test that reuse returns False when previous week is empty. """
-        # Previous week exists but has no recipes (all slots are None)
         result = reuse_prev_week(self.current_plan)
         self.assertFalse(result)
         
