@@ -125,7 +125,7 @@ class Command(BaseCommand):
         print(f"{seeded_users.count()} users configured with AI avatars")
         
     def _get_gender_detector(self):
-        """ Initialize gender detector or return None if unavailable. """
+        """ Initialise gender detector or return None if unavailable. """
         try:
             import gender_guesser.detector as gender
             return gender.Detector()
