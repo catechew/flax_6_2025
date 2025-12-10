@@ -12,7 +12,7 @@ INGREDIENT_CATEGORIES = {
     '🍎 Fruits': ['apple', 'banana', 'lemon', 
                  'strawberries', 'blueberries'],
     
-    '🥬 Vegetables': ['avocado', 'onion', 'garlic', 
+    '🥬 Vegetables': ['avocado', 'onion', 'garlic', 'carrot',
                      'tomatoes', 'lemon', 'spinach', 
                      'ginger', 'broccoli', 'bell pepper', 
                      'mushrooms', 'cauliflower', 'cucumber'],
