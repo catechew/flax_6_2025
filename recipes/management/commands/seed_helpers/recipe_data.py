@@ -22,7 +22,8 @@ DISHES = [
     "S'mores dip", "Apple Pie", "Caesar Salad", "Acai Bowl", "Breakfast Parfait",
     "Chai Latte", "Hot Chocolate", "Vanilla Matcha", "Strawberry Banana Smoothie", 
     "Raspberry Ripple Milkshake", "Mango Bubble Tea", "Mocha Frappé", "Ribena Mocktail", 
-    "Detox Water", "Aloo Gobi", "Cauliflower Risotto", "Tanghulu",
+    "Detox Water", "Aloo Gobi", "Cauliflower Risotto", "Tanghulu", "Lemondade", 
+    "Caramel Macchiato", "Sweet Iced Tea", 
 ]
 
 ADJECTIVES = [
