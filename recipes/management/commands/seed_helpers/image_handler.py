@@ -1,38 +1,69 @@
-""" 
-Image handling for recipe seeding. 
-"""
-
 import os
 from random import randint
 from django.conf import settings
 from django.core.files.base import ContentFile
 
+""" 
+Image handling for recipe seeding. 
+"""
+
 DISH_TYPE_MAPPING = {
-    'pasta': ['pasta', 'spaghetti', 'macaroni', 'bolognese', 'penne', 'pasta bake', 
-              'ramen', 'noodles', 'mee goreng'],
+    'pasta': [
+        'pasta', 'spaghetti', 'macaroni', 'cheese', 'bolognese', 'penne',
+        'pasta bake', 'ramen', 'noodles', 'mee goreng', 'buldak',
+        'pad thai', 'instant noodles', 'cup noodles', 'noodle', 'pot noodle'
+    ],
     
-    'rice': ['rice', 'fried rice', 'rice bowl', 'egg fried rice', 'microwave rice', 'nasi lemak'],
+    'rice': [
+        'rice', 'fried rice', 'rice bowl', 'egg fried rice',
+        'microwave rice', 'nasi lemak'
+    ],
     
-    'curry': ['curry', 'butter chicken', 'tofu thai curry', 'mushroom curry', 'chickpea curry', 'aloo gobi',
-              'katsu', 'dal', 'tarka'],
+    'curry': [
+        'curry', 'katsu', 'thai curry', 'butter chicken', 'mushroom curry',
+        'chickpea curry', 'aloo gobi', 'dal', 'tarka'
+    ],
     
-    'soup': ['soup', 'tomato soup', 'pho', 'gyoza soup'],
+    'soup': [
+        'soup', 'tomato soup', 'pho', 'gyoza'
+    ],
 
-    'pizza': ['pizza', 'margherita', 'frozen pizza', 'pizza toast'],
+    'pizza': [
+        'pizza', 'margherita', 'frozen pizza'
+    ],
 
-    'burger': ['burger', 'cheeseburger', 'fish and chips'],
+    'toast': [
+        'toast', 'chilli cheese toast'
+    ],
 
-    'wrap': ['wrap', 'quesadilla', 'fajitas'],
+    'burger': [
+        'burger', 'cheeseburger', 'fish and chips', 'oven chips', 'potato wedges',
+    ],
 
-    'salad': ['salad', 'caesar salad', 'acai bowl', 'breakfast parfait', 'stir-fry'],
+    'wrap': [
+        'wrap', 'quesadilla', 'fajitas'
+    ],
+    
+    'salad': [
+        'salad', 'acai bowl', 'bowl', 'stir-fry', 'stir fry',
+        'vegetable stir-fry'
+    ],
 
-    'toast': ['toast', 'beans on toast', 'chilli cheese toast'],
+    'dessert': [
+        'dessert', 'cake', 'mug cake', 'muffins', 'banana split',
+        's\'mores', 'apple pie', 'tanghulu', 'overnight oats',
+        'cereal snack', 'parfait'
+    ],
 
-    'dessert': ['dessert', 'cake', 'mug cake', 'muffins', 'banana split', "s'mores", 
-                'apple pie', 'tanghulu'],
-
-    'drink': ['smoothie', 'milkshake', 'latte', 'hot chocolate',  'matcha', 
-              'mocktail', 'bubble tea', 'frappé', 'detox water'],
+    'drink': [
+        'smoothie', 'milkshake', 'latte', 'matcha', 'hot chocolate',
+        'bubble tea', 'mocktail', 'frappé', 'frappe', 'detox water',
+        'tea', 'iced tea', 'macchiato'
+    ],
+    
+    'side': [
+        'hummus', 'mashed', 'mushy peas', 'baked beans'
+    ],
 }
 
 class ImageHandler:

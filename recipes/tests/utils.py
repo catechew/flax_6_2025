@@ -174,7 +174,9 @@ def get_default_user():
 
 
 class AISearchTestMixin:
-    """Mixin for AI search view tests."""
+    """ 
+    Mixin for AI search view tests.
+    """
 
     def create_mock_search_params(self, query='', dietary=None, cuisine=None, other=None, sort='date_newest'):
         """Create mock search params response."""
@@ -201,7 +203,7 @@ class AISearchTestMixin:
 
 
 class AIRecipeTestMixin:
-    """Mixin for AI recipe generator tests."""
+    """ Mixin for AI recipe generator tests. """
 
     def create_mock_recipe_data(self, title='Test Recipe'):
         """Create mock AI recipe data."""
@@ -219,7 +221,7 @@ class AIRecipeTestMixin:
         }
 
     def create_mock_openai_response(self, recipe_data):
-        """Create mock OpenAI API response."""
+        """ Create mock OpenAI API response. """
         mock = MagicMock()
         mock.choices = [MagicMock()]
         mock.choices[0].message.content = json.dumps(recipe_data)
