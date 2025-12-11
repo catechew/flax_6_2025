@@ -956,3 +956,5 @@ media/
 
 # Project-specific ignores
 assets/db*.sqlite3
+.tex
+.aux
