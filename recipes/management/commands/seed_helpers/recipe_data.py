@@ -126,7 +126,7 @@ ADJECTIVES = [
     "Lazy", "Viral", "Microwave", "Leftover", "TikTok Style", "Comfort", 
     "Pinterest Worthy", "Creamy", "Vegan", "Light", "Special ", "15 Minute", "Aesthetic", 
     "Homemade", "Zesty", "Rich", "Fresh", "Leftover Friendly", "Restaurant Style", 
-    "MasterChef Style"
+    "MasterChef Style", "Protein Packed"
 ]
 
 PROTEIN = [
