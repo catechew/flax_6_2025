@@ -161,10 +161,14 @@
             {% if total_count > 0 %}
             <div class="text-center mt-4">
               <p class="text-muted">
-                Found <strong>{{ total_count }}</strong> recipe{{ total_count|pluralize }} matching your criteria
+                {% if total_count > top_picks|length %}
+                Found <strong>more</strong> recipes matching your criteria
+                {% else %}
+                Found <strong>no more</strong> recipes matching your criteria
+                {% endif %}
               </p>
               <a href="{{ view_all_url }}" class="btn btn-outline-primary btn-lg">
-                <i class="bi bi-grid"></i> View All Results
+                <i class="bi bi-grid"></i> View Any Related Results
               </a>
             </div>
             {% else %}
