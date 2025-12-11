@@ -12,7 +12,6 @@ from recipes.views.ai_recipe_search_view import (
     apply_tag_filters,
     apply_search_query,
     apply_sorting,
-    build_view_all_url
 )
 
 
@@ -224,14 +223,6 @@ class AIRecipeSearchViewTests(AISearchTestMixin, TestCase):
         response = self.client.post(self.url, {'context': '   \n\t   '})
         messages = list(response.context['messages'])
         self.assertTrue(any(m.level == message_constants.ERROR for m in messages))
-
-    def test_build_view_all_url_with_all_filter_types(self):
-        """Test url with all filter types."""
-        url = build_view_all_url('pasta', ['breakfast'], ['vegan'], ['italian'], ['quick'], 'rating_high')
-        self.assertIn('course=breakfast', url)
-        self.assertIn('dietary=vegan', url)
-        self.assertIn('cuisine=italian', url)
-        self.assertIn('other=quick', url)
 
     def test_apply_tag_filters_multiple_dietary_and_cuisine(self):
         """Test multiple dietary filters."""
