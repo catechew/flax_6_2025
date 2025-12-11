@@ -52,4 +52,12 @@ $ python3 manage.py test
 ## Sources
 The packages used by this application are specified in `requirements.txt`
 
-*Declare are other sources here, and remove this line*
+We utilised AI (e.g., Microsoft Copilot) as a learning and debugging assistant.
+
+Specific Uses Included:
+
+- Clarifying Python and Django documentation and functions (e.g., explaining views, models, and routing concepts).
+
+- Troubleshooting complex Git workflows (e.g., explaining rebase, merge conflict resolution).
+
+- Refining understanding of HTML/CSS elements and structure.
