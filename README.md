@@ -42,9 +42,15 @@ Seed the development database with:
 $ python3 manage.py seed
 ```
 
-Run all tests with:
+Run all tests and coverage with:
 ```
 $ python3 manage.py test
+
+$ python -m coverage erase
+$ python -m coverage run manage.py test
+$ python -m coverage report
+$ coverage html
+$ open htmlcov/index.html
 ```
 
 *The above instructions should work in your version of the application.  If there are deviations, declare those here in bold.  Otherwise, remove this line.*
