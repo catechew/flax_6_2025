@@ -141,7 +141,7 @@
             </div>
             {% endfor %}
             {% else %}
-            <p class="text-muted">No specific recommendations available, but you can view all matching recipes below.
+            <p class="text-muted">No specific recommendations available.
             </p>
             {% endif %}
 
@@ -151,26 +151,6 @@
               <a href="{% url 'some_recipes' %}?ids={{ top_pick_ids }}" class="btn btn-primary btn-lg">
                 <i class="bi bi-star-fill"></i> View Top {{ top_picks|length }} Picks
               </a>
-            </div>
-            {% endif %}
-
-            <!-- View All Results -->
-            {% if total_count > 0 %}
-            <div class="text-center mt-4">
-              <p class="text-muted">
-                {% if total_count > top_picks|length %}
-                Found <strong>more</strong> recipes matching your criteria
-                {% else %}
-                Found <strong>no more</strong> recipes matching your criteria
-                {% endif %}
-              </p>
-              <a href="{{ view_all_url }}" class="btn btn-outline-primary btn-lg">
-                <i class="bi bi-grid"></i> View Any Related Results
-              </a>
-            </div>
-            {% else %}
-            <div class="alert alert-warning">
-              <i class="bi bi-exclamation-triangle"></i> No recipes found matching your criteria. Try broadening your search.
             </div>
             {% endif %}
           </div>

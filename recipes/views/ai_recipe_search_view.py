@@ -30,7 +30,7 @@ ERROR_MESSAGES = {
     error.RateLimitError: 'AI service is busy. Please wait a moment and try again.',
     error.APIConnectionError: 'Unable to connect to AI service. Please check your connection.',
 }
-DEFAULT_ERROR = 'Something went wrong. Please try again.'
+DEFAULT_ERROR = 'Something went wrong. Please try again, by pressing back and reclicking on the link for this page.'
 
 load_dotenv()
 openai.api_key = os.environ.get('OPENAI_API_KEY')
@@ -51,6 +51,7 @@ def get_search_params_from_ai(user_context):
             {"role": "system", "content": "Extract recipe search params. Return only JSON."},
             {"role": "user", "content": _build_search_prompt(user_context)}
         ],
+        response_format={"type": "json_object"},
         temperature=0.3,
         max_tokens=150,
         timeout=30
@@ -147,6 +148,7 @@ def get_ai_rankings(user_context, top_recipes):
             {"role": "system", "content": "Rank recipes. Return only JSON."},
             {"role": "user", "content": _build_ranking_prompt(user_context, recipe_list)}
         ],
+        response_format={"type": "json_object"},
         temperature=0.5,
         max_tokens=300
     )
@@ -196,7 +198,7 @@ def filter_recipes(search_params):
     )
     return apply_sorting(recipes, search_params.get('sort_by', 'date_newest'))
 
-def build_result_context(user_context, search_params, ranking_data, total_count, view_all_url):
+def build_result_context(user_context, search_params, ranking_data, total_count):
     """ Build context for search results. """
     top_picks = ranking_data.get('top_picks', [])
     recipe_ids = [pick['recipe_id'] for pick in top_picks]
@@ -208,7 +210,6 @@ def build_result_context(user_context, search_params, ranking_data, total_count,
         'top_picks': top_picks,
         'top_pick_ids': ','.join(map(str, recipe_ids)),
         'total_count': total_count,
-        'view_all_url': view_all_url,
         'show_results': True
     }
 
