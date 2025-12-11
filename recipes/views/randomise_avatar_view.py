@@ -12,11 +12,9 @@ def randomise_avatar(request):
     if user.profile_picture and user.avatar_type != "ai":
         user.profile_picture.delete()
         user.profile_picture = None
-
     user.avatar_seed = str(uuid.uuid4())
     user.avatar_type = 'random'
     user.save()
-
     messages.success(request, "Avatar randomised! Your new avatar is ready.")
     return redirect('profile')
 
@@ -28,10 +26,8 @@ def use_initials_avatar(request):
     if user.profile_picture:
         user.profile_picture.delete()
         user.profile_picture = None
-
     user.avatar_seed = ''
     user.avatar_type = 'initials'
     user.save()
-
     messages.success(request, "Avatar reset to initials!")
     return redirect('profile')
