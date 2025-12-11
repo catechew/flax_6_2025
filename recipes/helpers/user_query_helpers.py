@@ -13,15 +13,16 @@ ITEMS_PER_PAGE = 25
 
 
 def apply_user_search(users, search_query):
-    """ Apply search on user fields. """
+    """Apply search on user fields."""
     if not search_query:
         return users
     users = _annotate_user_full_name(users)
     query = _build_user_search_query(search_query)
     return users.filter(query)
 
+
 def _annotate_user_full_name(users):
-    """ Add full name annotation to user queryset. """
+    """Add full name annotation to user queryset."""
     return users.annotate(
         full_name=Concat(
             "first_name",
@@ -30,8 +31,9 @@ def _annotate_user_full_name(users):
         )
     )
 
+
 def _build_user_search_query(search_query):
-    """ Build search query for user fields. """
+    """Build search query for user fields."""
     return (
         Q(username__icontains=search_query)
         | Q(first_name__icontains=search_query)
@@ -39,14 +41,16 @@ def _build_user_search_query(search_query):
         | Q(full_name__icontains=search_query)
     )
 
+
 def paginate_users(users, request):
-    """ Return paginated user page. """
+    """Return paginated user page."""
     paginator = Paginator(users, ITEMS_PER_PAGE)
     page_number = request.GET.get("page")
     return paginator.get_page(page_number)
 
+
 def get_users_context(request, search_query):
-    """ Create context for users tab. """
+    """Create context for users tab."""
     from recipes.helpers.recipe_query_helpers import apply_search
 
     user_queryset = User.objects.all()
@@ -56,11 +60,12 @@ def get_users_context(request, search_query):
 
     return _build_users_context_dict(page_object, recipe_count)
 
+
 def _build_users_context_dict(page_object, recipe_count):
-    """ Build context dictionary for users template. """
+    """Build context dictionary for users template."""
     return {
         "users": page_object,
         "page_object": page_object,
         "user_count": page_object.paginator.count,
-        "recipe_count": recipe_count
+        "recipe_count": recipe_count,
     }

@@ -13,20 +13,17 @@ class RecipeTagsViewTests(TestCase):
     """
 
     def setUp(self):
-        self.user = User.objects.create_user(
-            username="testuser",
-            password="pass"
-        )
+        self.user = User.objects.create_user(username="testuser", password="pass")
         self.client.login(username="testuser", password="pass")
         self.url = reverse("create_recipe_tags")
 
     def test_redirect_when_missing_form_data(self):
-        """ If no form data in session then redirect occurs. """
+        """If no form data in session then redirect occurs."""
         resp = self.client.get(self.url)
         self.assertEqual(resp.status_code, 302)
 
     def test_get_renders_template_with_form_data(self):
-        """ GET request renders template when form data exists. """
+        """GET request renders template when form data exists."""
         session = self.client.session
         session["recipe_form_data"] = {
             "form_data": {"title": "Test Recipe"},
@@ -40,7 +37,7 @@ class RecipeTagsViewTests(TestCase):
         self.assertIn("course_tags", resp.context)
 
     def test_post_with_valid_tag_action(self):
-        """ POST with tag action triggers redirect. """
+        """POST with tag action triggers redirect."""
         session = self.client.session
         session["recipe_form_data"] = {
             "form_data": {"title": "Test Recipe"},
@@ -55,7 +52,7 @@ class RecipeTagsViewTests(TestCase):
         self.assertEqual(resp.status_code, 302)
 
     def test_post_without_action_renders_page(self):
-        """ POST without action falls back to rendering page. """
+        """POST without action falls back to rendering page."""
         session = self.client.session
         session["recipe_form_data"] = {
             "form_data": {"title": "Test Recipe"},
@@ -97,9 +94,9 @@ class RecipeTagsViewTests(TestCase):
 
     @patch("recipes.handlers.recipe_form_handler.RecipeFormHandler.finalise_recipe")
     def test_post_create_recipe(self, mock_finalise):
-        """ POST to finalise recipe creation. """
+        """POST to finalise recipe creation."""
         mock_finalise.return_value = HttpResponseRedirect("/recipes/1/")
-        
+
         session = self.client.session
         session["recipe_form_data"] = {
             "form_data": {

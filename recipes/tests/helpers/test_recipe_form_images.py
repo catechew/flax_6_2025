@@ -12,19 +12,20 @@ from recipes.helpers.recipe_form_images import (
 Tests for recipe form image helper functions.
 """
 
+
 class RecipeFormImagesTestCase(TestCase):
     """
     Test suite for recipe form image helper functions.
     """
 
     def tearDown(self):
-        """ Clean up any temp files created during tests. """
+        """Clean up any temp files created during tests."""
         self._cleanup_all_temp_files()
 
     def _cleanup_all_temp_files(self):
         """Delete all files in temp directory."""
         try:
-            temp_files = default_storage.listdir('temp')[1]
+            temp_files = default_storage.listdir("temp")[1]
             self._delete_temp_files(temp_files)
         except Exception:
             pass
@@ -32,7 +33,7 @@ class RecipeFormImagesTestCase(TestCase):
     def _delete_temp_files(self, file_list):
         """Delete each file in the given list."""
         for path in file_list:
-            default_storage.delete(f'temp/{path}')
+            default_storage.delete(f"temp/{path}")
 
     def test_get_temp_file_prefix_without_recipe_id(self):
         """Test prefix generation without recipe_id."""
@@ -52,9 +53,7 @@ class RecipeFormImagesTestCase(TestCase):
     def test_save_temp_image_with_valid_file(self):
         """Test save_temp_image saves file and returns path."""
         uploaded_file = SimpleUploadedFile(
-            "test_image.jpg",
-            b"fake image content",
-            content_type="image/jpeg"
+            "test_image.jpg", b"fake image content", content_type="image/jpeg"
         )
 
         result = save_temp_image(uploaded_file, user_id=123)
@@ -69,9 +68,7 @@ class RecipeFormImagesTestCase(TestCase):
     def test_save_temp_image_with_recipe_id(self):
         """Test save_temp_image with recipe_id includes it in filename."""
         uploaded_file = SimpleUploadedFile(
-            "update_image.jpg",
-            b"fake image content",
-            content_type="image/jpeg"
+            "update_image.jpg", b"fake image content", content_type="image/jpeg"
         )
 
         result = save_temp_image(uploaded_file, user_id=123, recipe_id=456)
@@ -94,9 +91,7 @@ class RecipeFormImagesTestCase(TestCase):
     def test_load_temp_image_with_existing_file(self):
         """Test load_temp_image returns SimpleUploadedFile dict."""
         uploaded_file = SimpleUploadedFile(
-            "test_load.jpg",
-            b"fake image content",
-            content_type="image/jpeg"
+            "test_load.jpg", b"fake image content", content_type="image/jpeg"
         )
         temp_path = save_temp_image(uploaded_file, user_id=123)
 
@@ -120,9 +115,7 @@ class RecipeFormImagesTestCase(TestCase):
     def test_cleanup_temp_image_with_existing_file(self):
         """Test cleanup_temp_image deletes existing file."""
         uploaded_file = SimpleUploadedFile(
-            "test_cleanup.jpg",
-            b"fake image content",
-            content_type="image/jpeg"
+            "test_cleanup.jpg", b"fake image content", content_type="image/jpeg"
         )
         temp_path = save_temp_image(uploaded_file, user_id=123)
         self.assertTrue(default_storage.exists(temp_path))

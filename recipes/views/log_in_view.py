@@ -9,11 +9,11 @@ from recipes.views.decorators import LoginProhibitedMixin
 
 
 class LogInView(LoginProhibitedMixin, View):
-    """ 
-    Display and process the login form. 
+    """
+    Display and process the login form.
     """
 
-    http_method_names = ['get', 'post']
+    http_method_names = ["get", "post"]
     redirect_when_logged_in_url = settings.REDIRECT_URL_WHEN_LOGGED_IN
 
     def get(self, request):
@@ -23,7 +23,7 @@ class LogInView(LoginProhibitedMixin, View):
     def post(self, request):
         self.next = request.POST.get("next") or ""
         form = LogInForm(request.POST)
-        
+
         user = self._validate_and_get_user(form)
         if user is None:
             return self.render()
@@ -32,16 +32,16 @@ class LogInView(LoginProhibitedMixin, View):
         return redirect(redirect_url)
 
     def _validate_and_get_user(self, form):
-        """ Validate form and return user or None. """
+        """Validate form and return user or None."""
         if not form.is_valid():
             messages.error(self.request, "The credentials provided were invalid!")
             return None
-        
+
         user = form.get_user()
         if user is None:
             messages.error(self.request, "The credentials provided were invalid!")
         return user
-    
+
     def render(self, form=None):
         return render(
             self.request,
@@ -49,5 +49,5 @@ class LogInView(LoginProhibitedMixin, View):
             {
                 "form": form or LogInForm(),
                 "next": self.next,
-            }
+            },
         )

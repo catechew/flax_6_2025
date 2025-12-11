@@ -22,12 +22,13 @@ def login_prohibited(view_function):
     Raises:
         ImproperlyConfigured: If `settings.REDIRECT_URL_WHEN_LOGGED_IN` is not defined.
     """
-    
+
     def modified_view_function(request):
         if request.user.is_authenticated:
             return redirect(settings.REDIRECT_URL_WHEN_LOGGED_IN)
         else:
             return view_function(request)
+
     return modified_view_function
 
 
@@ -59,7 +60,7 @@ class LoginProhibitedMixin:
         return super().dispatch(*args, **kwargs)
 
     def handle_already_logged_in(self, *args, **kwargs):
-        """ Redirect the user when already logged in. """
+        """Redirect the user when already logged in."""
         url = self.get_redirect_when_logged_in_url()
         return redirect(url)
 

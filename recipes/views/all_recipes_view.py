@@ -10,12 +10,12 @@ from recipes.helpers.recipe_query_helpers import get_recipes_context
 
 @login_required
 def all_recipes(request):
-    """ Display public recipes with search, filtering and pagination. """
-    
+    """Display public recipes with search, filtering and pagination."""
+
     search_query = get_search_query(request)
     tab = request.GET.get("tab", "recipes")
-    base_context = {"search_query": search_query, "active_tab":tab}
-    
+    base_context = {"search_query": search_query, "active_tab": tab}
+
     if tab == "recipes":
         context = get_recipes_context(request, search_query)
     else:

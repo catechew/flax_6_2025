@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0006_recipe_cuisine_tags'),
+        ("recipes", "0006_recipe_cuisine_tags"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='following',
-            field=models.ManyToManyField(blank=True, related_name='followers', to=settings.AUTH_USER_MODEL),
+            model_name="user",
+            name="following",
+            field=models.ManyToManyField(
+                blank=True, related_name="followers", to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

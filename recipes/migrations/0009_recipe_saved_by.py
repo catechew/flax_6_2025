@@ -7,13 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0008_mealplan_mealslot'),
+        ("recipes", "0008_mealplan_mealslot"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='saved_by',
-            field=models.ManyToManyField(blank=True, help_text='Users who have saved this recipe', related_name='saved_recipes', to=settings.AUTH_USER_MODEL),
+            model_name="recipe",
+            name="saved_by",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Users who have saved this recipe",
+                related_name="saved_recipes",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

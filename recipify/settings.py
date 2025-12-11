@@ -166,7 +166,7 @@ LOGGING = {
 }
 # comment
 
-# Prevent macOS file storage freeze problem 
+# Prevent macOS file storage freeze problem
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 # Media files (Uploaded by users)

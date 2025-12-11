@@ -14,7 +14,8 @@ Utility functions for creating test data in tests
 
 User = get_user_model()
 
-def create_test_user(username=None, password='Password123', **kwargs):
+
+def create_test_user(username=None, password="Password123", **kwargs):
     """
     Create test user with default values.
 
@@ -26,25 +27,22 @@ def create_test_user(username=None, password='Password123', **kwargs):
     """
 
     if username is None:
-        username = f'@testuser_{uuid.uuid4().hex[:8]}'
+        username = f"@testuser_{uuid.uuid4().hex[:8]}"
 
     defaults = {
-        'first_name':'Test',
-        'last_name': 'User',
-        'email': f'{username.strip("@")}@test.com'
+        "first_name": "Test",
+        "last_name": "User",
+        "email": f'{username.strip("@")}@test.com',
     }
 
     defaults.update(kwargs)
 
-    return User.objects.create_user(
-        username=username,
-        password=password,
-        **defaults
-    )
+    return User.objects.create_user(username=username, password=password, **defaults)
 
-def create_test_users(count=1, username='testuser', **kwargs):
+
+def create_test_users(count=1, username="testuser", **kwargs):
     """
-    Create multiple test users 
+    Create multiple test users
 
     count: number of users to create
     username: prefix for username (default '@testuser')
@@ -55,13 +53,14 @@ def create_test_users(count=1, username='testuser', **kwargs):
     users = []
     for i in range(count):
         user = create_test_user(
-            username = f'@{username}{i}',
-            first_name = kwargs.get('first_name', f'Test{i}'),
-            last_name = kwargs.get('last_name', 'User'),
-            **{k: v for k, v in kwargs.items() if k not in ['first_name', 'last_name']}
+            username=f"@{username}{i}",
+            first_name=kwargs.get("first_name", f"Test{i}"),
+            last_name=kwargs.get("last_name", "User"),
+            **{k: v for k, v in kwargs.items() if k not in ["first_name", "last_name"]},
         )
         users.append(user)
     return users
+
 
 def create_test_recipe(author=None, **kwargs):
     """
@@ -75,23 +74,25 @@ def create_test_recipe(author=None, **kwargs):
 
     if author is None:
         author = _get_or_create_default_author()
-    
+
     defaults = {
-        'title': 'Test Recipe',
-        'publication_date': timezone.now().date(),
-        'ingredients': 'test ingredient (1 cup)',
-        'steps': 'test step 1',
-        'servings': 4
+        "title": "Test Recipe",
+        "publication_date": timezone.now().date(),
+        "ingredients": "test ingredient (1 cup)",
+        "steps": "test step 1",
+        "servings": 4,
     }
     defaults.update(kwargs)
     return Recipe.objects.create(author=author, **defaults)
 
+
 def _get_or_create_default_author():
-    """ Get existing @johndoe user or create if it does not exist. """
+    """Get existing @johndoe user or create if it does not exist."""
     try:
-        return User.objects.get(username='@johndoe')
+        return User.objects.get(username="@johndoe")
     except User.DoesNotExist:
-        return create_test_user(username='@johndoe')
+        return create_test_user(username="@johndoe")
+
 
 def create_test_recipes(count=3, author=None, **kwargs):
     """
@@ -101,9 +102,10 @@ def create_test_recipes(count=3, author=None, **kwargs):
     recipes = []
     for i in range(1, count + 1):
         recipe_kwargs = kwargs.copy()
-        recipe_kwargs['title'] = recipe_kwargs.get('title', f'Test Recipe {i}')
+        recipe_kwargs["title"] = recipe_kwargs.get("title", f"Test Recipe {i}")
         recipes.append(create_test_recipe(author=author, **recipe_kwargs))
     return recipes
+
 
 def create_test_form_data(**kwargs):
     """
@@ -112,37 +114,38 @@ def create_test_form_data(**kwargs):
     """
 
     defaults = {
-        'title': 'Test Recipe',
-        'publication_date': timezone.now().date(),
-        'ingredients': 'test ingredient (1 cup)',
-        'steps': 'test step 1',
-        'servings': 4,
-        'prep_time_hours': 0,
-        'prep_time_minutes': 30,
-        'cook_time_hours': 1,
-        'cook_time_minutes': 0,
-        'private' : False,
+        "title": "Test Recipe",
+        "publication_date": timezone.now().date(),
+        "ingredients": "test ingredient (1 cup)",
+        "steps": "test step 1",
+        "servings": 4,
+        "prep_time_hours": 0,
+        "prep_time_minutes": 30,
+        "cook_time_hours": 1,
+        "cook_time_minutes": 0,
+        "private": False,
     }
     defaults.update(kwargs)
     return defaults
 
-def create_test_image(name='test.jpg', size=(100,100), color='red', format='JPEG'):
+
+def create_test_image(name="test.jpg", size=(100, 100), color="red", format="JPEG"):
     """
     Create a test image file for upload testing
     name: Filename (default: test.jpg)
     size: Image dimensions tuple (default: (100,100))
     color: Image color (default:red)
     format: Image format (default: JPEG)
-    
+
     Returns SimpleUploadedFile instance
     """
 
-    image = Image.new('RGB', size, color=color)
+    image = Image.new("RGB", size, color=color)
     image_file = BytesIO()
     image.save(image_file, format)
     image_file.seek(0)
 
-    content_type = 'image/jpeg' if format == 'JPEG' else f'image/{format.lower()}'
+    content_type = "image/jpeg" if format == "JPEG" else f"image/{format.lower()}"
 
     return SimpleUploadedFile(
         name=name,
@@ -150,19 +153,19 @@ def create_test_image(name='test.jpg', size=(100,100), color='red', format='JPEG
         content_type=content_type,
     )
 
-def create_invalid_image(name='invalid.txt'):
+
+def create_invalid_image(name="invalid.txt"):
     """
     Create an invalid image file (text file).
     name: Filename (default: invalid.txt)
-    
+
     Returns SimpleUploadedFile instance
     """
 
     return SimpleUploadedFile(
-        name=name,
-        content=b'This is not an image',
-        content_type='text/plain'    
+        name=name, content=b"This is not an image", content_type="text/plain"
     )
+
 
 def get_default_user():
     """
@@ -170,42 +173,50 @@ def get_default_user():
     Returns user instance
     """
 
-    return User.objects.get(username='@johndoe')
+    return User.objects.get(username="@johndoe")
 
 
 class AISearchTestMixin:
-    """ 
+    """
     Mixin for AI search view tests.
     """
 
-    def create_mock_search_params(self, query='', dietary=None, cuisine=None, other=None, sort='date_newest'):
+    def create_mock_search_params(
+        self, query="", dietary=None, cuisine=None, other=None, sort="date_newest"
+    ):
         """Create mock search params response."""
         mock = MagicMock()
         mock.choices = [MagicMock()]
-        mock.choices[0].message.content = json.dumps({
-            "search_query": query,
-            "dietary_filters": dietary or [],
-            "cuisine_filters": cuisine or [],
-            "other_filters": other or [],
-            "sort_by": sort
-        })
+        mock.choices[0].message.content = json.dumps(
+            {
+                "search_query": query,
+                "dietary_filters": dietary or [],
+                "cuisine_filters": cuisine or [],
+                "other_filters": other or [],
+                "sort_by": sort,
+            }
+        )
         return mock
 
-    def create_mock_ranking(self, recipe_id, title='Recipe', reason='Match'):
+    def create_mock_ranking(self, recipe_id, title="Recipe", reason="Match"):
         """Create mock ranking response."""
         mock = MagicMock()
         mock.choices = [MagicMock()]
-        mock.choices[0].message.content = json.dumps({
-            "top_picks": [{"recipe_id": recipe_id, "title": title, "reason": reason}],
-            "search_explanation": "Found recipes"
-        })
+        mock.choices[0].message.content = json.dumps(
+            {
+                "top_picks": [
+                    {"recipe_id": recipe_id, "title": title, "reason": reason}
+                ],
+                "search_explanation": "Found recipes",
+            }
+        )
         return mock
 
 
 class AIRecipeTestMixin:
-    """ Mixin for AI recipe generator tests. """
+    """Mixin for AI recipe generator tests."""
 
-    def create_mock_recipe_data(self, title='Test Recipe'):
+    def create_mock_recipe_data(self, title="Test Recipe"):
         """Create mock AI recipe data."""
         return {
             "title": title,
@@ -217,11 +228,11 @@ class AIRecipeTestMixin:
             "ingredients": ["200g pasta", "2 cloves garlic"],
             "steps": ["Boil water", "Cook pasta"],
             "tips": ["Fresh ingredients"],
-            "dietary_info": ["vegetarian"]
+            "dietary_info": ["vegetarian"],
         }
 
     def create_mock_openai_response(self, recipe_data):
-        """ Create mock OpenAI API response. """
+        """Create mock OpenAI API response."""
         mock = MagicMock()
         mock.choices = [MagicMock()]
         mock.choices[0].message.content = json.dumps(recipe_data)

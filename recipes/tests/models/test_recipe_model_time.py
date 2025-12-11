@@ -5,6 +5,7 @@ from recipes.tests.utils import create_test_recipe
 Recipe time calculation tests.
 """
 
+
 class RecipeModelTimeTests(TestCase):
     def setUp(self):
         self.recipe = create_test_recipe()

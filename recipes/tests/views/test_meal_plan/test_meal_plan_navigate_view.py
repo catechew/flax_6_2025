@@ -1,6 +1,7 @@
 """
 Tests for MealPlanNavigateView.
 """
+
 from datetime import date
 
 from django.contrib.auth import get_user_model
@@ -15,8 +16,8 @@ User = get_user_model()
 
 
 class MealPlanNavigateViewTests(TestCase):
-    """ 
-    Tests for navigating between meal plans. 
+    """
+    Tests for navigating between meal plans.
     """
 
     def setUp(self):
@@ -70,7 +71,7 @@ class MealPlanNavigateViewTests(TestCase):
         url = reverse("meal-plan-navigate", args=[self.plan.id, "next"])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        
+
     def test_navigate_next_week_existing_plan_does_not_create_new_one(self):
         url = reverse("meal-plan-navigate", args=[self.plan.id, "next"])
         self.client.get(url)

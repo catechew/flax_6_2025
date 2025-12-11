@@ -1,9 +1,6 @@
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
-from recipes.helpers.recipe_images import (
-    copy_original_image,
-    delete_image_if_requested
-)
+from recipes.helpers.recipe_images import copy_original_image, delete_image_if_requested
 from recipes.tests.utils import create_test_recipe, create_test_image
 
 
@@ -13,7 +10,7 @@ class RecipeImageHelpersTestCase(TestCase):
     """
 
     def test_copy_original_image_success(self):
-        """ Test copying image from original recipe to new recipe. """
+        """Test copying image from original recipe to new recipe."""
         image = create_test_image()
         original = create_test_recipe()
         original.image = image
@@ -21,16 +18,16 @@ class RecipeImageHelpersTestCase(TestCase):
         new_recipe = create_test_recipe(title="Modified Recipe")
         copy_original_image(new_recipe, original)
         self.assertTrue(new_recipe.image)
-        self.assertIn('test', new_recipe.image.name)
+        self.assertIn("test", new_recipe.image.name)
 
     def test_copy_original_image_no_original_recipe(self):
-        """ Test copy when original_recipe is None. """
+        """Test copy when original_recipe is None."""
         recipe = create_test_recipe()
         copy_original_image(recipe, None)
         self.assertFalse(recipe.image)
 
     def test_copy_original_image_no_original_image(self):
-        """ Test copy when original recipe has no image. """
+        """Test copy when original recipe has no image."""
         original = create_test_recipe()
         new_recipe = create_test_recipe(title="New Recipe")
 
@@ -38,13 +35,13 @@ class RecipeImageHelpersTestCase(TestCase):
         self.assertFalse(new_recipe.image)
 
     def test_copy_original_image_recipe_already_has_image(self):
-        """ Test copy when new recipe already has an image. """
-        image1 = create_test_image(name='original.jpg')
+        """Test copy when new recipe already has an image."""
+        image1 = create_test_image(name="original.jpg")
         original = create_test_recipe()
         original.image = image1
         original.save()
 
-        image2 = create_test_image(name='new.jpg')
+        image2 = create_test_image(name="new.jpg")
         new_recipe = create_test_recipe(title="New Recipe")
         new_recipe.image = image2
         new_recipe.save()
@@ -54,14 +51,14 @@ class RecipeImageHelpersTestCase(TestCase):
         self.assertEqual(new_recipe.image.name, original_image_name)
 
     def test_delete_image_if_requested_success(self):
-        """ Test deleting image when owner requests it. """
+        """Test deleting image when owner requests it."""
         image = create_test_image()
         original = create_test_recipe()
         original.image = image
         original.save()
 
         recipe = create_test_recipe(title="Modified Recipe")
-        recipe.image = create_test_image(name='recipe.jpg')
+        recipe.image = create_test_image(name="recipe.jpg")
         recipe.save()
         session_data = {"image_clear": True}
 

@@ -7,18 +7,44 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0001_initial'),
+        ("recipes", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Recipe',
+            name="Recipe",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user', models.CharField(max_length=255, validators=[django.core.validators.MinLengthValidator(4)])),
-                ('title', models.CharField(max_length=255, validators=[django.core.validators.MinLengthValidator(4)])),
-                ('adjectives', models.CharField(max_length=255, validators=[django.core.validators.MinLengthValidator(4)])),
-                ('publication_date', models.DateField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "user",
+                    models.CharField(
+                        max_length=255,
+                        validators=[django.core.validators.MinLengthValidator(4)],
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        max_length=255,
+                        validators=[django.core.validators.MinLengthValidator(4)],
+                    ),
+                ),
+                (
+                    "adjectives",
+                    models.CharField(
+                        max_length=255,
+                        validators=[django.core.validators.MinLengthValidator(4)],
+                    ),
+                ),
+                ("publication_date", models.DateField()),
             ],
         ),
     ]

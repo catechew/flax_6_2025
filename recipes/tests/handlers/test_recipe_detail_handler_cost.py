@@ -14,9 +14,7 @@ class RecipeDetailCostContextTests(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
-            username='@testuser',
-            email='test@example.com',
-            password='Password123'
+            username="@testuser", email="test@example.com", password="Password123"
         )
         self.recipe = Recipe.objects.create(
             author=self.user,
@@ -24,7 +22,7 @@ class RecipeDetailCostContextTests(TestCase):
             publication_date=timezone.now().date(),
             ingredients="Test (1)",
             steps="Test",
-            servings=2
+            servings=2,
         )
         self.factory = RequestFactory()
 
@@ -36,10 +34,7 @@ class RecipeDetailCostContextTests(TestCase):
     @patch("recipes.handlers.recipe_detail_handler.get_cost_estimate_data")
     def test_cost_context_when_show_cost_true(self, mock_cost):
         """Test get_cost_context when show_cost=true."""
-        mock_cost.return_value = {
-            "total_cost": 5.50,
-            "cost_per_serving": 2.75
-        }
+        mock_cost.return_value = {"total_cost": 5.50, "cost_per_serving": 2.75}
 
         request = self.factory.get("/recipe/1?show_cost=true")
         request.user = self.user
@@ -76,7 +71,7 @@ class RecipeDetailCostContextTests(TestCase):
 
     def test_determine_ownership_unauthenticated(self):
         """Test ownership check for unauthenticated user."""
-        request = self.factory.get('/')
+        request = self.factory.get("/")
         request.user = AnonymousUser()
         handler = RecipeDetailHandler(request, self.recipe.id)
         self.assertFalse(handler.determine_ownership())
@@ -86,8 +81,8 @@ class RecipeDetailCostContextTests(TestCase):
         request = self.get_authenticated_request()
         handler = RecipeDetailHandler(request, self.recipe.id)
         context = handler.get_user_context()
-        self.assertIn('user_rating', context)
-        self.assertIn('user_has_flagged', context)
+        self.assertIn("user_rating", context)
+        self.assertIn("user_has_flagged", context)
 
     @patch("recipes.handlers.recipe_detail_handler.get_cost_estimate_data")
     def test_cost_context_error(self, mock_cost):
@@ -110,15 +105,15 @@ class RecipeDetailCostContextTests(TestCase):
 
         context = handler.get_context()
 
-        self.assertIn('recipe', context)
-        self.assertIn('steps', context)
-        self.assertIn('is_owner', context)
-        self.assertIn('scaled_ingredients', context)
-        self.assertIn('desired_servings', context)
-        self.assertIn('user_rating', context)
-        self.assertIn('user_has_flagged', context)
-        self.assertIn('cost_estimate', context)
-        self.assertIn('cost_error', context)
+        self.assertIn("recipe", context)
+        self.assertIn("steps", context)
+        self.assertIn("is_owner", context)
+        self.assertIn("scaled_ingredients", context)
+        self.assertIn("desired_servings", context)
+        self.assertIn("user_rating", context)
+        self.assertIn("user_has_flagged", context)
+        self.assertIn("cost_estimate", context)
+        self.assertIn("cost_error", context)
 
     def test_parse_servings_param_zero_or_negative(self):
         """Test servings parsing with zero or negative values."""

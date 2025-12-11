@@ -22,8 +22,8 @@ User = get_user_model()
 
 
 class CategoriseIngredientTests(TestCase):
-    """ 
-    Tests for categorise_ingredient helper. 
+    """
+    Tests for categorise_ingredient helper.
     """
 
     def test_known_meat_category(self):
@@ -33,21 +33,21 @@ class CategoriseIngredientTests(TestCase):
     def test_unknown_ingredient_returns_other(self):
         category = categorise_ingredient("Protein powder")
         self.assertEqual(category, "🛒 Other Items")
-    
+
     def test_unknown_ingredient_categorised_as_other(self):
-        """ Test unknown ingredients return Other Items. """
+        """Test unknown ingredients return Other Items."""
         category = categorise_ingredient("randomthing")
         self.assertEqual(category, "🛒 Other Items")
-    
+
     def test_no_category_match_after_loop(self):
-        """ Covers full loop run with no keyword matches. """
+        """Covers full loop run with no keyword matches."""
         result = categorise_ingredient("xyzitem123")
         self.assertEqual(result, "🛒 Other Items")
-        
-        
+
+
 class ExtractIngredientsTests(TestCase):
-    """ 
-    Tests for extract_ingredients helper. 
+    """
+    Tests for extract_ingredients helper.
     """
 
     def setUp(self):
@@ -120,8 +120,8 @@ class ExtractIngredientsTests(TestCase):
 
 
 class ConsolidateIngredientsTests(TestCase):
-    """ 
-    Tests for consolidate_ingredients helper. 
+    """
+    Tests for consolidate_ingredients helper.
     """
 
     def test_duplicate_items_are_grouped(self):
@@ -144,13 +144,13 @@ class ConsolidateIngredientsTests(TestCase):
     def test_consolidate_empty_list_returns_empty(self):
         result = consolidate_ingredients([])
         self.assertEqual(result, [])
-    
+
     def test_duplicate_ingredients_are_scaled(self):
         items = [
             {"item": "2 cups Rice", "recipe": "R1", "day": "Mon", "meal": "Dinner"},
             {"item": "2 cups Rice", "recipe": "R2", "day": "Tue", "meal": "Lunch"},
         ]
-        
+
         consolidated = consolidate_ingredients(items)
         self.assertEqual(consolidated[0]["count"], 2)
         self.assertIn("4", consolidated[0]["item"])
@@ -186,8 +186,8 @@ class ConsolidateScalingBranchTests(TestCase):
 
 
 class OrganiseShoppingListTests(TestCase):
-    """ 
-    Tests for organise_shopping_list helper. 
+    """
+    Tests for organise_shopping_list helper.
     """
 
     def test_orders_categories_correctly(self):

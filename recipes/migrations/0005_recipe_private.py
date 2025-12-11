@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0004_recipe_image_recipe_ingredients_recipe_servings_and_more'),
+        ("recipes", "0004_recipe_image_recipe_ingredients_recipe_servings_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='private',
-            field=models.BooleanField(default=False, help_text='Set this to true to hide the recipe from other users'),
+            model_name="recipe",
+            name="private",
+            field=models.BooleanField(
+                default=False,
+                help_text="Set this to true to hide the recipe from other users",
+            ),
         ),
     ]

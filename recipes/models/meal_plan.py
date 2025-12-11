@@ -8,60 +8,53 @@ class MealPlan(models.Model):
     A weekly meal plan for a user.
     Each plan starts on a Monday (week_start).
     """
+
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='meal_plans'
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="meal_plans"
     )
-    week_start = models.DateField()  
+    week_start = models.DateField()
 
+    class Meta:
+        """User can only have one meal plan per week."""
 
-    class Meta: 
-        """ User can only have one meal plan per week. """
-        unique_together = ('user', 'week_start') 
-    
+        unique_together = ("user", "week_start")
+
     def __str__(self):
         return f"{self.user.username}'s plan for {self.week_start}"
 
+
 class MealSlot(models.Model):
     """
-    Represents a single meal slot. 
+    Represents a single meal slot.
     Eg: Tuesday - Dinner - Tuna Pasta.
     """
+
     MEAL_TYPES = [
-        ('breakfast', 'Breakfast'), 
-        ('lunch', 'Lunch'), 
-        ('dinner', 'Dinner'), 
-        ('snack', 'Snack'), 
+        ("breakfast", "Breakfast"),
+        ("lunch", "Lunch"),
+        ("dinner", "Dinner"),
+        ("snack", "Snack"),
     ]
     DAYS = [
-        ('mon', 'Monday'),
-        ('tue', 'Tuesday'),
-        ('wed', 'Wednesday'),
-        ('thu', 'Thursday'),
-        ('fri', 'Friday'),
-        ('sat', 'Saturday'),
-        ('sun', 'Sunday'),
+        ("mon", "Monday"),
+        ("tue", "Tuesday"),
+        ("wed", "Wednesday"),
+        ("thu", "Thursday"),
+        ("fri", "Friday"),
+        ("sat", "Saturday"),
+        ("sun", "Sunday"),
     ]
     meal_plan = models.ForeignKey(
-        MealPlan, 
-        on_delete=models.CASCADE, 
-        related_name='entries'
+        MealPlan, on_delete=models.CASCADE, related_name="entries"
     )
-    
-    day=models.CharField(max_length=3, choices=DAYS)
-    meal_type = models.CharField(max_length=10, choices=MEAL_TYPES)
-    recipe = models.ForeignKey(
-        Recipe,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL
-    )
-    notes = models.TextField(blank=True, default='')
 
+    day = models.CharField(max_length=3, choices=DAYS)
+    meal_type = models.CharField(max_length=10, choices=MEAL_TYPES)
+    recipe = models.ForeignKey(Recipe, null=True, blank=True, on_delete=models.SET_NULL)
+    notes = models.TextField(blank=True, default="")
 
     class Meta:
-        unique_together = ('meal_plan', 'day', 'meal_type')
-    
+        unique_together = ("meal_plan", "day", "meal_type")
+
     def __str__(self):
         return f"{self.get_day_display()} - {self.get_meal_type_display()}"

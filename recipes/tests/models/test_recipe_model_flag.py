@@ -9,23 +9,19 @@ class RecipeFlagCountTests(TestCase):
     def setUp(self):
         """Set up test data."""
         self.user = User.objects.create_user(
-            username='@testuser',
-            email='test@example.com',
-            password='Password123'
+            username="@testuser", email="test@example.com", password="Password123"
         )
 
         self.user2 = User.objects.create_user(
-            username='@user2',
-            email='user2@example.com',
-            password='Password123'
+            username="@user2", email="user2@example.com", password="Password123"
         )
 
         self.recipe = Recipe.objects.create(
             author=self.user,
-            title='Test Recipe',
+            title="Test Recipe",
             publication_date=date.today(),
-            ingredients='Test (1)',
-            steps='Test step',
+            ingredients="Test (1)",
+            steps="Test step",
         )
 
     def test_flag_count_zero(self):
@@ -50,23 +46,18 @@ class FlagModelTests(TestCase):
     def setUp(self):
         """Set up test data."""
         self.user = User.objects.create_user(
-            username='@testuser',
-            email='test@example.com',
-            password='Password123'
+            username="@testuser", email="test@example.com", password="Password123"
         )
 
         self.recipe = Recipe.objects.create(
             author=self.user,
-            title='Test Recipe',
+            title="Test Recipe",
             publication_date=date.today(),
-            ingredients='Test (1)',
-            steps='Test step',
+            ingredients="Test (1)",
+            steps="Test step",
         )
 
-        self.flag = Flag.objects.create(
-            recipe=self.recipe,
-            user=self.user
-        )
+        self.flag = Flag.objects.create(recipe=self.recipe, user=self.user)
 
     def test_flag_str_method(self):
         """Test Flag __str__ method."""
@@ -76,9 +67,7 @@ class FlagModelTests(TestCase):
     def test_flag_count_for_recipe_property(self):
         """Test flag_count_for_recipe property."""
         user2 = User.objects.create_user(
-            username='@user2',
-            email='user2@example.com',
-            password='Password123'
+            username="@user2", email="user2@example.com", password="Password123"
         )
         Flag.objects.create(recipe=self.recipe, user=user2)
         self.assertEqual(self.flag.flag_count_for_recipe, 2)

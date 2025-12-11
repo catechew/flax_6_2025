@@ -18,9 +18,10 @@ User = get_user_model()
 Tests for meal plan helper functions.
 """
 
+
 class GetMondayHelperTests(TestCase):
-    """ 
-    Tests for get_monday helper. 
+    """
+    Tests for get_monday helper.
     """
 
     def test_returns_monday_for_midweek_date(self):
@@ -78,8 +79,8 @@ class CalculateCompletionHelperTests(TestCase):
 
 
 class CreateMealSlotsHelperTests(TestCase):
-    """ 
-    Tests for create_meal_slots helper. 
+    """
+    Tests for create_meal_slots helper.
     """
 
     def setUp(self):
@@ -105,7 +106,7 @@ class CreateMealSlotsHelperTests(TestCase):
 
 class ReusePrevWeekHelperTests(TestCase):
     """
-    Tests for reuse_prev_week helper.  
+    Tests for reuse_prev_week helper.
     """
 
     def setUp(self):
@@ -133,55 +134,65 @@ class ReusePrevWeekHelperTests(TestCase):
             ingredients="Eggs\nBread",
             steps="Cook eggs",
         )
-        
-        previous_slot = self.previous_plan.entries.filter(day="mon", meal_type="breakfast",).first()
-        previous_slot.recipe = recipe  
+
+        previous_slot = self.previous_plan.entries.filter(
+            day="mon",
+            meal_type="breakfast",
+        ).first()
+        previous_slot.recipe = recipe
         previous_slot.notes = "Test notes"
         previous_slot.save()
 
         result = reuse_prev_week(self.current_plan)
         self.assertTrue(result)
 
-        new_slot = self.current_plan.entries.filter(day="mon", meal_type="breakfast",).first()
-        self.assertEqual(new_slot.recipe, recipe)  
-        self.assertEqual(new_slot.notes, "Test notes")  
+        new_slot = self.current_plan.entries.filter(
+            day="mon",
+            meal_type="breakfast",
+        ).first()
+        self.assertEqual(new_slot.recipe, recipe)
+        self.assertEqual(new_slot.notes, "Test notes")
 
     def test_returns_false_when_no_previous_plan_exists(self):
         new_plan = MealPlan.objects.create(
             user=self.user,
-            week_start=date(2026, 1, 1),  
+            week_start=date(2026, 1, 1),
         )
         self.assertFalse(reuse_prev_week(new_plan))
-    
+
     def test_returns_false_when_previous_week_has_no_recipes(self):
-        """ Test that reuse returns False when previous week is empty. """
+        """Test that reuse returns False when previous week is empty."""
         result = reuse_prev_week(self.current_plan)
         self.assertFalse(result)
-        
+
     def test_handles_missing_slots_in_previous_week(self):
-        """ Test copying when previous week is missing some slots. """
+        """Test copying when previous week is missing some slots."""
         recipe = self._create_test_recipe()
         self._setup_previous_week_with_recipe(recipe)
-        self.previous_plan.entries.filter(day='tue', meal_type='lunch').delete()
-        
+        self.previous_plan.entries.filter(day="tue", meal_type="lunch").delete()
+
         result = reuse_prev_week(self.current_plan)
-        
+
         self.assertTrue(result)
-        current_mon = self.current_plan.entries.filter(day='mon', meal_type='breakfast').first()
+        current_mon = self.current_plan.entries.filter(
+            day="mon", meal_type="breakfast"
+        ).first()
         self.assertEqual(current_mon.recipe, recipe)
 
     def _create_test_recipe(self):
-        """ Create a test recipe for meal plan tests. """
+        """Create a test recipe for meal plan tests."""
         return Recipe.objects.create(
             title="Test Recipe",
             author=self.user,
             publication_date=date(2025, 11, 17),
             ingredients="Ingredients",
-            steps="Steps"
-    )
+            steps="Steps",
+        )
 
     def _setup_previous_week_with_recipe(self, recipe):
-        """ Add recipe to previous week's Monday breakfast slot. """
-        prev_slot = self.previous_plan.entries.filter(day='mon', meal_type='breakfast').first()
+        """Add recipe to previous week's Monday breakfast slot."""
+        prev_slot = self.previous_plan.entries.filter(
+            day="mon", meal_type="breakfast"
+        ).first()
         prev_slot.recipe = recipe
         prev_slot.save()

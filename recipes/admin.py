@@ -6,6 +6,7 @@ class RecipeInteractionAdmin(admin.ModelAdmin):
     """
     Base admin for Recipe interactions (Rating, Flag).
     """
+
     list_display = ("recipe_title", "recipe_author", "user", "recipe_rating")
     list_filter = ("recipe__author",)
     search_fields = ("recipe__title", "user__username", "recipe__author__username")
@@ -21,7 +22,13 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "rating_display", "flag_count", "publication_date")
+    list_display = (
+        "title",
+        "author",
+        "rating_display",
+        "flag_count",
+        "publication_date",
+    )
     search_fields = ("title", "author__username", "adjectives")
     list_filter = ("author", "publication_date")
     readonly_fields = ("rating_display", "flag_count", "adjectives")
@@ -32,13 +39,17 @@ class RatingAdmin(RecipeInteractionAdmin):
     """
     Admin for recipe ratings.
     """
+
     list_display = RecipeInteractionAdmin.list_display + ("stars",)
 
 
 @admin.register(Flag)
 class FlagAdmin(RecipeInteractionAdmin):
-    """ 
+    """
     Admin for recipe flags.
     """
+
     list_display = RecipeInteractionAdmin.list_display + ("flag_count_for_recipe",)
-    readonly_fields = RecipeInteractionAdmin.readonly_fields + ("flag_count_for_recipe",)
+    readonly_fields = RecipeInteractionAdmin.readonly_fields + (
+        "flag_count_for_recipe",
+    )

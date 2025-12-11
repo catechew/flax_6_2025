@@ -8,32 +8,95 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0007_user_following'),
+        ("recipes", "0007_user_following"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MealPlan',
+            name="MealPlan",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('week_start', models.DateField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='meal_plans', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("week_start", models.DateField()),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="meal_plans",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'week_start')},
+                "unique_together": {("user", "week_start")},
             },
         ),
         migrations.CreateModel(
-            name='MealSlot',
+            name="MealSlot",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('day', models.CharField(choices=[('mon', 'Monday'), ('tue', 'Tuesday'), ('wed', 'Wednesday'), ('thu', 'Thursday'), ('fri', 'Friday'), ('sat', 'Saturday'), ('sun', 'Sunday')], max_length=3)),
-                ('meal_type', models.CharField(choices=[('breakfast', 'Breakfast'), ('lunch', 'Lunch'), ('dinner', 'Dinner'), ('snack', 'Snack')], max_length=10)),
-                ('meal_plan', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='entries', to='recipes.mealplan')),
-                ('recipe', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='recipes.recipe')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "day",
+                    models.CharField(
+                        choices=[
+                            ("mon", "Monday"),
+                            ("tue", "Tuesday"),
+                            ("wed", "Wednesday"),
+                            ("thu", "Thursday"),
+                            ("fri", "Friday"),
+                            ("sat", "Saturday"),
+                            ("sun", "Sunday"),
+                        ],
+                        max_length=3,
+                    ),
+                ),
+                (
+                    "meal_type",
+                    models.CharField(
+                        choices=[
+                            ("breakfast", "Breakfast"),
+                            ("lunch", "Lunch"),
+                            ("dinner", "Dinner"),
+                            ("snack", "Snack"),
+                        ],
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "meal_plan",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="entries",
+                        to="recipes.mealplan",
+                    ),
+                ),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="recipes.recipe",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('meal_plan', 'day', 'meal_type')},
+                "unique_together": {("meal_plan", "day", "meal_type")},
             },
         ),
     ]
