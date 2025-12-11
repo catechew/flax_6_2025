@@ -26,7 +26,7 @@ SORT_OPTIONS = {
 
 ERROR_MESSAGES = {
     json.JSONDecodeError: 'Unable to process AI response. Please try again.',
-    error.AuthenticationError: 'AI service configuration error. Please contact support.',
+    error.AuthenticationError: 'AI service configuration error. Apologies for the inconvenience.',
     error.RateLimitError: 'AI service is busy. Please wait a moment and try again.',
     error.APIConnectionError: 'Unable to connect to AI service. Please check your connection.',
 }
@@ -61,14 +61,14 @@ def get_search_params_from_ai(user_context):
 def _build_word_queries(word):
     """ Build Q objects for a single search word. """
     return (
-            Q(title__icontains=word) |
-            Q(adjectives__icontains=word) |
-            Q(ingredients__icontains=word) |
-            Q(steps__icontains=word) |
-            Q(author__username__icontains=word) |
-            Q(author__first_name__icontains=word) |
-            Q(author__last_name__icontains=word) |
-            Q(full_name__icontains=word)
+        Q(title__icontains=word) |
+        Q(adjectives__icontains=word) |
+        Q(ingredients__icontains=word) |
+        Q(steps__icontains=word) |
+        Q(author__username__icontains=word) |
+        Q(author__first_name__icontains=word) |
+        Q(author__last_name__icontains=word) |
+        Q(full_name__icontains=word)
     )
 
 def apply_search_query(recipes, search_query):
@@ -154,7 +154,7 @@ def get_ai_rankings(user_context, top_recipes):
 
 def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_filters, other_filters, sort_by):
     """ Build URL for view all results button. """
-    url_params = [f'q={search_query}']
+    url_params = []
 
     filter_map = {
         'course': course_filters,
@@ -218,7 +218,7 @@ def filter_recipes(search_params):
     )
     return apply_sorting(recipes, search_params.get('sort_by', 'date_newest'))
 
-def _build_result_context(user_context, search_params, ranking_data, total_count, view_all_url):
+def build_result_context(user_context, search_params, ranking_data, total_count, view_all_url):
     """ Build context for search results. """
     top_picks = ranking_data.get('top_picks', [])
     recipe_ids = [pick['recipe_id'] for pick in top_picks]
@@ -245,5 +245,5 @@ def render_search_results(recipes, request, user_context, search_params):
         search_params.get('other_filters', []),
         search_params.get('sort_by', '')
     )
-    context = _build_result_context(user_context, search_params, ranking_data, recipes.count(), view_all_url)
+    context = build_result_context(user_context, search_params, ranking_data, recipes.count(), view_all_url)
     return render(request, 'ai/ai_recipe_search.html', context)
