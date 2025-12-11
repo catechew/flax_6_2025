@@ -152,28 +152,6 @@ def get_ai_rankings(user_context, top_recipes):
     )
     return json.loads(ranking_response.choices[0].message.content.strip())
 
-def build_view_all_url(search_query, course_filters, dietary_filters, cuisine_filters, other_filters, sort_by):
-    """ Build URL for view all results button. """
-    url_params = []
-
-    filter_map = {
-        'course': course_filters,
-        'dietary': dietary_filters,
-        'cuisine': cuisine_filters,
-        'other': other_filters,
-    }
-    for param_name, filter_values in filter_map.items():
-        url_params = add_params_to_url(param_name, filter_values, url_params)
-    
-    url_params.append(f'sort={sort_by}')
-    return '/all_recipes/?' + '&'.join(url_params)
-
-def add_params_to_url(param_name, filter_values, url_params):
-    """ Add filter parameters to url params list. """
-    for value in filter_values:
-        url_params.append(f'{param_name}={value}')
-    return url_params
-
 @login_required
 def ai_recipe_search_view(request):
     """ AI recipe search view. """
@@ -237,13 +215,5 @@ def build_result_context(user_context, search_params, ranking_data, total_count,
 def render_search_results(recipes, request, user_context, search_params):
     """ Render search results with AI rankings. """
     ranking_data = get_ai_rankings(user_context, recipes[:10])
-    view_all_url = build_view_all_url(
-        search_params.get('search_query', ''),
-        search_params.get('course_filters', []),
-        search_params.get('dietary_filters', []),
-        search_params.get('cuisine_filters', []),
-        search_params.get('other_filters', []),
-        search_params.get('sort_by', '')
-    )
-    context = build_result_context(user_context, search_params, ranking_data, recipes.count(), view_all_url)
+    context = build_result_context(user_context, search_params, ranking_data, recipes.count())
     return render(request, 'ai/ai_recipe_search.html', context)
