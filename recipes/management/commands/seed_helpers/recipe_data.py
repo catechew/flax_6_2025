@@ -125,7 +125,8 @@ ADJECTIVES = [
     "Easy", "Quick", "Budget", "Simple", "Gordon Ramsey's", "Jamie Oliver's", "Cheap", 
     "Lazy", "Viral", "Microwave", "Leftover", "TikTok Style", "Comfort", 
     "Pinterest Worthy", "Creamy", "Vegan", "Light", "Special ", "15 Minute", "Aesthetic", 
-    "Homemade", "Zesty", "Rich", "Fresh", "Leftover Friendly", "Restaurant Style"
+    "Homemade", "Zesty", "Rich", "Fresh", "Leftover Friendly", "Restaurant Style", 
+    "MasterChef Style"
 ]
 
 PROTEIN = [
