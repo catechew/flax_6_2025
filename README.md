@@ -58,12 +58,12 @@ $ open htmlcov/index.html
 ## Sources
 The packages used by this application are specified in `requirements.txt`
 
-We utilised AI (e.g., Microsoft Copilot) as a learning and debugging assistant.
+During development, our team occasionally used Microsoft Copilot and GitHub Copilot to support learning, debugging, and clarification of concepts. These tools were **not** used to generate project code; instead, they served as supplementary resources in the same way documentation or online tutorials would.
 
-Specific Uses Included:
-
+Examples of appropriate use included:
 - Clarifying Python and Django documentation and functions (e.g., explaining views, models, and routing concepts).
+- Providing guidance during complex Git operations (e.g., resolving merge conflicts, understanding rebasing workflows).
+- Offering general explanations of HTML/CSS behaviour and UI structuring principles.
 
-- Troubleshooting complex Git workflows (e.g., explaining rebase, merge conflict resolution).
-
-- Refining understanding of HTML/CSS elements and structure.
+All final implementation decisions, code, design patterns, and architectural choices were made by the team.
+**No AI tools were used to automatically generate functional components, models, views, templates, or tests.**
