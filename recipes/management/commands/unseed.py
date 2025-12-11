@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 from recipes.models import User, Recipe
 
-""" 
-Management command to remove seeded data from the database. 
+"""
+Management command to remove seeded data from the database.
 """
 
 

@@ -1,7 +1,7 @@
 from datetime import timedelta
 
-""" 
-Helper functions for meal plan operations. 
+"""
+Helper functions for meal plan operations.
 """
 
 

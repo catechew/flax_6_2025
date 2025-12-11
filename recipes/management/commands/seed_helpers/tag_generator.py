@@ -1,7 +1,7 @@
 from random import randint, sample
 
-""" 
-Tag generation for recipe seeding. 
+"""
+Tag generation for recipe seeding.
 """
 
 TAG_OPTIONS = {

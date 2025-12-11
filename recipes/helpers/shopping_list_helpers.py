@@ -1,7 +1,7 @@
 from collections import defaultdict
 
-""" 
-Shopping list generation and categorisation. 
+"""
+Shopping list generation and categorisation.
 """
 
 INGREDIENT_CATEGORIES = {

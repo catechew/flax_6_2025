@@ -19,8 +19,8 @@ from recipes.helpers.shopping_list_helpers import (
     organise_shopping_list,
 )
 
-""" 
-Meal plan management views. 
+"""
+Meal plan management views.
 """
 
 

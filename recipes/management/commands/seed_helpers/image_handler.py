@@ -3,8 +3,8 @@ from random import randint
 from django.conf import settings
 from django.core.files.base import ContentFile
 
-""" 
-Image handling for recipe seeding. 
+"""
+Image handling for recipe seeding.
 """
 
 DISH_TYPE_MAPPING = {
