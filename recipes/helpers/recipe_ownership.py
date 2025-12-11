@@ -9,6 +9,5 @@ def prepare_recipe_author(recipe, user, original_recipe, is_owner):
         recipe.id = None
         recipe.author = user
         return 
-
     if not original_recipe:
         recipe.author = user

@@ -50,7 +50,7 @@ def format_single_ingredient(ingredient):
     return f"{ingredient} (as needed)"
 
 def try_parse_ingredient(ingredient):
-    """Try to parse ingredient with regex."""
+    """ Try to parse ingredient with regex. """
     pattern = r'^([\d./]+\s*(?:g|kg|ml|l|tsp|tbsp|cup|cups|oz|lb|cloves?|pieces?)?)\s+(.+)$'
     return re.match(pattern, ingredient, re.IGNORECASE)
 
@@ -66,7 +66,7 @@ def capitalise_first(text):
     return text[0].upper() + text[1:] if text else text
 
 def _parse_time_fields(ai_data):
-    """Parse time fields from AI data."""
+    """ Parse time fields from AI data. """
     prep_minutes = parse_time_string(ai_data.get('prep_time', ''))
     cook_minutes = parse_time_string(ai_data.get('cook_time', ''))
     prep_hours, prep_mins = divmod(prep_minutes, 60)

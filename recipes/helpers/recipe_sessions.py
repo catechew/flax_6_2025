@@ -2,7 +2,6 @@ from django.http import QueryDict
 from recipes.helpers.recipe_form_images import load_temp_image
 from django.core.files.storage import default_storage
 
-
 def rebuild_form_data(session_data, request, recipe):
     """ Rebuild form data and files from session. """
     form_data = QueryDict("", mutable=True)
@@ -33,7 +32,6 @@ def _save_temp_image_if_present(session_data, files):
     """ Save uploaded image to temporary storage if present. """
     if not files or 'image' not in files:
         return
-    
     image = files['image']
     temp_path = default_storage.save(f"temp/{image.name}", image)
     session_data['temp_image_path'] = temp_path

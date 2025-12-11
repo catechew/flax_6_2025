@@ -3,7 +3,6 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-
 def _get_temp_file_prefix(user_id, recipe_id=None):
     """ Prefix for temp image filenames. """
     if recipe_id:

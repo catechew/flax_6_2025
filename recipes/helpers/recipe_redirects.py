@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 
-
 def redirect_to_form(handler):
     if handler.is_create_mode:
         return redirect("create_recipe")
