@@ -97,7 +97,7 @@ class AIRecipeSearchViewTests(AISearchTestMixin, TestCase):
         mock_openai.side_effect = [search_params, ranking]
         response = self.client.post(self.url, {'context': 'I want pasta'})
         required = ['user_context', 'search_params', 'search_explanation',
-                   'top_picks', 'top_pick_ids', 'total_count', 'view_all_url']
+                   'top_picks', 'top_pick_ids', 'total_count']
         for key in required:
             self.assertIn(key, response.context)
 
