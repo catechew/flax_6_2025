@@ -43,7 +43,6 @@ def apply_search(recipes, search_query):
     """ Apply free-text search on multiple recipe fields. """
     if not search_query:
         return recipes
-    
     recipes = _annotate_author_name(recipes)
     base_query = _build_base_search_query(search_query)
     ingredient_query = _build_ingredient_query(search_query.split())
@@ -199,7 +198,6 @@ def get_recipes_context(request, search_query):
     base_queryset = Recipe.objects.visible()
     filter_params = get_filter_params(request)
     sort_by = request.GET.get("sort", "date_newest")
-
     filtered_recipes = _apply_all_filters(base_queryset, search_query, filter_params, sort_by)
     page_object = paginate(filtered_recipes, request)
     user_count = apply_user_search(User.objects.all(), search_query).count()
