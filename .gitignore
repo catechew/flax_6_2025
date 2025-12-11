@@ -958,3 +958,4 @@ media/
 assets/db*.sqlite3
 .tex
 .aux
+.coveragerc
