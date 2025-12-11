@@ -16,13 +16,13 @@
   {% endif %}
 
   <!-- Tabs -->
-  <ul class="nav nav-tabs search-tabs justify-content-center border-0 mb-4 mt-4" id="searchTabs" role="tablist">
-    <li class="nav-item" role="presentation">
+  <ul class="nav nav-tabs search-tabs border-0 mb-4 mt-4" id="searchTabs" role="tablist">
+    <li class="nav-item flex-fill" role="presentation">
       <a class="nav-link {% if active_tab == 'recipes' %}active{% endif %} w-100 py-3 text-dark fw-normal" href="?q={{ search_query }}&tab=recipes">       
         <i class="bi bi-card-list me-2"></i>Recipes ({{ recipe_count }})
       </a>
     </li>
-    <li class="nav-item" role="presentation">
+    <li class="nav-item flex-fill" role="presentation">
       <a class="nav-link {% if active_tab == 'users' %}active{% endif %} w-100 py-3 text-dark fw-normal" href="?q={{ search_query }}&tab=users">
         <i class="bi bi-people-fill me-2"></i>Users ({{ user_count }})
       </a>
