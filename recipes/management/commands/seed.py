@@ -10,142 +10,145 @@ Management command to seed the database with demo data.
 
 USER_FIXTURES = [
     {
-        'username': '@johndoe',
-        'email': 'john.doe@example.org',
-        'first_name': 'John',
-        'last_name': 'Doe'
+        "username": "@johndoe",
+        "email": "john.doe@example.org",
+        "first_name": "John",
+        "last_name": "Doe",
     },
     {
-        'username': '@janedoe',
-        'email': 'jane.doe@example.org',
-        'first_name': 'Jane',
-        'last_name': 'Doe'
+        "username": "@janedoe",
+        "email": "jane.doe@example.org",
+        "first_name": "Jane",
+        "last_name": "Doe",
     },
     {
-        'username': '@charlie',
-        'email': 'charlie.johnson@example.org',
-        'first_name': 'Charlie',
-        'last_name': 'Johnson'
-    }
+        "username": "@charlie",
+        "email": "charlie.johnson@example.org",
+        "first_name": "Charlie",
+        "last_name": "Johnson",
+    },
 ]
 
 
 class Command(BaseCommand):
-    """ 
-    Seed database with users and recipes. 
+    """
+    Seed database with users and recipes.
     """
 
     USER_COUNT = 200
     RECIPE_COUNT = 500
-    DEFAULT_PASSWORD = 'Password123'
-    help = 'Seeds the database with sample data'
+    DEFAULT_PASSWORD = "Password123"
+    help = "Seeds the database with sample data"
 
     def __init__(self, *args, **kwargs):
-        """ Initialise command with Faker instance. """
+        """Initialise command with Faker instance."""
         super().__init__(*args, **kwargs)
-        self.faker = Faker('en_GB')
+        self.faker = Faker("en_GB")
 
     def handle(self, *args, **options):
-        """ Execute seeding workflow. """
+        """Execute seeding workflow."""
         self._seed_users()
         self._setup_ai_avatars()
         self._seed_recipes()
 
     def _seed_users(self):
-        """ Create fixture and random users. """
+        """Create fixture and random users."""
         self._create_fixture_users()
         self._create_random_users()
 
     def _create_fixture_users(self):
-        """ Create predefined fixture users. """
+        """Create predefined fixture users."""
         for user_data in USER_FIXTURES:
             self._create_fixture_user(user_data)
 
     def _create_fixture_user(self, user_data):
-        """ Create a single fixture user. """
-        if user_data['username'] == '@johndoe': 
+        """Create a single fixture user."""
+        if user_data["username"] == "@johndoe":
             self._create_admin_user(user_data)
         else:
             self._try_create_user(user_data)
 
     def _create_admin_user(self, user_data):
-        """ Create admin superuser. """
+        """Create admin superuser."""
         try:
-            user = User.objects.create_superuser(**self._get_user_creation_params(user_data))
+            user = User.objects.create_superuser(
+                **self._get_user_creation_params(user_data)
+            )
             user.is_staff = True
             user.save()
         except Exception:
             pass
 
     def _create_random_users(self):
-        """ Generate random users until target count reached. """
+        """Generate random users until target count reached."""
         while User.objects.count() < self.USER_COUNT:
             count = User.objects.count()
-            print(f"Seeding user {count}/{self.USER_COUNT}", end='\r')
+            print(f"Seeding user {count}/{self.USER_COUNT}", end="\r")
             self._generate_user()
         print("User seeding complete.")
 
     def _generate_user(self):
-        """ Generate single random user. """
+        """Generate single random user."""
         first_name = self.faker.first_name()
         last_name = self.faker.last_name()
         user_data = {
-            'username': _create_username(first_name, last_name),
-            'email': _create_email(first_name, last_name),
-            'first_name': first_name,
-            'last_name': last_name
+            "username": _create_username(first_name, last_name),
+            "email": _create_email(first_name, last_name),
+            "first_name": first_name,
+            "last_name": last_name,
         }
         self._try_create_user(user_data)
 
     def _try_create_user(self, user_data):
-        """ Attempt user creation, ignore failures. """
+        """Attempt user creation, ignore failures."""
         try:
             User.objects.create_user(**self._get_user_creation_params(user_data))
         except Exception:
             pass
 
     def _get_user_creation_params(self, user_data):
-        """ Extract common parameters for user creation. """
+        """Extract common parameters for user creation."""
         return {
-            'username': user_data['username'],
-            'email': user_data['email'],
-            'password': self.DEFAULT_PASSWORD,
-            'first_name': user_data['first_name'],
-            'last_name': user_data['last_name']
+            "username": user_data["username"],
+            "email": user_data["email"],
+            "password": self.DEFAULT_PASSWORD,
+            "first_name": user_data["first_name"],
+            "last_name": user_data["last_name"],
         }
-    
+
     def _setup_ai_avatars(self):
-        """ Configure AI avatars for seeded users. """
+        """Configure AI avatars for seeded users."""
         detector = self._get_gender_detector()
         if not detector:
-            return 
-        
+            return
+
         seeded_users = User.objects.filter(is_superuser=False)
         self._configure_user_avatars(seeded_users, detector)
         print(f"{seeded_users.count()} users configured with AI avatars")
-        
+
     def _get_gender_detector(self):
-        """ Initialise gender detector or return None if unavailable. """
+        """Initialise gender detector or return None if unavailable."""
         try:
             import gender_guesser.detector as gender
+
             return gender.Detector()
         except ImportError:
             print("⚠️  gender-guesser not installed.")
             return None
 
     def _configure_user_avatars(self, users, detector):
-        """ Configure AI avatars and gender for users. """
+        """Configure AI avatars and gender for users."""
         import random
-        
+
         for user in users:
-            user.avatar_type = 'ai'
+            user.avatar_type = "ai"
             detected = detector.get_gender(user.first_name)
-            user.gender = 'M' if detected in ['male', 'mostly_male'] else 'F'
-            user.age_range = random.choice(['young', 'middle', 'senior'])
+            user.gender = "M" if detected in ["male", "mostly_male"] else "F"
+            user.age_range = random.choice(["young", "middle", "senior"])
             user.save()
-    
+
     def _seed_recipes(self):
-        """ Generate recipes up to target count. """
+        """Generate recipes up to target count."""
         users = list(User.objects.all())
         if not users:
             print("No users found. Cannot create recipes.")
@@ -153,12 +156,12 @@ class Command(BaseCommand):
 
         while Recipe.objects.count() < self.RECIPE_COUNT:
             count = Recipe.objects.count()
-            print(f"Seeding recipe {count}/{self.RECIPE_COUNT}", end='\r')
+            print(f"Seeding recipe {count}/{self.RECIPE_COUNT}", end="\r")
             self._generate_recipe(users)
         print("Recipe seeding complete.")
 
     def _generate_recipe(self, users):
-        """ Generate single random recipe. """
+        """Generate single random recipe."""
         title = RecipeDataGenerator.generate_title()
         prep = RecipeDataGenerator.generate_time_component()
         cook = RecipeDataGenerator.generate_time_component()
@@ -170,29 +173,32 @@ class Command(BaseCommand):
         self._try_create_recipe(data, image, filename)
 
     def _try_create_recipe(self, data, image, filename):
-        """ Attempt recipe creation, ignore failures. """
-        try:  
+        """Attempt recipe creation, ignore failures."""
+        try:
             recipe = Recipe.objects.create(**data)
             self._save_recipe_image(recipe, image, filename)
         except Exception:
             pass
 
     def _save_recipe_image(self, recipe, image, filename):
-        """ Save image to recipe if provided. """
-        if image and filename: 
+        """Save image to recipe if provided."""
+        if image and filename:
             recipe.image.save(filename, image, save=True)
 
+
 def _add_tags_to_recipe_data(data):
-    """ Add all tag categories to recipe data. """
+    """Add all tag categories to recipe data."""
     data["course_tags"] = TagGenerator.generate_tags("course")
     data["cuisine_tags"] = TagGenerator.generate_tags("cuisine")
     data["dietary_tags"] = TagGenerator.generate_tags("dietary")
     data["other_tags"] = TagGenerator.generate_tags("other")
 
+
 def _create_username(first_name, last_name):
-    """ Create username from first and last names. """
+    """Create username from first and last names."""
     return f"@{first_name.lower()}{last_name.lower()}"
 
+
 def _create_email(first_name, last_name):
-    """ Create email from first and last names. """
+    """Create email from first and last names."""
     return f"{first_name}.{last_name}@example.org"

@@ -8,48 +8,83 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0011_rating'),
+        ("recipes", "0011_rating"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='age_range',
-            field=models.CharField(blank=True, choices=[('young', '18-30'), ('middle', '31-50'), ('senior', '51+')], default='young', max_length=10),
+            model_name="user",
+            name="age_range",
+            field=models.CharField(
+                blank=True,
+                choices=[("young", "18-30"), ("middle", "31-50"), ("senior", "51+")],
+                default="young",
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='avatar_seed',
-            field=models.CharField(blank=True, help_text='Seed for random avatar generation', max_length=50),
+            model_name="user",
+            name="avatar_seed",
+            field=models.CharField(
+                blank=True, help_text="Seed for random avatar generation", max_length=50
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='avatar_type',
-            field=models.CharField(choices=[('initials', 'Initials'), ('random', 'Random'), ('ai', 'AI Generated')], default='initials', help_text='Type of avatar to display', max_length=10),
+            model_name="user",
+            name="avatar_type",
+            field=models.CharField(
+                choices=[
+                    ("initials", "Initials"),
+                    ("random", "Random"),
+                    ("ai", "AI Generated"),
+                ],
+                default="initials",
+                help_text="Type of avatar to display",
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='gender',
-            field=models.CharField(blank=True, choices=[('M', 'Male'), ('F', 'Female')], default='M', max_length=1),
+            model_name="user",
+            name="gender",
+            field=models.CharField(
+                blank=True,
+                choices=[("M", "Male"), ("F", "Female")],
+                default="M",
+                max_length=1,
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='profile_picture',
-            field=models.ImageField(blank=True, null=True, upload_to='profile_pictures/'),
+            model_name="user",
+            name="profile_picture",
+            field=models.ImageField(
+                blank=True, null=True, upload_to="profile_pictures/"
+            ),
         ),
         migrations.AlterField(
-            model_name='rating',
-            name='recipe',
-            field=models.ForeignKey(help_text='The recipe this rating belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='ratings', to='recipes.recipe'),
+            model_name="rating",
+            name="recipe",
+            field=models.ForeignKey(
+                help_text="The recipe this rating belongs to",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="ratings",
+                to="recipes.recipe",
+            ),
         ),
         migrations.AlterField(
-            model_name='rating',
-            name='stars',
-            field=models.PositiveSmallIntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], help_text='Rating value (1 to 5)'),
+            model_name="rating",
+            name="stars",
+            field=models.PositiveSmallIntegerField(
+                choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)],
+                help_text="Rating value (1 to 5)",
+            ),
         ),
         migrations.AlterField(
-            model_name='rating',
-            name='user',
-            field=models.ForeignKey(help_text='The user who left this rating', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="rating",
+            name="user",
+            field=models.ForeignKey(
+                help_text="The user who left this rating",
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

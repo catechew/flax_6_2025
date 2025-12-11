@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.core.validators import RegexValidator
 from recipes.models import User
 
+
 class UserForm(forms.ModelForm):
     """
     Form to update user profile information.
@@ -18,16 +19,25 @@ class UserForm(forms.ModelForm):
         """
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'gender', 'age_range', 'profile_picture']
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "gender",
+            "age_range",
+            "profile_picture",
+        ]
         widgets = {
-            'profile_picture': forms.FileInput(attrs={
-                'accept': 'image/png,image/jpeg,image/jpg',
-                'class': 'form-control'
-            })
+            "profile_picture": forms.FileInput(
+                attrs={
+                    "accept": "image/png,image/jpeg,image/jpg",
+                    "class": "form-control",
+                }
+            )
         }
-        help_texts = {
-            'profile_picture': 'Upload PNG or JPEG images (max 5MB)'
-        }
+        help_texts = {"profile_picture": "Upload PNG or JPEG images (max 5MB)"}
+
 
 class NewPasswordMixin(forms.Form):
     """
@@ -45,20 +55,23 @@ class NewPasswordMixin(forms.Form):
         password_confirmation (CharField): The repeated password used to
             confirm accuracy of the first input.
     """
+
     new_password = forms.CharField(
-        label='Password',
+        label="Password",
         widget=forms.PasswordInput(),
         validators=[
             RegexValidator(
-                regex=r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
+                regex=r"^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$",
                 message=(
-                    'Password must contain an uppercase character, '
-                    'a lowercase character, and a number'
-                )
+                    "Password must contain an uppercase character, "
+                    "a lowercase character, and a number"
+                ),
             )
-        ]
+        ],
     )
-    password_confirmation = forms.CharField(label='Password confirmation', widget=forms.PasswordInput())
+    password_confirmation = forms.CharField(
+        label="Password confirmation", widget=forms.PasswordInput()
+    )
 
     def clean(self):
         """
@@ -75,12 +88,11 @@ class NewPasswordMixin(forms.Form):
             ValidationError: If the password and confirmation do not match.
         """
         super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('password_confirmation')
+        new_password = self.cleaned_data.get("new_password")
+        password_confirmation = self.cleaned_data.get("password_confirmation")
         if new_password != password_confirmation:
             self.add_error(
-                'password_confirmation', 
-                'Confirmation does not match password.'
+                "password_confirmation", "Confirmation does not match password."
             )
 
 
@@ -93,7 +105,7 @@ class PasswordForm(NewPasswordMixin):
     typically used in a “Change Password” or “Account Settings” page.
     """
 
-    password = forms.CharField(label='Current password', widget=forms.PasswordInput())
+    password = forms.CharField(label="Current password", widget=forms.PasswordInput())
 
     def __init__(self, user=None, **kwargs):
         """
@@ -103,7 +115,7 @@ class PasswordForm(NewPasswordMixin):
             user (User, optional): The authenticated user who wants to change
                 their password.
         """
-        
+
         super().__init__(**kwargs)
         self.user = user
 
@@ -128,13 +140,13 @@ class PasswordForm(NewPasswordMixin):
         """
 
         super().clean()
-        password = self.cleaned_data.get('password')
+        password = self.cleaned_data.get("password")
         if self.user is not None:
             user = authenticate(username=self.user.username, password=password)
         else:
             user = None
         if user is None:
-            self.add_error('password', "Password is invalid")
+            self.add_error("password", "Password is invalid")
 
     def save(self):
         """
@@ -147,7 +159,7 @@ class PasswordForm(NewPasswordMixin):
             User: The user instance with the updated password.
         """
 
-        new_password = self.cleaned_data['new_password']
+        new_password = self.cleaned_data["new_password"]
         if self.user is not None:
             self.user.set_password(new_password)
             self.user.save()
@@ -173,11 +185,12 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
         username (CharField): The desired username.
         email (EmailField): The user's email address.
     """
+
     class Meta:
         """Form options."""
 
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email']
+        fields = ["first_name", "last_name", "username", "email"]
 
     def save(self):
         """
@@ -193,10 +206,10 @@ class SignUpForm(NewPasswordMixin, forms.ModelForm):
 
         super().save(commit=False)
         user = User.objects.create_user(
-            self.cleaned_data.get('username'),
-            first_name=self.cleaned_data.get('first_name'),
-            last_name=self.cleaned_data.get('last_name'),
-            email=self.cleaned_data.get('email'),
-            password=self.cleaned_data.get('new_password'),
+            self.cleaned_data.get("username"),
+            first_name=self.cleaned_data.get("first_name"),
+            last_name=self.cleaned_data.get("last_name"),
+            email=self.cleaned_data.get("email"),
+            password=self.cleaned_data.get("new_password"),
         )
         return user

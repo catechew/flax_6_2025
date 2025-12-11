@@ -32,20 +32,20 @@ class MealPlanCreateViewTests(TestCase):
         self.url = reverse("meal-plan-create")
 
     def test_login_required(self):
-        """ Unauthenticated users are redirected. """
+        """Unauthenticated users are redirected."""
         self.client.logout()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 302)
 
     def test_creates_meal_plan_on_get(self):
-        """ GET request creates a new meal plan. """
+        """GET request creates a new meal plan."""
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(MealPlan.objects.count(), 1)
 
     def test_does_not_create_duplicate_plan(self):
-        """ Second request does not duplicate the same week's plan. """
+        """Second request does not duplicate the same week's plan."""
         week_start = get_monday(date.today())
 
         MealPlan.objects.create(

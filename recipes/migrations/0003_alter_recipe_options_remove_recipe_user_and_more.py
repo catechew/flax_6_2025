@@ -9,27 +9,37 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0002_recipe'),
+        ("recipes", "0002_recipe"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='recipe',
-            options={'ordering': ['-publication_date']},
+            name="recipe",
+            options={"ordering": ["-publication_date"]},
         ),
         migrations.RemoveField(
-            model_name='recipe',
-            name='user',
+            model_name="recipe",
+            name="user",
         ),
         migrations.AddField(
-            model_name='recipe',
-            name='author',
-            field=models.ForeignKey(default=1, help_text='The user who created this recipe', on_delete=django.db.models.deletion.CASCADE, related_name='recipes', to=settings.AUTH_USER_MODEL),
+            model_name="recipe",
+            name="author",
+            field=models.ForeignKey(
+                default=1,
+                help_text="The user who created this recipe",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="recipes",
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='adjectives',
-            field=models.CharField(help_text="Descriptive words for the recipe (e.g., 'quick', 'healthy', 'cheap')", max_length=255, validators=[django.core.validators.MinLengthValidator(4)]),
+            model_name="recipe",
+            name="adjectives",
+            field=models.CharField(
+                help_text="Descriptive words for the recipe (e.g., 'quick', 'healthy', 'cheap')",
+                max_length=255,
+                validators=[django.core.validators.MinLengthValidator(4)],
+            ),
         ),
     ]

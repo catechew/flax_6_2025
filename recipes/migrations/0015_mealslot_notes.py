@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0014_user_age_range_user_avatar_seed_user_avatar_type_and_more'),
+        ("recipes", "0014_user_age_range_user_avatar_seed_user_avatar_type_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='mealslot',
-            name='notes',
-            field=models.TextField(blank=True, default=''),
+            model_name="mealslot",
+            name="notes",
+            field=models.TextField(blank=True, default=""),
         ),
     ]

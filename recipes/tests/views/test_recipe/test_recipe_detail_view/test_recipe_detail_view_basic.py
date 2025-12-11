@@ -3,23 +3,20 @@ from django.urls import reverse
 from unittest.mock import patch
 from recipes.tests.utils import create_test_recipe, get_default_user
 
-class RecipeDetailViewTestCase(TestCase):
-    """ Tests for the recipe detail view. """
 
-    fixtures = [
-        'recipes/tests/fixtures/default_user.json'
-    ]
+class RecipeDetailViewTestCase(TestCase):
+    """Tests for the recipe detail view."""
+
+    fixtures = ["recipes/tests/fixtures/default_user.json"]
 
     def setUp(self):
         self.user = get_default_user()
-        self.client.login(username='@johndoe', password='Password123')
+        self.client.login(username="@johndoe", password="Password123")
 
         self.recipe = create_test_recipe(
-            title="Korean Noodles",                        
-            ingredients="test (1)",
-            steps="test"
+            title="Korean Noodles", ingredients="test (1)", steps="test"
         )
-        self.url = reverse('recipe_detail', kwargs={'recipe_id': self.recipe.id})
+        self.url = reverse("recipe_detail", kwargs={"recipe_id": self.recipe.id})
 
     def test_recipe_detail_url(self):
         response = self.client.get(self.url)
@@ -27,14 +24,14 @@ class RecipeDetailViewTestCase(TestCase):
 
     def test_recipe_detail_template(self):
         response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'recipes/recipe.html')
+        self.assertTemplateUsed(response, "recipes/recipe.html")
 
     def test_recipe_detail_context(self):
         response = self.client.get(self.url)
-        self.assertEqual(response.context['recipe'], self.recipe)
+        self.assertEqual(response.context["recipe"], self.recipe)
 
     def test_invalid_recipe_id_returns_404(self):
-        url = reverse('recipe_detail', kwargs={'recipe_id': 9999})
+        url = reverse("recipe_detail", kwargs={"recipe_id": 9999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
@@ -51,24 +48,24 @@ class RecipeDetailViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertContains(response, "test")
         self.assertContains(response, self.recipe.steps)
-    
+
     def test_recipe_detail_displays_author(self):
         response = self.client.get(self.url)
         self.assertContains(response, self.user.username)
-    
+
     def test_recipe_detail_displays_publication_date(self):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        formatted_date = self.recipe.publication_date.strftime('%b. %-d, %Y')
+        formatted_date = self.recipe.publication_date.strftime("%b. %-d, %Y")
         self.assertContains(response, formatted_date)
-    
+
     def test_recipe_with_multiple_ingredients(self):
-        """ Test recipe with multiple ingredients displays all correctly. """
+        """Test recipe with multiple ingredients displays all correctly."""
         recipe = create_test_recipe(
             ingredients="Flour (500g)\nSugar (200g)\nEggs (3)\nMilk (250ml)\nButter (100g)"
         )
-        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
+        url = reverse("recipe_detail", kwargs={"recipe_id": recipe.id})
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -82,10 +79,12 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "Butter")
 
     def test_recipe_with_multiple_steps(self):
-        """ Test recipe with multiple steps displays all in order. """
-        recipe = create_test_recipe(steps="Boil water\nAdd salt\nReduce heat\nSimmer for 10 minutes\nServe hot")
+        """Test recipe with multiple steps displays all in order."""
+        recipe = create_test_recipe(
+            steps="Boil water\nAdd salt\nReduce heat\nSimmer for 10 minutes\nServe hot"
+        )
 
-        url = reverse('recipe_detail', kwargs={'recipe_id': recipe.id})
+        url = reverse("recipe_detail", kwargs={"recipe_id": recipe.id})
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -97,26 +96,26 @@ class RecipeDetailViewTestCase(TestCase):
         self.assertContains(response, "Serve hot")
 
     def test_recipe_detail_has_update_button(self):
-        """ Test that update button is present. """
+        """Test that update button is present."""
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Update this recipe')
-        update_url = reverse('update_recipe', kwargs={'recipe_id': self.recipe.id})
+        self.assertContains(response, "Update this recipe")
+        update_url = reverse("update_recipe", kwargs={"recipe_id": self.recipe.id})
         self.assertContains(response, update_url)
 
     def test_recipe_detail_has_delete_button(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Delete this recipe')
-        delete_url = reverse('delete_recipe', kwargs={'recipe_id': self.recipe.id})
+        self.assertContains(response, "Delete this recipe")
+        delete_url = reverse("delete_recipe", kwargs={"recipe_id": self.recipe.id})
         self.assertContains(response, delete_url)
 
     def test_recipe_detail_has_back_button(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Go back home')
-        home_url = reverse('home')
+        self.assertContains(response, "Go back home")
+        home_url = reverse("home")
         self.assertContains(response, home_url)
 
     def test_determine_ownership_unauthenticated_user(self):

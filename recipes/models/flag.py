@@ -13,14 +13,14 @@ class Flag(RecipeInteractionMixin, models.Model):
         "Recipe",
         on_delete=models.CASCADE,
         related_name="flags",
-        help_text="The recipe that was flagged"
+        help_text="The recipe that was flagged",
     )
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='flags_created',
-        help_text="The user who flagged this recipe"
+        related_name="flags_created",
+        help_text="The user who flagged this recipe",
     )
 
     class Meta:
@@ -28,7 +28,7 @@ class Flag(RecipeInteractionMixin, models.Model):
 
     @property
     def flag_count_for_recipe(self):
-        """ Total flags for this recipe. """
+        """Total flags for this recipe."""
         return self.recipe.flags.count()
 
     def __str__(self):

@@ -4,21 +4,28 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from recipes.models import Recipe
 
+
 class RecipeForm(forms.ModelForm):
-    """ 
-    Form enabling registered users to add recipes. 
+    """
+    Form enabling registered users to add recipes.
     """
 
     publication_date = forms.DateField(
         widget=forms.DateInput(
-            attrs={"type": "date", "class": "form-control",}
+            attrs={
+                "type": "date",
+                "class": "form-control",
+            }
         ),
-        help_text="Select publication date (today or earlier)"
+        help_text="Select publication date (today or earlier)",
     )
     image = forms.ImageField(
         required=False,
         widget=forms.FileInput(
-            attrs={"class": "form-control", "accept": "image/*",}
+            attrs={
+                "class": "form-control",
+                "accept": "image/*",
+            }
         ),
         help_text="Upload an image of the dish (optional).",
     )
@@ -27,14 +34,18 @@ class RecipeForm(forms.ModelForm):
         initial=4,
         required=True,
         widget=forms.NumberInput(
-            attrs={"class": "form-control", "min": "1", "required": "required",}
+            attrs={
+                "class": "form-control",
+                "min": "1",
+                "required": "required",
+            }
         ),
         help_text="How many servings does this recipe make?",
         error_messages={
             "required": "Please enter the number of servings for this recipe.",
             "invalid": "Please enter a valid number.",
             "min_value": "Servings must be at least 1.",
-        }
+        },
     )
     ingredients = forms.CharField(
         widget=forms.Textarea(
@@ -103,11 +114,13 @@ class RecipeForm(forms.ModelForm):
             attrs={"class": "form-control", "min": "0", "max": "59"}
         ),
     )
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['publication_date'].widget.attrs['max'] = timezone.now().date().isoformat()
-    
+        self.fields["publication_date"].widget.attrs["max"] = (
+            timezone.now().date().isoformat()
+        )
+
     class Meta:
         model = Recipe
         fields = [
@@ -126,22 +139,22 @@ class RecipeForm(forms.ModelForm):
         widgets = {
             "title": forms.TextInput(attrs={"class": "form-control"}),
         }
-        
+
     def clean_publication_date(self):
-        """ Validate that publication date is not in the future. """
-        date = self.cleaned_data.get('publication_date')
+        """Validate that publication date is not in the future."""
+        date = self.cleaned_data.get("publication_date")
         if date and date > timezone.now().date():
             raise ValidationError("Publication date cannot be in the future.")
         return date
 
     def clean_ingredients(self):
-        """ Validate ingredient format: Ingredient (quantity). """
+        """Validate ingredient format: Ingredient (quantity)."""
         ingredients = self.cleaned_data.get("ingredients")
         errors = self._find_ingredient_errors(ingredients)
         if errors:
             raise ValidationError(self._format_ingredient_errors(errors))
         return ingredients
-    
+
     def _find_ingredient_errors(self, text):
         lines = [line.strip() for line in text.splitlines() if line.strip()]
         return [
@@ -152,17 +165,17 @@ class RecipeForm(forms.ModelForm):
         ]
 
     def _validate_ingredient_line(self, line, line_num):
-        """ Validate single ingredient line. """
-        if '(' not in line or ')' not in line:
+        """Validate single ingredient line."""
+        if "(" not in line or ")" not in line:
             return f"Line {line_num}: missing parentheses"
-        if not line.endswith(')'):
+        if not line.endswith(")"):
             return f"Line {line_num}: parentheses should be at the end"
-        if line.count('(') != line.count(')'):
+        if line.count("(") != line.count(")"):
             return f"Line {line_num}: mismatched parentheses"
         return None
 
     def _format_ingredient_errors(self, errors):
-        """ Format ingredient errors for display. """
+        """Format ingredient errors for display."""
         return (
             "Please fix the following ingredient formatting errors:\n"
             + "\n".join(errors)

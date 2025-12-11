@@ -6,6 +6,7 @@ from recipes.models import User, Recipe, Rating
 Recipe rating behaviour tests.
 """
 
+
 class RecipeModelRatingTests(TestCase):
 
     def setUp(self):
@@ -16,12 +17,11 @@ class RecipeModelRatingTests(TestCase):
         self.assertEqual(self.recipe.rating_count(), 0)
 
     def test_average_rating_single(self):
-        Rating.objects.create(recipe=self.recipe,
-                              user=self.user, stars=4)
+        Rating.objects.create(recipe=self.recipe, user=self.user, stars=4)
         self.assertEqual(self.recipe.average_rating(), 4)
-    
+
     def test_rating_str(self):
-        """ Test that the Rating model __str__ method returns the correct string. """
+        """Test that the Rating model __str__ method returns the correct string."""
         rating = Rating.objects.create(recipe=self.recipe, user=self.user, stars=5)
         expected = f"{self.user} rated {self.recipe} - 5 stars"
         self.assertEqual(str(rating), expected)
@@ -31,11 +31,11 @@ class RecipeModelRatingTests(TestCase):
         from recipes.models import Rating
 
         user2 = User.objects.create_user(
-            username='@user2',
-            email='user2@test.com',
-            password='Password123',
-            first_name='User',
-            last_name='Two'
+            username="@user2",
+            email="user2@test.com",
+            password="Password123",
+            first_name="User",
+            last_name="Two",
         )
 
         Rating.objects.create(recipe=self.recipe, user=self.user, stars=4)

@@ -7,7 +7,7 @@ from django.contrib import messages
 
 @login_required
 def rate_recipe(request, recipe_id):
-    """ Handle submission of a user's star rating for a recipe. """
+    """Handle submission of a user's star rating for a recipe."""
     recipe = get_object_or_404(Recipe, id=recipe_id)
 
     if recipe.author == request.user:
@@ -19,20 +19,20 @@ def rate_recipe(request, recipe_id):
 
     return redirect("recipe_detail", recipe_id=recipe.id)
 
+
 def _process_rating(request, recipe):
-    """ Process and save the rating. """
+    """Process and save the rating."""
     stars = int(request.POST.get("stars", 0))
-    
+
     if not _is_valid_rating(stars):
         return
-    
+
     Rating.objects.update_or_create(
-        recipe=recipe,
-        user=request.user,
-        defaults={"stars": stars}
+        recipe=recipe, user=request.user, defaults={"stars": stars}
     )
     messages.success(request, "Your rating has been saved.")
 
+
 def _is_valid_rating(stars):
-    """ Check if rating is valid (1-5 stars). """
+    """Check if rating is valid (1-5 stars)."""
     return 1 <= stars <= 5

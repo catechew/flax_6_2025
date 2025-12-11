@@ -6,29 +6,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0012_user_age_range_user_avatar_seed_user_avatar_type_and_more'),
+        ("recipes", "0012_user_age_range_user_avatar_seed_user_avatar_type_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='user',
-            name='age_range',
+            model_name="user",
+            name="age_range",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='avatar_seed',
+            model_name="user",
+            name="avatar_seed",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='avatar_type',
+            model_name="user",
+            name="avatar_type",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='profile_picture',
+            model_name="user",
+            name="profile_picture",
         ),
         migrations.AlterField(
-            model_name='user',
-            name='gender',
-            field=models.CharField(choices=[('M', 'Male'), ('F', 'Female')], default='M', help_text='Select your gender', max_length=1),
+            model_name="user",
+            name="gender",
+            field=models.CharField(
+                choices=[("M", "Male"), ("F", "Female")],
+                default="M",
+                help_text="Select your gender",
+                max_length=1,
+            ),
         ),
     ]

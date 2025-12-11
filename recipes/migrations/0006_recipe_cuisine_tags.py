@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0005_recipe_cook_time_hours_recipe_cook_time_minutes_and_more'),
+        ("recipes", "0005_recipe_cook_time_hours_recipe_cook_time_minutes_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='cuisine_tags',
-            field=models.TextField(blank=True, default='', help_text="Comma-separated cuisine tags (e.g., 'Japanese, Asian, Chinese, Indian, Western, Jamaican')"),
+            model_name="recipe",
+            name="cuisine_tags",
+            field=models.TextField(
+                blank=True,
+                default="",
+                help_text="Comma-separated cuisine tags (e.g., 'Japanese, Asian, Chinese, Indian, Western, Jamaican')",
+            ),
         ),
     ]

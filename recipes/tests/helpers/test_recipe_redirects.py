@@ -60,7 +60,7 @@ class RecipeRedirectsTestCase(TestCase):
 
     def test_show_success_message_create_mode(self):
         """Test success message in create mode"""
-        request = self.factory.get('/')
+        request = self.factory.get("/")
         request.session = {}
         request._messages = FallbackStorage(request)
 
@@ -76,11 +76,13 @@ class RecipeRedirectsTestCase(TestCase):
 
     def test_show_success_message_update_mode_as_owner(self):
         """Test success message in update mode as owner"""
-        request = self.factory.get('/')
+        request = self.factory.get("/")
         request.session = {}
         request._messages = FallbackStorage(request)
 
-        handler = self._create_mock_handler(is_create_mode=False, recipe_id=123, is_owner=True)
+        handler = self._create_mock_handler(
+            is_create_mode=False, recipe_id=123, is_owner=True
+        )
         recipe = Mock()
         recipe.title = "Updated Recipe"
 
@@ -88,15 +90,19 @@ class RecipeRedirectsTestCase(TestCase):
 
         messages = list(request._messages)
         self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), "Successfully updated recipe: Updated Recipe")
+        self.assertEqual(
+            str(messages[0]), "Successfully updated recipe: Updated Recipe"
+        )
 
     def test_show_success_message_update_mode_not_owner(self):
         """Test success message in update mode as non-owner"""
-        request = self.factory.get('/')
+        request = self.factory.get("/")
         request.session = {}
         request._messages = FallbackStorage(request)
 
-        handler = self._create_mock_handler(is_create_mode=False, recipe_id=123, is_owner=False)
+        handler = self._create_mock_handler(
+            is_create_mode=False, recipe_id=123, is_owner=False
+        )
         recipe = Mock()
         recipe.title = "Modified Recipe"
 
@@ -104,5 +110,6 @@ class RecipeRedirectsTestCase(TestCase):
 
         messages = list(request._messages)
         self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), "Created your modified version: Modified Recipe")
-
+        self.assertEqual(
+            str(messages[0]), "Created your modified version: Modified Recipe"
+        )

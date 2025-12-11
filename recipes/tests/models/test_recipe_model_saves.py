@@ -6,6 +6,7 @@ from recipes.models import User, Recipe
 Recipe save tests.
 """
 
+
 class RecipeModelSaveTests(TestCase):
 
     def setUp(self):

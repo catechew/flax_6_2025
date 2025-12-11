@@ -13,18 +13,17 @@ class Rating(RecipeInteractionMixin, models.Model):
         "Recipe",
         on_delete=models.CASCADE,
         related_name="ratings",
-        help_text="The recipe this rating belongs to"
+        help_text="The recipe this rating belongs to",
     )
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        help_text="The user who left this rating"
+        help_text="The user who left this rating",
     )
 
     stars = models.PositiveSmallIntegerField(
-        choices=[(i, i) for i in range(1, 6)],
-        help_text="Rating value (1 to 5)"
+        choices=[(i, i) for i in range(1, 6)], help_text="Rating value (1 to 5)"
     )
 
     class Meta:

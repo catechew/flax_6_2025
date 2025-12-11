@@ -8,24 +8,50 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0014_user_age_range_user_avatar_seed_user_avatar_type_and_more'),
+        ("recipes", "0014_user_age_range_user_avatar_seed_user_avatar_type_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='flagged',
-            field=models.BooleanField(default=False, help_text='When a recipe is reported or flagged, this is true'),
+            model_name="recipe",
+            name="flagged",
+            field=models.BooleanField(
+                default=False,
+                help_text="When a recipe is reported or flagged, this is true",
+            ),
         ),
         migrations.CreateModel(
-            name='Flag',
+            name="Flag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipe', models.ForeignKey(help_text='The recipe that was flagged', on_delete=django.db.models.deletion.CASCADE, related_name='flags', to='recipes.recipe')),
-                ('user', models.ForeignKey(help_text='The user who flagged this recipe', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "recipe",
+                    models.ForeignKey(
+                        help_text="The recipe that was flagged",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="flags",
+                        to="recipes.recipe",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="The user who flagged this recipe",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('recipe', 'user')},
+                "unique_together": {("recipe", "user")},
             },
         ),
     ]

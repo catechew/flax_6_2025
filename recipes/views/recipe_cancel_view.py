@@ -13,4 +13,3 @@ def cancel_recipe_operation(request, recipe_id=None):
     handler = RecipeFormHandler(request, recipe_id)
     cleanup_session(handler.session_key, handler.session_data, request)
     return handler.redirect_to_cancel_destination()
-    

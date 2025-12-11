@@ -23,19 +23,19 @@ class ScaleIngredientTests(TestCase):
     """
 
     def test_scale_whole_number(self):
-        """ Scale ingredient with whole number. """
-        result = scale_ingredient('400g pasta', 2.0)
-        self.assertEqual(result, '800g pasta')
+        """Scale ingredient with whole number."""
+        result = scale_ingredient("400g pasta", 2.0)
+        self.assertEqual(result, "800g pasta")
 
     def test_scale_decimal(self):
-        """ Scale ingredient with decimal. """
-        result = scale_ingredient('200g pasta', 1.5)
-        self.assertEqual(result, '300g pasta')
+        """Scale ingredient with decimal."""
+        result = scale_ingredient("200g pasta", 1.5)
+        self.assertEqual(result, "300g pasta")
 
     def test_scale_fraction(self):
-        """ Scale ingredient with fraction. """
-        result = scale_ingredient('1/2 cup sugar', 2.0)
-        self.assertEqual(result, '1 cup sugar')
+        """Scale ingredient with fraction."""
+        result = scale_ingredient("1/2 cup sugar", 2.0)
+        self.assertEqual(result, "1 cup sugar")
 
 
 class GetScaledIngredientsContextTests(TestCase):
@@ -44,35 +44,33 @@ class GetScaledIngredientsContextTests(TestCase):
     """
 
     def setUp(self):
-        """ Set up test data. """
+        """Set up test data."""
         self.user = User.objects.create_user(
-            username='@testuser',
-            email='test@example.com',
-            password='Password123'
+            username="@testuser", email="test@example.com", password="Password123"
         )
 
         self.recipe = Recipe.objects.create(
             author=self.user,
-            title='Test Recipe',
+            title="Test Recipe",
             publication_date=date.today(),
-            ingredients='Pasta (400g)\nEggs (2)',
-            steps='Cook',
+            ingredients="Pasta (400g)\nEggs (2)",
+            steps="Cook",
             servings=2,
         )
 
     def test_get_scaled_context_double_servings(self):
-        """ Test doubling servings. """
+        """Test doubling servings."""
         result = get_scaled_ingredients_context(self.recipe, 4)
 
-        self.assertEqual(result['desired_servings'], 4)
-        self.assertEqual(result['scaling_factor'], 2.0)
-        self.assertEqual(len(result['scaled_ingredients']), 2)
+        self.assertEqual(result["desired_servings"], 4)
+        self.assertEqual(result["scaling_factor"], 2.0)
+        self.assertEqual(len(result["scaled_ingredients"]), 2)
 
     def test_get_scaled_context_invalid_servings(self):
-        """ Test invalid servings defaults to recipe servings. """
+        """Test invalid servings defaults to recipe servings."""
         result = get_scaled_ingredients_context(self.recipe, 0)
 
-        self.assertEqual(result['desired_servings'], self.recipe.servings)
+        self.assertEqual(result["desired_servings"], self.recipe.servings)
 
 
 class GetUserRatingTests(TestCase):
@@ -83,34 +81,29 @@ class GetUserRatingTests(TestCase):
     def setUp(self):
         """Set up test data."""
         self.user = User.objects.create_user(
-            username='@testuser',
-            email='test@example.com',
-            password='Password123'
+            username="@testuser", email="test@example.com", password="Password123"
         )
 
         self.recipe = Recipe.objects.create(
             author=self.user,
-            title='Test Recipe',
+            title="Test Recipe",
             publication_date=date.today(),
-            ingredients='Test (1)',
-            steps='Test',
+            ingredients="Test (1)",
+            steps="Test",
         )
 
     def test_unauthenticated_user_returns_none(self):
-        """ Unauthenticated user returns None. """
+        """Unauthenticated user returns None."""
         from django.contrib.auth.models import AnonymousUser
+
         user = AnonymousUser()
 
         result = get_user_rating(self.recipe, user)
         self.assertIsNone(result)
 
     def test_user_with_rating_returns_rating(self):
-        """ User with rating returns rating. """
-        rating = Rating.objects.create(
-            recipe=self.recipe,
-            user=self.user,
-            stars=5
-        )
+        """User with rating returns rating."""
+        rating = Rating.objects.create(recipe=self.recipe, user=self.user, stars=5)
 
         result = get_user_rating(self.recipe, self.user)
         self.assertEqual(result, rating)
@@ -127,39 +120,37 @@ class HasUserFlaggedRecipeTests(TestCase):
     """
 
     def setUp(self):
-        """ Set up test data. 
-        """
+        """Set up test data."""
         self.user = User.objects.create_user(
-            username='@testuser',
-            email='test@example.com',
-            password='Password123'
+            username="@testuser", email="test@example.com", password="Password123"
         )
 
         self.recipe = Recipe.objects.create(
             author=self.user,
-            title='Test Recipe',
+            title="Test Recipe",
             publication_date=date.today(),
-            ingredients='Test (1)',
-            steps='Test',
+            ingredients="Test (1)",
+            steps="Test",
         )
 
     def test_unauthenticated_returns_false(self):
-        """ Unauthenticated user returns False. """
+        """Unauthenticated user returns False."""
         from django.contrib.auth.models import AnonymousUser
+
         user = AnonymousUser()
 
         result = has_user_flagged_recipe(self.recipe, user)
         self.assertFalse(result)
 
     def test_user_with_flag_returns_true(self):
-        """ User with flag returns True. """
+        """User with flag returns True."""
         Flag.objects.create(recipe=self.recipe, user=self.user)
 
         result = has_user_flagged_recipe(self.recipe, self.user)
         self.assertTrue(result)
 
     def test_user_without_flag_returns_false(self):
-        """ User without flag returns False. """
+        """User without flag returns False."""
         result = has_user_flagged_recipe(self.recipe, self.user)
         self.assertFalse(result)
 
@@ -170,34 +161,32 @@ class GetRecipeTagDisplayContextTests(TestCase):
     """
 
     def setUp(self):
-        """ Set up test data. """
+        """Set up test data."""
         self.user = User.objects.create_user(
-            username='@testuser',
-            email='test@example.com',
-            password='Password123'
+            username="@testuser", email="test@example.com", password="Password123"
         )
 
         self.recipe = Recipe.objects.create(
             author=self.user,
-            title='Test Recipe',
+            title="Test Recipe",
             publication_date=date.today(),
-            ingredients='Test (1)',
-            steps='Test',
-            course_tags='main,dessert',
-            dietary_tags='vegetarian',
-            cuisine_tags='Italian',
-            other_tags='quick',
+            ingredients="Test (1)",
+            steps="Test",
+            course_tags="main,dessert",
+            dietary_tags="vegetarian",
+            cuisine_tags="Italian",
+            other_tags="quick",
         )
 
     def test_returns_all_tag_lists(self):
-        """ Returns all tag lists. """
+        """Returns all tag lists."""
         result = get_recipe_tag_display_context(self.recipe)
 
-        self.assertIn('main', result['course_tags'])
-        self.assertIn('dessert', result['course_tags'])
-        self.assertIn('vegetarian', result['dietary_tags'])
-        self.assertIn('Italian', result['cuisine_tags'])
-        self.assertIn('quick', result['other_tags'])
+        self.assertIn("main", result["course_tags"])
+        self.assertIn("dessert", result["course_tags"])
+        self.assertIn("vegetarian", result["dietary_tags"])
+        self.assertIn("Italian", result["cuisine_tags"])
+        self.assertIn("quick", result["other_tags"])
 
 
 class GetRecipeTimeDisplayContextTests(TestCase):
@@ -206,19 +195,17 @@ class GetRecipeTimeDisplayContextTests(TestCase):
     """
 
     def setUp(self):
-        """ Set up test data. """
+        """Set up test data."""
         self.user = User.objects.create_user(
-            username='@testuser',
-            email='test@example.com',
-            password='Password123'
+            username="@testuser", email="test@example.com", password="Password123"
         )
 
         self.recipe = Recipe.objects.create(
             author=self.user,
-            title='Test Recipe',
+            title="Test Recipe",
             publication_date=date.today(),
-            ingredients='Test (1)',
-            steps='Test',
+            ingredients="Test (1)",
+            steps="Test",
             prep_time_hours=1,
             prep_time_minutes=30,
             cook_time_hours=2,
@@ -226,14 +213,14 @@ class GetRecipeTimeDisplayContextTests(TestCase):
         )
 
     def test_returns_time_displays(self):
-        """ Returns formatted time displays. """
+        """Returns formatted time displays."""
         result = get_recipe_time_display_context(self.recipe)
 
-        self.assertIn('prep_time_display', result)
-        self.assertIn('cook_time_display', result)
-        self.assertIn('total_time_display', result)
-        self.assertEqual(result['total_prep_minutes'], 90)
-        self.assertEqual(result['total_cook_minutes'], 120)
+        self.assertIn("prep_time_display", result)
+        self.assertIn("cook_time_display", result)
+        self.assertIn("total_time_display", result)
+        self.assertEqual(result["total_prep_minutes"], 90)
+        self.assertEqual(result["total_cook_minutes"], 120)
 
 
 class CostEstimationTests(TestCase):
@@ -242,51 +229,51 @@ class CostEstimationTests(TestCase):
     """
 
     def test_create_cost_prompt(self):
-        """ Test creating cost prompt. """
-        ingredients = ['Pasta (400g)', 'Eggs (2)']
+        """Test creating cost prompt."""
+        ingredients = ["Pasta (400g)", "Eggs (2)"]
         prompt = create_cost_prompt(ingredients, 4)
 
-        self.assertIn('Pasta (400g)', prompt)
-        self.assertIn('Eggs (2)', prompt)
-        self.assertIn('4 servings', prompt)
-        self.assertIn('GBP', prompt)
+        self.assertIn("Pasta (400g)", prompt)
+        self.assertIn("Eggs (2)", prompt)
+        self.assertIn("4 servings", prompt)
+        self.assertIn("GBP", prompt)
 
-    @patch('openai.ChatCompletion.create')
+    @patch("openai.ChatCompletion.create")
     def test_call_openai_for_cost(self, mock_openai):
-        """ Test calling OpenAI for cost. """
+        """Test calling OpenAI for cost."""
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = '{"total_cost": 5.50}'
         mock_openai.return_value = mock_response
 
-        result = call_openai_for_cost('test prompt')
+        result = call_openai_for_cost("test prompt")
 
         self.assertEqual(result, '{"total_cost": 5.50}')
         self.assertTrue(mock_openai.called)
 
     def test_parse_cost_response(self):
-        """ Test parsing cost response. """
+        """Test parsing cost response."""
         ai_response = '{"total_cost": 5.50, "cost_per_serving": 1.38}'
         result = parse_cost_response(ai_response, 4)
 
-        self.assertEqual(result['total_cost'], 5.50)
-        self.assertEqual(result['cost_per_serving'], 1.38)
-        self.assertEqual(result['servings'], 4)
+        self.assertEqual(result["total_cost"], 5.50)
+        self.assertEqual(result["cost_per_serving"], 1.38)
+        self.assertEqual(result["servings"], 4)
 
-    @patch('recipes.helpers.recipe_detail_helpers.call_openai_for_cost')
+    @patch("recipes.helpers.recipe_detail_helpers.call_openai_for_cost")
     def test_get_cost_estimate_data_success(self, mock_call):
-        """ Test successful cost estimation. """
+        """Test successful cost estimation."""
         mock_call.return_value = '{"total_cost": 5.50, "cost_per_serving": 1.38}'
 
-        result = get_cost_estimate_data(['Pasta (400g)'], 4)
+        result = get_cost_estimate_data(["Pasta (400g)"], 4)
 
-        self.assertEqual(result['total_cost'], 5.50)
-        self.assertEqual(result['cost_per_serving'], 1.38)
+        self.assertEqual(result["total_cost"], 5.50)
+        self.assertEqual(result["cost_per_serving"], 1.38)
 
-    @patch('recipes.helpers.recipe_detail_helpers.call_openai_for_cost')
+    @patch("recipes.helpers.recipe_detail_helpers.call_openai_for_cost")
     def test_get_cost_estimate_data_error(self, mock_call):
-        """ Test cost estimation error handling. """
-        mock_call.side_effect = Exception('API Error')
+        """Test cost estimation error handling."""
+        mock_call.side_effect = Exception("API Error")
 
         with self.assertRaises(Exception):
-            get_cost_estimate_data(['Pasta (400g)'], 4)
+            get_cost_estimate_data(["Pasta (400g)"], 4)

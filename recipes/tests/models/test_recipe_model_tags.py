@@ -5,6 +5,7 @@ from recipes.tests.utils import create_test_user, create_test_recipe
 Recipe tag and adjective tests.
 """
 
+
 class RecipeModelTagTests(TestCase):
     def setUp(self):
         self.recipe = create_test_recipe(author=create_test_user())
