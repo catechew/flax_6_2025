@@ -54,7 +54,6 @@ class RecipeFormHandler:
     def _init_session(self):
         """Initialise or get existing session."""
         session = self.request.session
-
         if self.session_key in session:
             return session[self.session_key]
         return self._create_new_session(session)
@@ -66,7 +65,6 @@ class RecipeFormHandler:
         initialise_tag_session(session_data, self.recipe)
         self._apply_ai_tags_if_available(session_data)
         self.set_ownership_in_session(session_data)
-
         return session_data
 
     def _apply_ai_tags_if_available(self, session_data):
@@ -89,27 +87,20 @@ class RecipeFormHandler:
     def handle_form_get(self):
         """Handle GET request for form display."""
         ai_prefill = self._get_ai_prefill_data()
-
         if ai_prefill:
             return self._render_form_with_ai_data(ai_prefill)
-
         if "form_data" in self.session_data:
             return self._render_form_from_session()
-
         return self._render_empty_form()
 
     def _get_ai_prefill_data(self):
         """Get and parse AI prefill data."""
         if not self.request.session.pop("from_ai_save_button", False):
             return None
-
         ai_data = self.request.session.pop("ai_recipe_prefill", None)
-
         if not ai_data:
             return None
-
         from recipes.helpers.ai_recipe_parser import parse_ai_recipe_data
-
         return parse_ai_recipe_data(ai_data)
 
     def _render_form_with_ai_data(self, ai_prefill):
@@ -117,7 +108,6 @@ class RecipeFormHandler:
         store_ai_dietary_info(self.session_data, ai_prefill)
         self.request.session.modified = True
         form = RecipeForm(initial=ai_prefill, instance=self.recipe)
-
         return self._render_form(form)
 
     def _render_form_from_session(self):

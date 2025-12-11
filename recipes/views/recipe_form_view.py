@@ -12,7 +12,6 @@ def recipe_form_view(request, recipe_id=None):
     """
 
     handler = RecipeFormHandler(request, recipe_id)
-
     if request.method == "POST":
         return handler.handle_form_post()
     return handler.handle_form_get()

@@ -19,9 +19,7 @@ def show_success_message(request, handler, recipe):
     if handler.is_create_mode:
         messages.success(request, "Recipe created successfully!")
         return
-
     if handler.is_owner:
         messages.success(request, f"Successfully updated recipe: {recipe.title}")
         return
-
     messages.success(request, f"Created your modified version: {recipe.title}")

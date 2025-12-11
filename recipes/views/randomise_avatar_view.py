@@ -8,7 +8,6 @@ import uuid
 def randomise_avatar(request):
     """Generate a new random avatar seed for the user."""
     user = request.user
-
     if user.profile_picture and user.avatar_type != "ai":
         user.profile_picture.delete()
         user.profile_picture = None
@@ -23,7 +22,6 @@ def randomise_avatar(request):
 def use_initials_avatar(request):
     """Reset avatar to initials (default)."""
     user = request.user
-
     if user.profile_picture:
         user.profile_picture.delete()
         user.profile_picture = None

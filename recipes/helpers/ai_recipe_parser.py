@@ -50,7 +50,6 @@ def format_ingredients_for_form(ingredients_list):
 
 def format_single_ingredient(ingredient):
     match = try_parse_ingredient(ingredient)
-
     if match:
         return format_matched_ingredient(match)
     return f"{ingredient} (as needed)"
@@ -87,8 +86,8 @@ def _parse_time_fields(ai_data):
 
 
 def parse_ai_recipe_data(ai_data):
+    """Parse reciope data fields from AI data."""
     prep_hours, prep_mins, cook_hours, cook_mins = _parse_time_fields(ai_data)
-
     return {
         "title": ai_data.get("title", ""),
         "ingredients": format_ingredients_for_form(ai_data.get("ingredients", [])),

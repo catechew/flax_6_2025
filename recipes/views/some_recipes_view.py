@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
-
 from recipes.models.recipe import Recipe
 
 ITEMS_PER_PAGE = 25
@@ -13,9 +12,7 @@ def some_recipes(request):
     ids_param = request.GET.get("ids", "")
     recipe_ids = _parse_recipe_ids(ids_param)
     recipes = Recipe.objects.visible().filter(id__in=recipe_ids)
-
     page_object = _paginate_recipes(recipes, request)
-
     context = {"recipes": recipes, "page_object": page_object}
     return render(request, "ai/some_recipes.html", context)
 

@@ -3,7 +3,6 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from datetime import date, timedelta
-
 from recipes.models.meal_plan import MealPlan, MealSlot
 from recipes.models.recipe import Recipe
 from recipes.helpers.meal_plan_helpers import (

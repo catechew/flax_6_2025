@@ -274,6 +274,7 @@ class RecipeDataGenerator:
 
     @staticmethod
     def build_recipe_payload(title, prep, cook):
+        """Build payload for recipe."""
         prep_h, prep_m = prep
         cook_h, cook_m = cook
 

@@ -116,7 +116,6 @@ def apply_sorting(recipes, sort_by):
     """Apply sorting to recipes."""
     if sort_by in SORT_OPTIONS:
         return recipes.order_by(SORT_OPTIONS[sort_by])
-
     if sort_by in ["total_least", "total_most"]:
         recipes = recipes.annotate(
             total_minutes=(F("prep_time_hours") + F("cook_time_hours")) * 60
@@ -169,7 +168,6 @@ def ai_recipe_search_view(request):
     if request.method != "POST":
         return render(request, "ai/ai_recipe_search.html")
     user_context = request.POST.get("context", "").strip()
-
     if not user_context:
         messages.error(request, "Please describe your situation")
         return render(request, "ai/ai_recipe_search.html")
@@ -186,7 +184,6 @@ def process_ai_search(request, user_context):
     """Process AI search request."""
     search_params = get_search_params_from_ai(user_context)
     recipes = filter_recipes(search_params)
-
     if recipes.count() == 0:
         return render(
             request,
@@ -217,7 +214,6 @@ def build_result_context(user_context, search_params, ranking_data, total_count)
     """ Build context for search results. """
     top_picks = ranking_data.get('top_picks', [])
     recipe_ids = [pick['recipe_id'] for pick in top_picks]
-
     return {
         'user_context': user_context,
         'search_params': search_params,

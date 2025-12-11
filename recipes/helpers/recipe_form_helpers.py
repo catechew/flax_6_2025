@@ -23,10 +23,8 @@ def get_tag_action_from_request(request):
     """Parse POST request to determine tag action."""
     if request.method != "POST":
         return None, None, None
-
     results = [check_category_for_tag_action(request, cat) for cat in TAG_CATEGORIES]
     valid_results = _get_valid_results(results)
-
     return valid_results[0] if valid_results else (None, None, None)
 
 
@@ -40,15 +38,12 @@ def check_category_for_tag_action(request, category):
     key = f"add_{category}_tag"
     if key in request.POST:
         return "add", category, request.POST.get(key)
-
     key = f"add_{category}_tag_custom"
     if key in request.POST:
         return "add", category, request.POST.get(f"{category}_tag_value")
-
     key = f"remove_{category}_tag"
     if key in request.POST:
         return "remove", category, request.POST.get(key)
-
     return None, None, None
 
 
@@ -56,15 +51,12 @@ def handle_tag_operation(session_data, action, category, value):
     """Add or remove a tag from session data."""
     if not _is_valid_tag_input(action, category, value):
         return False
-
     tag_key = f"{category}_tags"
     session_data.setdefault(tag_key, [])
-
     if action == "add":
         return _add_tag_to_list(session_data[tag_key], value)
     if action == "remove":
         return _remove_tag_from_list(session_data[tag_key], value)
-
     return False
 
 
@@ -72,7 +64,6 @@ def _is_valid_tag_input(action, category, value):
     """Validate tag operation inputs."""
     if not all([action, category, value]):
         return False
-
     value = value.strip()
     return value and len(value) <= 50
 
@@ -136,7 +127,6 @@ def get_session_key(recipe_id=None):
 def cleanup_session(session_key, session_data, request):
     """Cleanup temp files and session data."""
     cleanup_temp_image(session_data.get("temp_image_path"))
-
     if session_key in request.session:
         del request.session[session_key]
     request.session.modified = True
@@ -144,10 +134,8 @@ def cleanup_session(session_key, session_data, request):
 
 def apply_ai_dietary_tags(session_data, ai_dietary_info):
     from recipes.helpers.ai_recipe_parser import map_ai_dietary_tags
-
     if not ai_dietary_info:
         return
-
     mapped_tags = map_ai_dietary_tags(ai_dietary_info)
     existing_tags = session_data.get("dietary_tags", [])
     new_tags = [tag for tag in mapped_tags if tag not in existing_tags]

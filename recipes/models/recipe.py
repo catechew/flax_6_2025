@@ -53,16 +53,13 @@ class Recipe(models.Model):
         default="",
         help_text="Comma-separated other tags (e.g., 'high protein,low calorie')",
     )
-
     adjectives = models.CharField(
         max_length=255,
         blank=True,
         default="",
         help_text="Combined tags from all categories (auto-populated)",
     )
-
     publication_date = models.DateField()
-
     prep_time_hours = models.PositiveIntegerField(
         default=0, help_text="Preparation time in hours"
     )
@@ -79,33 +76,27 @@ class Recipe(models.Model):
         validators=[MinValueValidator(0)],
         help_text="Cooking time in minutes",
     )
-
     image = models.ImageField(
         upload_to="recipe_images/",
         null=True,
         blank=True,
         help_text="Upload an image of the dish (optional).",
     )
-
     servings = models.PositiveIntegerField(
         default=4,
         validators=[MinValueValidator(1)],
         help_text="Number of servings this recipe makes",
     )
-
     ingredients = models.TextField(
         default="none",
         help_text="List ingredients, one per line (e.g., 'Garlic (5 cloves)')",
     )
-
     steps = models.TextField(
         default="none", help_text="List cooking steps, one per line"
     )
-
     private = models.BooleanField(
         default=False, help_text="Set this to true to hide the recipe from other users"
     )
-
     saved_by = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="saved_recipes",
@@ -154,7 +145,7 @@ class Recipe(models.Model):
         ordering = ["-publication_date"]
 
     def __str__(self):
-        # Format ingredients and steps as multi-line text for readability.
+        """Format ingredients and steps as multi-line text for readability."""
         ingredients_text = "\n".join(self.get_ingredient_list())
         steps_text = "\n".join(self.get_step_list())
         return (
@@ -200,7 +191,6 @@ class Recipe(models.Model):
         """Format time as a readable string."""
         if hours == 0 and minutes == 0:
             return "Not specified"
-
         parts = []
         if hours > 0:
             parts.append(self._format_hours(hours))
@@ -225,7 +215,6 @@ class Recipe(models.Model):
         total_minutes = self.get_total_time_minutes()
         if total_minutes == 0:
             return None
-
         total_hours = total_minutes // 60
         total_mins_remainder = total_minutes % 60
         return self.format_time(total_hours, total_mins_remainder)
@@ -250,6 +239,7 @@ class Recipe(models.Model):
 
     @property
     def flag_count(self):
+        """Return number of times a recipe has been flagged."""
         return self.flags.count()
 
     objects = RecipeManager()
