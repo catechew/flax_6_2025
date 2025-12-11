@@ -259,7 +259,6 @@ class RecipeCreateTagsTestCase(TestCase):
         """test creating recipe with all tag types"""
         initial_count = Recipe.objects.count()
         self.client.post(self.url, self.form_data, follow=True)
-
         self.client.post(
             reverse("create_recipe_tags"), {"add_course_tag": "breakfast"}, follow=True
         )
@@ -274,11 +273,9 @@ class RecipeCreateTagsTestCase(TestCase):
         self.client.post(
             reverse("create_recipe_tags"), {"add_other_tag": "quick"}, follow=True
         )
-
         response = self.client.post(
             reverse("create_recipe_tags"), {"create_recipe": "true"}, follow=True
         )
-
         self.assertEqual(Recipe.objects.count(), initial_count + 1)
         created_recipe = Recipe.objects.latest("id")
         self.assertEqual(created_recipe.course_tags, "breakfast")

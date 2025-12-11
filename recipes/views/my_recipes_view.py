@@ -1,6 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from recipes.models import Recipe
 from django.shortcuts import redirect
 
 

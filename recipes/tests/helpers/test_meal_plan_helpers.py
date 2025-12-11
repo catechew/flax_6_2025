@@ -134,7 +134,6 @@ class ReusePrevWeekHelperTests(TestCase):
             ingredients="Eggs\nBread",
             steps="Cook eggs",
         )
-
         previous_slot = self.previous_plan.entries.filter(
             day="mon",
             meal_type="breakfast",
@@ -142,10 +141,8 @@ class ReusePrevWeekHelperTests(TestCase):
         previous_slot.recipe = recipe
         previous_slot.notes = "Test notes"
         previous_slot.save()
-
         result = reuse_prev_week(self.current_plan)
         self.assertTrue(result)
-
         new_slot = self.current_plan.entries.filter(
             day="mon",
             meal_type="breakfast",

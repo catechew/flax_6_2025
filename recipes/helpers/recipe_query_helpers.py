@@ -115,7 +115,6 @@ def apply_sort(recipes, sort_by):
     """Apply sorting based on selected option."""
     if sort_by in SORT_FIELD_MAP:
         return recipes.order_by(SORT_FIELD_MAP[sort_by])
-
     sort_map = _get_sort_function_map()
     sort_func = sort_map.get(sort_by, _default_sort)
     return sort_func(recipes)
@@ -199,7 +198,6 @@ def build_filter_params_string(filters, sort_by):
         ("cuisine_filters", "cuisine"),
         ("other_filters", "other"),
     ]
-
     params = []
     for filter_key, param_name in filter_keys:
         params.extend(_build_param_list(filters, filter_key, param_name))
@@ -237,19 +235,17 @@ def _apply_all_filters(recipes, search_query, filter_params, sort_by):
 
 
 def _build_context_dict(page_object, search_query, filter_params, sort_by, user_count):
-    return {
-        "recipes": page_object,
-        "page_object": page_object,
-        "search_query": search_query,
-        "filters": filter_params,
-        "total_filters": sum(len(v) for v in filter_params.values()),
-        "sort_by": sort_by,
-        "course_options": COURSE_OPTIONS,
-        "dietary_options": DIETARY_OPTIONS,
-        "cuisine_options": CUISINE_OPTIONS,
-        "other_options": OTHER_OPTIONS,
-        "sort_options": SORT_OPTIONS,
-        "recipe_count": page_object.paginator.count,
-        "user_count": user_count,
-        "pagination_extra_params": build_filter_params_string(filter_params, sort_by),
-    }
+    return {"recipes": page_object,
+            "page_object": page_object,
+            "search_query": search_query,
+            "filters": filter_params,
+            "total_filters": sum(len(v) for v in filter_params.values()),
+            "sort_by": sort_by,
+            "course_options": COURSE_OPTIONS,
+            "dietary_options": DIETARY_OPTIONS,
+            "cuisine_options": CUISINE_OPTIONS,
+            "other_options": OTHER_OPTIONS,
+            "sort_options": SORT_OPTIONS,
+            "recipe_count": page_object.paginator.count,
+            "user_count": user_count,
+            "pagination_extra_params": build_filter_params_string(filter_params, sort_by), }

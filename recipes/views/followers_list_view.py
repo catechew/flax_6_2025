@@ -8,7 +8,6 @@ def followers_list(request, user_id):
     """Display list of users who follow this user."""
     profile_user = get_object_or_404(User, id=user_id)
     followers = profile_user.followers.all()
-
     return render(
         request,
         "users/followers_list.html",

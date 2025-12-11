@@ -81,7 +81,6 @@ def ai_recipe_generator_view(request):
     """AI Recipe Generator - creates new recipes from user prompts."""
     if request.method != "POST":
         return render(request, "ai/ai_recipe_generator.html")
-
     user_prompt = request.POST.get("prompt", "").strip()
     if not user_prompt:
         messages.error(request, "Please describe what you want to cook")

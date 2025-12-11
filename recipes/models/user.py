@@ -81,13 +81,10 @@ class User(AbstractUser):
         """Return avatar URL based on user preference."""
         if self.profile_picture:
             return self.profile_picture.url
-
         if self.avatar_type == "random" and self.avatar_seed:
             return self._get_random_avatar_url(size)
-
         if self.avatar_type == "ai":
             return self._get_ai_avatar_url(size)
-
         return self._get_initials_avatar_url(size)
 
     def _get_initials_avatar_url(self, size):
@@ -102,7 +99,6 @@ class User(AbstractUser):
     def _get_ai_avatar_url(self, size):
         """Generate AI avatar URL based on age and gender."""
         import hashlib
-
         seed = int(hashlib.md5(self.username.encode()).hexdigest()[:8], 16)
         gender_path = "men" if self.gender == "M" else "women"
         photo_num = self._get_photo_number_for_age(seed)

@@ -8,12 +8,10 @@ from recipes.models.recipe import Recipe
 def dashboard(request):
     """Display the current user's dashboard."""
     current_user = request.user
-
     recent_recipes = get_recent_recipes(current_user)
     most_saved_recipes = get_most_saved_recipes(current_user)
     highest_rated_recipes = get_highest_rated_recipes()
     followed_recipes = get_followed_recipes(current_user)
-
     context = build_dashboard_context(
         current_user,
         recent_recipes,

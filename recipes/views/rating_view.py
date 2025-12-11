@@ -9,24 +9,19 @@ from django.contrib import messages
 def rate_recipe(request, recipe_id):
     """Handle submission of a user's star rating for a recipe."""
     recipe = get_object_or_404(Recipe, id=recipe_id)
-
     if recipe.author == request.user:
         messages.warning(request, "You cannot rate your own recipe.")
         return redirect("recipe_detail", recipe_id=recipe.id)
-
     if request.method == "POST":
         _process_rating(request, recipe)
-
     return redirect("recipe_detail", recipe_id=recipe.id)
 
 
 def _process_rating(request, recipe):
     """Process and save the rating."""
     stars = int(request.POST.get("stars", 0))
-
     if not _is_valid_rating(stars):
         return
-
     Rating.objects.update_or_create(
         recipe=recipe, user=request.user, defaults={"stars": stars}
     )

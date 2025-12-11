@@ -51,7 +51,6 @@ class RecipeDetailHandler:
         """Return cost estimation context (cost estimate and cost error)."""
         cost_estimate = None
         cost_error = None
-
         if self.request.GET.get("show_cost") == "true":
             cost_estimate, cost_error = self._calculate_cost(scaled_ingredients)
         return {"cost_estimate": cost_estimate, "cost_error": cost_error}
@@ -73,13 +72,10 @@ class RecipeDetailHandler:
         }
         context.update(get_recipe_tag_display_context(self.recipe))
         context.update(get_recipe_time_display_context(self.recipe))
-
         scaling_context = get_scaled_ingredients_context(
             self.recipe, self.desired_servings
         )
-
         context.update(scaling_context)
         context.update(self.get_cost_context(scaling_context["scaled_ingredients"]))
         context.update(self.get_user_context())
-
         return context

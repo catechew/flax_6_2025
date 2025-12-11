@@ -121,7 +121,6 @@ class Command(BaseCommand):
         detector = self._get_gender_detector()
         if not detector:
             return
-
         seeded_users = User.objects.filter(is_superuser=False)
         self._configure_user_avatars(seeded_users, detector)
         print(f"{seeded_users.count()} users configured with AI avatars")
@@ -130,7 +129,6 @@ class Command(BaseCommand):
         """Initialise gender detector or return None if unavailable."""
         try:
             import gender_guesser.detector as gender
-
             return gender.Detector()
         except ImportError:
             print("⚠️  gender-guesser not installed.")
@@ -153,7 +151,6 @@ class Command(BaseCommand):
         if not users:
             print("No users found. Cannot create recipes.")
             return
-
         while Recipe.objects.count() < self.RECIPE_COUNT:
             count = Recipe.objects.count()
             print(f"Seeding recipe {count}/{self.RECIPE_COUNT}", end="\r")
@@ -166,7 +163,6 @@ class Command(BaseCommand):
         prep = RecipeDataGenerator.generate_time_component()
         cook = RecipeDataGenerator.generate_time_component()
         image, filename = ImageHandler.load_image(title)
-
         data = RecipeDataGenerator.build_recipe_payload(title, prep, cook)
         data["author"] = choice(users)
         _add_tags_to_recipe_data(data)

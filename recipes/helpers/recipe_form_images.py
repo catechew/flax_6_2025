@@ -15,7 +15,6 @@ def save_temp_image(uploaded_file, user_id, recipe_id=None):
     """Save uploaded image to a temp path."""
     if not uploaded_file:
         return None
-
     prefix = _get_temp_file_prefix(user_id, recipe_id)
     filename = f"{prefix}{uploaded_file.name}"
     return default_storage.save(

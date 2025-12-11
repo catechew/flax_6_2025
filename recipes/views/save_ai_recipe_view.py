@@ -7,13 +7,10 @@ from django.contrib import messages
 def save_ai_recipe_view(request):
     """Transfer AI recipe to create form."""
     ai_recipe = request.session.get("last_ai_recipe")
-
     if not ai_recipe:
         return handle_missing_ai_recipe(request)
-
     store_ai_recipe_for_form(request, ai_recipe)
     show_ai_loaded_message(request)
-
     return redirect("create_recipe")
 
 

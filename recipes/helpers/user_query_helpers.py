@@ -52,12 +52,10 @@ def paginate_users(users, request):
 def get_users_context(request, search_query):
     """Create context for users tab."""
     from recipes.helpers.recipe_query_helpers import apply_search
-
     user_queryset = User.objects.all()
     filtered_users = apply_user_search(user_queryset, search_query)
     page_object = paginate_users(filtered_users, request)
     recipe_count = apply_search(Recipe.objects.visible(), search_query).count()
-
     return _build_users_context_dict(page_object, recipe_count)
 
 

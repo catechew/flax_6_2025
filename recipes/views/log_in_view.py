@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.shortcuts import redirect, render
 from django.views import View
-
 from recipes.forms import LogInForm
 from recipes.views.decorators import LoginProhibitedMixin
 
@@ -23,7 +22,6 @@ class LogInView(LoginProhibitedMixin, View):
     def post(self, request):
         self.next = request.POST.get("next") or ""
         form = LogInForm(request.POST)
-
         user = self._validate_and_get_user(form)
         if user is None:
             return self.render()
@@ -36,7 +34,6 @@ class LogInView(LoginProhibitedMixin, View):
         if not form.is_valid():
             messages.error(self.request, "The credentials provided were invalid!")
             return None
-
         user = form.get_user()
         if user is None:
             messages.error(self.request, "The credentials provided were invalid!")

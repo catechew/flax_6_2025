@@ -103,7 +103,6 @@ class ImageHandler:
     def get_dish_type(title):
         """Map recipe title to dish type."""
         title_lower = title.lower()
-
         matches = [
             dish_type
             for dish_type, keywords in DISH_TYPE_MAPPING.items()
@@ -134,7 +133,6 @@ class ImageHandler:
         """Load image file from static directory."""
         image_path = f"static/images/food_placeholders/{dish_type}.jpg"
         full_path = os.path.join(settings.BASE_DIR, image_path)
-
         if os.path.exists(full_path):
             return ImageHandler._create_image_content(full_path, dish_type)
         return ImageHandler._load_default_image()
