@@ -53,7 +53,7 @@ $ coverage html
 $ open htmlcov/index.html
 ```
 
-If you are an admin, you can access the admin panel by adding /admin to the link.
+If you are an admin, you can access the admin panel by adding /admin to the link, i.e. https://hamed54.pythonanywhere.com/admin/login/?next=/admin/
 
 *The above instructions should work in your version of the application.  If there are deviations, declare those here in bold.  Otherwise, remove this line.*
 
